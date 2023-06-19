@@ -17,4 +17,4 @@ const publicRoutes = [
 //private route: dành cho những route cần đăng nhập
 const privateRoutes = [];
 
-export default publicRoutes;
+export {publicRoutes, privateRoutes}
