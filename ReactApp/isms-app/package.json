@@ -10,8 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "classnames": "^2.3.2",
+    "normalize.css": "^8.0.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.11.2",
+    "react-icons": "^4.8.0",
+    "react-type-animation": "^3.0.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.37",
@@ -23,6 +28,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
     "postcss": "^8.4.24",
+    "sass": "^1.63.4",
     "tailwindcss": "^3.3.2",
     "vite": "^4.3.9"
   }
