@@ -22,7 +22,7 @@ display: inline-block;
   left: 0;
   bottom: -2px;
   width: 100%;
-  height: 1px;
+  height: 2px;
   background-color: #043AC5;
   transform-origin: left;
   animation: ${underlineAnimation} 1s forwards;
