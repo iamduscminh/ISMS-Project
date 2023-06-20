@@ -1,0 +1,33 @@
+.content{
+    height: 70%;
+    background-image: url(../../assets/images/login-bg.jpg);
+    background-position: center center;
+    background-size: cover;
+    position: relative;
+    .logo{
+        width: 12%;
+        height: 20%;
+        transform: rotate(-45deg);
+        position: absolute;
+        top: 3%;
+        left: -0.8%;
+    }
+    .illustrator{
+        position: absolute;
+        width: 20%;
+        height: 50%;
+        top: 23%;
+        left: 13%;
+    }
+    .text-animation{
+        font-size: 2.25rem;
+        position: absolute;
+        color: #FFFFFF;
+        font-weight: bold;
+        top: 83%;
+        left: 9%;
+    }
+}
+.separate{
+    height: 30%;
+}
