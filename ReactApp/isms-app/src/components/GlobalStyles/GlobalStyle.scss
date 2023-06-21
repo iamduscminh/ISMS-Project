@@ -10,6 +10,7 @@
   --pri-color: #043ac5;
   --sec-color: #1e43c5;
   --thrd-color: #0436c5;
+  --button-fontSize: 0.8rem;
 
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -47,7 +48,11 @@ button:hover {
 }
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: none;
+}
+
+input:focus{
+  outline: none;
 }
 
 @media (prefers-color-scheme: light) {
