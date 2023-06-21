@@ -1,0 +1,107 @@
+.content {
+    height: 70%;
+    background-image: url(../../assets/images/login-bg.jpg);
+    background-position: center center;
+    background-size: cover;
+    position: relative;
+
+    .logo {
+        width: 12%;
+        height: 20%;
+        transform: rotate(-45deg);
+        position: absolute;
+        top: 3.5%;
+        left: -0.8%;
+    }
+
+    .illustrator {
+        position: absolute;
+        width: 24%;
+        height: 50%;
+        top: 23%;
+        left: 13%;
+    }
+
+    .text-animation {
+        font-size: 2rem;
+        position: absolute;
+        color: #FFFFFF;
+        font-weight: bold;
+        top: 83%;
+        left: 9%;
+    }
+
+    .illusForm {
+        width: 35%;
+        margin: auto;
+    }
+
+    h2 {
+        font-size: 1rem;
+        font-weight: 700;
+    }
+
+    p {
+        font-size: 0.8rem;
+        font-weight: 100;
+
+        a {
+            color: #043AC5;
+        }
+    }
+}
+
+.separate {
+    height: 30%;
+}
+
+.input-custom {
+    color: #0436C5;
+    display: block;
+    width: 100%;
+    padding: 0.25rem 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #0436C5;
+    border-radius: 0.375rem;
+    font-weight: 400;
+    background-color: #F7F7F7;
+    position: relative;
+
+    &:focus {
+        border: 1.8px solid #0436c5;
+    }
+}
+
+.input-label {
+    position: relative;
+
+    span {
+        position: absolute;
+        top: 0.25rem;
+        left: 0.75rem;
+        cursor: text;
+        transition: all 1s ease;
+        color: #043AC5;
+        font-weight: 300;
+    }
+}
+
+.input-custom:focus+span,
+.input-custom:not(:placeholder-shown)+span {
+    top: -0.95rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+.input-checkbox {
+    display: flex;
+    align-items: center;
+    .checkbox-remember {
+        margin-right: 5px;
+    }
+
+    span {
+        font-size: 0.7rem;
+        color: #525252;
+    }
+}
