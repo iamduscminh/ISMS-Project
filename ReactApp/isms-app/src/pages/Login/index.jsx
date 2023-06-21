@@ -6,7 +6,8 @@ import UnderlineAnimation from '../../components/Animation/UnderlineText';
 import ChangeBgButton from '../../components/Animation/ChangeBgButton';
 
 import { TypeAnimation } from "react-type-animation";
-import { AiFillWarning } from "react-icons/ai";
+
+import request from "../../utils/axiosConfig";
 
 const cx = classNames.bind(styles);
 
