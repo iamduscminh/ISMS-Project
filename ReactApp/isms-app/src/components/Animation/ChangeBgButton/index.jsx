@@ -37,12 +37,13 @@ const StyledButton = styled.button`
 const StyleSpan = styled.span`
     position: absolute;
     top: calc(40% - (var(--button-fontSize)/2));
-    left: 18%;
+    left: 21%;
     color: #FFFFFF;
     font-weight:400;
     z-index: 50;
 `
 // Sử dụng StyledButton trong component
+// eslint-disable-next-line react/prop-types
 const ChangeBgButton = ({children}) => {
   return (
 

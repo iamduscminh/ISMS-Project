@@ -59,9 +59,16 @@ const Login = () => {
               <input type="password" placeholder=" " className={cx('input-custom')}/>
               <span className={cx("absolute top-[0.25rem] left-[0.75rem] cursor-text")}>Password</span>
             </label>
+            <div className={cx("input-checkbox")}>
+              <input type="checkbox" className={cx('checkbox-remember')} />
+              <span>Remember Account</span>
+            </div>
             <div className={cx('h-[20%] w-[20%] self-end relative')}><ChangeBgButton>Continue</ChangeBgButton></div>
           </div>
-          <div className={cx("h-[10%]")}>bot</div>
+          <div className={cx("h-[10%] flex flex-col items-center justify-center")}>
+            <div className={cx('w-[60%] border-t-2 border-[#525252]')}></div>
+            <h3 className={cx('mt-[0.2rem]')}><UnderlineAnimation><a href="#" className={cx('text-[#043AC5]')}>Login problem? FAQ can help</a></UnderlineAnimation></h3>
+          </div>
         </div>
       </div>
       <div className={cx("separate")}></div>
