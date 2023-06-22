@@ -45,8 +45,7 @@ const StyleSpan = styled.span`
 // Sử dụng StyledButton trong component
 // eslint-disable-next-line react/prop-types
 const ChangeBgButton = ({children}) => {
-  return (
-
+    return (  
       <StyledButton>
         <StyleSpan>{children}</StyleSpan>
       </StyledButton>

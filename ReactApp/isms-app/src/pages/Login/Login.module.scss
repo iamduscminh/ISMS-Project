@@ -56,19 +56,19 @@
 }
 
 .input-custom {
-    color: #0436C5;
+    color: #0478c5;
     display: block;
     width: 100%;
     padding: 0.25rem 0.75rem;
     font-size: 1rem;
-    border: 1px solid #0436C5;
+    border: 1px solid #0478c5;
     border-radius: 0.375rem;
     font-weight: 400;
     background-color: #F7F7F7;
     position: relative;
 
     &:focus {
-        border: 1.8px solid #0436c5;
+        border: 1.8px solid #0478c5;
     }
 }
 
@@ -81,7 +81,7 @@
         left: 0.75rem;
         cursor: text;
         transition: all 1s ease;
-        color: #043AC5;
+        color: #0478c5;
         font-weight: 300;
     }
 }
