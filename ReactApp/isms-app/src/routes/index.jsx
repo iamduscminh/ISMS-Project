@@ -8,11 +8,12 @@ import * as Page from '../pages';
 const publicRoutes = [
   { path: "/", component: Page.Home },
   { path: "/following", component: Page.Following, layout: null },
-  { path: "/profile", component: Page.Profile, layout: Layout.CustomLayout },
   { path: "/login", component: Page.Login, layout: Layout.FooterOnly },
 ];
 
 //private route: dành cho những route cần đăng nhập
-const privateRoutes = [];
+const privateRoutes = [
+  { path: "/profile", component: Page.Profile, layout: Layout.CustomLayout }
+];
 
 export {publicRoutes, privateRoutes}
