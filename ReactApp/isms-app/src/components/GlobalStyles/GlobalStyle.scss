@@ -12,13 +12,12 @@
   --thrd-color: #0436c5;
   --button-fontSize: 0.8rem;
 
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  // font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  // line-height: 1.5;
+  // font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  //color: rgba(207, 63, 63, 0.87);
+  background-color: rgb(122, 122, 122);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -27,10 +26,10 @@
   -webkit-text-size-adjust: 100%;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
+// h1 {
+//   font-size: 3.2em;
+//   line-height: 1.1;
+// }
 
 button {
   border-radius: 8px;
