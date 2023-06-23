@@ -6,6 +6,23 @@ import { GrNotification } from "react-icons/gr";
 import { BiUserCircle } from "react-icons/bi";
 const cx = classNames.bind(styles);
 function Header() {
+  //Dropdown variable
+  const [openDrNoti, setOpenDrNoti] = React.useState(false);
+  const handleOpen = () => {
+    setOpenDrNoti(!open);
+  };
+  const handleMenuOne = () => {
+    // do something
+    setOpenDrNoti(false);
+    console.log("clicked one");
+  };
+
+  const handleMenuTwo = () => {
+    // do something
+    setOpenDrNoti(false);
+    console.log("clicked two");
+  };
+
   return (
     <div className={cx("header-container")}>
       <div className={cx("header-left-side")}>
