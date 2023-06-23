@@ -1,11 +1,12 @@
 import classNames from "classnames/bind";
 import styles from "./Login.module.scss";
-import React, { useRef, useEffect, useState, useContext} from 'react';
+import React, { useRef, useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import image from "../../assets/images";
 import UnderlineAnimation from '../../components/Animation/UnderlineText';
 import ChangeBgButton from '../../components/Animation/ChangeBgButton';
-import AuthContext from "../../contexts/AuthProvider";
+import useAuth from '../../hooks/useAuth';
+
 
 import { TypeAnimation } from "react-type-animation";
 
@@ -19,7 +20,9 @@ const LOGIN_URL = '/login';
 const Login = () => {
 
   //Lấy lại Context
-  const { setAuth } = useContext(AuthContext);
+
+  const { setAuth } = useAuth();
+
   const navigate = useNavigate();
 
 

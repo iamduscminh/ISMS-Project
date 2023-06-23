@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Fragment } from "react";
 import * as myRoutes from "./routes";
 import DefaultLayout from "./components/Layout/DefaultLayout";
-import { ProtectedRoute } from "./components/HOC";
+import RequiredAuth from "./components/HOC/RequiredAuth";
 
 function App() {
   return (
@@ -34,7 +34,7 @@ function App() {
                 );
               })      
               }
-
+              <Route element={<RequiredAuth/>}>
               {
               //Định tuyến cho các Route public
               myRoutes.privateRoutes.map((route, index) => {
@@ -48,11 +48,16 @@ function App() {
                 }
                 
                 return (
-                  <ProtectedRoute key={index} path={route.path} component={Page} layout={Layout} />
+                  <Route key={index} path={route.path} element={
+                    <Layout>
+                      <Page />
+                    </Layout>
+                  }
+                />
                 );
               })      
               }
-
+              </Route>
             </Routes>
           </div>
         </Router>
