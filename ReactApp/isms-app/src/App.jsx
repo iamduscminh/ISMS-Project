@@ -4,6 +4,7 @@ import { Fragment } from "react";
 import * as myRoutes from "./routes";
 import DefaultLayout from "./components/Layout/DefaultLayout";
 import RequiredAuth from "./components/HOC/RequiredAuth";
+import {ROLES} from '../src/routes/Roles';
 
 function App() {
   return (
@@ -34,7 +35,8 @@ function App() {
                 );
               })      
               }
-              <Route element={<RequiredAuth/>}>
+
+              <Route element={<RequiredAuth allowedRoles={[ROLES.Customer, ROLES.Agent, ROLES.Administrator]}/>}>
               {
               //Định tuyến cho các Route public
               myRoutes.privateRoutes.map((route, index) => {
@@ -58,6 +60,7 @@ function App() {
               })      
               }
               </Route>
+
             </Routes>
           </div>
         </Router>
