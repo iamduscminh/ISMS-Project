@@ -1,7 +1,7 @@
 import classNames from "classnames/bind";
 import styles from "./Login.module.scss";
 import React, { useRef, useEffect, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, useLocation, Link} from 'react-router-dom';
 import image from "../../assets/images";
 import UnderlineAnimation from '../../components/Animation/UnderlineText';
 import ChangeBgButton from '../../components/Animation/ChangeBgButton';
@@ -24,6 +24,9 @@ const Login = () => {
   const { setAuth } = useAuth();
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
+
 
 
   //Khai báo các hook
@@ -98,19 +101,19 @@ const Login = () => {
       return;
     }
     try { //Comment lại đợi API này
-      // const response = await request.post(LOGIN_URL,
-      //   JSON.stringify({ email: email, pwd: password }),
-      //   {
-      //     headers: { 'Content-Type': 'application/json' },
-      //     withCredentials: true
-      //   }
-      // );
+      const response = await request.post(LOGIN_URL,
+        JSON.stringify({ email: email, pwd: password }),
+        {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true
+        }
+      );
 
-      // const accessToken = response?.data?.accessToken;
-      // const roles = response?.data?.roles;
+      const accessToken = response?.data?.accessToken;
+      const roles = response?.data?.roles;
 
-      // setAuth({ email, password, roles, accessToken });
-      navigate('/home');
+      setAuth({ email, password, roles, accessToken });
+      navigate(from, {replace: true});
     } catch (err) {
       if (!err?.response) {
         alert('No server response');
