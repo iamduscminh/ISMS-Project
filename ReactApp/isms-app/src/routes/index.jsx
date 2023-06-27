@@ -11,11 +11,12 @@ const publicRoutes = [
   { path: "/following", component: Page.Following, layout: null },
   { path: "/login", component: Page.Login, layout: Layout.FooterOnly },
   { path: "/unauthorized", component: Page.Unauthorized, layout: Layout.FooterOnly },
+  { path: "/profile", component: Page.Profile, layout: Layout.DefaultLayout }
 ];
 
 //private route: dành cho những route cần đăng nhập
 const privateRoutes = [
-  { path: "/profile", component: Page.Profile, layout: Layout.CustomLayout }
+  
 ];
 
 export {publicRoutes, privateRoutes}
