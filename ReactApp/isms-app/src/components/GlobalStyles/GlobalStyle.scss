@@ -17,7 +17,7 @@
   // font-weight: 400;
 
   //color: rgba(207, 63, 63, 0.87);
-  background-color: rgb(122, 122, 122);
+  //background-color: rgb(122, 122, 122);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -26,11 +26,60 @@
   -webkit-text-size-adjust: 100%;
 }
 
-// h1 {
-//   font-size: 3.2em;
-//   line-height: 1.1;
-// }
-
+h1 {
+  display: block;
+  font-size: 2em;
+  margin-top: 0.67em;
+  margin-bottom: 0.67em;
+  margin-left: 0;
+  margin-right: 0;
+  font-weight: bold;
+}
+h2 {
+  display: block;
+  font-size: 1.5em;
+  margin-top: 0.83em;
+  margin-bottom: 0.83em;
+  margin-left: 0;
+  margin-right: 0;
+  font-weight: bold;
+}
+h3 {
+  display: block;
+  font-size: 1.17em;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  margin-left: 0;
+  margin-right: 0;
+  font-weight: bold;
+}
+h4 {
+  display: block;
+  font-size: 1em;
+  margin-top: 1.33em;
+  margin-bottom: 1.33em;
+  margin-left: 0;
+  margin-right: 0;
+  font-weight: bold;
+}
+h5 {
+  display: block;
+  font-size: 0.83em;
+  margin-top: 1.67em;
+  margin-bottom: 1.67em;
+  margin-left: 0;
+  margin-right: 0;
+  font-weight: bold;
+}
+h6 {
+  display: block;
+  font-size: 0.67em;
+  margin-top: 2.33em;
+  margin-bottom: 2.33em;
+  margin-left: 0;
+  margin-right: 0;
+  font-weight: bold;
+}
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -50,7 +99,7 @@ button:focus-visible {
   outline: none;
 }
 
-input:focus{
+input:focus {
   outline: none;
 }
 
@@ -60,7 +109,7 @@ input:focus{
     background-color: #ffffff;
   }
   a:hover {
-    color: #043AC5;
+    color: #043ac5;
   }
   button {
     background-color: #f9f9f9;

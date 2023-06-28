@@ -3,6 +3,7 @@ import classNames from "classnames/bind";
 import styles from "./Home.module.scss";
 import { BsSearch, BsFillInfoSquareFill } from "react-icons/bs";
 import { HiOutlineDesktopComputer } from "react-icons/hi";
+import CardItem from "../../components/Elements/CardItem";
 const cx = classNames.bind(styles);
 
 function Home() {
@@ -23,21 +24,25 @@ function Home() {
         </div>
       </div>
       <div className={cx("home-mid-section")}>
-        <div className={cx("home-mid-content")}>
-          <a href="#" className={cx("card-item")}>
-            <BsFillInfoSquareFill className={cx("card-item-icon")} />
-            <div className={cx("card-item-text")}>
-              <h3>Request a service</h3>
-              <p>Send your problem to It Service</p>
-            </div>
-          </a>
-          <a href="#" className={cx("card-item")}>
-            <HiOutlineDesktopComputer className={cx("card-item-icon")} />
-            <div className={cx("card-item-text")}>
-              <h3>Report for hardware problem</h3>
-              <p>Raise your problem to IT Service about your device</p>
-            </div>
-          </a>
+        <div className={cx("home-mid-content grid grid-cols-2 gap-5")}>
+          <CardItem
+            url="/catalog"
+            title="Request a service"
+            description="Send your problem to It Service"
+            iconComponent={<BsFillInfoSquareFill />}
+          />
+          <CardItem
+            url="#"
+            title="View All Request"
+            description="Browse your list request ticket"
+            iconComponent={<HiOutlineDesktopComputer />}
+          />
+          <CardItem
+            url="#"
+            title="Report for hardware problem"
+            description="Raise your problem to IT Service about your device"
+            iconComponent={<HiOutlineDesktopComputer />}
+          />
         </div>
       </div>
       <div className={cx("home-bottom-section")}>
