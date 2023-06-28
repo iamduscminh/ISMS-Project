@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tippyjs/react": "^4.2.6",
     "axios": "^1.4.0",
     "classnames": "^2.3.2",
     "normalize.css": "^8.0.1",
@@ -18,10 +19,8 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",
     "react-router-dom": "^6.11.2",
-    "react-tippy": "^1.4.0",
     "react-type-animation": "^3.0.1",
-    "styled-components": "^4.4.0",
-    "tippy.js": "^6.3.7"
+    "styled-components": "^4.4.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.37",
