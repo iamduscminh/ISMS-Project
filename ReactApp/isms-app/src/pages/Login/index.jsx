@@ -15,7 +15,7 @@ import axios from "axios";
 
 const cx = classNames.bind(styles);
 
-const LOGIN_URL = '/login';
+const LOGIN_URL = 'api/Users/login';
 
 const Login = () => {
 
@@ -102,7 +102,7 @@ const Login = () => {
     }
     try { //Comment lại đợi API này
       const response = await request.post(LOGIN_URL,
-        JSON.stringify({ email: email, pwd: password }),
+        JSON.stringify({ email: email, password: password }),
         {
           headers: { 'Content-Type': 'application/json' },
           withCredentials: true
@@ -110,7 +110,7 @@ const Login = () => {
       );
 
       const accessToken = response?.data?.accessToken;
-      const roles = response?.data?.roles;
+      const roles = [response?.data?.roles];
 
       setAuth({ email, password, roles, accessToken });
       navigate(from, {replace: true});

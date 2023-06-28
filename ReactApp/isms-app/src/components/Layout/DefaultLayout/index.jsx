@@ -1,11 +1,15 @@
 /* eslint-disable no-unused-vars */
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import AdminHeader from "../components/Admin Header";
+import useAuth from '../../../hooks/useAuth';
+import {ROLES} from '../../../routes/Roles';
 
 function DefaultLayout({ children }) {
+  const {auth} = useAuth();
   return (
-    <div>
-      <Header />
+    <div className="h-screen">
+      {auth?.roles?.find(role => role === ROLES.Administrator) ? <Header /> : <AdminHeader />}
       <div>{children}</div>
       <Footer />
     </div>
