@@ -71,3 +71,15 @@
         display: block;
     }
 }
+.tippy-wrapper{
+    width: 20vw;
+    height: 40vh;
+    background-color: #fff;
+    transform: translateY(-1vh);
+    border: 1px solid #d1d1d1;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px;
+    padding: 1rem 0.75rem;
+    display: flex;
+    flex-direction: column;
+}
