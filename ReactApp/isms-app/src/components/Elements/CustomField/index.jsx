@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 function CustomField({
   fieldId,
   fieldCode,
@@ -8,27 +7,92 @@ function CustomField({
   fieldType,
   valType,
   mandatory,
+  minVal,
+  maxVal,
+  minlength,
+  maxlength,
   listOfValue,
 }) {
-  //Checklist
-  const [checked, setChecked] = useState([]);
+  const [error, setError] = useState("");
+  const valRef = useRef(null);
+  /*------Text------*/
+  const [inputVal, setInputVal] = useState("");
+  const handleChangeInput = (event) => {
+    setInputVal(event.target.value);
+  };
+  //Validate Input Value
+  const validateInputVal = (val) => {
+    let listErr = [];
+    //Mandatory
+    if (!val && mandatory == 1) listErr.push(`${fieldName} is required!`);
+    else if (
+      (!!valType || !!minVal || !!maxVal || !!minlength || !!maxlength) &&
+      !!val
+    ) {
+      //Valtype
+      if (!!valType && valType == "N" && isNaN(val))
+        listErr.push(`${fieldName} must be number!`);
+      //Min Length
+      if (!!minlength && val.length < minlength)
+        listErr.push(`${fieldName} must be more than ${minlength} characters!`);
+      //Max Length
+      if (!!maxlength && val.length > maxlength)
+        listErr.push(`${fieldName} must be less than ${maxlength} characters!`);
+      //Min Val
+      if (
+        !!valType &&
+        valType == "N" &&
+        !isNaN(val) &&
+        !!minVal &&
+        val < minVal
+      )
+        listErr.push(`The value of ${fieldName} must be more than ${minVal}!`);
+      //Max Val
+      if (
+        !!valType &&
+        valType == "N" &&
+        !isNaN(val) &&
+        !!maxVal &&
+        val > maxVal
+      )
+        listErr.push(`The value of ${fieldName} must be less than ${maxVal}!`);
+    } else listErr = [];
 
+    setError(listErr.join(", "));
+  };
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (valRef.current && !valRef.current.contains(event.target)) {
+        validateInputVal(inputVal);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [inputVal]);
+
+  /*------Checklist------*/
+  const [checkedCL, setCheckedCL] = useState([]);
   // Add/Remove checked item from list
   const handleCheckList = (event) => {
-    var updatedList = [...checked];
+    var updatedList = [...checkedCL];
     if (event.target.checked) {
-      updatedList = [...checked, event.target.value];
+      updatedList = [...checkedCL, event.target.value];
     } else {
-      updatedList.splice(checked.indexOf(event.target.value), 1);
+      updatedList.splice(checkedCL.indexOf(event.target.value), 1);
     }
-    setChecked(updatedList);
+    setCheckedCL(updatedList);
   };
   // Generate string of checked items
-  const checkedItems = checked.length
-    ? checked.reduce((total, item) => {
+  const checkedCLItems = checkedCL.length
+    ? checkedCL.reduce((total, item) => {
         return total + ";" + item;
       })
     : "";
+
   return (
     <div className="custom-field mb-6">
       {/* ----Text---- */}
@@ -42,6 +106,8 @@ function CustomField({
           </label>
           <input
             type="text"
+            ref={valRef}
+            onChange={handleChangeInput}
             name={fieldCode}
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
             id={`${fieldId}_${fieldCode}`}
@@ -49,6 +115,7 @@ function CustomField({
             placeholder=""
             required
           />
+          <p className="mt-2 text-sm text-red-600 ">{error}</p>
         </>
       )}
       {/* ----TextArea---- */}
@@ -141,7 +208,7 @@ function CustomField({
               </div>
             );
           })}
-          <div>{`Items checked are: ${checkedItems}`}</div>
+          <div>{`Items checked are: ${checkedCLItems}`}</div>
         </>
       )}
       {/* ----File---- */}

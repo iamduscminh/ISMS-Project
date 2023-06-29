@@ -9,6 +9,12 @@ function Following() {
         fieldCode={"REQ01"}
         fieldType={"T"}
         fieldName={"Email"}
+        mandatory={1}
+        minlength={3}
+        maxlength={6}
+        minVal={1000}
+        maxVal={9999}
+        valType={"N"}
       />
       <CustomField
         fieldId={"#9"}
