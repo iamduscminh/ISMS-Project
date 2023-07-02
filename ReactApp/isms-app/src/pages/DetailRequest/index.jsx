@@ -1,4 +1,4 @@
-import React from "react";
+import { React, useRef } from "react";
 import classNames from "classnames/bind";
 import styles from "./DetailRequest.module.scss";
 import UnderlineAnimation from "../../components/Animation/UnderlineText";
@@ -6,9 +6,15 @@ import RequestComment from "../../components/Elements/RequestComment";
 import { AiOutlineRight } from "react-icons/ai";
 import { BsSearch, BsFillInfoSquareFill } from "react-icons/bs";
 import { FaExchangeAlt } from "react-icons/fa";
-
+import ModalDialog from "../../components/Elements/PopupModal";
+import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 const cx = classNames.bind(styles);
 function CreateRequest() {
+  const reasonCancelRef = useRef(null);
+  const cancelRequestDetail = () => {
+    console.log(reasonCancelRef.current.value);
+  };
+
   return (
     <div
       className={cx("detail-request-container w-full h-full py-5 bg-[#f5f7f9]")}
@@ -130,12 +136,35 @@ function CreateRequest() {
               <h6 className="text-lg font-bold ">Status</h6>
               <hr />
               <h3 className="text-3xl font-extrabold ">INPROGRESS</h3>
-              <a href="#" className="inline-block ">
-                <div className="flex items-center hover:bg-gray-500 hover:text-white">
-                  <FaExchangeAlt />
-                  <p className="text-lg font-bold ml-3">Cancel Request</p>
+              <ModalDialog
+                title={"Cancel Request"}
+                actionText={"Cancel Request"}
+                actionHandler={cancelRequestDetail}
+                triggerComponent={
+                  <div className="inline-block cursor-pointer">
+                    <div className="flex items-center hover:bg-gray-500 hover:text-white">
+                      <FaExchangeAlt />
+                      <p className="text-lg font-bold ml-3">Cancel Request</p>
+                    </div>
+                  </div>
+                }
+              >
+                <div className="mb-1">
+                  <label
+                    htmlFor="reason_cancel"
+                    className="block mb-2 text-sm font-medium text-gray-500 "
+                  >
+                    Reason Cancel
+                  </label>
+                  <textarea
+                    id="reason_cancel"
+                    ref={reasonCancelRef}
+                    rows="5"
+                    className="block p-2.5 w-full text-sm text-gray-900 bg-gray-40 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 "
+                    placeholder="Write the reason you want cancel this request"
+                  ></textarea>
                 </div>
-              </a>
+              </ModalDialog>
             </div>
           </div>
         </div>

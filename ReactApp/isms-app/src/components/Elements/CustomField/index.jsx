@@ -12,6 +12,7 @@ function CustomField({
   minlength,
   maxlength,
   listOfValue,
+  listOfValueDisplay,
 }) {
   const [error, setError] = useState("");
   const valRef = useRef(null);
@@ -20,6 +21,7 @@ function CustomField({
   const handleChangeInput = (event) => {
     setInputVal(event.target.value);
   };
+
   //Validate Input Value
   const validateInputVal = (val) => {
     let listErr = [];
@@ -57,13 +59,32 @@ function CustomField({
       )
         listErr.push(`The value of ${fieldName} must be less than ${maxVal}!`);
     } else listErr = [];
-
-    setError(listErr.join(", "));
+    return listErr.join(", ");
   };
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (valRef.current && !valRef.current.contains(event.target)) {
-        validateInputVal(inputVal);
+        let errorValidate = validateInputVal(inputVal);
+        setError(errorValidate);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [inputVal]);
+
+  /*------Textarea------*/
+  const [inputAreaVal, setInputAreaVal] = useState("");
+  const handleChangeInputArea = (event) => {
+    setInputAreaVal(event.target.value);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (valRef.current && !valRef.current.contains(event.target)) {
+        let errorValidate = validateInputVal(inputAreaVal);
+        setError(errorValidate);
       }
     };
 
@@ -72,7 +93,7 @@ function CustomField({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [inputVal]);
+  }, [inputAreaVal]);
 
   /*------Checklist------*/
   const [checkedCL, setCheckedCL] = useState([]);
@@ -129,11 +150,14 @@ function CustomField({
           </label>
           <textarea
             id={`${fieldId}_${fieldCode}`}
+            ref={valRef}
+            onChange={handleChangeInputArea}
             rows="4"
             name={fieldCode}
             className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 "
             value={fieldValue}
           ></textarea>
+          <p className="mt-2 text-sm text-red-600 ">{error}</p>
         </>
       )}
       {/* ----Combobox---- */}
@@ -153,7 +177,7 @@ function CustomField({
             {listOfValue.split(";").map((item, i) => {
               return (
                 <option key={i} value={item} selected={item == fieldValue}>
-                  {item}
+                  {listOfValueDisplay.split(";")[i]}
                 </option>
               );
             })}
@@ -186,6 +210,9 @@ function CustomField({
       {/* ----Checklist---- */}
       {fieldType === "CL" && (
         <>
+          <label className="block mb-2 text-sm font-medium text-gray-900 ">
+            {fieldName}
+          </label>
           {listOfValue.split(";").map((item, i) => {
             return (
               <div key={i} className="flex items-start mb-6">
@@ -203,7 +230,7 @@ function CustomField({
                   htmlFor={`${fieldId}_${fieldCode}`}
                   className="ml-2 text-sm font-medium text-gray-500"
                 >
-                  {fieldName.split(";")[i]}
+                  {listOfValueDisplay.split(";")[i]}
                 </label>
               </div>
             );
@@ -236,6 +263,9 @@ function CustomField({
       {/* ----Radio---- */}
       {fieldType === "RD" && (
         <>
+          <label className="block mb-2 text-sm font-medium text-gray-900 ">
+            {fieldName}
+          </label>
           {listOfValue.split(";").map((item, i) => {
             return (
               <div key={i} className="flex items-center mb-4">
@@ -251,7 +281,7 @@ function CustomField({
                   htmlFor={`${fieldId}_${fieldCode}_${i}`}
                   className="ml-2 text-sm font-medium text-gray-900 "
                 >
-                  {fieldName.split(";")[i]}
+                  {listOfValueDisplay.split(";")[i]}
                 </label>
               </div>
             );

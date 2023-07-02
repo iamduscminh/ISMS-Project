@@ -16,8 +16,8 @@ const publicRoutes = [
     layout: Layout.FooterOnly,
   },
   { path: "/catalog", component: Page.Catalog },
-  { path: "/create-request", component: Page.CreateRequest },
-  { path: "/detail-request", component: Page.DetailRequest },
+  { path: "/createRequest", component: Page.CreateRequest },
+  { path: "/detailRequest", component: Page.DetailRequest },
 ];
 
 //private route: dành cho những route cần đăng nhập
