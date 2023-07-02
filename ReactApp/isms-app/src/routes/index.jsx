@@ -19,10 +19,10 @@ const publicRoutes = [
   { path: "/catalog", component: Page.Catalog },
   { path: "/createRequest", component: Page.CreateRequest },
   { path: "/detailRequest", component: Page.DetailRequest },
+  { path: "/viewRequests", component: Page.ViewRequests },
 ];
 
 //private route: dành cho những route cần đăng nhập
-const privateRoutes = [
-];
+const privateRoutes = [];
 
 export { publicRoutes, privateRoutes };
