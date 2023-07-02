@@ -1,32 +1,64 @@
-import React, { useState, useRef, useEffect } from 'react';
-import classNames from 'classnames/bind';
-import styles from './Profile.module.scss';
-import image from '../../assets/images';
-import ProfileItem from '../../components/Elements/ProfileItem';
-import {HiOutlineIdentification, HiOutlineCake} from 'react-icons/hi';
-import {VscVmActive} from 'react-icons/vsc';
-import {AiOutlineMail} from 'react-icons/ai';
-import {MdWorkOutline} from 'react-icons/md';
-import {BsPhone} from 'react-icons/bs';
+import React, { useState, useRef, useEffect } from "react";
+import classNames from "classnames/bind";
+import styles from "./Profile.module.scss";
+import image from "../../assets/images";
+import ProfileItem from "../../components/Elements/ProfileItem";
+import {
+  HiOutlineIdentification,
+  HiOutlineCake,
+  HiOutlineOfficeBuilding,
+} from "react-icons/hi";
+import { VscVmActive } from "react-icons/vsc";
+import { AiOutlineMail } from "react-icons/ai";
+import { MdWorkOutline } from "react-icons/md";
+import { BsPhone } from "react-icons/bs";
+import Switch from "react-switch";
 
 const cx = classNames.bind(styles);
 function Profile() {
-
   const [isEditing, setIsEditing] = useState(false);
+
   const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedAvatar, setSelectedAvatar] = useState(null);
+  const [userName, setUserName] = useState("Calyrex Spectrier");
+
+  const [itemValue, setItemValue] = useState({
+    userIdentification: "#25072001",
+    effectiveDate: "2023-07-02",
+    workEmail: "tuda@service.com",
+    personalEmail: "doantu@gmail.com",
+    phoneNumber: "0967856010",
+    birthDate: "2001-07-25",
+    jobTitle: "Customer Care Staff",
+    department: "Customer Service",
+  });
+
+  const [privateValue, setPrivateValue] = useState({
+    personalEmailSwitchVal: true,
+    phoneNumberSwitchVal: true,
+    birthDateVal: true
+  })
   const wallpaperRef = useRef(null);
+  const avatarRef = useRef(null);
+
 
   //Thay đổi giữa state show và edit profile
   const handleEditProfile = () => {
-    setIsEditing(prev => !prev);
+    setIsEditing((prev) => !prev);
   };
 
   const handleFileInputChange = (event) => {
     const file = event.target.files[0];
     const reader = new FileReader();
-
     reader.onloadend = () => {
-      setSelectedImage(reader.result);
+      if (wallpaperRef.current && wallpaperRef.current.contains(event.target)) {
+        setSelectedImage(reader.result);
+      } else if (
+        avatarRef.current &&
+        avatarRef.current.contains(event.target)
+      ) {
+        setSelectedAvatar(reader.result);
+      }
     };
 
     if (file) {
@@ -40,43 +72,202 @@ function Profile() {
     }
   };
 
-  return (
-    <div className='w-full h-[75vh] relative mb-[1.2rem]'>
-      <div className={'w-full h-[25%] bg-[#42526E] mb-[6vw] relative'}>
-        <div onClick={handleImageClick}  className={cx(`${isEditing ? 'wallpaper-wrapper' : '' }`)}></div>
-        <img src={selectedImage || image.wallpaper} alt="" onClick={handleImageClick} className={`w-full h-full object-cover object-center`}/>
+  const handleAvatarClick = () => {
+    if (isEditing) {
+      console.log(1);
+      avatarRef.current.click();
+    }
+  };
 
-        <div className='absolute w-[10%] aspect-square bg-[#f5f5f5] rounded-full overflow-hidden left-[15%] top-[50%] border-4 border-[#fff] z-10'>
-          <img src={image.avatar} alt="" className='w-full h-full object-cover object-center z-10'/>
+  const handleOnChangeUserName = (e) => {
+    setUserName(e.target.value);
+  };
+
+  const handleProfileItemValueChange = (name, value) => {
+    setItemValue((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+
+  const handleSwitchChange = () => {
+    setPrivateValue((prevValues) => ({
+      ...prevValues,
+      personalEmailSwitchVal: !prevValues.personalEmailSwitchVal,
+    }));
+  };
+  return (
+    <div className="w-full h-[75vh] relative mb-[1.2rem]">
+      <div className={"w-full h-[25%] bg-[#42526E] mb-[6vw] relative"}>
+        <div
+          onClick={handleImageClick}
+          className={cx(`${isEditing ? "wallpaper-wrapper" : ""}`)}
+        ></div>
+        <img
+          src={selectedImage || image.wallpaper}
+          alt=""
+          onClick={handleImageClick}
+          className={`w-full h-full object-cover object-center`}
+        />
+
+        <div className="absolute w-[10%] aspect-square bg-[#f5f5f5] rounded-full overflow-hidden left-[15%] top-[50%] border-4 border-[#fff] z-10">
+          <img
+            src={selectedAvatar || image.avatar}
+            alt=""
+            className="w-full h-full object-cover object-center z-10"
+          />
+          <div
+            onClick={handleAvatarClick}
+            className={cx(`${isEditing ? "avatar-wrapper" : ""}`)}
+          ></div>
         </div>
-        <span className='absolute left-[25%] top-[120%] text-[1.4rem] font-medium text-[#42526E] z-10'>Calyrex Spectrier</span>
+        {!isEditing ? (
+          <span className="absolute left-[25%] top-[120%] text-[1.4rem] font-medium text-[#42526E] z-10">
+            {userName}
+          </span>
+        ) : (
+          <input
+            type="text"
+            value={userName}
+            onChange={handleOnChangeUserName}
+            className="absolute left-[25%] top-[120%] text-[1.4rem] font-medium text-[#42526E] z-10 border-b-4 w-[12rem]"
+          />
+        )}
       </div>
 
       <input
         type="file"
         accept="image/*"
         ref={wallpaperRef}
-        style={{ display: 'none' }}
+        style={{ display: "none" }}
         onChange={handleFileInputChange}
       />
 
-      {!isEditing ? 
-      (<button className='w-[17%] border-2 border-[#42526E] text-[#42526E] font-medium left-[15%] relative mb-[1rem]' onClick={handleEditProfile}>Edit Your Profile</button>) : 
-      (<button className='w-[17%] border-2 border-[#42526E] text-[#42526E] font-medium left-[15%] relative mb-[1rem]' onClick={handleEditProfile}>Confirm Change</button>)
-      }
+      <input
+        type="file"
+        accept="image/*"
+        ref={avatarRef}
+        style={{ display: "none" }}
+        onChange={handleFileInputChange}
+      />
 
-      <div className='w-[65%] left-[15%] relative rounded-[8px] border-2 border-[#C3B6B6] shadow-md grid grid-cols-3 gap-2'>
-        <ProfileItem name="User Identification" value="#111111111" icon={HiOutlineIdentification} isEditing={isEditing} inputType="text"/>
-        <ProfileItem name="Personal Email" value="doantu@gmail.com" icon={AiOutlineMail} isEditing={isEditing} inputType="email"/>
-        <ProfileItem name="Job Title" value="Customer Care Staff" icon={MdWorkOutline} isEditing={isEditing} inputType="text"/>
-        <ProfileItem name="Effective Date" value="Jun 14, 2023" icon={VscVmActive} isEditing={isEditing} inputType="date"/>
-        <ProfileItem name="Phone Number" value="0967856010" icon={BsPhone} isEditing={isEditing} inputType="text"/>
-        <ProfileItem name="User Identification" value="#111111111" icon={HiOutlineIdentification} isEditing={isEditing} inputType="text"/>
-        <ProfileItem name="Work Email" value="tuda@service.com" icon={AiOutlineMail} isEditing={isEditing} inputType="email"/>  
-        <ProfileItem name="Birth Date" value="July 25, 2001" icon={HiOutlineCake} isEditing={isEditing} inputType="date"/>
+      {!isEditing ? (
+        <button
+          className="w-[17%] border-2 border-[#42526E] text-[#42526E] font-medium left-[15%] relative mb-[1rem]"
+          onClick={handleEditProfile}
+        >
+          Edit Your Profile
+        </button>
+      ) : (
+        <button
+          className="w-[17%] border-2 border-[#42526E] text-[#42526E] font-medium left-[15%] relative mb-[1rem]"
+          onClick={handleEditProfile}
+        >
+          Confirm Change
+        </button>
+      )}
+
+      <div className="w-[65%] left-[15%] relative rounded-[8px] border-2 border-[#C3B6B6] shadow-md grid grid-cols-3 gap-2">
+        <ProfileItem
+          name="User Identification"
+          value={itemValue.userIdentification}
+          icon={HiOutlineIdentification}
+          isEditing={false}
+          inputType="text"
+        />
+        <ProfileItem
+          name="Personal Email"
+          value={itemValue.personalEmail}
+          icon={AiOutlineMail}
+          isEditing={isEditing}
+          inputType="email"
+          onChange={(value) =>
+            handleProfileItemValueChange("personalEmail", value)
+          }
+        >
+          <Switch
+            disabled = {!isEditing ? true : false}
+            checked={privateValue.personalEmailSwitchVal}
+            onChange={handleSwitchChange}
+            width={24}
+            height={12}
+            handleDiameter={12}
+            onColor="#42526E"
+          />
+        </ProfileItem>
+        <ProfileItem
+          name="Job Title"
+          value={itemValue.jobTitle}
+          icon={MdWorkOutline}
+          isEditing={isEditing}
+          inputType="text"
+          onChange={(value) => handleProfileItemValueChange("jobTitle", value)}
+        />
+        <ProfileItem
+          name="Effective Date"
+          value={itemValue.effectiveDate}
+          icon={VscVmActive}
+          isEditing={false}
+          inputType="date"
+        />
+        <ProfileItem
+          name="Phone Number"
+          value={itemValue.phoneNumber}
+          icon={BsPhone}
+          isEditing={isEditing}
+          inputType="text"
+          onChange={(value) =>
+            handleProfileItemValueChange("phoneNumber", value)
+          }
+        >
+          <Switch
+            disabled = {!isEditing ? true : false}
+            checked={privateValue.phoneNumberSwitchVal}
+            onChange={() => {}}
+            width={24}
+            height={12}
+            handleDiameter={12}
+            onColor="#42526E"
+          />
+        </ProfileItem>
+        <ProfileItem
+          name="Department"
+          value={itemValue.department}
+          icon={HiOutlineOfficeBuilding}
+          isEditing={isEditing}
+          inputType="text"
+          onChange={(value) =>
+            handleProfileItemValueChange("department", value)
+          }
+        />
+        <ProfileItem
+          name="Work Email"
+          value={itemValue.workEmail}
+          icon={AiOutlineMail}
+          isEditing={false}
+          inputType="email"
+        />
+        <ProfileItem
+          name="Birth Date"
+          value={itemValue.birthDate}
+          icon={HiOutlineCake}
+          isEditing={isEditing}
+          inputType="date"
+          onChange={(value) => handleProfileItemValueChange("birthDate", value)}
+        >
+          <Switch
+            disabled = {!isEditing ? true : false}
+            checked={privateValue.birthDateVal}
+            onChange={() => {}}
+            width={24}
+            height={12}
+            handleDiameter={12}
+            onColor="#42526E"
+          />
+        </ProfileItem>
       </div>
     </div>
-  )
+  );
 }
 
 export default Profile;
