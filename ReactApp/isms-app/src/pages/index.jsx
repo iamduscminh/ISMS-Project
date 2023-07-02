@@ -4,3 +4,5 @@ export { default as Profile } from "./Profile";
 export { default as Login } from "./Login";
 export { default as Unauthorized } from "./Login";
 export { default as Catalog } from "./Catalog";
+export { default as CreateRequest } from "./CreateRequest";
+export { default as DetailRequest } from "./DetailRequest";
