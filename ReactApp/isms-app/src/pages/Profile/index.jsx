@@ -37,14 +37,21 @@ function Profile() {
     personalEmailSwitchVal: true,
     phoneNumberSwitchVal: true,
     birthDateVal: true
-  })
+  });
+
+  const [inputErrors, setInputErrors] = useState({});
+
   const wallpaperRef = useRef(null);
   const avatarRef = useRef(null);
 
 
   //Thay đổi giữa state show và edit profile
   const handleEditProfile = () => {
-    setIsEditing((prev) => !prev);
+    const hasErrors = Object.values(inputErrors).some((error) => error !== '');
+
+    if (!hasErrors) {
+      setIsEditing((prev) => !prev);
+    }
   };
 
   const handleFileInputChange = (event) => {
@@ -84,12 +91,36 @@ function Profile() {
   };
 
   const handleProfileItemValueChange = (name, value) => {
+    validateInput(name, value);
     setItemValue((prevValues) => ({
       ...prevValues,
       [name]: value,
     }));
   };
+  const validateInput = (name, value) => {
+    // Kiểm tra và cập nhật lỗi validate cho từng input
+    let error = '';
 
+    if (name === 'personalEmail') {
+      const isValidEmail = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value);
+      if (!isValidEmail) {
+        error = 'Invalid email format';
+      }
+    }
+    if(name === 'phoneNumber'){
+      const isValidPhone = /^\d{10}$/.test(value);
+      if (!isValidPhone) {
+        error = 'Invalid Phone Number';
+        console.log(1);
+      }
+    }
+
+    // Cập nhật lỗi validate cho input
+    setInputErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: error,
+    }));
+  };
   const handleSwitchChange = () => {
     setPrivateValue((prevValues) => ({
       ...prevValues,
@@ -98,7 +129,7 @@ function Profile() {
   };
   return (
     <div className="w-full h-[75vh] relative mb-[1.2rem]">
-      <div className={"w-full h-[25%] bg-[#42526E] mb-[6vw] relative"}>
+      <div className={"w-full h-[25%] bg-[#42526E] mb-[5.75vw] relative"}>
         <div
           onClick={handleImageClick}
           className={cx(`${isEditing ? "wallpaper-wrapper" : ""}`)}
@@ -153,21 +184,21 @@ function Profile() {
 
       {!isEditing ? (
         <button
-          className="w-[17%] border-2 border-[#42526E] text-[#42526E] font-medium left-[15%] relative mb-[1rem]"
+          className="w-[17%] border-2 border-[#42526E] text-[#42526E] font-medium left-[15%] relative mb-[0.5rem]"
           onClick={handleEditProfile}
         >
           Edit Your Profile
         </button>
       ) : (
         <button
-          className="w-[17%] border-2 border-[#42526E] text-[#42526E] font-medium left-[15%] relative mb-[1rem]"
+          className="w-[17%] border-2 border-[#42526E] text-[#42526E] font-medium left-[15%] relative mb-[0.5rem]"
           onClick={handleEditProfile}
         >
           Confirm Change
         </button>
       )}
 
-      <div className="w-[65%] left-[15%] relative rounded-[8px] border-2 border-[#C3B6B6] shadow-md grid grid-cols-3 gap-2">
+      <div className="w-[65%] left-[15%] relative rounded-[8px] border-2 border-[#C3B6B6] shadow-md grid grid-cols-3 gap-0">
         <ProfileItem
           name="User Identification"
           value={itemValue.userIdentification}
@@ -184,9 +215,10 @@ function Profile() {
           onChange={(value) =>
             handleProfileItemValueChange("personalEmail", value)
           }
+          error={inputErrors.personalEmail}
         >
           <Switch
-            disabled = {!isEditing ? true : false}
+            disabled={!isEditing ? true : false}
             checked={privateValue.personalEmailSwitchVal}
             onChange={handleSwitchChange}
             width={24}
@@ -219,11 +251,12 @@ function Profile() {
           onChange={(value) =>
             handleProfileItemValueChange("phoneNumber", value)
           }
+          error={inputErrors.phoneNumber}
         >
           <Switch
-            disabled = {!isEditing ? true : false}
+            disabled={!isEditing ? true : false}
             checked={privateValue.phoneNumberSwitchVal}
-            onChange={() => {}}
+            onChange={() => { }}
             width={24}
             height={12}
             handleDiameter={12}
@@ -256,9 +289,9 @@ function Profile() {
           onChange={(value) => handleProfileItemValueChange("birthDate", value)}
         >
           <Switch
-            disabled = {!isEditing ? true : false}
+            disabled={!isEditing ? true : false}
             checked={privateValue.birthDateVal}
-            onChange={() => {}}
+            onChange={() => { }}
             width={24}
             height={12}
             handleDiameter={12}
