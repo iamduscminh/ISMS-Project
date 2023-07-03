@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import classNames from "classnames/bind";
 import styles from "./CreateRequest.module.scss";
 import { AiOutlineRight } from "react-icons/ai";
@@ -11,21 +12,20 @@ function CreateRequest() {
     <div
       className={cx("cre-request-container w-full h-full py-5 bg-[#f5f7f9]")}
     >
-      <div className={cx("cre-request-section")}>
+      <div
+        className={cx(
+          "cre-request-section mt-4 mx-auto max-w-7xl min-h-screen bg-white rounded shadow"
+        )}
+      >
         <div className={cx("cre-request-header w-full bg-gray-200")}>
-          <nav className={cx("cre-request-header-nav px-6 pt-5 pb-3")}>
+          <nav className={cx("cre-request-header-nav px-6 pt-3 pb-3")}>
             <ul
               className={cx("header-nav-content flex items-center text-[18px]")}
             >
               <li className={cx("header-nav-item ml-1")}>
-                <a
-                  className={cx("header-nav-url text-blue-700")}
-                  href="/"
-                  title="Home"
-                  aria-label="Home"
-                >
+                <Link className={cx("header-nav-url text-blue-700")} to="/">
                   <UnderlineAnimation>Home</UnderlineAnimation>
-                </a>
+                </Link>
               </li>
 
               <li className={cx("header-nav-item ml-1")}>
@@ -34,14 +34,12 @@ function CreateRequest() {
                 </div>
               </li>
               <li className={cx("header-nav-item ml-1")}>
-                <a
+                <Link
                   className={cx("header-nav-url text-blue-700")}
                   href="/catalog"
-                  title="Create Request"
-                  aria-label="Create Request"
                 >
                   <UnderlineAnimation>Create Request</UnderlineAnimation>
-                </a>
+                </Link>
               </li>
               <li className={cx("header-nav-item ml-1")}>
                 <div className={cx("header-nav-arrow")}>
@@ -49,14 +47,12 @@ function CreateRequest() {
                 </div>
               </li>
               <li className={cx("header-nav-item ml-1")}>
-                <a
+                <Link
                   className={cx("header-nav-url text-blue-700")}
                   href="/catalog"
-                  title="Account"
-                  aria-label="Accounts"
                 >
                   <UnderlineAnimation>Accounts</UnderlineAnimation>
-                </a>
+                </Link>
               </li>
               <li className={cx("header-nav-item ml-1")}>
                 <div className={cx("header-nav-arrow")}>
@@ -64,14 +60,9 @@ function CreateRequest() {
                 </div>
               </li>
               <li className={cx("header-nav-item ml-1")}>
-                <a
-                  className={cx("header-nav-url")}
-                  href="#"
-                  title="Reset Password"
-                  aria-label="Reset Password"
-                >
+                <Link className={cx("header-nav-url")}>
                   <span>Reset Password</span>
-                </a>
+                </Link>
               </li>
             </ul>
           </nav>
@@ -84,14 +75,14 @@ function CreateRequest() {
               <BsFillInfoSquareFill className={cx("h-[50px] w-[50px]")} />
             </div>
             <div className={cx("cre-request-header-description ml-5")}>
-              <h3>Reset Password</h3>
+              <h4 className="text-2xl font-bold">Reset Password</h4>
               <span>Reset your Password Account</span>
             </div>
           </div>
         </div>
         {/* REQUEST FORM SECTION*/}
         <div className={cx("p-5 w-full h-full")}>
-          <div className={cx("request-ticket-form-ctn")}>
+          <div className={cx("request-ticket-form-ctn w-[60%] m-auto")}>
             <form>
               <div className="mb-6">
                 <label

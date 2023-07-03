@@ -19,9 +19,13 @@ function CreateRequest() {
     <div
       className={cx("detail-request-container w-full h-full py-5 bg-[#f5f7f9]")}
     >
-      <div className={cx("detail-request-section")}>
+      <div
+        className={cx(
+          "detail-request-section mt-4 mx-auto max-w-7xl min-h-screen bg-white rounded shadow"
+        )}
+      >
         <div className={cx("detail-request-header w-full bg-gray-200")}>
-          <nav className={cx("detail-request-header-nav px-6 pt-5 pb-3")}>
+          <nav className={cx("detail-request-header-nav px-6 pt-3 pb-3")}>
             <ul
               className={cx("header-nav-content flex items-center text-[18px]")}
             >
@@ -78,7 +82,7 @@ function CreateRequest() {
                 <BsFillInfoSquareFill className={cx("h-[50px] w-[50px]")} />
               </div>
               <div className={cx("detail-request-header-description ml-5")}>
-                <h3>Reset Password</h3>
+                <h4 className="text-2xl font-bold">Reset Password</h4>
                 <span>Reset your Password Account</span>
               </div>
             </div>
