@@ -165,7 +165,8 @@ function CustomField({
         <>
           <label
             htmlFor={`${fieldId}_${fieldCode}`}
-            className="block mb-2 text-sm font-medium text-gray-500 "
+            className="block mb-2 text-sm font-medium text-gray-500"
+            defaultValue=""
           >
             {fieldName}
           </label>
