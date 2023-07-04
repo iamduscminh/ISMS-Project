@@ -12,10 +12,15 @@ const ListTicket = () => {
     { id: 2, description: 'Demo test Service Ticket', service: 'Hardware', reporter: 'Tu Doan', assignee: 'Calyrex', status: 'WIP', createdDate: '2023/07/04 14:00:00', sla: '2023/07/04 14:00:00' },
     { id: 3, description: 'Demo test Service Ticket', service: 'Hardware', reporter: 'Tu Doan', assignee: 'Calyrex', status: 'WIP', createdDate: '2023/07/04 14:00:00', sla: '2023/07/04 14:00:00' },
     { id: 4, description: 'Demo test Service Ticket', service: 'Hardware', reporter: 'Tu Doan', assignee: 'Calyrex', status: 'WIP', createdDate: '2023/07/04 14:00:00', sla: '2023/07/04 14:00:00' },
+    { id: 5, description: 'Demo test Service Ticket', service: 'Hardware', reporter: 'Tu Doan', assignee: 'Calyrex', status: 'WIP', createdDate: '2023/07/04 14:00:00', sla: '2023/07/04 14:00:00' },
+    { id: 6, description: 'Demo test Service Ticket', service: 'Hardware', reporter: 'Tu Doan', assignee: 'Calyrex', status: 'WIP', createdDate: '2023/07/04 14:00:00', sla: '2023/07/04 14:00:00' },
+    { id: 7, description: 'Demo test Service Ticket', service: 'Hardware', reporter: 'Tu Doan', assignee: 'Calyrex', status: 'WIP', createdDate: '2023/07/04 14:00:00', sla: '2023/07/04 14:00:00' },
+    { id: 8, description: 'Demo test Service Ticket', service: 'Hardware', reporter: 'Tu Doan', assignee: 'Calyrex', status: 'WIP', createdDate: '2023/07/04 14:00:00', sla: '2023/07/04 14:00:00' },
+    { id: 9, description: 'Demo test Service Ticket', service: 'Hardware', reporter: 'Tu Doan', assignee: 'Calyrex', status: 'WIP', createdDate: '2023/07/04 14:00:00', sla: '2023/07/04 14:00:00' },
   ]);
 
   const columns = [
-    { field: 'id', headerName: 'Ticket ID', width: 50, editable: false },
+    { field: 'id', headerName: 'ID', width: 50, editable: false },
     {
       field: 'description',
       headerName: 'Description',
@@ -32,7 +37,7 @@ const ListTicket = () => {
     {
       field: 'reporter',
       headerName: 'Reporter',
-      width: 90,
+      width: 105,
       renderCell: (params) => (
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <span>{params.value}</span>
@@ -42,7 +47,7 @@ const ListTicket = () => {
     {
       field: 'assignee',
       headerName: 'Assignee',
-      width: 90,
+      width: 105,
       renderCell: (params) => (
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <span>{params.value}</span>
@@ -52,7 +57,7 @@ const ListTicket = () => {
     {
       field: 'status',
       headerName: 'Status',
-      width: 60,
+      width: 90,
       renderCell: (params) => (
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <span>{params.value}</span>
@@ -72,16 +77,16 @@ const ListTicket = () => {
       valueFormatter: (params) => format(new Date(params.value), 'yyyy/MM/dd HH:mm:ss'),
     },
   ];
-
+  const headerHeight = "2rem";
 
   return (
     <div>
-      <div className='relative w-full h-[18vh] bg-[#42526E] pt-[1.5rem] pl-[4rem]'>
+      <div className='relative w-full h-[20vh] bg-[#42526E] pt-[1.5rem] pl-[4rem]'>
         <h3 className='text-[1rem] text-[#fff] font-medium mb-[0.5rem]'>ServiceTicket/allTicket</h3>
         <h2 className='text-[1.4rem] text-[#fff] font-medium'>Query All Service Ticket</h2>
       </div>
       <div>
-        <div className='w-[90%] m-auto relative translate-y-[-8%] z-10'>
+        <div className='w-[90%] pl-[4rem] relative translate-y-[-56px] z-10'>
           <div className='w-[100%] '>
             <DataGrid
               sx={{
@@ -92,11 +97,11 @@ const ListTicket = () => {
               initialState={{
                 pagination: {
                   paginationModel: {
-                    pageSize: 5,
+                    pageSize: 9,
                   },
                 },
               }}
-              pageSizeOptions={[5]}
+              pageSizeOptions={[9]}
               checkboxSelection
               disableRowSelectionOnClick
             />
