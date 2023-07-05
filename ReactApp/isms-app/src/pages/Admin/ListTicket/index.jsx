@@ -81,9 +81,9 @@ const ListTicket = () => {
 
   return (
     <div>
-      <div className='relative w-full h-[20vh] bg-[#42526E] pt-[1.5rem] pl-[4rem]'>
-        <h3 className='text-[1rem] text-[#fff] font-medium mb-[0.5rem]'>ServiceTicket/allTicket</h3>
-        <h2 className='text-[1.4rem] text-[#fff] font-medium'>Query All Service Ticket</h2>
+      <div className='relative w-full h-[22vh] bg-[#42526E] pt-[1rem] pl-[4rem]'>
+        <h3 className='text-[0.9rem] text-[#fff] font-medium mb-[0.5rem]'>ServiceTicket/allTicket</h3>
+        <h2 className='text-[1.2rem] text-[#fff] font-medium'>Query All Service Ticket</h2>
       </div>
       <div>
         <div className='w-[90%] pl-[4rem] relative translate-y-[-56px] z-10'>
@@ -97,11 +97,11 @@ const ListTicket = () => {
               initialState={{
                 pagination: {
                   paginationModel: {
-                    pageSize: 9,
+                    pageSize: 7,
                   },
                 },
               }}
-              pageSizeOptions={[9]}
+              pageSizeOptions={[7]}
               checkboxSelection
               disableRowSelectionOnClick
             />
