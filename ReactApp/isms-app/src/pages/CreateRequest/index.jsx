@@ -2,8 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import classNames from "classnames/bind";
 import styles from "./CreateRequest.module.scss";
-import { AiOutlineRight } from "react-icons/ai";
-import { BsSearch, BsFillInfoSquareFill } from "react-icons/bs";
+import * as Icon from "../../components/Elements/Icon";
 import UnderlineAnimation from "../../components/Animation/UnderlineText";
 
 const cx = classNames.bind(styles);
@@ -30,7 +29,7 @@ function CreateRequest() {
 
               <li className={cx("header-nav-item ml-1")}>
                 <div className={cx("header-nav-arrow")}>
-                  <AiOutlineRight />
+                  <Icon.AiOutlineRight />
                 </div>
               </li>
               <li className={cx("header-nav-item ml-1")}>
@@ -43,7 +42,7 @@ function CreateRequest() {
               </li>
               <li className={cx("header-nav-item ml-1")}>
                 <div className={cx("header-nav-arrow")}>
-                  <AiOutlineRight />
+                  <Icon.AiOutlineRight />
                 </div>
               </li>
               <li className={cx("header-nav-item ml-1")}>
@@ -56,7 +55,7 @@ function CreateRequest() {
               </li>
               <li className={cx("header-nav-item ml-1")}>
                 <div className={cx("header-nav-arrow")}>
-                  <AiOutlineRight />
+                  <Icon.AiOutlineRight />
                 </div>
               </li>
               <li className={cx("header-nav-item ml-1")}>
@@ -72,7 +71,7 @@ function CreateRequest() {
             )}
           >
             <div className={cx("cre-request-header-icon")}>
-              <BsFillInfoSquareFill className={cx("h-[50px] w-[50px]")} />
+              <Icon.BsFillInfoSquareFill className={cx("h-[50px] w-[50px]")} />
             </div>
             <div className={cx("cre-request-header-description ml-5")}>
               <h4 className="text-2xl font-bold">Reset Password</h4>

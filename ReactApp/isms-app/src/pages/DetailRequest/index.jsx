@@ -3,11 +3,9 @@ import classNames from "classnames/bind";
 import styles from "./DetailRequest.module.scss";
 import UnderlineAnimation from "../../components/Animation/UnderlineText";
 import RequestComment from "../../components/Elements/RequestComment";
-import { AiOutlineRight } from "react-icons/ai";
-import { BsSearch, BsFillInfoSquareFill } from "react-icons/bs";
-import { FaExchangeAlt } from "react-icons/fa";
 import ModalDialog from "../../components/Elements/PopupModal";
 import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
+import * as Icon from "../../components/Elements/Icon";
 const cx = classNames.bind(styles);
 function CreateRequest() {
   const reasonCancelRef = useRef(null);
@@ -42,7 +40,7 @@ function CreateRequest() {
 
               <li className={cx("header-nav-item ml-1")}>
                 <div className={cx("header-nav-arrow")}>
-                  <AiOutlineRight />
+                  <Icon.AiOutlineRight />
                 </div>
               </li>
               <li className={cx("header-nav-item ml-1")}>
@@ -57,7 +55,7 @@ function CreateRequest() {
               </li>
               <li className={cx("header-nav-item ml-1")}>
                 <div className={cx("header-nav-arrow")}>
-                  <AiOutlineRight />
+                  <Icon.AiOutlineRight />
                 </div>
               </li>
               <li className={cx("header-nav-item ml-1")}>
@@ -79,7 +77,9 @@ function CreateRequest() {
           >
             <div className="detail-request-header-left  flex items-center">
               <div className={cx("detail-request-header-icon")}>
-                <BsFillInfoSquareFill className={cx("h-[50px] w-[50px]")} />
+                <Icon.BsFillInfoSquareFill
+                  className={cx("h-[50px] w-[50px]")}
+                />
               </div>
               <div className={cx("detail-request-header-description ml-5")}>
                 <h4 className="text-2xl font-bold">Reset Password</h4>
@@ -147,7 +147,7 @@ function CreateRequest() {
                 triggerComponent={
                   <div className="inline-block cursor-pointer">
                     <div className="flex items-center hover:bg-gray-500 hover:text-white">
-                      <FaExchangeAlt />
+                      <Icon.FaExchangeAlt />
                       <p className="text-lg font-bold ml-3">Cancel Request</p>
                     </div>
                   </div>

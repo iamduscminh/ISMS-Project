@@ -124,6 +124,7 @@ function CustomField({
             className="block mb-2 text-sm font-medium text-gray-500 "
           >
             {fieldName}
+            {mandatory === 1 && <span className="text-red-600">*</span>}
           </label>
           <input
             type="text"
@@ -147,6 +148,7 @@ function CustomField({
             className="block mb-2 text-sm font-medium text-gray-500 "
           >
             {fieldName}
+            {mandatory === 1 && <span className="text-red-600">*</span>}
           </label>
           <textarea
             id={`${fieldId}_${fieldCode}`}
@@ -169,6 +171,7 @@ function CustomField({
             defaultValue=""
           >
             {fieldName}
+            {mandatory === 1 && <span className="text-red-600">*</span>}
           </label>
           <select
             id={`${fieldId}_${fieldCode}`}
@@ -204,6 +207,7 @@ function CustomField({
               className="ml-2 text-sm font-medium text-gray-500"
             >
               {fieldName}
+              {mandatory === 1 && <span className="text-red-600">*</span>}
             </label>
           </div>
         </>
@@ -213,6 +217,7 @@ function CustomField({
         <>
           <label className="block mb-2 text-sm font-medium text-gray-900 ">
             {fieldName}
+            {mandatory === 1 && <span className="text-red-600">*</span>}
           </label>
           {listOfValue.split(";").map((item, i) => {
             return (
@@ -248,6 +253,7 @@ function CustomField({
               htmlFor={`${fieldId}_${fieldCode}`}
             >
               {fieldName}
+              {mandatory === 1 && <span className="text-red-600">*</span>}
             </label>
             <input
               className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none"
@@ -266,6 +272,7 @@ function CustomField({
         <>
           <label className="block mb-2 text-sm font-medium text-gray-900 ">
             {fieldName}
+            {mandatory === 1 && <span className="text-red-600">*</span>}
           </label>
           {listOfValue.split(";").map((item, i) => {
             return (
@@ -299,6 +306,7 @@ function CustomField({
               htmlFor={`${fieldId}_${fieldCode}`}
             >
               {fieldName}
+              {mandatory === 1 && <span className="text-red-600">*</span>}
             </label>
             <input
               type="date"

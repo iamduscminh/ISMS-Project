@@ -1,10 +1,8 @@
 import { React, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { AiOutlineRight } from "react-icons/ai";
-import { BsSearch, BsFillInfoSquareFill } from "react-icons/bs";
 import UnderlineAnimation from "../../components/Animation/UnderlineText";
-
+import * as Icon from "../../components/Elements/Icon";
 function ViewRequests() {
   const navigate = useNavigate();
   const columns = [
@@ -54,7 +52,7 @@ function ViewRequests() {
 
               <li className="header-nav-item ml-1">
                 <div className="header-nav-arrow">
-                  <AiOutlineRight />
+                  <Icon.AiOutlineRight />
                 </div>
               </li>
               <li className="header-nav-item ml-1">
@@ -66,7 +64,7 @@ function ViewRequests() {
           </nav>
           <div className="view-requests-header-content px-6 pb-3 flex items-center">
             <div className="view-requests-header-icon">
-              <BsFillInfoSquareFill className="h-[50px] w-[50px]" />
+              <Icon.BsFillInfoSquareFill className="h-[50px] w-[50px]" />
             </div>
             <div className="view-requests-header-description ml-5">
               <h4 className="text-2xl font-bold">View Requests</h4>
