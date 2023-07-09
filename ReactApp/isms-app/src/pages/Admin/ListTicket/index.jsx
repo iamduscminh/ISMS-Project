@@ -24,7 +24,7 @@ const ListTicket = () => {
     {
       field: 'description',
       headerName: 'Description',
-      width: 220,
+      width: 230,
       editable: true,
       description: 'This column described overview of ticket'
     },
@@ -67,13 +67,13 @@ const ListTicket = () => {
     {
       field: 'createdDate',
       headerName: 'Created Date',
-      width: 160,
+      width: 170,
       valueFormatter: (params) => format(new Date(params.value), 'yyyy/MM/dd HH:mm:ss'),
     },
     {
       field: 'sla',
       headerName: 'SLA',
-      width: 160,
+      width: 170,
       valueFormatter: (params) => format(new Date(params.value), 'yyyy/MM/dd HH:mm:ss'),
     },
   ];
@@ -81,12 +81,12 @@ const ListTicket = () => {
 
   return (
     <div>
-      <div className='relative w-full h-[22vh] bg-[#42526E] pt-[1rem] pl-[4rem]'>
+      <div className='relative w-full h-[22vh] bg-[#42526E] pt-[1.5rem] pl-[4.5rem]'>
         <h3 className='text-[0.9rem] text-[#fff] font-medium mb-[0.5rem]'>ServiceTicket/allTicket</h3>
         <h2 className='text-[1.2rem] text-[#fff] font-medium'>Query All Service Ticket</h2>
       </div>
       <div>
-        <div className='w-[90%] pl-[4rem] relative translate-y-[-56px] z-10'>
+        <div className='w-[92%] pl-[4.5rem] relative translate-y-[-56px] z-10'>
           <div className='w-[100%] '>
             <DataGrid
               sx={{
@@ -97,11 +97,12 @@ const ListTicket = () => {
               initialState={{
                 pagination: {
                   paginationModel: {
-                    pageSize: 7,
+                    pageSize: 8,
                   },
                 },
               }}
-              pageSizeOptions={[7]}
+              rowHeight={48}
+              pageSizeOptions={[8]}
               checkboxSelection
               disableRowSelectionOnClick
             />

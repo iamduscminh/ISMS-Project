@@ -1,16 +1,18 @@
 .switch{
     position: relative;
-    width: 128px;
+    width: 144px;
     height: 24px;
     border-radius: 20px;
+    
 }
 .switch input{
     appearance: none;
-    width: 128px;
+    width: 144px;
     height: 24px;
     border-radius: 20px;
     background: #706f6f;
     outline: none;
+    cursor: pointer;
 }
 .switch input::before,
 .switch input::after
@@ -59,7 +61,7 @@
 
 .switch input:checked+label{
     left: 10px;
-    right: 65px;
+    right: 70px;
     background: #706f6f;
     transition: left 0.5s, right 0.4s 0.2s;
 }
@@ -80,7 +82,7 @@
 }
 
 .switch input:not(:checked)+label{
-    left: 65px;
+    left: 70px;
     right: 10px;
     background-color: #fcc97e;
     transition: left 0.4s 0.2s, right 0.5s, background 0.35s;

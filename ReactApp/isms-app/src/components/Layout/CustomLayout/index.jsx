@@ -8,7 +8,7 @@ function CustomLayout({ children }) {
   return (
     <div className="h-screen">
       <AdminHeader />
-      <div className="flex h-[90vh]">
+      <div className="flex h-[90vh] relative">
         <Sidebar />
         <div className="shrink grow">{children}</div>
       </div>
