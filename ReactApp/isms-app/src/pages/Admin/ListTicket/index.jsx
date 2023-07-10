@@ -1,13 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./ListTicket.module.scss";
 import classNames from "classnames/bind";
 import { DataGrid } from "@mui/x-data-grid";
 import { format } from "date-fns";
 import { BsSearch } from "react-icons/bs";
+import { FaRegClone, FaEdit } from "react-icons/fa";
+import { MdFavorite, MdDeleteForever } from "react-icons/md";
+import Tippy from "@tippyjs/react/headless";
+import SearchResultItem from "../../../components/Elements/SearchResultItem";
+import Search from "./Search";
 
 const cx = classNames.bind(styles);
 
 const ListTicket = () => {
+  
   const [ticketData, setTicketData] = useState([
     {
       id: 1,
@@ -175,22 +181,14 @@ const ListTicket = () => {
       </div>
       <div>
         <div className="w-[92%] pl-[4.5rem] relative translate-y-[-56px] z-10">
-            <div className={cx("search-content")}>
-              <div className={cx("search-bar")}>
-                <input
-                  type="text"
-                  className={cx("search-bar-input")}
-                  placeholder="Enter ticket Id or Description"
-                  aria-label="search"
-                />
-                <button
-                  className={cx("search-bar-submit")}
-                  aria-label="submit search"
-                >
-                  <BsSearch />
-                </button>
-              </div>
-            </div>
+          <div className={cx("action-wrapper")}>
+            <FaRegClone className={cx("action-icon")} />
+            <MdDeleteForever className={cx("action-icon")} />
+            <FaEdit className={cx("action-icon")} />
+            <MdFavorite className={cx("action-icon")} />
+          </div>
+
+          <Search/>
 
           <div className="w-[100%] ">
             <DataGrid
