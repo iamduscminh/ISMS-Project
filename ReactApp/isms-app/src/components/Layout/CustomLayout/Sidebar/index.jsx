@@ -59,7 +59,7 @@ const SidebarOver = styled.div`
 const TabSelect = styled.div`
   position: absolute;
   width: 50%;
-  height: 3px;
+  height: 2.5px;
   background: #42526E;
   left: ${({queryTab}) => (queryTab ? '0' : '50%')};
   bottom: 0;

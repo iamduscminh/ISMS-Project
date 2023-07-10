@@ -7,11 +7,11 @@ const SidebarLink = styled(Link)`
   color: #e1e9fc;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
+  padding: 14px;
   list-style: none;
-  height: 60px;
+  height: 45px;
   text-decoration: none;
-  font-size: 16px;
+  font-size: 14px;
   &:hover {
     background: #F2F2F2;
     border-left: 4px solid #632ce4;
@@ -24,13 +24,13 @@ const SidebarLabel = styled.span`
 
 const DropdownLink = styled(Link)`
   background: #F4F7FF;
-  height:60px;
+  height:45px;
   padding-left: 3rem;
   display:flex;
   align-items:center;
   text-decoration:none;
   color: #686868;
-  font-size: 1rem;
+  font-size: 0.85rem;
 
   &:hover{
     background: #F2F2F2;
@@ -51,7 +51,7 @@ const SubMenu = ({ item }) => {
   return (
     <>
       <SidebarLink to={item.path} onClick={item.subNav && showSubnav}>
-        <div className="flex items-center text-[#686868] text-[1.1rem]">
+        <div className="flex items-center text-[#686868] text-[0.85rem]">
           {item.icon}
           <SidebarLabel>{item.title}</SidebarLabel>
         </div>

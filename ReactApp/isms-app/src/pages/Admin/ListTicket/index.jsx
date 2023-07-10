@@ -106,7 +106,7 @@ const ListTicket = () => {
     {
       field: "description",
       headerName: "Description",
-      width: 230,
+      width: 200,
       editable: true,
       description: "This column described overview of ticket",
     },
@@ -149,14 +149,14 @@ const ListTicket = () => {
     {
       field: "createdDate",
       headerName: "Created Date",
-      width: 170,
+      width: 155,
       valueFormatter: (params) =>
         format(new Date(params.value), "yyyy/MM/dd HH:mm:ss"),
     },
     {
       field: "sla",
       headerName: "SLA",
-      width: 170,
+      width: 155,
       valueFormatter: (params) =>
         format(new Date(params.value), "yyyy/MM/dd HH:mm:ss"),
     },
@@ -175,22 +175,23 @@ const ListTicket = () => {
       </div>
       <div>
         <div className="w-[92%] pl-[4.5rem] relative translate-y-[-56px] z-10">
-          <div className={cx("search-content")}>
-            <div className={cx("search-bar")}>
-              <input
-                type="text"
-                className={cx("search-bar-input")}
-                placeholder="Enter ticket Id or Description"
-                aria-label="search"
-              />
-              <button
-                className={cx("search-bar-submit")}
-                aria-label="submit search"
-              >
-                <BsSearch />
-              </button>
+            <div className={cx("search-content")}>
+              <div className={cx("search-bar")}>
+                <input
+                  type="text"
+                  className={cx("search-bar-input")}
+                  placeholder="Enter ticket Id or Description"
+                  aria-label="search"
+                />
+                <button
+                  className={cx("search-bar-submit")}
+                  aria-label="submit search"
+                >
+                  <BsSearch />
+                </button>
+              </div>
             </div>
-          </div>
+
           <div className="w-[100%] ">
             <DataGrid
               sx={{
