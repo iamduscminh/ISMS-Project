@@ -5,11 +5,22 @@ import * as Icon from "../../components/Elements/Icon";
 import IconTag from "../../components/Elements/IconTag";
 import UnderlineAnimation from "../../components/Animation/UnderlineText";
 import CustomFieldTag from "../../components/Elements/CustomFieldTag";
+import ModalDialog from "../../components/Elements/PopupModal";
+import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 
 function CreateRequestType() {
-  const IconTest = { name: "User", tagName: "BsThreeDotsVertical" };
-  const IconComponent = Icon[IconTest.tagName]; // Dynamically select the icon component
-
+  const [iconRequestType, setIconRequestType] = useState(
+    "BsFillInfoSquareFill"
+  ); // Dynamically select the icon component
+  const iconReuqestTypes = [
+    "AiOutlineRight",
+    "GrNotification",
+    "BiUserCircle",
+    "HiOutlineDesktopComputer",
+    "FaExchangeAlt",
+    "BsFillInfoSquareFill",
+    "BsThreeDotsVertical",
+  ];
   const tabsData = [
     {
       label: "Information",
@@ -225,7 +236,51 @@ function CreateRequestType() {
                         placeholder="Write description content of request type"
                       ></textarea>
                     </div>
+                    <div className="mb-6">
+                      <label
+                        htmlFor="rqtIcon"
+                        className="block mb-2 text-sm font-medium text-gray-500"
+                      >
+                        Icon
+                      </label>
+                      <div className="Icon flex items-center">
+                        {/* Icon Default */}
+                        <IconTag
+                          className="h-[30px] w-[30px] mr-7"
+                          name={iconRequestType}
+                        />
 
+                        <ModalDialog
+                          title={"Change Icon Request Type"}
+                          actionText={"Save"}
+                          //actionHandler={cancelRequestDetail}
+                          triggerComponent={
+                            <div className="inline-block cursor-pointer">
+                              <button
+                                type="button"
+                                className="py-2.5 px-4 mr-2 text-sm font-medium text-gray-500 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:ring-4 focus:ring-gray-200 "
+                                onClick={() => console.log("check")}
+                              >
+                                Change
+                              </button>
+                            </div>
+                          }
+                        >
+                          <div className="IconList flex">
+                            {iconReuqestTypes.map((item, i) => (
+                              <IconTag
+                                className="h-[40px] w-[40px]"
+                                key={i}
+                                name={item}
+                                onClickHandle={() =>
+                                  setIconRequestType(item.toString())
+                                }
+                              />
+                            ))}
+                          </div>
+                        </ModalDialog>
+                      </div>
+                    </div>
                     <button
                       type="submit"
                       className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-4 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
