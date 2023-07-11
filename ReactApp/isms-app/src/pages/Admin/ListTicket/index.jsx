@@ -11,6 +11,7 @@ import SearchResultItem from "../../../components/Elements/SearchResultItem";
 import Search from "./Search";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import image from '../../../assets/images';
 
 
 const cx = classNames.bind(styles);
@@ -147,7 +148,8 @@ const ListTicket = () => {
       width: 105,
       renderCell: (params) => (
         <div style={{ display: "flex", alignItems: "center" }}>
-          <span>{params.value}</span>
+          <div className="w-[1.5rem] h-[1.5rem] rounded-full overflow-hidden"><img className="w-full h-full object-cover object-center" src={image.avatar3} alt="" /></div>
+          <div className="ml-[0.5rem]"><span>{params.value}</span></div>
         </div>
       ),
     },
@@ -157,7 +159,8 @@ const ListTicket = () => {
       width: 105,
       renderCell: (params) => (
         <div style={{ display: "flex", alignItems: "center" }}>
-          <span>{params.value}</span>
+          <div className="w-[1.5rem] h-[1.5rem] rounded-full overflow-hidden"><img className="w-full h-full object-cover object-center" src={image.avatar2} alt="" /></div>
+          <div className="ml-[0.5rem]"><span>{params.value}</span></div>
         </div>
       ),
     },
@@ -204,6 +207,18 @@ const ListTicket = () => {
   const handleLinkIssues = () => {
     console.log(selectedRow);
   };
+
+  const getColorClassName = (params) => {
+    const id = params.row.id
+    if (id == 5 || id ==3) {
+      return cx('rowRed'); // Lớp CSS tô màu đỏ
+    }
+    if(id == 1 || id ==7){
+      return cx('rowYellow'); // Lớp CSS tô màu vàng
+    }
+    return ''; // Không có lớp CSS tô màu
+  };
+
   return (
     <div>
       <div className="relative w-full h-[22vh] bg-[#42526E] pt-[1.5rem] pl-[4.5rem]">
@@ -245,7 +260,7 @@ const ListTicket = () => {
                   },
                 },
               }}
-              
+              getRowClassName={getColorClassName}
               rowHeight={48}
               pageSizeOptions={[8]}
               checkboxSelection

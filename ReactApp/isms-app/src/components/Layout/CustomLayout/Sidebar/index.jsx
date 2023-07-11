@@ -12,10 +12,9 @@ import { SidebarData } from "./SideBarData";
 import { IconContext } from "react-icons/lib";
 import { FiArrowRightCircle } from "react-icons/fi";
 import { BsArrowRightCircle } from "react-icons/bs";
-import { MdQueryStats, MdOutlineLabelImportant } from 'react-icons/md';
+import { MdQueryStats, MdOutlineLabelImportant } from "react-icons/md";
 import SubMenu from "./SubMenu";
 import Tippy from "@tippyjs/react";
-
 
 const Nav = styled.div`
   background: #15171c;
@@ -37,7 +36,7 @@ const NavIcon = styled(Link)`
 `;
 
 const SidebarNav = styled.nav`
-  background: #F4F7FF;
+  background: #f4f7ff;
   width: 100%;
   height: 50vh;
   display: flex;
@@ -53,34 +52,42 @@ const SidebarOver = styled.div`
   flex-grow: 0;
   flex-shrink: 0;
   width: 14%;
-  background: #F4F7FF;
-  display:flex;
+  background: #f4f7ff;
+  display: flex;
   flex-direction: column;
-`
+`;
 
 const TabSelect = styled.div`
   position: absolute;
   width: 50%;
   height: 2.5px;
-  background: #42526E;
-  left: ${({ queryTab }) => (queryTab ? '0' : '50%')};
+  background: #42526e;
+  left: ${({ queryTab }) => (queryTab ? "0" : "50%")};
   bottom: 0;
   transition: 350ms;
-`
+`;
 function Sidebar() {
+  const [profile, setProfile] = useState(false);
+
   const [sidebar, setSidebar] = useState(false);
   const [queryTab, setQueryTab] = useState(true);
   const showQueryTab = (queryCondition) => {
     setQueryTab(queryCondition);
-  }
+  };
 
   return (
     <SidebarOver>
       <div className="w-full h-[5%] flex relative bg-[#DCE4FF]">
-        <div className="h-[full] w-[50%] flex justify-center items-center text-[#42526E] text-[1.4rem] cursor-pointer" onClick={() => showQueryTab(true)}>
+        <div
+          className="h-[full] w-[50%] flex justify-center items-center text-[#42526E] text-[1.4rem] cursor-pointer"
+          onClick={() => showQueryTab(true)}
+        >
           <MdQueryStats />
         </div>
-        <div className="h-[full] w-[50%] flex justify-center items-center text-[#42526E] text-[1.4rem] cursor-pointer" onClick={() => showQueryTab(false)}>
+        <div
+          className="h-[full] w-[50%] flex justify-center items-center text-[#42526E] text-[1.4rem] cursor-pointer"
+          onClick={() => showQueryTab(false)}
+        >
           <MdOutlineLabelImportant />
         </div>
         <TabSelect queryTab={queryTab} />
@@ -106,8 +113,8 @@ function Sidebar() {
           <label htmlFor="switcher"></label>
         </span>
 
-        <div className="w-full h-[35%] flex justify-start items-center mt-[0.5rem] cursor-pointer">
-          <div className="w-[1.75rem] h-[1.75rem rounded-full overflow-hidden">
+        <div onClick={(e)=>setProfile(!profile)} className="w-full h-[35%] flex justify-start items-center mt-[0.5rem] cursor-pointer relative">
+          <div className="w-[1.75rem] h-[1.75rem] rounded-full overflow-hidden">
             <img
               className="w-full h-full object-cover object-center"
               src={image.avatar2}
@@ -125,8 +132,12 @@ function Sidebar() {
               </span>
             </div>
           </div>
-        </div>
 
+         {profile && <div className="border-2 text-[#42526E] font-medium text-[1rem]  shadow-md flex flex-col absolute bottom-0 right-0 w-[8rem] translate-x-[100%] bg-[#ffffff] z-[9999] rounded-[5px]">
+              <div className="border-b-2 mt-[0.5rem]"><span className="ml-[1.25rem]">Profile</span></div>
+              <div className="mb-[0.5rem]"><span className="ml-[1.25rem]">Log out</span></div>
+          </div>}
+        </div>
       </div>
     </SidebarOver>
   );
