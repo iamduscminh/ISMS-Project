@@ -6,6 +6,8 @@ export { default as Unauthorized } from "./Login";
 export { default as Catalog } from "./Catalog";
 export { default as CreateRequest } from "./CreateRequest";
 export { default as DetailRequest } from "./DetailRequest";
+export { default as ListTicket } from "./Admin/ListTicket";
 export { default as ViewRequests } from "./ViewRequests";
 export { default as ViewRequestTypes } from "./ViewRequestTypes";
 export { default as CreateRequestType } from "./CreateRequestType";
+

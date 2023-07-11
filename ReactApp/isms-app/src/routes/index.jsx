@@ -19,6 +19,8 @@ const publicRoutes = [
   { path: "/catalog", component: Page.Catalog },
   { path: "/createRequest", component: Page.CreateRequest },
   { path: "/detailRequest", component: Page.DetailRequest },
+
+  { path: "/admin/", component: Page.ListTicket, layout: Layout.CustomLayout},
   { path: "/viewRequests", component: Page.ViewRequests },
   { path: "/viewRequestTypes", component: Page.ViewRequestTypes },
   { path: "/createRequestType", component: Page.CreateRequestType },

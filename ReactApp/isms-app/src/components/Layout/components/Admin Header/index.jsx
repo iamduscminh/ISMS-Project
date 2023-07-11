@@ -39,7 +39,7 @@ const AdminHeader = () => {
 
   return (
     <div className={cx('h-[7%] w-full bg-[#7F91B0] flex')}>
-      <div className={cx('w-[10%] h-full flex justify-center items-center')}>
+      <div className={cx('w-[8%] h-full flex justify-center items-center')}>
         <img
           src={image.logo}
           alt=""
