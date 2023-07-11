@@ -86,6 +86,11 @@ function CreateRequestType() {
       mandatory: false,
     },
   ];
+  const listOfService = [
+    { id: 1, serviceName: "Computers" },
+    { id: 2, serviceName: "Account & Pass" },
+    { id: 3, serviceName: "Wiffi" },
+  ];
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [listFieldConfig, setListFieldConfig] = useState(listFieldConfigInit);
   const navigate = useNavigate();
@@ -217,7 +222,7 @@ function CreateRequestType() {
                 {/*Information Tab*/}
                 <div
                   className={activeTabIndex === 0 ? "block" : "hidden"}
-                  id="tab0"
+                  id="tabInfor"
                 >
                   <div className="request-ticket-form-ctn w-[40%] m-3">
                     <div className="mb-6">
@@ -320,6 +325,53 @@ function CreateRequestType() {
                         </ModalDialog>
                       </div>
                     </div>
+                    {/* Select Service */}
+                    <div className="mb-6">
+                      <div className="flex items-center">
+                        <label
+                          htmlFor="rqtService"
+                          className="block text-sm mr-3 font-medium text-gray-500"
+                        >
+                          Service:
+                        </label>
+                        <ModalDialog
+                          title={"Choose Service of current Request Type"}
+                          actionText={"Save"}
+                          actionHandler={() =>
+                            setIconRequestType(iconRequestTypeTemp.toString())
+                          }
+                          triggerComponent={
+                            <div className="inline-block cursor-pointer">
+                              <span className="font-bold text-black text-xl hover:underline">
+                                Computer
+                              </span>
+                            </div>
+                          }
+                        >
+                          {listOfService.length}
+                          {/* Children */}
+                          <div className="ServiceList flex flex-wrap w-[100%] overflow-y-auto h-64">
+                            {listOfService.map((item, i) => {
+                              <div key={i} className="flex items-center mb-4">
+                                <input
+                                  id={`svc${i}`}
+                                  type="radio"
+                                  // checked={item == fieldValue}
+                                  value={item.id}
+                                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500  focus:ring-2"
+                                />
+                                <label
+                                  htmlFor={`svc${i}`}
+                                  className="ml-2 text-sm font-medium text-gray-900 "
+                                >
+                                  {item.serviceName}
+                                </label>
+                              </div>;
+                            })}
+                          </div>
+                        </ModalDialog>
+                      </div>
+                    </div>
                     <button
                       type="button"
                       className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-4 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -332,7 +384,7 @@ function CreateRequestType() {
                 {/* Request Form Tab */}
                 <div
                   className={activeTabIndex === 1 ? "block" : "hidden"}
-                  id="tab0"
+                  id="tabRqForm"
                 >
                   <div className="request-form-ctn flex justify-between">
                     <div className="request-form-config w-1/2">
