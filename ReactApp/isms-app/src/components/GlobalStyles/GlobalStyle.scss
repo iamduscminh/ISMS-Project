@@ -117,3 +117,7 @@ input:focus {
     background-color: #f9f9f9;
   }
 }
+required:after {
+  content: " *";
+  color: red;
+}

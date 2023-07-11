@@ -3,9 +3,7 @@ import classNames from "classnames/bind";
 import styles from "./Header.module.scss";
 import image from "../../../../assets/images";
 import Dropdown from "../../../Elements/Dropdown";
-import { GrNotification } from "react-icons/gr";
-import { BiUserCircle } from "react-icons/bi";
-
+import * as Icon from "../../../Elements/Icon";
 const cx = classNames.bind(styles);
 function Header() {
   //Dropdown variable
@@ -42,14 +40,18 @@ function Header() {
       <div className={cx("header-right-side")}>
         <div className={cx("header-noti")}>
           <button className={cx("header-noti-button")} onClick={handleOpenNoti}>
-            <GrNotification className={cx("text-white")} />
+            <Icon.GrNotification className={cx("text-white")} />
           </button>
           <div className={cx("header-noti-dropdown")}>
             <Dropdown
               open={openDrNoti}
               menu={[
-                <button onClick={handleDrNotiItem1}>Option 1</button>,
-                <button onClick={handleDrNotiItem2}>Option 2</button>,
+                <button key="drNoti1" onClick={handleDrNotiItem1}>
+                  Option 1
+                </button>,
+                <button key="drNoti2" onClick={handleDrNotiItem2}>
+                  Option 2
+                </button>,
               ]}
             />
           </div>
@@ -59,14 +61,14 @@ function Header() {
             className={cx("header-profile-button")}
             onClick={handleOpenProf}
           >
-            <BiUserCircle className={cx("header-profile-icon")} />
+            <Icon.BiUserCircle className={cx("header-profile-icon")} />
           </button>
           <div className={cx("header-prof-dropdown")}>
             <Dropdown
               open={openDrProf}
               menu={[
-                <button>Option pr 1</button>,
-                <button>Option pr 2</button>,
+                <button key="drPrf1">Option pr 1</button>,
+                <button key="drPrf2">Option pr 2</button>,
               ]}
             />
           </div>

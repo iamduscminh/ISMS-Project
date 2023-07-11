@@ -1,8 +1,7 @@
 import React from "react";
 import classNames from "classnames/bind";
 import styles from "./Home.module.scss";
-import { BsSearch, BsFillInfoSquareFill } from "react-icons/bs";
-import { HiOutlineDesktopComputer } from "react-icons/hi";
+import * as Icon from "../../components/Elements/Icon";
 import CardItem from "../../components/Elements/CardItem";
 const cx = classNames.bind(styles);
 
@@ -13,7 +12,7 @@ function Home() {
         <h1>Welcome, how can we help you?</h1>
         <div className={cx("top-search-container")}>
           <a href="#">
-            <BsSearch className={cx("top-search-button")} />
+            <Icon.BsSearch className={cx("top-search-button")} />
           </a>
           <input
             type="search"
@@ -29,19 +28,19 @@ function Home() {
             url="/catalog"
             title="Request a service"
             description="Send your problem to It Service"
-            iconComponent={<BsFillInfoSquareFill />}
+            iconComponent={<Icon.BsFillInfoSquareFill />}
           />
           <CardItem
             url="#"
             title="View All Request"
             description="Browse your list request ticket"
-            iconComponent={<HiOutlineDesktopComputer />}
+            iconComponent={<Icon.HiOutlineDesktopComputer />}
           />
           <CardItem
             url="#"
             title="Report for hardware problem"
             description="Raise your problem to IT Service about your device"
-            iconComponent={<HiOutlineDesktopComputer />}
+            iconComponent={<Icon.HiOutlineDesktopComputer />}
           />
         </div>
       </div>

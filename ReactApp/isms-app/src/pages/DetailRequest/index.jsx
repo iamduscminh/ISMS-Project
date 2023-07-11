@@ -3,11 +3,9 @@ import classNames from "classnames/bind";
 import styles from "./DetailRequest.module.scss";
 import UnderlineAnimation from "../../components/Animation/UnderlineText";
 import RequestComment from "../../components/Elements/RequestComment";
-import { AiOutlineRight } from "react-icons/ai";
-import { BsSearch, BsFillInfoSquareFill } from "react-icons/bs";
-import { FaExchangeAlt } from "react-icons/fa";
 import ModalDialog from "../../components/Elements/PopupModal";
 import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
+import * as Icon from "../../components/Elements/Icon";
 const cx = classNames.bind(styles);
 function CreateRequest() {
   const reasonCancelRef = useRef(null);
@@ -19,9 +17,13 @@ function CreateRequest() {
     <div
       className={cx("detail-request-container w-full h-full py-5 bg-[#f5f7f9]")}
     >
-      <div className={cx("detail-request-section")}>
+      <div
+        className={cx(
+          "detail-request-section mt-4 mx-auto max-w-7xl min-h-screen bg-white rounded shadow"
+        )}
+      >
         <div className={cx("detail-request-header w-full bg-gray-200")}>
-          <nav className={cx("detail-request-header-nav px-6 pt-5 pb-3")}>
+          <nav className={cx("detail-request-header-nav px-6 pt-3 pb-3")}>
             <ul
               className={cx("header-nav-content flex items-center text-[18px]")}
             >
@@ -38,7 +40,7 @@ function CreateRequest() {
 
               <li className={cx("header-nav-item ml-1")}>
                 <div className={cx("header-nav-arrow")}>
-                  <AiOutlineRight />
+                  <Icon.AiOutlineRight />
                 </div>
               </li>
               <li className={cx("header-nav-item ml-1")}>
@@ -53,7 +55,7 @@ function CreateRequest() {
               </li>
               <li className={cx("header-nav-item ml-1")}>
                 <div className={cx("header-nav-arrow")}>
-                  <AiOutlineRight />
+                  <Icon.AiOutlineRight />
                 </div>
               </li>
               <li className={cx("header-nav-item ml-1")}>
@@ -75,10 +77,12 @@ function CreateRequest() {
           >
             <div className="detail-request-header-left  flex items-center">
               <div className={cx("detail-request-header-icon")}>
-                <BsFillInfoSquareFill className={cx("h-[50px] w-[50px]")} />
+                <Icon.BsFillInfoSquareFill
+                  className={cx("h-[50px] w-[50px]")}
+                />
               </div>
               <div className={cx("detail-request-header-description ml-5")}>
-                <h3>Reset Password</h3>
+                <h4 className="text-2xl font-bold">Reset Password</h4>
                 <span>Reset your Password Account</span>
               </div>
             </div>
@@ -143,7 +147,7 @@ function CreateRequest() {
                 triggerComponent={
                   <div className="inline-block cursor-pointer">
                     <div className="flex items-center hover:bg-gray-500 hover:text-white">
-                      <FaExchangeAlt />
+                      <Icon.FaExchangeAlt />
                       <p className="text-lg font-bold ml-3">Cancel Request</p>
                     </div>
                   </div>
