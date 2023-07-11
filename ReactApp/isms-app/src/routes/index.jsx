@@ -26,6 +26,7 @@ const publicRoutes = [
   { path: "/viewRequests", component: Page.ViewRequests },
   { path: "/viewRequestTypes", component: Page.ViewRequestTypes },
   { path: "/createRequestType", component: Page.CreateRequestType },
+  { path: "/updateCustomField", component: Page.UpdateCustomField },
 ];
 
 //private route: dành cho những route cần đăng nhập

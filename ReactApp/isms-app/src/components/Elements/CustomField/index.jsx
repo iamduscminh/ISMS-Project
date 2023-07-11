@@ -296,7 +296,6 @@ function CustomField({
           })}
         </>
       )}
-
       {/* ----Date---- */}
       {fieldType === "D" && (
         <>

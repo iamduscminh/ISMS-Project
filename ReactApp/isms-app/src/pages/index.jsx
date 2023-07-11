@@ -11,4 +11,5 @@ export { default as TicketDetail } from "./Admin/TicketDetail";
 export { default as ViewRequests } from "./ViewRequests";
 export { default as ViewRequestTypes } from "./ViewRequestTypes";
 export { default as CreateRequestType } from "./CreateRequestType";
+export { default as UpdateCustomField } from "./UpdateCustomField";
 
