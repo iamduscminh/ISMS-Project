@@ -1,22 +1,37 @@
 import React from "react";
-import * as Icon from "../../components/Elements/Icon";
-/* Your icon name from database data can now be passed as prop */
-const DynamicFaIcon = ({ name }) => {
-  const IconCustom = Icon[name];
-
-  // if (!IconCustom) {
-  //   // Return a default one
-  //   return <Icons.FaBeer />;
-  // }
-
-  return <IconCustom />;
-};
-
-export default function IconCustom() {
-  const iconObj = { nametag: "BsThreeDotsVertical" };
+import { useForm } from "react-hook-form";
+import CustomField from "../../components/Elements/CustomField";
+export default function App() {
   return (
-    <div className="App">
-      <DynamicFaIcon name={iconObj.nametag} />
-    </div>
+    <>
+      <div className="mt-8 mx-auto w-[50%]">
+        <CustomField
+          fieldName={"User Name"}
+          fieldType="T"
+          valType="T"
+          mandatory={1}
+          minVal={0}
+          maxVal={9}
+          minlength={5}
+          maxlength={10}
+        />
+        <CustomField
+          fieldName={"Country"}
+          fieldType="LOV"
+          valType="T"
+          mandatory={0}
+          listOfValue={"VN;QR;HT"}
+          listOfValueDisplay={"VietNam;ThaiLand;Indo"}
+        />
+        <CustomField
+          fieldName={"Country"}
+          fieldType="CB"
+          valType="T"
+          mandatory={0}
+          listOfValue={"VN;QR;HT"}
+          listOfValueDisplay={"VietNam;ThaiLand;Indo"}
+        />
+      </div>
+    </>
   );
 }

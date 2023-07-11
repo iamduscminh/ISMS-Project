@@ -1,8 +1,8 @@
 import React from "react";
 import * as Icon from "../Icon";
-function IconTag({ name }) {
+function IconTag({ name, className, onClickHandle }) {
   const IconComponent = Icon[name];
-  return <IconComponent />;
+  return <IconComponent className={className} onClick={onClickHandle} />;
 }
 
 export default IconTag;

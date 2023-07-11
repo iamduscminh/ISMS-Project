@@ -10,4 +10,5 @@ export { default as ListTicket } from "./Admin/ListTicket";
 export { default as ViewRequests } from "./ViewRequests";
 export { default as ViewRequestTypes } from "./ViewRequestTypes";
 export { default as CreateRequestType } from "./CreateRequestType";
+export { default as UpdateCustomField } from "./UpdateCustomField";
 
