@@ -9,11 +9,30 @@ import { MdFavorite, MdDeleteForever } from "react-icons/md";
 import Tippy from "@tippyjs/react/headless";
 import SearchResultItem from "../../../components/Elements/SearchResultItem";
 import Search from "./Search";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+
 
 const cx = classNames.bind(styles);
 
 const ListTicket = () => {
-  
+  const [selectedRow, setSelectedRow] = React.useState();
+  const [contextMenu, setContextMenu] = React.useState(null); 
+
+  const handleContextMenu = (event) => {
+    event.preventDefault();
+    setSelectedRow(Number(event.currentTarget.getAttribute("data-id")));
+    setContextMenu(
+      contextMenu === null
+        ? { mouseX: event.clientX - 2, mouseY: event.clientY - 4 }
+        : null
+    );
+  };
+
+  const handleClose = () => {
+    setContextMenu(null);
+  };
+
   const [ticketData, setTicketData] = useState([
     {
       id: 1,
@@ -169,6 +188,22 @@ const ListTicket = () => {
   ];
   const headerHeight = "2rem";
 
+
+  const handleComment = () => {
+    console.log(selectedRow);
+  };
+
+  const handleAssign = () => {
+    console.log(selectedRow);
+  };
+
+  const handleDelete = () => {
+    console.log(selectedRow);
+  };
+
+  const handleLinkIssues = () => {
+    console.log(selectedRow);
+  };
   return (
     <div>
       <div className="relative w-full h-[22vh] bg-[#42526E] pt-[1.5rem] pl-[4.5rem]">
@@ -197,6 +232,12 @@ const ListTicket = () => {
               }}
               rows={ticketData}
               columns={columns}
+              componentsProps={{
+                row: {
+                  onContextMenu: handleContextMenu,
+                  style: { cursor: "context-menu" }
+                }
+              }}
               initialState={{
                 pagination: {
                   paginationModel: {
@@ -204,11 +245,35 @@ const ListTicket = () => {
                   },
                 },
               }}
+              
               rowHeight={48}
               pageSizeOptions={[8]}
               checkboxSelection
               disableRowSelectionOnClick
             />
+            <Menu
+        open={contextMenu !== null}
+        onClose={handleClose}
+        anchorReference="anchorPosition"
+        anchorPosition={
+          contextMenu !== null
+            ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+            : undefined
+        }
+        componentsProps={{
+          root: {
+            onContextMenu: (e) => {
+              e.preventDefault();
+              handleClose();
+            }
+          }
+        }}
+      >
+        <MenuItem onClick={handleComment}>Comments</MenuItem>
+        <MenuItem onClick={handleAssign}>Assign</MenuItem>
+        <MenuItem onClick={handleDelete}>Delete</MenuItem>
+        <MenuItem onClick={handleLinkIssues}>Link Issues</MenuItem>
+      </Menu>
           </div>
         </div>
       </div>

@@ -3,7 +3,7 @@ import Tippy from "@tippyjs/react/headless";
 import { BsSearch } from "react-icons/bs";
 import SearchResultItem from "../../../../components/Elements/SearchResultItem";
 import classNames from "classnames";
-import styles from '../ListTicket.Module.scss';
+import styles from './Search.Module.scss';
 
 const cx = classNames.bind(styles);
 const fakeApi = [

@@ -12,8 +12,10 @@ import { SidebarData } from "./SideBarData";
 import { IconContext } from "react-icons/lib";
 import { FiArrowRightCircle } from "react-icons/fi";
 import { BsArrowRightCircle } from "react-icons/bs";
-import {MdQueryStats, MdOutlineLabelImportant} from 'react-icons/md';
+import { MdQueryStats, MdOutlineLabelImportant } from 'react-icons/md';
 import SubMenu from "./SubMenu";
+import Tippy from "@tippyjs/react";
+
 
 const Nav = styled.div`
   background: #15171c;
@@ -61,14 +63,12 @@ const TabSelect = styled.div`
   width: 50%;
   height: 2.5px;
   background: #42526E;
-  left: ${({queryTab}) => (queryTab ? '0' : '50%')};
+  left: ${({ queryTab }) => (queryTab ? '0' : '50%')};
   bottom: 0;
   transition: 350ms;
 `
 function Sidebar() {
   const [sidebar, setSidebar] = useState(false);
-  const showSidebar = () => setSidebar(!sidebar);
-
   const [queryTab, setQueryTab] = useState(true);
   const showQueryTab = (queryCondition) => {
     setQueryTab(queryCondition);
@@ -77,13 +77,13 @@ function Sidebar() {
   return (
     <SidebarOver>
       <div className="w-full h-[5%] flex relative bg-[#DCE4FF]">
-        <div className="h-[full] w-[50%] flex justify-center items-center text-[#42526E] text-[1.4rem] cursor-pointer" onClick={()=>showQueryTab(true)}>
-          <MdQueryStats/>
+        <div className="h-[full] w-[50%] flex justify-center items-center text-[#42526E] text-[1.4rem] cursor-pointer" onClick={() => showQueryTab(true)}>
+          <MdQueryStats />
         </div>
-        <div className="h-[full] w-[50%] flex justify-center items-center text-[#42526E] text-[1.4rem] cursor-pointer" onClick={()=>showQueryTab(false)}>
-          <MdOutlineLabelImportant/>
+        <div className="h-[full] w-[50%] flex justify-center items-center text-[#42526E] text-[1.4rem] cursor-pointer" onClick={() => showQueryTab(false)}>
+          <MdOutlineLabelImportant />
         </div>
-        <TabSelect queryTab={queryTab}/>
+        <TabSelect queryTab={queryTab} />
       </div>
       <div className="grow shrink w-[full] relative">
         <IconContext.Provider value={{ color: "#686868" }}>
@@ -105,14 +105,16 @@ function Sidebar() {
           <input type="checkbox" id="switcher" />
           <label htmlFor="switcher"></label>
         </span>
-        <div className="w-full h-[35%] flex justify-start items-center mt-[0.5rem] ">
-          <div className="w-[1.75rem] h-[1.75rem rounded-full overflow-hidden ">
+
+        <div className="w-full h-[35%] flex justify-start items-center mt-[0.5rem] cursor-pointer">
+          <div className="w-[1.75rem] h-[1.75rem rounded-full overflow-hidden">
             <img
               className="w-full h-full object-cover object-center"
               src={image.avatar2}
               alt=""
             />
           </div>
+
           <div className="ml-[0.7rem] flex justify-center items-start flex-col leading-none">
             <div>
               <span className="text-[0.9rem] font-medium">Tu Doan</span>
@@ -124,6 +126,7 @@ function Sidebar() {
             </div>
           </div>
         </div>
+
       </div>
     </SidebarOver>
   );
