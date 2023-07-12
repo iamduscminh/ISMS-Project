@@ -5,7 +5,10 @@ import image from "../../../assets/images";
 import CustomCombobox from "../../../components/Elements/CustomCombobox";
 import ServiceTypeItem from "../../../components/Elements/CustomCombobox/ServiceTypeItem";
 import PriorityItem from "../../../components/Elements/CustomCombobox/PriorityItem";
+import TicketStatus from "../../../components/Elements/TicketStatus";
 import { MdKeyboardArrowDown, MdElectricalServices } from "react-icons/md";
+import { RiComputerLine } from 'react-icons/ri';
+import{SiMicrosoftword, SiMicrosoftexcel} from 'react-icons/si';
 import {
   FcHighPriority,
   FcMediumPriority,
@@ -90,12 +93,12 @@ const TicketDetail = () => {
               <div className="w-[1.75rem] h-[1.75rem] rounded-full overflow-hidden mr-[1rem]">
                 <img
                   className="w-full h-full object-cover object-center"
-                  src={image.avatar2}
+                  src={image.avatar3}
                   alt=""
                 />
               </div>
               <a className="text-[1.15rem] mr-[0.5rem] cursor-pointer text-[#043ac5]">
-                Tu Doan
+                Calyrex
               </a>
               <h3 className="text-[1.15rem]">create this Request</h3>
             </div>
@@ -159,8 +162,57 @@ const TicketDetail = () => {
 
           </div>
         </div>
-        <div className="w-[25%]">
-          <div>3</div>
+        <div className="w-[25%] ml-[1rem]">
+          <div className="w-[full] bg-[#fff] px-[1.25rem] py-[1rem] flex flex-col rounded-lg shadow-md border-2 border-[#E1DEDE]">
+            <div>
+
+              <div className="flex items-center mt-[1rem]">
+                <h3 className="text-[#42526E] w-[40%] font-medium">Assignee</h3>
+                <div style={{ display: "flex", alignItems: "center", marginLeft: '0.5rem' }}>
+                  <div className="w-[1.5rem] h-[1.5rem] rounded-full overflow-hidden cursor-pointer"><img className="w-full h-full object-cover object-center" src={image.avatar3} alt="" /></div>
+                  <div className="ml-[0.5rem]"><span className="text-[#747272]"><a href="#">Calyrex</a></span></div>
+                </div>
+              </div>
+
+              <div className="flex items-center mt-[1rem]">
+                <h3 className="text-[#42526E] w-[40%] font-medium">Reporter</h3>
+                <div style={{ display: "flex", alignItems: "center", marginLeft: '0.5rem' }}>
+                  <div className="w-[1.5rem] h-[1.5rem] rounded-full overflow-hidden cursor-pointer"><img className="w-full h-full object-cover object-center" src={image.avatar4} alt="" /></div>
+                  <div className="ml-[0.5rem]"><span className="text-[#747272]"><a href="#">Spectrier</a></span></div>
+                </div>
+              </div>
+
+              <div className="flex items-center mt-[1rem]">
+                <h3 className="text-[#42526E] w-[40%] font-medium">Request Type</h3>
+                <div style={{ display: "flex", alignItems: "center", marginLeft: '0.5rem' }}>
+                  <RiComputerLine className="cursor-pointer" />
+                  <div className="ml-[0.5rem]"><span className="text-[#747272]"><a href="#">Laptop Broken Problem</a></span></div>
+                </div>
+              </div>
+
+              <div className="flex mt-[1rem]">
+                <h3 className="text-[#42526E] w-[40%] font-medium">Related Docs</h3>
+                <div className="flex flex-col">
+                  <div style={{ display: "flex", alignItems: "center", marginLeft: '0.5rem' }}>
+                    <SiMicrosoftword className="cursor-pointer text-[#295296]" />
+                    <div className="ml-[0.5rem]"><span className="text-[#747272]"><a href="#">document1.docx</a></span></div>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", marginLeft: '0.5rem', marginTop: '0.5rem'  }}>
+                    <SiMicrosoftword className="cursor-pointer text-[#295296]" />
+                    <div className="ml-[0.5rem]"><span className="text-[#747272]"><a href="#">document2.docx</a></span></div>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", marginLeft: '0.5rem', marginTop: '0.5rem' }}>
+                    <SiMicrosoftexcel className="cursor-pointer text-[#005b38]" />
+                    <div className="ml-[0.5rem]"><span className="text-[#747272]"><a href="#">document3.xlsx</a></span></div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div className="w-[full] mt-[3rem] mb-[1rem]">
+              <TicketStatus/>
+            </div>
+          </div>
         </div>
         <div className="w-[40%]">
           <div>4</div>
