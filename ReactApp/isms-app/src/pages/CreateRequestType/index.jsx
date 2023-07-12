@@ -9,12 +9,6 @@ import ModalDialog from "../../components/Elements/PopupModal";
 import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 
 function CreateRequestType() {
-  //Icon
-  const [iconRequestType, setIconRequestType] = useState(
-    "BsFillInfoSquareFill"
-  );
-  const [iconRequestTypeTemp, setIconRequestTypeTemp] =
-    useState(iconRequestType);
   const iconReuqestTypes = [
     "BsFillInfoSquareFill",
     "AiOutlineRight",
@@ -91,9 +85,16 @@ function CreateRequestType() {
     { id: 2, serviceName: "Account & Pass" },
     { id: 3, serviceName: "Wiffi" },
   ];
+  const navigate = useNavigate();
+  //Icon
+  const [iconRequestType, setIconRequestType] = useState(
+    "BsFillInfoSquareFill"
+  );
+  const [iconRequestTypeTemp, setIconRequestTypeTemp] =
+    useState(iconRequestType);
+  const [selectedService, setSelectedService] = useState(null);
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [listFieldConfig, setListFieldConfig] = useState(listFieldConfigInit);
-  const navigate = useNavigate();
   //định nghĩa form
   const {
     register,
@@ -348,25 +349,26 @@ function CreateRequestType() {
                             </div>
                           }
                         >
-                          {listOfService.length}
                           {/* Children */}
-                          <div className="ServiceList flex flex-wrap w-[100%] overflow-y-auto h-64">
+                          <div className="ServiceList flex flex-col flex-wrap w-[100%] overflow-y-auto h-64">
                             {listOfService.map((item, i) => {
-                              <div key={i} className="flex items-center mb-4">
-                                <input
-                                  id={`svc${i}`}
-                                  type="radio"
-                                  // checked={item == fieldValue}
-                                  value={item.id}
-                                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500  focus:ring-2"
-                                />
-                                <label
-                                  htmlFor={`svc${i}`}
-                                  className="ml-2 text-sm font-medium text-gray-900 "
-                                >
-                                  {item.serviceName}
-                                </label>
-                              </div>;
+                              return (
+                                <div key={i} className="items-center mb-4">
+                                  <input
+                                    id={`svc${i}`}
+                                    type="checkbox"
+                                    checked={selectedService === item.id}
+                                    onChange={() => setSelectedService(item.id)}
+                                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500  focus:ring-2"
+                                  />
+                                  <label
+                                    htmlFor={`svc${i}`}
+                                    className="ml-2 text-sm font-medium text-gray-900 "
+                                  >
+                                    {item.serviceName}
+                                  </label>
+                                </div>
+                              );
                             })}
                           </div>
                         </ModalDialog>
