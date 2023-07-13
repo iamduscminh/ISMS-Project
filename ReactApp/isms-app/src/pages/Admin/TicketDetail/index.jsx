@@ -15,7 +15,10 @@ import {
   FcLowPriority,
 } from "react-icons/fc";
 import CommentComponent from "../../../components/Elements/CommentComponent";
+import DefaultChange from "../../../components/Elements/ActivityComponent/DefaultChange";
+import UserChange from "../../../components/Elements/ActivityComponent/UserChange";
 import styled from "styled-components";
+import ActivityComponent from "../../../components/Elements/ActivityComponent";
 
 const TicketDetail = () => {
   const { ticketId } = useParams();
@@ -102,6 +105,32 @@ const TicketDetail = () => {
       content: "Temporarily not resolved due to insufficient information",
     },
   ]);
+
+  const [ActivityData, setActivityData] = useState([
+    {
+      id:1,
+      type:'UserChange',
+      image:image.avatar3,
+      username: 'Calyrex',
+      action: 'Change assigned user',
+      time:'06:06 PM July 13, 2023',
+      previous:'',
+      update:{
+        updateUser: 'Gardevoir',
+        image: image.avatar
+      }
+    },
+    {
+      id:2,
+      type:'a',
+      image:image.avatar3,
+      username: 'Calyrex',
+      action: 'Changed status',
+      time:'05:06 PM July 13, 2023',
+      previous:'Open',
+      update:'Work in progress'
+    }
+  ])
   const commentRef = useRef();
   const [checkPersonal, setCheckPersonal] = useState(false);
 
@@ -260,13 +289,13 @@ const TicketDetail = () => {
                   <div className="w-[1.5rem] h-[1.5rem] rounded-full overflow-hidden cursor-pointer">
                     <img
                       className="w-full h-full object-cover object-center"
-                      src={image.avatar3}
+                      src={image.avatar}
                       alt=""
                     />
                   </div>
                   <div className="ml-[0.5rem]">
                     <span className="text-[#747272]">
-                      <a href="#">Calyrex</a>
+                      <a href="#">Gardevoir</a>
                     </span>
                   </div>
                 </div>
@@ -397,7 +426,7 @@ const TicketDetail = () => {
               </div>
               <TabSelect />
             </div>
-
+            { commentTab ?      
             <div>
               <div>
                 <div className="w-[full] flex justify-center mt-[1rem]">
@@ -447,7 +476,14 @@ const TicketDetail = () => {
                   <CommentComponent key={item.id} comment={item} />
                 ))}
               </div>
+            </div> : 
+            <div className="px-[2rem] my-[2rem]">
+              {ActivityData.map((item)=>(
+                  <ActivityComponent key={item.id} activity={item}/>
+              ))            
+              }
             </div>
+            }
           </div>
         </div>
       </div>
