@@ -9,31 +9,47 @@ import {
 import ServiceTypeItem from "./ServiceTypeItem";
 
 const cx = classNames.bind(styles);
-const CustomCombobox = ({ component: Component, data: data, onSelect, ticketService }) => {
+const CustomCombobox = ({
+  component: Component,
+  data: data,
+  onSelect,
+  value,
+  overlay,
+  showProp1,
+  showProp2,
+  wrapper
+}) => {
   const [showCombobox, setShowCombobox] = useState(false);
 
-  const [selectedOption, setSelectedOption] = useState(ticketService);
+  const [selectedOption, setSelectedOption] = useState(value);
 
   const handleSelect = (selectedItem) => {
     setSelectedOption(selectedItem);
     onSelect(selectedItem);
     setShowCombobox(false);
   };
-
+  const text = "icon";
   return (
-    <div className={cx("select-menu")}>
+    <div className={cx(`w-full relative mt-[1rem] z-${overlay}`)}>
       <div
         className={cx("select-btn")}
         onClick={(e) => setShowCombobox(!showCombobox)}
       >
         <span className={cx("sBtn-text")}>
-          {selectedOption ? (<div className="flex items-center">
-            <div className="w-[1.3rem] mr-[0.5rem] aspect-square rounded-md bg-[#FF7452] flex items-center justify-center text-[#fff] text-[1.5rem]">
-              {selectedOption.icon}
+          {selectedOption ? (
+            <div className="flex items-center">
+
+             {wrapper ? <div className={cx(`w-[1.3rem] mr-[0.5rem] aspect-square rounded-md bg-[#${wrapper}] flex items-center justify-center text-[#fff] text-[1.5rem]`)}>
+                {selectedOption[showProp1]}
+              </div> : <div className="mr-[1rem] text-[1.25ren]">{selectedOption[showProp1]}</div>
+              }
+
+              <span className="ml-[1.5rem] text-[#42526E]">
+                {selectedOption[showProp2]}
+              </span>
             </div>
-            <span className="ml-[1.5rem]">{selectedOption.serviceName}</span></div>
           ) : (
-            "Select your Service"
+            "Select your option"
           )}
         </span>
         {!showCombobox ? (
