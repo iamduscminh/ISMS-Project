@@ -4,7 +4,7 @@ import styles from "./PriorityItem.module.scss";
 
 const cx = classNames.bind(styles);
 
-const PriorityItem = ({ data, onSelect }) => {
+const PriorityItem = ({ data, onSelect, isMulti }) => {
   const handleClick = (item) => {
     onSelect(item);
   };
@@ -16,7 +16,8 @@ const PriorityItem = ({ data, onSelect }) => {
           className={cx("option")}
           onClick={() => handleClick(item)}
         >
-          <div className="mr-[1rem] text-[1.25ren]">{item.icon}</div>
+          <input type="checkbox" />
+          <div className="mr-[1rem] text-[1.25rem]">{item.icon}</div>
           <span className={cx("option-text")}>{item.priority}</span>
         </li>
       ))}

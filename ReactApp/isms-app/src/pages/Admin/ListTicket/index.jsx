@@ -11,14 +11,13 @@ import SearchResultItem from "../../../components/Elements/SearchResultItem";
 import Search from "./Search";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import image from '../../../assets/images';
-
+import image from "../../../assets/images";
 
 const cx = classNames.bind(styles);
 
 const ListTicket = () => {
   const [selectedRow, setSelectedRow] = React.useState();
-  const [contextMenu, setContextMenu] = React.useState(null); 
+  const [contextMenu, setContextMenu] = React.useState(null);
 
   const handleContextMenu = (event) => {
     event.preventDefault();
@@ -148,8 +147,16 @@ const ListTicket = () => {
       width: 105,
       renderCell: (params) => (
         <div style={{ display: "flex", alignItems: "center" }}>
-          <div className="w-[1.5rem] h-[1.5rem] rounded-full overflow-hidden"><img className="w-full h-full object-cover object-center" src={image.avatar3} alt="" /></div>
-          <div className="ml-[0.5rem]"><span>{params.value}</span></div>
+          <div className="w-[1.5rem] h-[1.5rem] rounded-full overflow-hidden">
+            <img
+              className="w-full h-full object-cover object-center"
+              src={image.avatar3}
+              alt=""
+            />
+          </div>
+          <div className="ml-[0.5rem]">
+            <span>{params.value}</span>
+          </div>
         </div>
       ),
     },
@@ -159,8 +166,16 @@ const ListTicket = () => {
       width: 105,
       renderCell: (params) => (
         <div style={{ display: "flex", alignItems: "center" }}>
-          <div className="w-[1.5rem] h-[1.5rem] rounded-full overflow-hidden"><img className="w-full h-full object-cover object-center" src={image.avatar2} alt="" /></div>
-          <div className="ml-[0.5rem]"><span>{params.value}</span></div>
+          <div className="w-[1.5rem] h-[1.5rem] rounded-full overflow-hidden">
+            <img
+              className="w-full h-full object-cover object-center"
+              src={image.avatar2}
+              alt=""
+            />
+          </div>
+          <div className="ml-[0.5rem]">
+            <span>{params.value}</span>
+          </div>
         </div>
       ),
     },
@@ -191,7 +206,6 @@ const ListTicket = () => {
   ];
   const headerHeight = "2rem";
 
-
   const handleComment = () => {
     console.log(selectedRow);
   };
@@ -209,14 +223,14 @@ const ListTicket = () => {
   };
 
   const getColorClassName = (params) => {
-    const id = params.row.id
-    if (id == 5 || id ==3) {
-      return cx('rowRed'); // Lớp CSS tô màu đỏ
+    const id = params.row.id;
+    if (id == 5 || id == 3) {
+      return cx("rowRed"); // Lớp CSS tô màu đỏ
     }
-    if(id == 1 || id ==7){
-      return cx('rowYellow'); // Lớp CSS tô màu vàng
+    if (id == 1 || id == 7) {
+      return cx("rowYellow"); // Lớp CSS tô màu vàng
     }
-    return ''; // Không có lớp CSS tô màu
+    return ""; // Không có lớp CSS tô màu
   };
 
   return (
@@ -238,7 +252,7 @@ const ListTicket = () => {
             <MdFavorite className={cx("action-icon")} />
           </div>
 
-          <Search/>
+          <Search />
 
           <div className="w-[100%] ">
             <DataGrid
@@ -250,8 +264,8 @@ const ListTicket = () => {
               componentsProps={{
                 row: {
                   onContextMenu: handleContextMenu,
-                  style: { cursor: "context-menu" }
-                }
+                  style: { cursor: "context-menu" },
+                },
               }}
               initialState={{
                 pagination: {
@@ -267,28 +281,28 @@ const ListTicket = () => {
               disableRowSelectionOnClick
             />
             <Menu
-        open={contextMenu !== null}
-        onClose={handleClose}
-        anchorReference="anchorPosition"
-        anchorPosition={
-          contextMenu !== null
-            ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
-            : undefined
-        }
-        componentsProps={{
-          root: {
-            onContextMenu: (e) => {
-              e.preventDefault();
-              handleClose();
-            }
-          }
-        }}
-      >
-        <MenuItem onClick={handleComment}>Comments</MenuItem>
-        <MenuItem onClick={handleAssign}>Assign</MenuItem>
-        <MenuItem onClick={handleDelete}>Delete</MenuItem>
-        <MenuItem onClick={handleLinkIssues}>Link Issues</MenuItem>
-      </Menu>
+              open={contextMenu !== null}
+              onClose={handleClose}
+              anchorReference="anchorPosition"
+              anchorPosition={
+                contextMenu !== null
+                  ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+                  : undefined
+              }
+              componentsProps={{
+                root: {
+                  onContextMenu: (e) => {
+                    e.preventDefault();
+                    handleClose();
+                  },
+                },
+              }}
+            >
+              <MenuItem onClick={handleComment}>Comments</MenuItem>
+              <MenuItem onClick={handleAssign}>Assign</MenuItem>
+              <MenuItem onClick={handleDelete}>Delete</MenuItem>
+              <MenuItem onClick={handleLinkIssues}>Link Issues</MenuItem>
+            </Menu>
           </div>
         </div>
       </div>
