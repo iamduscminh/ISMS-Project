@@ -1,26 +1,39 @@
-import { React, useState } from "react";
+import { React, useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { useForm } from "react-hook-form";
 import * as Icon from "../../components/Elements/Icon";
 import IconTag from "../../components/Elements/IconTag";
 import UnderlineAnimation from "../../components/Animation/UnderlineText";
 import CustomFieldTag from "../../components/Elements/CustomFieldTag";
 import ModalDialog from "../../components/Elements/PopupModal";
+import CustomField from "../../components/Elements/CustomField";
 import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
-
 function CreateRequestType() {
-  const [iconRequestType, setIconRequestType] = useState(
-    "BsFillInfoSquareFill"
-  ); // Dynamically select the icon component
-  const iconReuqestTypes = [
-    "AiOutlineRight",
-    "GrNotification",
-    "BiUserCircle",
-    "HiOutlineDesktopComputer",
-    "FaExchangeAlt",
+  const iconRequestTypes = [
     "BsFillInfoSquareFill",
-    "BsThreeDotsVertical",
+    "HiOutlineDesktopComputer",
+    "AiOutlineLaptop",
+    "RiComputerLine",
+    "FaMobileAlt",
+    "MdPassword",
+    "AiOutlineWifi",
+    "MdPublishedWithChanges",
+    "BsMicrosoft",
+    "CgSoftwareDownload",
+    "SlEarphonesAlt",
+    "AiOutlineCloudDownload",
+    "AiFillBug",
+    "AiFillFileAdd",
+    "AiFillFolderAdd",
+    "AiFillIdcard",
+    "GiAutoRepair",
+    "AiOutlineMail",
+    "AiFillDatabase",
+    "FaServer",
+    "AiFillWarning",
+    "AiFillSetting",
   ];
+  //tab hiển thị
   const tabsData = [
     {
       label: "Information",
@@ -29,20 +42,6 @@ function CreateRequestType() {
     {
       label: "Request Form",
       tabIndex: 1,
-      content:
-        "Ut irure mollit nulla eiusmod excepteur laboris elit sit anim magna tempor excepteur labore nulla.",
-    },
-    {
-      label: "SLAs",
-      tabIndex: 2,
-      content:
-        "Fugiat dolor et quis in incididunt aute. Ullamco voluptate consectetur dolor officia sunt est dolor sint.",
-    },
-    {
-      label: "Workflow",
-      tabIndex: 3,
-      content:
-        "Fugiat dolor et quis in incididunt aute. Ullamco voluptate consectetur dolor officia sunt est dolor sint.",
     },
   ];
   const listFieldsAll = [
@@ -88,9 +87,42 @@ function CreateRequestType() {
       mandatory: false,
     },
   ];
+  const [listOfService, setListOfService] = useState([
+    { id: 1, serviceName: "Computers" },
+    { id: 2, serviceName: "Account & Pass" },
+    { id: 3, serviceName: "Wiffi" },
+  ]);
   const navigate = useNavigate();
+  const serviceNameRef = useRef(null);
+  //Icon
+  const [iconRequestType, setIconRequestType] = useState(
+    "BsFillInfoSquareFill"
+  );
+  const [iconRequestTypeTemp, setIconRequestTypeTemp] =
+    useState(iconRequestType);
+  const [selectedService, setSelectedService] = useState(listOfService[0]);
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [listFieldConfig, setListFieldConfig] = useState(listFieldConfigInit);
+  const [isCreateNewService, setCreateNewService] = useState(false);
+  const [isValidService, setValidService] = useState(false);
+  //định nghĩa form
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    getValues,
+  } = useForm({
+    criteriaMode: "all",
+  });
+  const onSubmit = (data) => {
+    console.log(data);
+    console.log(iconRequestType);
+    console.log(selectedService);
+    console.log(listFieldConfig);
+  };
+  const handleCreateRequestType = () => {
+    if (Object.keys(errors).length !== 0) setActiveTabIndex(0);
+  };
   const onNextTab = () => {
     setActiveTabIndex(activeTabIndex + 1);
   };
@@ -126,6 +158,24 @@ function CreateRequestType() {
         mandatory: false,
       };
       setListFieldConfig((prev) => [...prev, fieldConfig]);
+    }
+  };
+  const handleClickNewService = (e) => {
+    if (isCreateNewService) return;
+    setCreateNewService(true);
+  };
+  const handleValidServiceChange = (value) => {
+    setValidService(value);
+  };
+  const handleCreateNewService = (e) => {
+    if (!isCreateNewService) return;
+    if (isValidService) {
+      setListOfService([
+        ...listOfService,
+        { id: 0, serviceName: serviceNameRef.current },
+      ]);
+      setCreateNewService(false);
+      setSelectedService({ id: 0, serviceName: serviceNameRef.current });
     }
   };
   return (
@@ -198,43 +248,63 @@ function CreateRequestType() {
                 );
               })}
             </div>
-            {/* All tab content. */}
-            <div className="tab-content tab-space">
-              {/*Information Tab*/}
-              <div
-                className={activeTabIndex === 0 ? "block" : "hidden"}
-                id="tab0"
-              >
-                <div className="request-ticket-form-ctn w-[40%] m-3">
-                  <form>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              {/* All tab content. */}
+              <div className="tab-content tab-space">
+                {/*Information Tab*/}
+                <div
+                  className={activeTabIndex === 0 ? "block" : "hidden"}
+                  id="tabInfor"
+                >
+                  <div className="request-ticket-form-ctn w-[40%] m-3">
                     <div className="mb-6">
                       <label
-                        htmlFor="email"
+                        htmlFor="rqtName"
                         className="block mb-2 text-sm font-medium text-gray-500"
                       >
                         Name <span className="text-red-600">*</span>
                       </label>
                       <input
-                        type="email"
-                        id="email"
+                        type="text"
+                        id="rqtName"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         placeholder=""
-                        required
+                        {...register("rqtName", {
+                          required: "This field is required.",
+                          maxLength: {
+                            value: 100,
+                            message: "This field must less than 100 characters",
+                          },
+                        })}
                       />
+                      <p className="mt-2 text-sm text-red-600 ">
+                        {errors.rqtName && errors.rqtName.message}
+                      </p>
                     </div>
                     <div className="mb-6">
                       <label
-                        htmlFor="message"
+                        htmlFor="rqtDescription"
                         className="block mb-2 text-sm font-medium text-gray-500 "
                       >
                         Description <span className="text-red-600">*</span>
                       </label>
                       <textarea
-                        id="message"
+                        id="rqtDescription"
                         rows="4"
                         className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 "
                         placeholder="Write description content of request type"
+                        {...register("rqtDescription", {
+                          required: "This field is required.",
+                          maxLength: {
+                            value: 1000,
+                            message:
+                              "This field must less than 1000 characters",
+                          },
+                        })}
                       ></textarea>
+                      <p className="mt-2 text-sm text-red-600 ">
+                        {errors.rqtDescription && errors.rqtDescription.message}
+                      </p>
                     </div>
                     <div className="mb-6">
                       <label
@@ -253,27 +323,33 @@ function CreateRequestType() {
                         <ModalDialog
                           title={"Change Icon Request Type"}
                           actionText={"Save"}
-                          //actionHandler={cancelRequestDetail}
+                          actionHandler={() =>
+                            setIconRequestType(iconRequestTypeTemp.toString())
+                          }
                           triggerComponent={
                             <div className="inline-block cursor-pointer">
                               <button
                                 type="button"
                                 className="py-2.5 px-4 mr-2 text-sm font-medium text-gray-500 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:ring-4 focus:ring-gray-200 "
-                                onClick={() => console.log("check")}
                               >
                                 Change
                               </button>
                             </div>
                           }
                         >
-                          <div className="IconList flex">
-                            {iconReuqestTypes.map((item, i) => (
+                          {/* Children */}
+                          <div className="IconList flex flex-wrap w-[100%] overflow-y-auto h-64">
+                            {iconRequestTypes.map((item, i) => (
                               <IconTag
-                                className="h-[40px] w-[40px]"
+                                className={`w-[30%] h-[30%] p-1 m-1 cursor-pointer hover:bg-slate-300 ${
+                                  item == iconRequestTypeTemp
+                                    ? "bg-slate-500"
+                                    : ""
+                                }`}
                                 key={i}
                                 name={item}
                                 onClickHandle={() =>
-                                  setIconRequestType(item.toString())
+                                  setIconRequestTypeTemp(item.toString())
                                 }
                               />
                             ))}
@@ -281,110 +357,205 @@ function CreateRequestType() {
                         </ModalDialog>
                       </div>
                     </div>
+                    {/* Select Service */}
+                    <div className="mb-6">
+                      <div className="flex items-center">
+                        <label
+                          htmlFor="rqtService"
+                          className="block text-sm mr-3 font-medium text-gray-500"
+                        >
+                          Service:
+                        </label>
+                        <ModalDialog
+                          title={"Choose Service of current Request Type"}
+                          actionText={"Save"}
+                          actionHandler={() =>
+                            setIconRequestType(iconRequestTypeTemp.toString())
+                          }
+                          triggerComponent={
+                            <div className="inline-block cursor-pointer">
+                              <span className="font-bold text-black text-xl hover:underline">
+                                {selectedService?.serviceName}
+                              </span>
+                            </div>
+                          }
+                        >
+                          {/* Children */}
+                          <div className="ServiceList flex flex-col flex-wrap w-[100%] overflow-y-auto h-64">
+                            {listOfService.map((item, i) => {
+                              return (
+                                <div key={i} className="items-center mb-2">
+                                  <input
+                                    id={`svc${i}`}
+                                    type="checkbox"
+                                    checked={selectedService?.id === item.id}
+                                    onChange={() =>
+                                      setSelectedService({
+                                        id: item.id,
+                                        serviceName: item.serviceName,
+                                      })
+                                    }
+                                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500  focus:ring-2"
+                                  />
+                                  <label
+                                    htmlFor={`svc${i}`}
+                                    className="ml-2 text-sm font-medium text-gray-900 "
+                                  >
+                                    {item.serviceName}
+                                  </label>
+                                </div>
+                              );
+                            })}
+                            {isCreateNewService && (
+                              <div className=" flex items-center mb-4">
+                                <input
+                                  id={`svc0`}
+                                  type="checkbox"
+                                  checked={selectedService.id == 0}
+                                  onChange={() =>
+                                    setSelectedService({
+                                      id: 0,
+                                      serviceName: selectedService.serviceName,
+                                    })
+                                  }
+                                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500  focus:ring-2"
+                                />
+                                <div className="w-[60%] ml-2  ">
+                                  <CustomField
+                                    fieldType="T"
+                                    valType="T"
+                                    mandatory={1}
+                                    maxlength={200}
+                                    placeholder={"Name of Service..."}
+                                    handleValidChange={handleValidServiceChange}
+                                    childValueRef={serviceNameRef}
+                                  />
+                                </div>
+                                <div
+                                  className="flex items-center cursor-pointer p-2 ml-2 bg-slate-100 hover:bg-slate-300"
+                                  onClick={handleCreateNewService}
+                                >
+                                  <IconTag name={"AiOutlineCheck"}></IconTag>
+                                </div>
+                                <div
+                                  className="flex items-center cursor-pointer p-2 ml-2 bg-slate-100 hover:bg-slate-300"
+                                  onClick={() => {
+                                    setCreateNewService(false);
+                                  }}
+                                >
+                                  <IconTag name={"AiOutlineClose"}></IconTag>
+                                </div>
+                              </div>
+                            )}
+
+                            <div
+                              className={`${
+                                isCreateNewService
+                                  ? "text-gray-600"
+                                  : "text-blue-600 cursor-pointer"
+                              } font-medium flex items-center  hover:underline`}
+                              onClick={handleClickNewService}
+                            >
+                              <IconTag name={"AiOutlinePlus"}></IconTag>
+                              <span className="ml-1">Create</span>
+                            </div>
+                          </div>
+                        </ModalDialog>
+                      </div>
+                    </div>
                     <button
-                      type="submit"
+                      type="button"
                       className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-4 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                       onClick={onNextTab}
                     >
                       Next
                     </button>
-                  </form>
-                </div>
-              </div>
-              {/* Request Form Tab */}
-              <div
-                className={activeTabIndex === 1 ? "block" : "hidden"}
-                id="tab0"
-              >
-                <div className="request-form-ctn flex justify-between">
-                  <div className="request-form-config w-1/2">
-                    <h5 className="text-xl font-bold">Default Fields</h5>
-                    <div className="request-form-default w-[80%] m-3 p-3 border-dashed border-2 border-gray-500">
-                      <div className="field-item px-2 py-1 mb-2 w-full border">
-                        <p>Title</p>
-                      </div>
-                      <div className="field-item px-2 py-1 mb-2 w-full border">
-                        <p>Description</p>
-                      </div>
-                    </div>
-                    <h5 className="text-xl font-bold">Custom Fields</h5>
-                    <div className="request-form-custom w-[80%] m-3 p-3 border-dashed border-2 border-gray-500">
-                      {listFieldConfig.map((item, i) => (
-                        <CustomFieldTag
-                          key={item.fieldId}
-                          field={item.fieldId}
-                          fieldName={item.fieldName}
-                          required={item.mandatory}
-                          requiredClickHandle={onSetRequiredCustomField}
-                          removeClickHandle={onRemoveCustomField}
-                        />
-                      ))}
-                    </div>
                   </div>
-                  <div className="request-form-list w-1/2">
-                    <div className="request-form-custom w-[90%] m-3 p-3 border-dashed border-2 border-gray-500">
-                      <h5 className="text-xl font-bold">
-                        Custom Fields Select
-                      </h5>
-                      <p>Select to add in your request form</p>
-                      <hr />
-                      <div className="mt-2">
-                        {listFieldsAll.map((item, i) => (
-                          <div
-                            key={i}
-                            className="flex items-start mb-1 border p-2"
-                          >
-                            <div className="flex items-center h-5">
-                              <input
-                                id={`${item.fieldId}`}
-                                type="checkbox"
-                                value={item.fieldName}
-                                checked={listFieldConfig.some(
-                                  (i) => i.fieldId == item.fieldId
-                                )}
-                                onChange={handleSelectCustomField}
-                                className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300"
-                              />
-                            </div>
-                            <label
-                              htmlFor={`${item.fieldId}`}
-                              className="ml-2 text-sm font-medium text-gray-500"
-                            >
-                              {item.fieldName}
-                            </label>
-                          </div>
+                </div>
+                {/* Request Form Tab */}
+                <div
+                  className={activeTabIndex === 1 ? "block" : "hidden"}
+                  id="tabRqForm"
+                >
+                  <div className="request-form-ctn flex justify-between">
+                    <div className="request-form-config w-1/2">
+                      <h5 className="text-xl font-bold">Default Fields</h5>
+                      <div className="request-form-default w-[80%] m-3 p-3 border-dashed border-2 border-gray-500">
+                        <div className="field-item px-2 py-1 mb-2 w-full border">
+                          <p>Title</p>
+                        </div>
+                        <div className="field-item px-2 py-1 mb-2 w-full border">
+                          <p>Description</p>
+                        </div>
+                      </div>
+                      <h5 className="text-xl font-bold">Custom Fields</h5>
+                      <div className="request-form-custom w-[80%] m-3 p-3 border-dashed border-2 border-gray-500">
+                        {listFieldConfig.map((item, i) => (
+                          <CustomFieldTag
+                            key={item.fieldId}
+                            field={item.fieldId}
+                            fieldName={item.fieldName}
+                            required={item.mandatory}
+                            requiredClickHandle={onSetRequiredCustomField}
+                            removeClickHandle={onRemoveCustomField}
+                          />
                         ))}
                       </div>
                     </div>
+                    <div className="request-form-list w-1/2">
+                      <div className="request-form-custom w-[90%] m-3 p-3 border-dashed border-2 border-gray-500">
+                        <h5 className="text-xl font-bold">
+                          Custom Fields Select
+                        </h5>
+                        <p>Select to add in your request form</p>
+                        <hr />
+                        <div className="mt-2">
+                          {listFieldsAll.map((item, i) => (
+                            <div
+                              key={i}
+                              className="flex items-start mb-1 border p-2"
+                            >
+                              <div className="flex items-center h-5">
+                                <input
+                                  id={`${item.fieldId}`}
+                                  type="checkbox"
+                                  value={item.fieldName}
+                                  checked={listFieldConfig.some(
+                                    (i) => i.fieldId == item.fieldId
+                                  )}
+                                  onChange={handleSelectCustomField}
+                                  className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300"
+                                />
+                              </div>
+                              <label
+                                htmlFor={`${item.fieldId}`}
+                                className="ml-2 text-sm font-medium text-gray-500"
+                              >
+                                {item.fieldName}
+                              </label>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
                   </div>
+                  <button
+                    type="submit"
+                    className="text-white mr-2 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-4 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    onClick={onBackTab}
+                  >
+                    Back
+                  </button>
+                  <button
+                    type="submit"
+                    className="text-white mr-2 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-4 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    onClick={handleCreateRequestType}
+                  >
+                    Save
+                  </button>
                 </div>
-                <button
-                  type="submit"
-                  className="text-white mr-2 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-4 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                  onClick={onBackTab}
-                >
-                  Back
-                </button>
-                <button
-                  type="submit"
-                  className="text-white mr-2 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-4 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                  onClick={onNextTab}
-                >
-                  Next
-                </button>
               </div>
-
-              {/* SLas */}
-              <div
-                className={activeTabIndex === 2 ? "block" : "hidden"}
-                id="link2"
-              ></div>
-              {/* Workflow */}
-              <div
-                className={activeTabIndex === 3 ? "block" : "hidden"}
-                id="link3"
-              ></div>
-            </div>
+            </form>
           </div>
         </div>
       </div>

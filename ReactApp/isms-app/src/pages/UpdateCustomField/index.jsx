@@ -102,7 +102,7 @@ function UpdateCustomField() {
                       {...register("ctFieldCode", {
                         required: "This field is required.",
                         maxLength: {
-                          value: 10,
+                          value: 100,
                           message: "This field must less than 100 characters",
                         },
                       })}

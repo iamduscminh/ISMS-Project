@@ -4,6 +4,7 @@ import styles from "./Header.module.scss";
 import image from "../../../../assets/images";
 import Dropdown from "../../../Elements/Dropdown";
 import * as Icon from "../../../Elements/Icon";
+import { Link } from "react-router-dom";
 const cx = classNames.bind(styles);
 function Header() {
   //Dropdown variable
@@ -30,12 +31,14 @@ function Header() {
   return (
     <div className={cx("header-container")}>
       <div className={cx("header-left-side")}>
-        <div className={cx("header-logo")}>
-          <img src={image.shortLogo} alt="" />
-          <div>
-            <span>QUICK SERVICE</span>
+        <Link to={"/"}>
+          <div className={cx("header-logo")}>
+            <img src={image.shortLogo} alt="" />
+            <div>
+              <span>QUICK SERVICE</span>
+            </div>
           </div>
-        </div>
+        </Link>
       </div>
       <div className={cx("header-right-side")}>
         <div className={cx("header-noti")}>
