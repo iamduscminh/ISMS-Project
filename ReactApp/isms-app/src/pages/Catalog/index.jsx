@@ -1,4 +1,4 @@
-import React from "react";
+import { React, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import classNames from "classnames/bind";
 import styles from "./Catalog.module.scss";
@@ -9,6 +9,18 @@ import CardItem from "../../components/Elements/CardItem";
 const cx = classNames.bind(styles);
 
 function Catalog() {
+  const [requestTypes, setRequestTypes] = useState([]);
+  const requestTypeTemp = [
+    { id: "1", requestTypeName: "Get a guest wifi account" },
+    { id: "2", requestTypeName: "Request a new account" },
+    { id: "3", requestTypeName: "Request admin access" },
+    { id: "4", requestTypeName: "Request new hardware" },
+    { id: "5", requestTypeName: "Set up VPN to the office" },
+  ];
+  useEffect(() => {
+    setRequestTypes(requestTypeTemp);
+  }, []);
+
   return (
     <div className={cx("catalog-container w-full h-full py-5 bg-[#f5f7f9]")}>
       <div
@@ -87,48 +99,17 @@ function Catalog() {
           </div>
           <div className={cx("catalog-requestTypes")}>
             <div className={cx("requestType-card grid grid-cols-3 gap-4")}>
-              <CardItem
-                url="#"
-                title="Request a service"
-                description="Send your problem to It Service"
-                iconComponent={<Icon.BsFillInfoSquareFill />}
-              />
-              <CardItem
-                url="#"
-                title="Request a service"
-                description="Send your problem to It Service"
-                iconComponent={<Icon.BsFillInfoSquareFill />}
-              />
-              <CardItem
-                url="#"
-                title="Request a service"
-                description="Send your problem to It Service"
-                iconComponent={<Icon.BsFillInfoSquareFill />}
-              />
-              <CardItem
-                url="#"
-                title="Request a service"
-                description="Send your problem to It Service"
-                iconComponent={<Icon.BsFillInfoSquareFill />}
-              />
-              <CardItem
-                url="#"
-                title="Request a service"
-                description="Send your problem to It Service"
-                iconComponent={<Icon.BsFillInfoSquareFill />}
-              />
-              <CardItem
-                url="#"
-                title="Request a service"
-                description="Send your problem to It Service"
-                iconComponent={<Icon.BsFillInfoSquareFill />}
-              />
-              <CardItem
-                url="#"
-                title="Request a service"
-                description="Send your problem to It Service"
-                iconComponent={<Icon.BsFillInfoSquareFill />}
-              />
+              {requestTypes.map((item, i) => {
+                return (
+                  <CardItem
+                    key={i}
+                    url={`/createRequest/${item.id}`}
+                    title={item.requestTypeName}
+                    description="Send your problem to It Service"
+                    iconComponent={<Icon.BsFillInfoSquareFill />}
+                  />
+                );
+              })}
             </div>
           </div>
         </div>

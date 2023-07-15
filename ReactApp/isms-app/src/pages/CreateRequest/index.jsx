@@ -1,12 +1,42 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import { React, useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
 import classNames from "classnames/bind";
 import styles from "./CreateRequest.module.scss";
 import * as Icon from "../../components/Elements/Icon";
+import CustomField from "../../components/Elements/CustomField";
 import UnderlineAnimation from "../../components/Animation/UnderlineText";
 
 const cx = classNames.bind(styles);
 function CreateRequest() {
+  const { id } = useParams();
+
+  const requestTypeTemp = {
+    id: "1",
+    requestTypeName: "Request new hardware",
+    description: "Request to admin for new hardware",
+    customFields: [
+      {
+        fieldId: 1,
+        fieldName: "Configuration information",
+        fieldType: "T",
+        valType: "T",
+        mandatory: 1,
+      },
+      {
+        fieldId: 2,
+        fieldName: "Brand Expect",
+        fieldType: "LOV",
+        valType: "T",
+        listOfValue: "Dell;HP;Acer;MSI",
+        listOfValueDisplay: "Dell;HP;Acer;MSI",
+      },
+    ],
+  };
+  const [requestType, setRequestType] = useState(requestTypeTemp);
+  // useEffect(() => {
+  //   setRequestType(requestTypeTemp);
+  // }, []);
+  console.log(requestType);
   return (
     <div
       className={cx("cre-request-container w-full h-full py-5 bg-[#f5f7f9]")}
@@ -74,8 +104,10 @@ function CreateRequest() {
               <Icon.BsFillInfoSquareFill className={cx("h-[50px] w-[50px]")} />
             </div>
             <div className={cx("cre-request-header-description ml-5")}>
-              <h4 className="text-2xl font-bold">Reset Password</h4>
-              <span>Reset your Password Account</span>
+              <h4 className="text-2xl font-bold">
+                {requestType.requestTypeName}
+              </h4>
+              <span>{requestType.description}</span>
             </div>
           </div>
         </div>
@@ -112,7 +144,25 @@ function CreateRequest() {
                   placeholder="Write description content of request ticket"
                 ></textarea>
               </div>
-
+              <div className="customFieldSection mt-3">
+                {requestType.customFields.map((item, i) => {
+                  return (
+                    <CustomField
+                      key={i}
+                      fieldName={item.fieldName}
+                      fieldType={item.fieldType}
+                      valType={item.valType}
+                      mandatory={item.mandatory}
+                      listOfValue={item.listOfValue}
+                      listOfValueDisplay={item.listOfValueDisplay}
+                      minVal={0}
+                      maxVal={9}
+                      minlength={5}
+                      maxlength={10}
+                    />
+                  );
+                })}
+              </div>
               <button
                 type="submit"
                 className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"

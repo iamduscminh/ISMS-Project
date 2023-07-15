@@ -13,6 +13,9 @@ function CustomField({
   maxlength,
   listOfValue,
   listOfValueDisplay,
+  placeholder,
+  handleValidChange,
+  childValueRef,
 }) {
   const [error, setError] = useState("");
   const valRef = useRef(null);
@@ -20,13 +23,17 @@ function CustomField({
   const [inputVal, setInputVal] = useState("");
   const handleChangeInput = (event) => {
     setInputVal(event.target.value);
+    childValueRef.current = event.target.value;
   };
 
   //Validate Input Value
   const validateInputVal = (val) => {
     let listErr = [];
     //Mandatory
-    if (!val && mandatory == 1) listErr.push(`${fieldName} is required!`);
+    if (!val && mandatory == 1)
+      listErr.push(
+        `${fieldName != null ? fieldName : "This field"} is required!`
+      );
     else if (
       (!!valType || !!minVal || !!maxVal || !!minlength || !!maxlength) &&
       !!val
@@ -58,14 +65,22 @@ function CustomField({
         val > maxVal
       )
         listErr.push(`The value of ${fieldName} must be less than ${maxVal}!`);
-    } else listErr = [];
+    } else {
+      listErr = [];
+    }
     return listErr.join(", ");
   };
+  useEffect(() => {
+    if (!error && !!handleValidChange) handleValidChange(true);
+    else if (!!handleValidChange) handleValidChange(false);
+  }, [error]);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (valRef.current && !valRef.current.contains(event.target)) {
         let errorValidate = validateInputVal(inputVal);
         setError(errorValidate);
+        console.log(errorValidate);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -119,13 +134,16 @@ function CustomField({
       {/* ----Text---- */}
       {fieldType === "T" && (
         <>
-          <label
-            htmlFor={`${fieldId}_${fieldCode}`}
-            className="block mb-2 text-sm font-medium text-gray-500 "
-          >
-            {fieldName}
-            {mandatory === 1 && <span className="text-red-600">*</span>}
-          </label>
+          {!!fieldName && (
+            <label
+              htmlFor={`${fieldId}_${fieldCode}`}
+              className="block mb-2 text-sm font-medium text-gray-500 "
+            >
+              {fieldName}
+              {mandatory === 1 && <span className="text-red-600">*</span>}
+            </label>
+          )}
+
           <input
             type="text"
             ref={valRef}
@@ -134,7 +152,7 @@ function CustomField({
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
             id={`${fieldId}_${fieldCode}`}
             value={fieldValue}
-            placeholder=""
+            placeholder={placeholder}
             required
           />
           <p className="mt-2 text-sm text-red-600 ">{error}</p>
@@ -176,11 +194,12 @@ function CustomField({
           <select
             id={`${fieldId}_${fieldCode}`}
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            defaultValue={fieldValue != null ? fieldValue : null}
           >
             <option></option>
             {listOfValue.split(";").map((item, i) => {
               return (
-                <option key={i} value={item} selected={item == fieldValue}>
+                <option key={i} value={item}>
                   {listOfValueDisplay.split(";")[i]}
                 </option>
               );

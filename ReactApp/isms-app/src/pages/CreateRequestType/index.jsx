@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import * as Icon from "../../components/Elements/Icon";
@@ -6,25 +6,32 @@ import IconTag from "../../components/Elements/IconTag";
 import UnderlineAnimation from "../../components/Animation/UnderlineText";
 import CustomFieldTag from "../../components/Elements/CustomFieldTag";
 import ModalDialog from "../../components/Elements/PopupModal";
+import CustomField from "../../components/Elements/CustomField";
 import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
-
 function CreateRequestType() {
-  const iconReuqestTypes = [
+  const iconRequestTypes = [
     "BsFillInfoSquareFill",
-    "AiOutlineRight",
-    "GrNotification",
-    "BiUserCircle",
     "HiOutlineDesktopComputer",
-    "FaExchangeAlt",
-    "BsThreeDotsVertical",
-    "BiUserCircle",
-    "HiOutlineDesktopComputer",
-    "FaExchangeAlt",
-    "BsThreeDotsVertical",
-    "BiUserCircle",
-    "HiOutlineDesktopComputer",
-    "FaExchangeAlt",
-    "BsThreeDotsVertical",
+    "AiOutlineLaptop",
+    "RiComputerLine",
+    "FaMobileAlt",
+    "MdPassword",
+    "AiOutlineWifi",
+    "MdPublishedWithChanges",
+    "BsMicrosoft",
+    "CgSoftwareDownload",
+    "SlEarphonesAlt",
+    "AiOutlineCloudDownload",
+    "AiFillBug",
+    "AiFillFileAdd",
+    "AiFillFolderAdd",
+    "AiFillIdcard",
+    "GiAutoRepair",
+    "AiOutlineMail",
+    "AiFillDatabase",
+    "FaServer",
+    "AiFillWarning",
+    "AiFillSetting",
   ];
   //tab hiển thị
   const tabsData = [
@@ -80,21 +87,24 @@ function CreateRequestType() {
       mandatory: false,
     },
   ];
-  const listOfService = [
+  const [listOfService, setListOfService] = useState([
     { id: 1, serviceName: "Computers" },
     { id: 2, serviceName: "Account & Pass" },
     { id: 3, serviceName: "Wiffi" },
-  ];
+  ]);
   const navigate = useNavigate();
+  const serviceNameRef = useRef(null);
   //Icon
   const [iconRequestType, setIconRequestType] = useState(
     "BsFillInfoSquareFill"
   );
   const [iconRequestTypeTemp, setIconRequestTypeTemp] =
     useState(iconRequestType);
-  const [selectedService, setSelectedService] = useState(null);
+  const [selectedService, setSelectedService] = useState(listOfService[0]);
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [listFieldConfig, setListFieldConfig] = useState(listFieldConfigInit);
+  const [isCreateNewService, setCreateNewService] = useState(false);
+  const [isValidService, setValidService] = useState(false);
   //định nghĩa form
   const {
     register,
@@ -106,6 +116,9 @@ function CreateRequestType() {
   });
   const onSubmit = (data) => {
     console.log(data);
+    console.log(iconRequestType);
+    console.log(selectedService);
+    console.log(listFieldConfig);
   };
   const handleCreateRequestType = () => {
     if (Object.keys(errors).length !== 0) setActiveTabIndex(0);
@@ -145,6 +158,24 @@ function CreateRequestType() {
         mandatory: false,
       };
       setListFieldConfig((prev) => [...prev, fieldConfig]);
+    }
+  };
+  const handleClickNewService = (e) => {
+    if (isCreateNewService) return;
+    setCreateNewService(true);
+  };
+  const handleValidServiceChange = (value) => {
+    setValidService(value);
+  };
+  const handleCreateNewService = (e) => {
+    if (!isCreateNewService) return;
+    if (isValidService) {
+      setListOfService([
+        ...listOfService,
+        { id: 0, serviceName: serviceNameRef.current },
+      ]);
+      setCreateNewService(false);
+      setSelectedService({ id: 0, serviceName: serviceNameRef.current });
     }
   };
   return (
@@ -308,7 +339,7 @@ function CreateRequestType() {
                         >
                           {/* Children */}
                           <div className="IconList flex flex-wrap w-[100%] overflow-y-auto h-64">
-                            {iconReuqestTypes.map((item, i) => (
+                            {iconRequestTypes.map((item, i) => (
                               <IconTag
                                 className={`w-[30%] h-[30%] p-1 m-1 cursor-pointer hover:bg-slate-300 ${
                                   item == iconRequestTypeTemp
@@ -344,7 +375,7 @@ function CreateRequestType() {
                           triggerComponent={
                             <div className="inline-block cursor-pointer">
                               <span className="font-bold text-black text-xl hover:underline">
-                                Computer
+                                {selectedService?.serviceName}
                               </span>
                             </div>
                           }
@@ -353,12 +384,17 @@ function CreateRequestType() {
                           <div className="ServiceList flex flex-col flex-wrap w-[100%] overflow-y-auto h-64">
                             {listOfService.map((item, i) => {
                               return (
-                                <div key={i} className="items-center mb-4">
+                                <div key={i} className="items-center mb-2">
                                   <input
                                     id={`svc${i}`}
                                     type="checkbox"
-                                    checked={selectedService === item.id}
-                                    onChange={() => setSelectedService(item.id)}
+                                    checked={selectedService?.id === item.id}
+                                    onChange={() =>
+                                      setSelectedService({
+                                        id: item.id,
+                                        serviceName: item.serviceName,
+                                      })
+                                    }
                                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500  focus:ring-2"
                                   />
                                   <label
@@ -370,6 +406,59 @@ function CreateRequestType() {
                                 </div>
                               );
                             })}
+                            {isCreateNewService && (
+                              <div className=" flex items-center mb-4">
+                                <input
+                                  id={`svc0`}
+                                  type="checkbox"
+                                  checked={selectedService.id == 0}
+                                  onChange={() =>
+                                    setSelectedService({
+                                      id: 0,
+                                      serviceName: selectedService.serviceName,
+                                    })
+                                  }
+                                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500  focus:ring-2"
+                                />
+                                <div className="w-[60%] ml-2  ">
+                                  <CustomField
+                                    fieldType="T"
+                                    valType="T"
+                                    mandatory={1}
+                                    maxlength={200}
+                                    placeholder={"Name of Service..."}
+                                    handleValidChange={handleValidServiceChange}
+                                    childValueRef={serviceNameRef}
+                                  />
+                                </div>
+                                <div
+                                  className="flex items-center cursor-pointer p-2 ml-2 bg-slate-100 hover:bg-slate-300"
+                                  onClick={handleCreateNewService}
+                                >
+                                  <IconTag name={"AiOutlineCheck"}></IconTag>
+                                </div>
+                                <div
+                                  className="flex items-center cursor-pointer p-2 ml-2 bg-slate-100 hover:bg-slate-300"
+                                  onClick={() => {
+                                    setCreateNewService(false);
+                                  }}
+                                >
+                                  <IconTag name={"AiOutlineClose"}></IconTag>
+                                </div>
+                              </div>
+                            )}
+
+                            <div
+                              className={`${
+                                isCreateNewService
+                                  ? "text-gray-600"
+                                  : "text-blue-600 cursor-pointer"
+                              } font-medium flex items-center  hover:underline`}
+                              onClick={handleClickNewService}
+                            >
+                              <IconTag name={"AiOutlinePlus"}></IconTag>
+                              <span className="ml-1">Create</span>
+                            </div>
                           </div>
                         </ModalDialog>
                       </div>
