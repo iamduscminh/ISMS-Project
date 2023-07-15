@@ -1,0 +1,13 @@
+.query-input{
+    border: none;
+    outline: none;
+    background-color: transparent;
+    border-bottom: 2px solid #fff;
+    font-size: 1.8rem;
+    color: #fff;
+    font-weight: 600;
+    padding-bottom: 0.2rem;
+    &::placeholder{
+        color: #fff;
+    }
+}
