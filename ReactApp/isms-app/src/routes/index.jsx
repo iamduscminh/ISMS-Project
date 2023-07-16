@@ -22,6 +22,7 @@ const publicRoutes = [
 
   { path: "/admin/", component: Page.ListTicket, layout: Layout.CustomLayout},
   { path: "/admin/query", component: Page.TicketQuery, layout: Layout.CustomLayout},
+  { path: "/admin/sla", component: Page.SLA, layout: Layout.CustomLayout},
   { path: "/admin/ticket/:ticketId", component: Page.TicketDetail, layout: Layout.CustomLayout},
   
   { path: "/viewRequests", component: Page.ViewRequests },
