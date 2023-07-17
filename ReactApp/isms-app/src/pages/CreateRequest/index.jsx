@@ -1,11 +1,11 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import classNames from "classnames/bind";
 import styles from "./CreateRequest.module.scss";
-import * as Icon from "../../components/Elements/Icon";
 import CustomField from "../../components/Elements/CustomField";
 import UnderlineAnimation from "../../components/Animation/UnderlineText";
-
+import IconTag from "../../components/Elements/IconTag";
 const cx = classNames.bind(styles);
 function CreateRequest() {
   const { id } = useParams();
@@ -17,18 +17,83 @@ function CreateRequest() {
     customFields: [
       {
         fieldId: 1,
+        fieldCode: "f1",
         fieldName: "Configuration information",
+        fieldValue: null,
         fieldType: "T",
-        valType: "T",
-        mandatory: 1,
+        valType: "N",
+        mandatory: 0,
+        minVal: null,
+        maxVal: null,
+        minlength: null,
+        maxlength: null,
+        listOfValue: null,
+        listOfValueDisplay: null,
+        placeholder: null,
       },
       {
         fieldId: 2,
+        fieldCode: "f2",
         fieldName: "Brand Expect",
+        fieldValue: null,
         fieldType: "LOV",
         valType: "T",
+        mandatory: 0,
+        minVal: null,
+        maxVal: null,
+        minlength: null,
+        maxlength: null,
         listOfValue: "Dell;HP;Acer;MSI",
         listOfValueDisplay: "Dell;HP;Acer;MSI",
+        placeholder: null,
+      },
+      {
+        fieldId: 3,
+        fieldCode: "f3",
+        fieldName: "Check test",
+        fieldValue: "true",
+        fieldType: "C",
+        valType: "T",
+        mandatory: 0,
+        minVal: null,
+        maxVal: null,
+        minlength: null,
+        maxlength: null,
+        listOfValue: "Dell;HP;Acer;MSI",
+        listOfValueDisplay: "Dell;HP;Acer;MSI",
+        placeholder: null,
+      },
+      {
+        fieldId: 4,
+        fieldCode: "f4",
+        fieldName: "Check test",
+        fieldValue: "Dell",
+        fieldType: "RD",
+        valType: "T",
+        mandatory: 0,
+        minVal: null,
+        maxVal: null,
+        minlength: null,
+        maxlength: null,
+        listOfValue: "Dell;HP;Acer;MSI",
+        listOfValueDisplay: "Dell;HP;Acer;MSI",
+        placeholder: null,
+      },
+      {
+        fieldId: 5,
+        fieldCode: "f5",
+        fieldName: "Date",
+        fieldValue: "2023-07-11",
+        fieldType: "D",
+        valType: "N",
+        mandatory: 0,
+        minVal: null,
+        maxVal: null,
+        minlength: null,
+        maxlength: null,
+        listOfValue: null,
+        listOfValueDisplay: null,
+        placeholder: null,
       },
     ],
   };
@@ -36,56 +101,67 @@ function CreateRequest() {
   // useEffect(() => {
   //   setRequestType(requestTypeTemp);
   // }, []);
-  console.log(requestType);
+
+  //định nghĩa form
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    getValues,
+    setValue,
+  } = useForm({
+    criteriaMode: "all",
+  });
+  const onSubmit = (data) => {
+    console.log(data);
+  };
   return (
     <div
-      className={cx("cre-request-container w-full h-full py-5 bg-[#f5f7f9]")}
+      className={cx(
+        "cre-request-container w-full h-full py-5 bg-[#3E5481] mt-3"
+      )}
     >
       <div
         className={cx(
           "cre-request-section mt-4 mx-auto max-w-7xl min-h-screen bg-white rounded shadow"
         )}
       >
-        <div className={cx("cre-request-header w-full bg-gray-200")}>
+        <div
+          className={cx("cre-request-header bg-[#3E5481] w-full text-white")}
+        >
           <nav className={cx("cre-request-header-nav px-6 pt-3 pb-3")}>
             <ul
               className={cx("header-nav-content flex items-center text-[18px]")}
             >
               <li className={cx("header-nav-item ml-1")}>
-                <Link className={cx("header-nav-url text-blue-700")} to="/">
+                <Link className={cx("header-nav-url")} to="/">
                   <UnderlineAnimation>Home</UnderlineAnimation>
                 </Link>
               </li>
 
               <li className={cx("header-nav-item ml-1")}>
                 <div className={cx("header-nav-arrow")}>
-                  <Icon.AiOutlineRight />
+                  <IconTag name={"AiOutlineRight"} />
                 </div>
               </li>
               <li className={cx("header-nav-item ml-1")}>
-                <Link
-                  className={cx("header-nav-url text-blue-700")}
-                  href="/catalog"
-                >
+                <Link className={cx("header-nav-url")} href="/catalog">
                   <UnderlineAnimation>Create Request</UnderlineAnimation>
                 </Link>
               </li>
               <li className={cx("header-nav-item ml-1")}>
                 <div className={cx("header-nav-arrow")}>
-                  <Icon.AiOutlineRight />
+                  <IconTag name={"AiOutlineRight"} />
                 </div>
               </li>
               <li className={cx("header-nav-item ml-1")}>
-                <Link
-                  className={cx("header-nav-url text-blue-700")}
-                  href="/catalog"
-                >
+                <Link className={cx("header-nav-url")} href="/catalog">
                   <UnderlineAnimation>Accounts</UnderlineAnimation>
                 </Link>
               </li>
               <li className={cx("header-nav-item ml-1")}>
                 <div className={cx("header-nav-arrow")}>
-                  <Icon.AiOutlineRight />
+                  <IconTag name={"AiOutlineRight"} />
                 </div>
               </li>
               <li className={cx("header-nav-item ml-1")}>
@@ -101,7 +177,10 @@ function CreateRequest() {
             )}
           >
             <div className={cx("cre-request-header-icon")}>
-              <Icon.BsFillInfoSquareFill className={cx("h-[50px] w-[50px]")} />
+              <IconTag
+                name={"BsFillInfoSquareFill"}
+                className={"h-[50px] w-[50px]"}
+              />
             </div>
             <div className={cx("cre-request-header-description ml-5")}>
               <h4 className="text-2xl font-bold">
@@ -114,51 +193,76 @@ function CreateRequest() {
         {/* REQUEST FORM SECTION*/}
         <div className={cx("p-5 w-full h-full")}>
           <div className={cx("request-ticket-form-ctn w-[60%] m-auto")}>
-            <form>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div className="mb-6">
                 <label
-                  htmlFor="email"
+                  htmlFor="rqtTitle"
                   className="block mb-2 text-sm font-medium text-gray-500 "
                 >
                   Request Title
                 </label>
                 <input
-                  type="email"
-                  id="email"
+                  type="text"
+                  id="rqtTitle"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                   placeholder=""
-                  required
+                  {...register("rqtTitle", {
+                    required: "This field is required.",
+                    maxLength: {
+                      value: 500,
+                      message: "This field must less than 500 characters",
+                    },
+                  })}
                 />
+                <p className="mt-2 text-sm text-red-600 ">
+                  {errors.rqtTitle && errors.rqtTitle.message}
+                </p>
               </div>
               <div className="mb-6">
                 <label
-                  htmlFor="message"
+                  htmlFor="rqtDesc"
                   className="block mb-2 text-sm font-medium text-gray-500 "
                 >
                   Description
                 </label>
                 <textarea
-                  id="message"
+                  id="rqtDesc"
                   rows="4"
                   className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 "
                   placeholder="Write description content of request ticket"
+                  {...register("rqtDesc", {
+                    maxLength: {
+                      value: 200,
+                      message: "This field must less than 2000 characters",
+                    },
+                  })}
                 ></textarea>
+                <p className="mt-2 text-sm text-red-600 ">
+                  {errors.rqtDesc && errors.rqtDesc.message}
+                </p>
               </div>
               <div className="customFieldSection mt-3">
                 {requestType.customFields.map((item, i) => {
                   return (
                     <CustomField
                       key={i}
+                      fieldId={item.fieldId}
+                      fieldCode={item.fieldCode}
                       fieldName={item.fieldName}
+                      fieldValue={item.fieldValue}
                       fieldType={item.fieldType}
                       valType={item.valType}
                       mandatory={item.mandatory}
+                      minVal={item.minVal}
+                      maxVal={item.maxVal}
+                      minlength={item.minlength}
+                      maxlength={item.maxlength}
                       listOfValue={item.listOfValue}
                       listOfValueDisplay={item.listOfValueDisplay}
-                      minVal={0}
-                      maxVal={9}
-                      minlength={5}
-                      maxlength={10}
+                      placeholder={item.placeholder}
+                      register={register}
+                      setValueFnc={setValue}
+                      errors={errors}
                     />
                   );
                 })}

@@ -1,15 +1,30 @@
-import React from "react";
-import classNames from "classnames/bind";
-import styles from "./Header.module.scss";
+import { React, useState, useEffect } from "react";
 import image from "../../../../assets/images";
 import Dropdown from "../../../Elements/Dropdown";
-import * as Icon from "../../../Elements/Icon";
 import { Link } from "react-router-dom";
-const cx = classNames.bind(styles);
+import IconTag from "../../../Elements/IconTag";
+
 function Header() {
+  const [isHeaderScroll, setHeaderScroll] = useState(true);
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.pageYOffset;
+      if (scrollPosition > 0) {
+        setHeaderScroll(false);
+      } else {
+        setHeaderScroll(true);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
   //Dropdown variable
-  const [openDrNoti, setOpenDrNoti] = React.useState(false);
-  const [openDrProf, setOpenDrProf] = React.useState(false);
+  const [openDrNoti, setOpenDrNoti] = useState(false);
+  const [openDrProf, setOpenDrProf] = useState(false);
   const handleOpenNoti = () => {
     setOpenDrNoti(!openDrNoti);
   };
@@ -27,25 +42,31 @@ function Header() {
     setOpenDrNoti(false);
     console.log("clicked two");
   };
-
   return (
-    <div className={cx("header-container")}>
-      <div className={cx("header-left-side")}>
+    <div
+      className={`header-container flex fixed top-0 left-0 ${
+        isHeaderScroll ? "bg-[#3E5481]" : "bg-[#294a8d]"
+      } w-[100%] h-[56px] justify-between items-center`}
+    >
+      <div className="header-left-side">
         <Link to={"/"}>
-          <div className={cx("header-logo")}>
-            <img src={image.shortLogo} alt="" />
-            <div>
+          <div className="header-logo ml-4 w-[100%] flex items-center">
+            <img src={image.shortLogo} alt="" className="w-[15%] pr" />
+            <div className="text-white text-2xl font-bold">
               <span>QUICK SERVICE</span>
             </div>
           </div>
         </Link>
       </div>
-      <div className={cx("header-right-side")}>
-        <div className={cx("header-noti")}>
-          <button className={cx("header-noti-button")} onClick={handleOpenNoti}>
-            <Icon.GrNotification className={cx("text-white")} />
+      <div className="header-right-side flex mr-8 ">
+        <div className="header-noti mr-2">
+          <button className="header-noti-button" onClick={handleOpenNoti}>
+            <IconTag
+              name={"IoMdNotifications"}
+              className={"text-white text-2xl"}
+            />
           </button>
-          <div className={cx("header-noti-dropdown")}>
+          <div className="header-noti-dropdown">
             <Dropdown
               open={openDrNoti}
               menu={[
@@ -59,14 +80,11 @@ function Header() {
             />
           </div>
         </div>
-        <div className={cx("header-profile")}>
-          <button
-            className={cx("header-profile-button")}
-            onClick={handleOpenProf}
-          >
-            <Icon.BiUserCircle className={cx("header-profile-icon")} />
+        <div className="header-profile">
+          <button className="header-profile-button" onClick={handleOpenProf}>
+            <IconTag name={"BiUserCircle"} className={"text-white text-2xl"} />
           </button>
-          <div className={cx("header-prof-dropdown")}>
+          <div className="header-prof-dropdown">
             <Dropdown
               open={openDrProf}
               menu={[

@@ -69,6 +69,14 @@ function CreateRequestType() {
       fieldId: 6,
       fieldName: "Wifi reset",
     },
+    {
+      fieldId: 7,
+      fieldName: "Configuration Information",
+    },
+    {
+      fieldId: 8,
+      fieldName: "Brand Expect",
+    },
   ];
   const listFieldConfigInit = [
     {
@@ -93,7 +101,6 @@ function CreateRequestType() {
     { id: 3, serviceName: "Wiffi" },
   ]);
   const navigate = useNavigate();
-  const serviceNameRef = useRef(null);
   //Icon
   const [iconRequestType, setIconRequestType] = useState(
     "BsFillInfoSquareFill"
@@ -104,7 +111,7 @@ function CreateRequestType() {
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [listFieldConfig, setListFieldConfig] = useState(listFieldConfigInit);
   const [isCreateNewService, setCreateNewService] = useState(false);
-  const [isValidService, setValidService] = useState(false);
+  const [errorService, setErrorService] = useState("");
   //định nghĩa form
   const {
     register,
@@ -164,22 +171,23 @@ function CreateRequestType() {
     if (isCreateNewService) return;
     setCreateNewService(true);
   };
-  const handleValidServiceChange = (value) => {
-    setValidService(value);
-  };
+
   const handleCreateNewService = (e) => {
     if (!isCreateNewService) return;
-    if (isValidService) {
+    const serviceValue = getValues("svcName");
+    if (serviceValue) {
       setListOfService([
         ...listOfService,
-        { id: 0, serviceName: serviceNameRef.current },
+        { id: 0, serviceName: serviceValue },
       ]);
       setCreateNewService(false);
-      setSelectedService({ id: 0, serviceName: serviceNameRef.current });
+      setSelectedService({ id: 0, serviceName: serviceValue });
+    } else {
+      setErrorService("Service Name is required!");
     }
   };
   return (
-    <div className="request-types-container pb-4 w-full h-full bg-[#3E5481] bg-blend-lighten">
+    <div className="request-types-container pb-4 w-full h-full bg-[#3E5481] bg-blend-lighten mt-14">
       <div className="request-types-section mx-auto max-w-7xl ">
         {/* HEADER SECTION*/}
         <div className="request-types-header w-full text-white ">
@@ -257,6 +265,7 @@ function CreateRequestType() {
                   id="tabInfor"
                 >
                   <div className="request-ticket-form-ctn w-[40%] m-3">
+                    {/* Type Name */}
                     <div className="mb-6">
                       <label
                         htmlFor="rqtName"
@@ -281,6 +290,7 @@ function CreateRequestType() {
                         {errors.rqtName && errors.rqtName.message}
                       </p>
                     </div>
+                    {/* Description */}
                     <div className="mb-6">
                       <label
                         htmlFor="rqtDescription"
@@ -306,6 +316,7 @@ function CreateRequestType() {
                         {errors.rqtDescription && errors.rqtDescription.message}
                       </p>
                     </div>
+                    {/* Icon */}
                     <div className="mb-6">
                       <label
                         htmlFor="rqtIcon"
@@ -357,7 +368,7 @@ function CreateRequestType() {
                         </ModalDialog>
                       </div>
                     </div>
-                    {/* Select Service */}
+                    {/*Service */}
                     <div className="mb-6">
                       <div className="flex items-center">
                         <label
@@ -380,7 +391,7 @@ function CreateRequestType() {
                             </div>
                           }
                         >
-                          {/* Children */}
+                          {/* Children Service Section */}
                           <div className="ServiceList flex flex-col flex-wrap w-[100%] overflow-y-auto h-64">
                             {listOfService.map((item, i) => {
                               return (
@@ -422,14 +433,19 @@ function CreateRequestType() {
                                 />
                                 <div className="w-[60%] ml-2  ">
                                   <CustomField
+                                    fieldId={"svcName"}
+                                    fieldCode={"svcName"}
                                     fieldType="T"
                                     valType="T"
                                     mandatory={1}
                                     maxlength={200}
                                     placeholder={"Name of Service..."}
-                                    handleValidChange={handleValidServiceChange}
-                                    childValueRef={serviceNameRef}
+                                    register={register}
+                                    errors={errors}
                                   />
+                                  <p className="mt-2 text-sm text-red-600 ">
+                                    {errorService}
+                                  </p>
                                 </div>
                                 <div
                                   className="flex items-center cursor-pointer p-2 ml-2 bg-slate-100 hover:bg-slate-300"
