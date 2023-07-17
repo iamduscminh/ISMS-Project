@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
+
 function CustomField({
   fieldId,
   fieldCode,
@@ -14,101 +15,12 @@ function CustomField({
   listOfValue,
   listOfValueDisplay,
   placeholder,
-  handleValidChange,
-  childValueRef,
+  register,
+  setValueFnc,
+  errors,
 }) {
   const [error, setError] = useState("");
-  const valRef = useRef(null);
-  /*------Text------*/
-  const [inputVal, setInputVal] = useState("");
-  const handleChangeInput = (event) => {
-    setInputVal(event.target.value);
-    childValueRef.current = event.target.value;
-  };
-
-  //Validate Input Value
-  const validateInputVal = (val) => {
-    let listErr = [];
-    //Mandatory
-    if (!val && mandatory == 1)
-      listErr.push(
-        `${fieldName != null ? fieldName : "This field"} is required!`
-      );
-    else if (
-      (!!valType || !!minVal || !!maxVal || !!minlength || !!maxlength) &&
-      !!val
-    ) {
-      //Valtype
-      if (!!valType && valType == "N" && isNaN(val))
-        listErr.push(`${fieldName} must be number!`);
-      //Min Length
-      if (!!minlength && val.length < minlength)
-        listErr.push(`${fieldName} must be more than ${minlength} characters!`);
-      //Max Length
-      if (!!maxlength && val.length > maxlength)
-        listErr.push(`${fieldName} must be less than ${maxlength} characters!`);
-      //Min Val
-      if (
-        !!valType &&
-        valType == "N" &&
-        !isNaN(val) &&
-        !!minVal &&
-        val < minVal
-      )
-        listErr.push(`The value of ${fieldName} must be more than ${minVal}!`);
-      //Max Val
-      if (
-        !!valType &&
-        valType == "N" &&
-        !isNaN(val) &&
-        !!maxVal &&
-        val > maxVal
-      )
-        listErr.push(`The value of ${fieldName} must be less than ${maxVal}!`);
-    } else {
-      listErr = [];
-    }
-    return listErr.join(", ");
-  };
-  useEffect(() => {
-    if (!error && !!handleValidChange) handleValidChange(true);
-    else if (!!handleValidChange) handleValidChange(false);
-  }, [error]);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (valRef.current && !valRef.current.contains(event.target)) {
-        let errorValidate = validateInputVal(inputVal);
-        setError(errorValidate);
-        console.log(errorValidate);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [inputVal]);
-
-  /*------Textarea------*/
-  const [inputAreaVal, setInputAreaVal] = useState("");
-  const handleChangeInputArea = (event) => {
-    setInputAreaVal(event.target.value);
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (valRef.current && !valRef.current.contains(event.target)) {
-        let errorValidate = validateInputVal(inputAreaVal);
-        setError(errorValidate);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [inputAreaVal]);
+  mandatory = mandatory === 1;
 
   /*------Checklist------*/
   const [checkedCL, setCheckedCL] = useState([]);
@@ -121,7 +33,9 @@ function CustomField({
       updatedList.splice(checkedCL.indexOf(event.target.value), 1);
     }
     setCheckedCL(updatedList);
+    console.log(checkedCLItems);
   };
+
   // Generate string of checked items
   const checkedCLItems = checkedCL.length
     ? checkedCL.reduce((total, item) => {
@@ -140,22 +54,46 @@ function CustomField({
               className="block mb-2 text-sm font-medium text-gray-500 "
             >
               {fieldName}
-              {mandatory === 1 && <span className="text-red-600">*</span>}
+              {mandatory && <span className="text-red-600">*</span>}
             </label>
           )}
 
           <input
             type="text"
-            ref={valRef}
-            onChange={handleChangeInput}
             name={fieldCode}
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
             id={`${fieldId}_${fieldCode}`}
             value={fieldValue}
             placeholder={placeholder}
-            required
+            {...register(`${fieldCode}`, {
+              required: mandatory && "This field is required.",
+              min: minVal && {
+                value: minVal,
+                message: `The value of ${fieldName} must be more than ${minVal}!`,
+              },
+              max: maxVal && {
+                value: maxVal,
+                message: `The value of ${fieldName} must be less than ${maxVal}!`,
+              },
+              minLength: minlength && {
+                value: minlength,
+                message: `${fieldName} must be more than ${minlength} characters!`,
+              },
+              maxLength: {
+                value: maxlength,
+                message: `${fieldName} must be less than ${maxlength} characters!`,
+              },
+              pattern: valType == "N" && {
+                value: /^[0-9]*$/,
+                message: `${fieldName} must be only number!`,
+              },
+            })}
           />
-          <p className="mt-2 text-sm text-red-600 ">{error}</p>
+          {errors && errors[fieldCode] && errors[fieldCode].message && (
+            <p className="mt-2 text-sm text-red-600 ">
+              {errors[fieldCode].message}
+            </p>
+          )}
         </>
       )}
       {/* ----TextArea---- */}
@@ -166,18 +104,43 @@ function CustomField({
             className="block mb-2 text-sm font-medium text-gray-500 "
           >
             {fieldName}
-            {mandatory === 1 && <span className="text-red-600">*</span>}
+            {mandatory && <span className="text-red-600">*</span>}
           </label>
           <textarea
             id={`${fieldId}_${fieldCode}`}
-            ref={valRef}
-            onChange={handleChangeInputArea}
             rows="4"
             name={fieldCode}
             className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 "
             value={fieldValue}
+            {...register(`${fieldCode}`, {
+              required: mandatory && "This field is required.",
+              min: minVal && {
+                value: minVal,
+                message: `The value of ${fieldName} must be more than ${minVal}!`,
+              },
+              max: maxVal && {
+                value: maxVal,
+                message: `The value of ${fieldName} must be less than ${maxVal}!`,
+              },
+              minLength: minlength && {
+                value: minlength,
+                message: `${fieldName} must be more than ${minlength} characters!`,
+              },
+              maxLength: {
+                value: maxlength,
+                message: `${fieldName} must be less than ${maxlength} characters!`,
+              },
+              pattern: valType == "N" && {
+                value: /^[0-9]*$/,
+                message: `${fieldName} must be only number!`,
+              },
+            })}
           ></textarea>
-          <p className="mt-2 text-sm text-red-600 ">{error}</p>
+          {errors && errors[fieldCode] && errors[fieldCode].message && (
+            <p className="mt-2 text-sm text-red-600 ">
+              {errors[fieldCode].message}
+            </p>
+          )}
         </>
       )}
       {/* ----Combobox---- */}
@@ -189,12 +152,13 @@ function CustomField({
             defaultValue=""
           >
             {fieldName}
-            {mandatory === 1 && <span className="text-red-600">*</span>}
+            {mandatory && <span className="text-red-600">*</span>}
           </label>
           <select
             id={`${fieldId}_${fieldCode}`}
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             defaultValue={fieldValue != null ? fieldValue : null}
+            {...register(`${fieldCode}`)}
           >
             <option></option>
             {listOfValue.split(";").map((item, i) => {
@@ -216,9 +180,9 @@ function CustomField({
                 id={`${fieldId}_${fieldCode}`}
                 type="checkbox"
                 name={fieldCode}
-                value={fieldValue}
+                defaultChecked={fieldValue == "true"}
                 className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300"
-                required
+                {...register(`${fieldCode}`, { valueAsNumber: true })}
               />
             </div>
             <label
@@ -226,7 +190,7 @@ function CustomField({
               className="ml-2 text-sm font-medium text-gray-500"
             >
               {fieldName}
-              {mandatory === 1 && <span className="text-red-600">*</span>}
+              {mandatory && <span className="text-red-600">*</span>}
             </label>
           </div>
         </>
@@ -236,7 +200,7 @@ function CustomField({
         <>
           <label className="block mb-2 text-sm font-medium text-gray-900 ">
             {fieldName}
-            {mandatory === 1 && <span className="text-red-600">*</span>}
+            {mandatory && <span className="text-red-600">*</span>}
           </label>
           {listOfValue.split(";").map((item, i) => {
             return (
@@ -249,6 +213,7 @@ function CustomField({
                     value={item}
                     onChange={handleCheckList}
                     className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300"
+                    {...register(`${fieldCode}`)}
                   />
                 </div>
                 <label
@@ -272,7 +237,7 @@ function CustomField({
               htmlFor={`${fieldId}_${fieldCode}`}
             >
               {fieldName}
-              {mandatory === 1 && <span className="text-red-600">*</span>}
+              {mandatory && <span className="text-red-600">*</span>}
             </label>
             <input
               className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none"
@@ -299,10 +264,11 @@ function CustomField({
                 <input
                   id={`${fieldId}_${fieldCode}_${i}`}
                   type="radio"
-                  // checked={item == fieldValue}
+                  defaultChecked={item == fieldValue}
                   value={item}
                   name={`${fieldCode}`}
                   className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500  focus:ring-2"
+                  {...register(`${fieldCode}`)}
                 />
                 <label
                   htmlFor={`${fieldId}_${fieldCode}_${i}`}
@@ -324,14 +290,15 @@ function CustomField({
               htmlFor={`${fieldId}_${fieldCode}`}
             >
               {fieldName}
-              {mandatory === 1 && <span className="text-red-600">*</span>}
+              {mandatory && <span className="text-red-600">*</span>}
             </label>
             <input
               type="date"
               id={`${fieldId}_${fieldCode}`}
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
               placeholder=""
-              required
+              value={fieldValue}
+              {...register(`${fieldCode}`)}
             />
           </div>
         </>

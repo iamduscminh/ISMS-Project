@@ -30,6 +30,7 @@ import { MdPassword, MdPublishedWithChanges } from "react-icons/md";
 import { CgSoftwareDownload } from "react-icons/cg";
 import { SlEarphonesAlt } from "react-icons/sl";
 import { GiAutoRepair } from "react-icons/gi";
+import { IoMdNotifications } from "react-icons/io";
 
 export {
   AiOutlineRight,
@@ -58,6 +59,7 @@ export { MdPassword, MdPublishedWithChanges };
 export { CgSoftwareDownload };
 export { SlEarphonesAlt };
 export { GiAutoRepair };
+export { IoMdNotifications };
 //Request Type Icon
 /*
 BsFillInfoSquareFill
