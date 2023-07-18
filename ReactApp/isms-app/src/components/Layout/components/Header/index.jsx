@@ -1,10 +1,61 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
+import Tippy from "@tippyjs/react/headless";
 import image from "../../../../assets/images";
 import Dropdown from "../../../Elements/Dropdown";
-import { Link } from "react-router-dom";
+import TippyItem from "../../../Elements/TippyItem";
 import IconTag from "../../../Elements/IconTag";
 
 function Header() {
+  const [toggleNoti, setToggleNoti] = useState(false);
+  const tippyWrapperRefNoti = useRef(null);
+  const settingRefNoti = useRef(null);
+  const [toggleUser, setToggleUser] = useState(false);
+  const tippyWrapperRefUser = useRef(null);
+  const settingRefUser = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        tippyWrapperRefNoti.current &&
+        !tippyWrapperRefNoti.current.contains(event.target) &&
+        !settingRefNoti.current.contains(event.target)
+      ) {
+        setToggleNoti(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
+  const handleToggleNoti = () => {
+    setToggleNoti((prev) => !prev);
+  };
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        tippyWrapperRefUser.current &&
+        !tippyWrapperRefUser.current.contains(event.target) &&
+        !settingRefUser.current.contains(event.target)
+      ) {
+        setToggleUser(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
+  const handleToggleUser = () => {
+    setToggleUser((prev) => !prev);
+  };
   const [isHeaderScroll, setHeaderScroll] = useState(true);
   useEffect(() => {
     const handleScroll = () => {
@@ -44,8 +95,8 @@ function Header() {
   };
   return (
     <div
-      className={`header-container flex fixed top-0 left-0 ${
-        isHeaderScroll ? "bg-[#3E5481]" : "bg-[#294a8d]"
+      className={`header-container flex fixed top-0 left-0  z-10 ${
+        isHeaderScroll ? "bg-[#294a8d]" : "bg-[#3E5481]"
       } w-[100%] h-[56px] justify-between items-center`}
     >
       <div className="header-left-side">
@@ -59,40 +110,138 @@ function Header() {
         </Link>
       </div>
       <div className="header-right-side flex mr-8 ">
-        <div className="header-noti mr-2">
-          <button className="header-noti-button" onClick={handleOpenNoti}>
-            <IconTag
-              name={"IoMdNotifications"}
-              className={"text-white text-2xl"}
-            />
-          </button>
-          <div className="header-noti-dropdown">
-            <Dropdown
-              open={openDrNoti}
-              menu={[
-                <button key="drNoti1" onClick={handleDrNotiItem1}>
-                  Option 1
-                </button>,
-                <button key="drNoti2" onClick={handleDrNotiItem2}>
-                  Option 2
-                </button>,
-              ]}
-            />
+        <Tippy
+          interactive
+          visible={toggleNoti}
+          placement="bottom-end"
+          render={(attrs) => (
+            <div
+              className="tippy-wrapper bg-white w-[20vw] p-3 rounded shadow"
+              tabIndex="-1"
+              ref={tippyWrapperRefNoti}
+              {...attrs}
+            >
+              <h1 className="w-full h-[10%] text-[1.25rem] text-[#172b4d] font-medium ">
+                Notification
+              </h1>
+              <div className="my-[0.75rem]">
+                <h2 className="text-[0.85rem] text-[#172b4d]">
+                  Request Ticket
+                </h2>
+                <TippyItem
+                  name="Setting Name"
+                  description="This is Description for setting"
+                  icon="HiOutlineDesktopComputer"
+                  color="default"
+                />
+                <TippyItem
+                  name="Setting Name"
+                  description="This is Description for setting"
+                  icon="HiOutlineDesktopComputer"
+                  color="default"
+                />
+                <TippyItem
+                  name="Setting Name"
+                  description="This is Description for setting"
+                  icon="HiOutlineDesktopComputer"
+                  color="default"
+                />
+                <TippyItem
+                  name="Setting Name"
+                  description="This is Description for setting"
+                  icon="HiOutlineDesktopComputer"
+                  color="default"
+                />
+              </div>
+              <div>
+                <h2 className="text-[0.85rem] text-[#172b4d] ">From Admin</h2>
+                <TippyItem
+                  name="Setting Name"
+                  description="This is Description for setting"
+                  icon="HiOutlineDesktopComputer"
+                  color="personal"
+                />
+                <TippyItem
+                  name="Setting Name"
+                  description="This is Description for setting"
+                  icon="HiOutlineDesktopComputer"
+                  color="personal"
+                />
+              </div>
+            </div>
+          )}
+        >
+          <div
+            className="aspect-square mr-2 cursor-pointer"
+            ref={settingRefNoti}
+          >
+            <button className="header-noti-button" onClick={handleToggleNoti}>
+              <IconTag
+                name={"IoMdNotifications"}
+                className={"text-white text-2xl"}
+              />
+            </button>
           </div>
-        </div>
+        </Tippy>
         <div className="header-profile">
-          <button className="header-profile-button" onClick={handleOpenProf}>
+          <Tippy
+            interactive
+            visible={toggleUser}
+            placement="bottom-end"
+            render={(attrs) => (
+              <div
+                className="tippy-wrapper bg-white w-[20vw] p-3 rounded shadow"
+                tabIndex="-1"
+                ref={tippyWrapperRefUser}
+                {...attrs}
+              >
+                <h1 className="w-full h-[10%] text-[1.25rem] text-[#172b4d] font-medium ">
+                  Profiles
+                </h1>
+                <div className="my-[0.75rem]">
+                  <TippyItem
+                    name="Setting Name"
+                    description="This is Description for setting"
+                    icon="HiOutlineDesktopComputer"
+                    color="default"
+                  />
+                  <TippyItem
+                    name="Setting Name"
+                    description="This is Description for setting"
+                    icon="HiOutlineDesktopComputer"
+                    color="default"
+                  />
+                  <TippyItem
+                    name="Setting Name"
+                    description="This is Description for setting"
+                    icon="HiOutlineDesktopComputer"
+                    color="default"
+                  />
+                  <TippyItem
+                    name="Setting Name"
+                    description="This is Description for setting"
+                    icon="HiOutlineDesktopComputer"
+                    color="default"
+                  />
+                </div>
+              </div>
+            )}
+          >
+            <div
+              className="aspect-square mr-2 cursor-pointer"
+              ref={settingRefUser}
+            >
+              <button className="header-User-button" onClick={handleToggleUser}>
+                <IconTag
+                  name={"BiUserCircle"}
+                  className={"text-white text-2xl"}
+                />
+              </button>
+            </div>
+          </Tippy>
+          {/* <button className="header-profile-button" onClick={handleOpenProf}>
             <IconTag name={"BiUserCircle"} className={"text-white text-2xl"} />
-          </button>
-          <div className="header-prof-dropdown">
-            <Dropdown
-              open={openDrProf}
-              menu={[
-                <button key="drPrf1">Option pr 1</button>,
-                <button key="drPrf2">Option pr 2</button>,
-              ]}
-            />
-          </div>
+          </button> */}
         </div>
       </div>
     </div>

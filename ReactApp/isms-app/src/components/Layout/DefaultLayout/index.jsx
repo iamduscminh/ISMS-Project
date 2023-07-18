@@ -9,8 +9,11 @@ function DefaultLayout({ children }) {
   const { auth } = useAuth();
   return (
     <div className="h-screen">
-      <AdminHeader />
-      {/* {auth?.roles?.find(role => role === ROLES.Administrator) ? <Header /> : <AdminHeader />} */}
+      {auth?.roles?.find((role) => role === ROLES.Administrator) ? (
+        <Header />
+      ) : (
+        <AdminHeader />
+      )}
       <div>{children}</div>
       <Footer />
     </div>

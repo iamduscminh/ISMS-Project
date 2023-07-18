@@ -118,16 +118,16 @@ function CreateRequest() {
   return (
     <div
       className={cx(
-        "cre-request-container w-full h-full py-5 bg-[#3E5481] mt-3"
+        "cre-request-container w-full h-full py-5 bg-[#294a8d] mt-3"
       )}
     >
       <div
         className={cx(
-          "cre-request-section mt-4 mx-auto max-w-7xl min-h-screen bg-white rounded shadow"
+          "cre-request-section mt-4 mx-auto max-w-7xl min-h-screen bg-white rounded shadow "
         )}
       >
         <div
-          className={cx("cre-request-header bg-[#3E5481] w-full text-white")}
+          className={cx("cre-request-header  w-full bg-[#0e3275] text-white")}
         >
           <nav className={cx("cre-request-header-nav px-6 pt-3 pb-3")}>
             <ul
