@@ -14,7 +14,6 @@ function DefaultLayout({ children }) {
       ) : (
         <AdminHeader />
       )}
-
       <div>{children}</div>
       <Footer />
     </div>
