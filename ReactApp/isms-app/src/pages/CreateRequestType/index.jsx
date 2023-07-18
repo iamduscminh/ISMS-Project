@@ -187,7 +187,7 @@ function CreateRequestType() {
     }
   };
   return (
-    <div className="request-types-container pb-4 w-full h-full bg-[#3E5481] bg-blend-lighten mt-14">
+    <div className="request-types-container pb-4 w-full h-full bg-[#294a8d] bg-blend-lighten mt-14">
       <div className="request-types-section mx-auto max-w-7xl ">
         {/* HEADER SECTION*/}
         <div className="request-types-header w-full text-white ">
