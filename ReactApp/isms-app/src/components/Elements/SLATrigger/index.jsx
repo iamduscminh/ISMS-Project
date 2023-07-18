@@ -17,28 +17,33 @@ const listTrigger = [
   },
 ];
 
-const SLATrigger = () => {
+const SLATrigger = ({checkEditSla, currentTrigger, onAddTrigger, onRemoveTrigger}) => {
+  const filteredTrigger = listTrigger.filter((trigger) => {
+    return !currentTrigger.some((active) => active.id === trigger.id);
+  });
   const [checkAddTrigger, setCheckAddTrigger] = useState(false);
-  const [availableTrigger, setAvailableTrigger] = useState(listTrigger);
-  const [activeTrigger, setActiveTrigger] = useState([]);
+  const [availableTrigger, setAvailableTrigger] = useState(filteredTrigger);
+  const [activeTrigger, setActiveTrigger] = useState(currentTrigger);
   const inputRef = useRef(null);
   const handleAddActiveTrigger = (selectedItem) => {
-    setActiveTrigger((prev) => [
-      ...prev,
-      {
-        id: selectedItem.id,
-        trigger: selectedItem.trigger,
-      },
-    ]);
+    // setActiveTrigger((prev) => [
+    //   ...prev,
+    //   {
+    //     id: selectedItem.id,
+    //     trigger: selectedItem.trigger,
+    //   },
+    // ]);
     const available = availableTrigger.filter((e) => e.id !== selectedItem.id);
     setAvailableTrigger(available);
     setCheckAddTrigger(false);
+    onAddTrigger(selectedItem);
   };
 
   const handleRemoveActiveTrigger = (selectedItem) => {
     const filterList = activeTrigger.filter((e) => e.id !== selectedItem.id);
     setActiveTrigger(filterList);
     setAvailableTrigger((prev) => [...prev, selectedItem]);
+    onRemoveTrigger(selectedItem);
   };
 
   const showTriggerOption = () => {
@@ -56,18 +61,18 @@ const SLATrigger = () => {
           className="relative flex items-center w-full border border-[#bdbbbb] rounded-md shadow-sm px-[1rem] py-[0.25rem] mb-[0.5rem]"
         >
           <span>{item.trigger}</span>
-          <AiOutlineClose
+          {checkEditSla && <AiOutlineClose
             onClick={() => handleRemoveActiveTrigger(item)}
             className="ml-auto cursor-pointer"
-          />
+          />}
         </div>
       ))}
       {!checkAddTrigger && (
         <div onClick={showTriggerOption} className=" cursor-pointer flex justify-center items-center w-full border border-[#bdbbbb] rounded-md shadow-sm px-[1rem] py-[0.25rem] mb-[0.5rem]">
-          <div className="flex justify-center items-center text-[#42526E]">
+          {checkEditSla && <div className="flex justify-center items-center text-[#42526E]">
             <SiAddthis className="mr-[1rem]" />
             <span>Add Trigger</span>
-          </div>
+          </div>}
         </div>
       )}
       {checkAddTrigger && <div className="relative flex items-center w-full border border-[#bdbbbb] rounded-md shadow-sm px-[1rem] py-[0.25rem] mb-[0.5rem]">
