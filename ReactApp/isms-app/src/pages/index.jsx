@@ -8,6 +8,7 @@ export { default as CreateRequest } from "./CreateRequest";
 export { default as DetailRequest } from "./DetailRequest";
 export { default as ListTicket } from "./Admin/ListTicket";
 export { default as TicketQuery } from "./Admin/TicketQuery";
+export { default as SLA } from "./Admin/SLA";
 export { default as TicketDetail } from "./Admin/TicketDetail";
 export { default as ViewRequests } from "./ViewRequests";
 export { default as ViewRequestTypes } from "./ViewRequestTypes";
