@@ -1,20 +1,13 @@
 import image from "../../../../assets/images";
 import React, { useState, useRef, useEffect } from "react";
-import Switch from "react-switch";
 import styles from "./Sidebar.module.scss";
 import { GrServices } from "react-icons/gr";
 import classNames from "classnames/bind";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { FaBars } from "react-icons/fa";
-import { AiOutlineClose } from "react-icons/ai";
-import { SidebarData } from "./SideBarData";
-import { IconContext } from "react-icons/lib";
-import { FiArrowRightCircle } from "react-icons/fi";
-import { BsArrowRightCircle } from "react-icons/bs";
 import { MdQueryStats, MdOutlineLabelImportant } from "react-icons/md";
-import SubMenu from "./SubMenu";
-import Tippy from "@tippyjs/react";
+import QueryCategory from "./QueryCategory";
+import ServiceFeature from "./ServiceFeature";
 
 const Nav = styled.div`
   background: #15171c;
@@ -33,19 +26,6 @@ const NavIcon = styled(Link)`
   display: flex;
   justify-content: flex-start;
   align-items: center;
-`;
-
-const SidebarNav = styled.nav`
-  background: #f4f7ff;
-  width: 100%;
-  height: 50vh;
-  display: flex;
-  justify-content: center;
-  transition: 350ms;
-`;
-
-const SidebarWrap = styled.div`
-  width: 100%;
 `;
 
 const SidebarOver = styled.div`
@@ -68,12 +48,19 @@ const TabSelect = styled.div`
 `;
 function Sidebar() {
   const [profile, setProfile] = useState(false);
-
-  const [sidebar, setSidebar] = useState(false);
   const [queryTab, setQueryTab] = useState(true);
+  const [currentSidebar, setCurrentSidebar] = useState(0);
   const showQueryTab = (queryCondition) => {
     setQueryTab(queryCondition);
   };
+
+  const changeSidebar = (changeIndex) => {
+    setCurrentSidebar(changeIndex);
+  };
+  const sideBar = [
+    <QueryCategory changeSidebar={changeSidebar} />,
+    <ServiceFeature changeSidebar={changeSidebar} />,
+  ];
 
   return (
     <SidebarOver>
@@ -92,19 +79,9 @@ function Sidebar() {
         </div>
         <TabSelect queryTab={queryTab} />
       </div>
-      <div className="grow shrink w-[full] relative">
-        <IconContext.Provider value={{ color: "#686868" }}>
-          <SidebarNav sidebar={sidebar}>
-            <SidebarWrap>
-              {SidebarData.map((item, index) => {
-                return <SubMenu item={item} key={index} />;
-              })}
-            </SidebarWrap>
-          </SidebarNav>
-        </IconContext.Provider>
-      </div>
+      {sideBar[currentSidebar]}
       <div className="grow-0 shrink-0 h-[21%] border-t-2 border-[#C5C0C0] bg-[#fff] pt-[0.5rem] pl-[1.25rem] flex flex-col justify-end">
-        <div className="flex mb-[1rem] cursor-pointer">
+        <div onClick={()=>changeSidebar(1)} className="flex mb-[1rem] cursor-pointer">
           <GrServices className="text-[1.5rem] text-[#42526E]" />
           <h3 className="ml-[1rem] text-[#8D8888]">Service Setting</h3>
         </div>
@@ -113,7 +90,10 @@ function Sidebar() {
           <label htmlFor="switcher"></label>
         </span>
 
-        <div onClick={(e)=>setProfile(!profile)} className="w-full h-[35%] flex justify-start items-center mt-[0.5rem] cursor-pointer relative">
+        <div
+          onClick={(e) => setProfile(!profile)}
+          className="w-full h-[35%] flex justify-start items-center mt-[0.5rem] cursor-pointer relative"
+        >
           <div className="w-[1.75rem] h-[1.75rem] rounded-full overflow-hidden">
             <img
               className="w-full h-full object-cover object-center"
@@ -133,10 +113,16 @@ function Sidebar() {
             </div>
           </div>
 
-         {profile && <div className="border-2 text-[#42526E] font-medium text-[1rem]  shadow-md flex flex-col absolute bottom-0 right-0 w-[8rem] translate-x-[100%] bg-[#ffffff] z-[9999] rounded-[5px]">
-              <div className="border-b-2 mt-[0.5rem]"><span className="ml-[1.25rem]">Profile</span></div>
-              <div className="mb-[0.5rem]"><span className="ml-[1.25rem]">Log out</span></div>
-          </div>}
+          {profile && (
+            <div className="border-2 text-[#42526E] font-medium text-[1rem]  shadow-md flex flex-col absolute bottom-0 right-0 w-[8rem] translate-x-[100%] bg-[#ffffff] z-[9999] rounded-[5px]">
+              <div className="border-b-2 mt-[0.5rem]">
+                <span className="ml-[1.25rem]">Profile</span>
+              </div>
+              <div className="mb-[0.5rem]">
+                <span className="ml-[1.25rem]">Log out</span>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </SidebarOver>

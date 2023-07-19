@@ -104,7 +104,6 @@ const Search = () => {
   const [searchResult, setSearchResult] = useState([]);
   useEffect(() => {
     const filteredArray = fakeApi.filter((item) => item.id == searchValue);
-    console.log(filteredArray);
     setSearchResult(filteredArray);
   }, [searchValue]);
   return (
