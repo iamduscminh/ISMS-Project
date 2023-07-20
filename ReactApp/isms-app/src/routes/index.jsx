@@ -23,6 +23,7 @@ const publicRoutes = [
   { path: "/admin/query", component: Page.TicketQuery, layout: Layout.CustomLayout},
   { path: "/admin/sla", component: Page.SLA, layout: Layout.CustomLayout},
   { path: "/admin/ticket/:ticketId", component: Page.TicketDetail, layout: Layout.CustomLayout},
+  { path: "/admin/setting/services", component: Page.ServiceSettings, layout: Layout.CustomLayout},
   { path: "/viewRequests", component: Page.ViewRequests },
   { path: "/viewRequestTypes", component: Page.ViewRequestTypes },
   { path: "/createRequestType", component: Page.CreateRequestType },

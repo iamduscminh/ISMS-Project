@@ -2,7 +2,8 @@ import {
   BsFillInfoSquareFill,
   BsThreeDotsVertical,
   BsSearch,
-  BsMicrosoft,
+  BsFillArrowLeftCircleFill,
+  BsMicrosoft
 } from "react-icons/bs";
 import {
   AiOutlineRight,
@@ -20,6 +21,9 @@ import {
   AiFillDatabase,
   AiFillWarning,
   AiFillSetting,
+  AiFillDelete, 
+  AiFillCustomerService, 
+  AiOutlineClose
 } from "react-icons/ai";
 import { GrNotification } from "react-icons/gr";
 import { BiUserCircle } from "react-icons/bi";
@@ -48,6 +52,7 @@ export {
   AiFillDatabase,
   AiFillWarning,
   AiFillSetting,
+  AiFillDelete, AiFillCustomerService, AiOutlineClose
 };
 export { BsThreeDotsVertical, BsFillInfoSquareFill, BsSearch, BsMicrosoft };
 export { GrNotification };
