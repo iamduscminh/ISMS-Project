@@ -7,7 +7,7 @@ const cx = classNames.bind(styles);
 
 function Home() {
   return (
-    <div className={cx("home-container")}>
+    <div className={cx("home-container mt-14")}>
       <div className={cx("home-top-section")}>
         <h1>Welcome, how can we help you?</h1>
         <div className={cx("top-search-container")}>
@@ -28,19 +28,19 @@ function Home() {
             url="/catalog"
             title="Request a service"
             description="Send your problem to It Service"
-            iconComponent={<Icon.BsFillInfoSquareFill />}
+            iconName={"BsFillInfoSquareFill"}
           />
           <CardItem
             url="#"
             title="View All Request"
             description="Browse your list request ticket"
-            iconComponent={<Icon.HiOutlineDesktopComputer />}
+            iconName={"HiOutlineDesktopComputer"}
           />
           <CardItem
             url="#"
             title="Report for hardware problem"
             description="Raise your problem to IT Service about your device"
-            iconComponent={<Icon.HiOutlineDesktopComputer />}
+            iconName={"HiOutlineDesktopComputer"}
           />
         </div>
       </div>

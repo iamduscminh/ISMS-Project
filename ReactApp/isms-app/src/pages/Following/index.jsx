@@ -1,37 +1,37 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import CustomField from "../../components/Elements/CustomField";
-export default function App() {
+
+const MyForm = () => {
+  const { handleSubmit, register } = useForm();
+
+  const options = [
+    { id: 1, label: "Option 1" },
+    { id: 2, label: "Option 2" },
+    { id: 3, label: "Option 3" },
+  ];
+
+  const onSubmit = (data) => {
+    console.log(data);
+  };
+
   return (
-    <>
-      <div className="mt-8 mx-auto w-[50%]">
-        <CustomField
-          fieldName={"User Name"}
-          fieldType="T"
-          valType="T"
-          mandatory={1}
-          minVal={0}
-          maxVal={9}
-          minlength={5}
-          maxlength={10}
-        />
-        <CustomField
-          fieldName={"Country"}
-          fieldType="LOV"
-          valType="T"
-          mandatory={0}
-          listOfValue={"VN;QR;HT"}
-          listOfValueDisplay={"VietNam;ThaiLand;Indo"}
-        />
-        <CustomField
-          fieldName={"Country"}
-          fieldType="CB"
-          valType="T"
-          mandatory={0}
-          listOfValue={"VN;QR;HT"}
-          listOfValueDisplay={"VietNam;ThaiLand;Indo"}
-        />
-      </div>
-    </>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      {options.map((option) => (
+        <div key={option.id}>
+          <label>
+            <input
+              type="radio"
+              value={option.id}
+              {...register("selectedOption")}
+            />
+            {option.label}
+          </label>
+        </div>
+      ))}
+
+      <button type="submit">Submit</button>
+    </form>
   );
-}
+};
+
+export default MyForm;

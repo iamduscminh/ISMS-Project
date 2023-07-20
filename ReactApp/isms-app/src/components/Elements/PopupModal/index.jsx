@@ -12,6 +12,10 @@ function ModalDialog({
   const initModal = () => {
     return invokeModal(!isShow);
   };
+  const onClickHandle = () => {
+    actionHandler();
+    invokeModal(!isShow);
+  };
   return (
     <>
       <div onClick={initModal}>{triggerComponent}</div>
