@@ -9,9 +9,13 @@ export { default as DetailRequest } from "./DetailRequest";
 export { default as ListTicket } from "./Admin/ListTicket";
 export { default as TicketQuery } from "./Admin/TicketQuery";
 export { default as SLA } from "./Admin/SLA";
+export { default as ServiceSettings } from "./Admin/Settings/ServiceSettings";
 export { default as TicketDetail } from "./Admin/TicketDetail";
 export { default as ViewRequests } from "./ViewRequests";
 export { default as ViewRequestTypes } from "./ViewRequestTypes";
 export { default as CreateRequestType } from "./CreateRequestType";
 export { default as UpdateCustomField } from "./UpdateCustomField";
-
+export { default as Dashboard } from "./Dashboard";
+export { default as AdminUser } from "./AdminUser";
+export { default as AdminTicket } from "./AdminTicket";
+export { default as AdminReport } from "./AdminReport";

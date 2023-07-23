@@ -3,12 +3,14 @@ import {
   BsThreeDotsVertical,
   BsSearch,
   BsMicrosoft,
+  BsFillArrowLeftCircleFill,
 } from "react-icons/bs";
 import {
   AiOutlineRight,
+  AiFillDelete,
+  AiFillCustomerService,
   AiOutlinePlus,
   AiOutlineCheck,
-  AiOutlineClose,
   AiOutlineLaptop,
   AiOutlineWifi,
   AiOutlineCloudDownload,
@@ -34,9 +36,10 @@ import { IoMdNotifications } from "react-icons/io";
 
 export {
   AiOutlineRight,
+  AiFillDelete,
   AiOutlinePlus,
   AiOutlineCheck,
-  AiOutlineClose,
+  AiFillCustomerService,
   AiOutlineLaptop,
   AiOutlineWifi,
   AiOutlineCloudDownload,
@@ -49,7 +52,13 @@ export {
   AiFillWarning,
   AiFillSetting,
 };
-export { BsThreeDotsVertical, BsFillInfoSquareFill, BsSearch, BsMicrosoft };
+export {
+  BsThreeDotsVertical,
+  BsFillInfoSquareFill,
+  BsSearch,
+  BsMicrosoft,
+  BsFillArrowLeftCircleFill,
+};
 export { GrNotification };
 export { BiUserCircle };
 export { HiOutlineDesktopComputer };
