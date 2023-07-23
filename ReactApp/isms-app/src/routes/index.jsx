@@ -1,6 +1,6 @@
-/* eslint-disable no-unused-vars */
 import * as Layout from "../components/Layout/";
 import * as Page from "../pages";
+import { ROUTES_PATHS } from "../../constants";
 
 /* layout: null ko import layout nào cả
    layout: custom custom layout theo cách của ban!
@@ -28,6 +28,36 @@ const publicRoutes = [
   { path: "/viewRequestTypes", component: Page.ViewRequestTypes },
   { path: "/createRequestType", component: Page.CreateRequestType },
   { path: "/updateCustomField", component: Page.UpdateCustomField },
+  {
+    path: ROUTES_PATHS.ADMIN,
+    component: Page.Dashboard,
+    layout: Layout.AdminLayout,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN_TICKET,
+    component: Page.AdminTicket,
+    layout: Layout.AdminLayout,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN_USER,
+    component: Page.AdminUser,
+    layout: Layout.AdminLayout,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN_REPORT,
+    component: Page.AdminReport,
+    layout: Layout.AdminLayout,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN_SETTING,
+    component: Page.Dashboard,
+    layout: Layout.AdminLayout,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN_CONTACT,
+    component: Page.Dashboard,
+    layout: Layout.AdminLayout,
+  }
 ];
 
 //private route: dành cho những route cần đăng nhập
