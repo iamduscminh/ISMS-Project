@@ -3,7 +3,7 @@ import {
   BsThreeDotsVertical,
   BsSearch,
   BsFillArrowLeftCircleFill,
-  BsMicrosoft,
+  BsMicrosoft
 } from "react-icons/bs";
 import {
   AiOutlineRight,

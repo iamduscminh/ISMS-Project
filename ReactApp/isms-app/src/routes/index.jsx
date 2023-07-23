@@ -19,23 +19,15 @@ const publicRoutes = [
   { path: "/catalog", component: Page.Catalog },
   { path: "/createRequest/:id", component: Page.CreateRequest },
   { path: "/detailRequest", component: Page.DetailRequest },
-  { path: "/admin/", component: Page.ListTicket, layout: Layout.CustomLayout },
-  {
-    path: "/admin/query",
-    component: Page.TicketQuery,
-    layout: Layout.CustomLayout,
-  },
-  { path: "/admin/sla", component: Page.SLA, layout: Layout.CustomLayout },
-  {
-    path: "/admin/ticket/:ticketId",
-    component: Page.TicketDetail,
-    layout: Layout.CustomLayout,
-  },
-  {
-    path: "/admin/setting/services",
-    component: Page.ServiceSettings,
-    layout: Layout.CustomLayout,
-  },
+  { path: "/admin/", component: Page.ListTicket, layout: Layout.CustomLayout},
+  { path: "/admin/query", component: Page.TicketQuery, layout: Layout.CustomLayout},
+  { path: "/admin/sla", component: Page.SLA, layout: Layout.CustomLayout},
+  { path: "/admin/ticket/:ticketId", component: Page.TicketDetail, layout: Layout.CustomLayout},
+  { path: "/admin/setting/services", component: Page.ServiceSettings, layout: Layout.CustomLayout},
+  { path: "/viewRequests", component: Page.ViewRequests },
+  { path: "/viewRequestTypes", component: Page.ViewRequestTypes },
+  { path: "/createRequestType", component: Page.CreateRequestType },
+  { path: "/updateCustomField", component: Page.UpdateCustomField },
   {
     path: ROUTES_PATHS.ADMIN,
     component: Page.Dashboard,
@@ -65,11 +57,7 @@ const publicRoutes = [
     path: ROUTES_PATHS.ADMIN_CONTACT,
     component: Page.Dashboard,
     layout: Layout.AdminLayout,
-  },
-  { path: "/viewRequests", component: Page.ViewRequests },
-  { path: "/viewRequestTypes", component: Page.ViewRequestTypes },
-  { path: "/createRequestType", component: Page.CreateRequestType },
-  { path: "/updateCustomField", component: Page.UpdateCustomField },
+  }
 ];
 
 //private route: dành cho những route cần đăng nhập
