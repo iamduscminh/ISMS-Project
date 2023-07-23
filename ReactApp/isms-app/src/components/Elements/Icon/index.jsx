@@ -2,8 +2,8 @@ import {
   BsFillInfoSquareFill,
   BsThreeDotsVertical,
   BsSearch,
-  BsMicrosoft,
   BsFillArrowLeftCircleFill,
+  BsMicrosoft,
 } from "react-icons/bs";
 import {
   AiOutlineRight,
