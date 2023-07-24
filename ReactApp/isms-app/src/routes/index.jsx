@@ -33,7 +33,7 @@ const publicRoutes = [
   },
   { path: "/viewRequests", component: Page.ViewRequests },
   { path: "/viewRequestTypes", component: Page.ViewRequestTypes },
-  { path: "/createRequestType", component: Page.CreateRequestType },
+  { path: "/createRequestType", component: Page.CreateRequestType, layout: Layout.CustomLayout },
   { path: "/updateCustomField", component: Page.UpdateCustomField },
   {
     path: ROUTES_PATHS.ADMIN,
