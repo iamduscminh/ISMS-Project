@@ -10,7 +10,8 @@ const ServiceFeature = ({ changeSidebar }) => {
   //Hàm này dùng khi chuyển giữa các setting
   const handleActive = (index) => {
     setActiveService(index);
-    navigate('/admin/setting/services', {state: {from: location}})
+    if(index === 0) navigate('/admin/setting/services', {state: {from: location}})
+    else if(index === 1) navigate('/viewRequestTypes', {state: {from: location}})
   }
   
   //Hàm này để chuyển về side bar trước đó
