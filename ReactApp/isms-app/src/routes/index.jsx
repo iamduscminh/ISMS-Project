@@ -31,11 +31,6 @@ const publicRoutes = [
     component: Page.TicketDetail,
     layout: Layout.CustomLayout,
   },
-  {
-    path: "/admin/setting/services",
-    component: Page.ServiceSettings,
-    layout: Layout.CustomLayout,
-  },
   { path: "/viewRequests", component: Page.ViewRequests },
   { path: "/viewRequestTypes", component: Page.ViewRequestTypes },
   { path: "/createRequestType", component: Page.CreateRequestType },
@@ -54,7 +49,13 @@ const PERM000001Routes = [];
 const PERM000002Routes = [];
 
 //Route có Permission là PERM000003: Manage service items
-const PERM000003Routes = [];
+const PERM000003Routes = [
+  {
+    path: "/admin/setting/services",
+    component: Page.ServiceSettings,
+    layout: Layout.CustomLayout,
+  },
+];
 
 //Route có Permission là PERM000004: Manage service categories
 const PERM000004Routes = [];

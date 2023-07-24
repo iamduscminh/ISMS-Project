@@ -22,13 +22,19 @@ const Login = () => {
 
   //Lấy lại Context
 
-  const { setAuth } = useAuth();
+  const { setAuth, auth } = useAuth();
 
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
 
 
+  // useEffect(() => {
+  //   // Nếu có accessToken, chuyển hướng về trang chính
+  //   if (auth.accessToken) {
+  //     navigate('/');
+  //   }
+  // }, [auth.accessToken, navigate]);
 
   //Khai báo các hook
   const [email, setEmail] = useState('');
@@ -109,14 +115,13 @@ const Login = () => {
           withCredentials: true
         }
       );
-      const accessToken = response?.data?.token;
 
+      const accessToken = response?.data?.token;
       const decodedToken = jwtDecode(accessToken);
 
       console.log(decodedToken);
 
-      const roles = [response?.data?.roles];
-      setAuth({ email, password, roles, accessToken });
+      setAuth({ email, password, permissions: [decodedToken.sub], roleType: decodedToken.roleType, accessToken });
       navigate(from, {replace: true});
     } catch (err) {
       console.log(err.response?.data);

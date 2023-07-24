@@ -55,7 +55,7 @@ export {
 }
 export { BsThreeDotsVertical, BsFillInfoSquareFill, BsSearch, BsMicrosoft };
 export { GrNotification };
-export { BiUserCircle };
+export { BiUserCircle, BsFillArrowLeftCircleFill };
 export { HiOutlineDesktopComputer };
 export { FaExchangeAlt, FaMobileAlt, FaServer };
 export { RiComputerLine };
