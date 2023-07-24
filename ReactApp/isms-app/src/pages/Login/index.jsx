@@ -6,16 +6,17 @@ import image from "../../assets/images";
 import UnderlineAnimation from '../../components/Animation/UnderlineText';
 import ChangeBgButton from '../../components/Animation/ChangeBgButton';
 import useAuth from '../../hooks/useAuth';
+import jwtDecode from "jwt-decode";
 
 
 import { TypeAnimation } from "react-type-animation";
 
 import request from "../../utils/axiosConfig";
-import axios from "axios";
 
 const cx = classNames.bind(styles);
 
 const LOGIN_URL = 'api/Users/login';
+const SECRET_KEY = '98d52c42-28ef-4e8c-baeb-30cacbc39327';
 
 const Login = () => {
 
@@ -108,17 +109,21 @@ const Login = () => {
           withCredentials: true
         }
       );
+      const accessToken = response?.data?.token;
 
-      const accessToken = response?.data?.accessToken;
+      const decodedToken = jwtDecode(accessToken);
+
+      console.log(decodedToken);
+
       const roles = [response?.data?.roles];
-
       setAuth({ email, password, roles, accessToken });
       navigate(from, {replace: true});
     } catch (err) {
+      console.log(err.response?.data);
       if (!err?.response) {
         alert('No server response');
       } else if (err.response?.status === 400) {
-        alert('Bad request');
+        alert(err.response?.data.message);
       } else {
         alert('Login failed');
       }
