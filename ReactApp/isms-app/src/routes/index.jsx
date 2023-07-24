@@ -32,7 +32,7 @@ const publicRoutes = [
     layout: Layout.CustomLayout,
   },
   { path: "/viewRequests", component: Page.ViewRequests },
-  { path: "/viewRequestTypes", component: Page.ViewRequestTypes },
+  { path: "/viewRequestTypes", component: Page.ViewRequestTypes, layout: Layout.CustomLayout },
   { path: "/createRequestType", component: Page.CreateRequestType, layout: Layout.CustomLayout },
   { path: "/updateCustomField", component: Page.UpdateCustomField },
   {

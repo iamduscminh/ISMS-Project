@@ -7,32 +7,29 @@ function ViewRequestTypes() {
   const navigate = useNavigate();
   const columns = [
     { field: "id", headerName: "ID", width: 100 },
-    { field: "type", headerName: "Request Type", width: 200 },
-    { field: "title", headerName: "Title", width: 300 },
-    { field: "status", headerName: "Status", width: 200 },
+    { field: "requestType", headerName: "Request Type", width: 200 },
+    { field: "description", headerName: "Description", width: 600 },
+    { field: "service", headerName: "Service", width: 200 },
   ];
 
   const rows = [
     {
       id: 1,
-      type: "Computers",
-      title: "Doe",
-      status: "Done",
-      requestTypeId: 1,
+      requestType: "Fix an account problem",
+      description: "Having trouble accessing certain websites or systems? We'll help you out",
+      service: "Logins and Accounts",
     },
     {
       id: 2,
-      type: "Computers",
-      title: "Smith",
-      status: "Done",
-      requestTypeId: 2,
+      requestType: "Get a guest wifi account",
+      description: "Raise a request to ask for temp wifi access for guests.",
+      service: "Logins and Accounts",
     },
     {
       id: 3,
-      type: "Computers",
-      title: "Johnson",
-      status: "Done",
-      requestTypeId: 1,
+      requestType: "New mobile device",
+      description: "Need a mobile phone or time for replacement? Let us know.",
+      service: "Computers",
     },
   ];
   const requestTypes = [
@@ -71,12 +68,12 @@ function ViewRequestTypes() {
   };
   const [filteredRows, setFilteredRows] = useState(rows);
   return (
-    <div className="request-types-container pb-4 w-full h-full bg-[#3E5481] bg-blend-lighten">
-      <div className="request-types-section mx-auto max-w-7xl ">
+    <div className="request-types-container pb-4 w-full h-full bg-[#fff] bg-blend-lighten overflow-y-scroll">
+      <div className="request-types-section">
         {/* HEADER SECTION*/}
-        <div className="request-types-header w-full text-white ">
+        <div className="request-types-header w-full text-white bg-[#42526E]">
           <nav className="request-types-header-nav pt-3 pb-1 ">
-            <ul className="header-nav-content flex items-center text-[18px]">
+            <ul className="header-nav-content flex items-center text-[1rem] ml-[1.25rem]">
               <li className="header-nav-item ml-1">
                 <Link className="header-nav-url" to="/">
                   <UnderlineAnimation className="">Home</UnderlineAnimation>
@@ -95,13 +92,13 @@ function ViewRequestTypes() {
               </li>
             </ul>
           </nav>
-          <div className="request-types-header-content pb-2 flex items-center">
+          <div className="request-types-header-content pb-2 flex items-center ml-[1.25rem]">
             <div className="request-types-header-icon">
               <Icon.BsFillInfoSquareFill className="h-[50px] w-[50px]" />
             </div>
             <div className="request-types-header-description ml-5 w-1/2">
               <h4 className="text-2xl font-bold">Service Requests</h4>
-              <span className="">
+              <span className="text-[0.9rem]">
                 Customize the types of service requests in the system. Make
                 these request types available in your system portal by editing
                 your request type group.
@@ -113,7 +110,7 @@ function ViewRequestTypes() {
         <div className=" w-full min-h-screen p-6 bg-white rounded shadow ">
           <div className="request-tickets-ctn ">
             <div className="top-menu flex justify-between">
-              <div className="search-section  w-1/3">
+              <div className="search-section w-1/3">
                 <form className="mb-3">
                   <label
                     htmlFor="default-search"
@@ -143,7 +140,7 @@ function ViewRequestTypes() {
                       type="search"
                       onChange={handleFilterChange}
                       id="default-search"
-                      className="block w-full px-4 py-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
+                      className="block w-full px-[1rem] py-[0.5rem] pl-[1.75rem] text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="Search..."
                     />
                   </div>
@@ -155,7 +152,7 @@ function ViewRequestTypes() {
                     id="countries"
                     defaultValue=""
                     onChange={handleFilterRequestTypeChange}
-                    className="bg-gray-50 px-4 py-3 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    className="bg-gray-50 px-[1rem] py-[0.5rem] border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   >
                     <option value="">Choose Request Type</option>
                     {requestTypes.map((item, i) => {
@@ -171,7 +168,7 @@ function ViewRequestTypes() {
                   <Link to={"/createRequestType"}>
                     <button
                       type="button"
-                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2.5 mr-2 mb-2"
+                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-[1rem] py-[0.5rem] mr-2 mb-2"
                     >
                       Create Request Type
                     </button>
@@ -183,8 +180,15 @@ function ViewRequestTypes() {
             <DataGrid
               rows={filteredRows}
               columns={columns}
-              pageSize={5}
+              pageSizeOptions={[5]}
               onRowClick={handleRowClick}
+              initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: 5,
+                  },
+                },
+              }}
             />
           </div>
         </div>
