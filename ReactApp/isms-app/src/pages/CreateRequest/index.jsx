@@ -6,10 +6,106 @@ import styles from "./CreateRequest.module.scss";
 import CustomField from "../../components/Elements/CustomField";
 import UnderlineAnimation from "../../components/Animation/UnderlineText";
 import IconTag from "../../components/Elements/IconTag";
+import useAuth from "../../hooks/useAuth";
+import Swal from "sweetalert2";
+import { axiosPrivate } from "../../utils/axiosConfig";
 const cx = classNames.bind(styles);
 function CreateRequest() {
   const { id } = useParams();
+  const { auth } = useAuth();
+  const [requestType, setRequestType] = useState(null);
+  const [requestTypeCustomFields, setRequestTypeCustomFields] = useState([]);
+  //API CONFIG
+  const headers = {
+    Authorization: `Bearer ${auth?.token}`,
+    withCredentials: true,
+  };
+  //CALL API GET REQUEST TYPE
+  useEffect(() => {
+    const apiGetRequestTypeUrl = `api/ServiceItems/${id}`;
+    const apiGetCustomFieldsUrl = `api/ServiceItemCustomFields/getbyserviceitem/${id}`;
+    const fetchData = async () => {
+      try {
+        Swal.fire({
+          title: "Loading...",
+          allowOutsideClick: false,
+          onBeforeOpen: () => {
+            Swal.showLoading();
+          },
+        });
+        //--------------Get request type
+        await axiosPrivate
+          .get(apiGetRequestTypeUrl, { headers })
+          .then((response) => {
+            const data = {
+              id: response.data.serviceItemId,
+              requestTypeName: response.data.serviceItemName,
+              description: response.data.description,
+              iconDisplay: response.data.iconDisplay,
+              serviceCategoryId: response.data.serviceCategoryId,
+              serviceName:
+                response.data.serviceCategoryEntity.serviceCategoryName,
+            };
+            setRequestType(data);
+            console.log(data);
+          })
+          .catch((error) => {
+            const result = Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error}`,
+              showCancelButton: true,
+              cancelButtonText: "Cancel",
+            });
+          });
+        Swal.close();
 
+        //-------------Get custom field
+        await axiosPrivate
+          .get(apiGetCustomFieldsUrl, { headers })
+          .then((response) => {
+            const data = response.data.map((item, i) => ({
+              fieldId: item.customField.customFieldId,
+              fieldCode: item.customField.fieldCode,
+              fieldName: item.customField.fieldName,
+              fieldValue: item.customField.defaultValue ?? null,
+              fieldType: item.customField.fieldType,
+              valType: item.customField.valType,
+              mandatory: item.mandatory,
+              minVal: item.customField.minVal,
+              maxVal: item.customField.maxVal,
+              minlength: item.customField.minlength,
+              maxlength: item.customField.maxlength,
+              listOfValue: item.customField.listOfValue,
+              listOfValueDisplay: item.customField.listOfValueDisplay,
+              placeholder: item.customField.placeholder,
+            }));
+
+            setRequestTypeCustomFields(data);
+          })
+          .catch((error) => {
+            const result = Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error}`,
+              showCancelButton: true,
+              cancelButtonText: "Cancel",
+            });
+          });
+        Swal.close();
+      } catch (error) {
+        // Handle errors if needed
+        console.log(error);
+        Swal.close();
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: error,
+        });
+      }
+    };
+    fetchData();
+  }, []);
   const requestTypeTemp = {
     id: "1",
     requestTypeName: "Request new hardware",
@@ -47,60 +143,8 @@ function CreateRequest() {
         listOfValueDisplay: "Dell;HP;Acer;MSI",
         placeholder: null,
       },
-      {
-        fieldId: 3,
-        fieldCode: "f3",
-        fieldName: "Check test",
-        fieldValue: "true",
-        fieldType: "C",
-        valType: "T",
-        mandatory: 0,
-        minVal: null,
-        maxVal: null,
-        minlength: null,
-        maxlength: null,
-        listOfValue: "Dell;HP;Acer;MSI",
-        listOfValueDisplay: "Dell;HP;Acer;MSI",
-        placeholder: null,
-      },
-      {
-        fieldId: 4,
-        fieldCode: "f4",
-        fieldName: "Check test",
-        fieldValue: "Dell",
-        fieldType: "RD",
-        valType: "T",
-        mandatory: 0,
-        minVal: null,
-        maxVal: null,
-        minlength: null,
-        maxlength: null,
-        listOfValue: "Dell;HP;Acer;MSI",
-        listOfValueDisplay: "Dell;HP;Acer;MSI",
-        placeholder: null,
-      },
-      {
-        fieldId: 5,
-        fieldCode: "f5",
-        fieldName: "Date",
-        fieldValue: "2023-07-11",
-        fieldType: "D",
-        valType: "N",
-        mandatory: 0,
-        minVal: null,
-        maxVal: null,
-        minlength: null,
-        maxlength: null,
-        listOfValue: null,
-        listOfValueDisplay: null,
-        placeholder: null,
-      },
     ],
   };
-  const [requestType, setRequestType] = useState(requestTypeTemp);
-  // useEffect(() => {
-  //   setRequestType(requestTypeTemp);
-  // }, []);
 
   //định nghĩa form
   const {
@@ -156,7 +200,9 @@ function CreateRequest() {
               </li>
               <li className={cx("header-nav-item ml-1")}>
                 <Link className={cx("header-nav-url")} href="/catalog">
-                  <UnderlineAnimation>Accounts</UnderlineAnimation>
+                  <UnderlineAnimation>
+                    {requestType?.serviceName}
+                  </UnderlineAnimation>
                 </Link>
               </li>
               <li className={cx("header-nav-item ml-1")}>
@@ -166,7 +212,7 @@ function CreateRequest() {
               </li>
               <li className={cx("header-nav-item ml-1")}>
                 <Link className={cx("header-nav-url")}>
-                  <span>Reset Password</span>
+                  <span>{requestType?.requestTypeName}</span>
                 </Link>
               </li>
             </ul>
@@ -178,15 +224,15 @@ function CreateRequest() {
           >
             <div className={cx("cre-request-header-icon")}>
               <IconTag
-                name={"BsFillInfoSquareFill"}
+                name={requestType?.iconDisplay}
                 className={"h-[50px] w-[50px]"}
               />
             </div>
             <div className={cx("cre-request-header-description ml-5")}>
               <h4 className="text-2xl font-bold">
-                {requestType.requestTypeName}
+                {requestType?.requestTypeName}
               </h4>
-              <span>{requestType.description}</span>
+              <span>{requestType?.description}</span>
             </div>
           </div>
         </div>
@@ -242,24 +288,24 @@ function CreateRequest() {
                 </p>
               </div>
               <div className="customFieldSection mt-3">
-                {requestType.customFields.map((item, i) => {
+                {requestTypeCustomFields.map((item, i) => {
                   return (
                     <CustomField
                       key={i}
-                      fieldId={item.fieldId}
-                      fieldCode={item.fieldCode}
-                      fieldName={item.fieldName}
-                      fieldValue={item.fieldValue}
-                      fieldType={item.fieldType}
-                      valType={item.valType}
-                      mandatory={item.mandatory}
-                      minVal={item.minVal}
-                      maxVal={item.maxVal}
-                      minlength={item.minlength}
-                      maxlength={item.maxlength}
-                      listOfValue={item.listOfValue}
-                      listOfValueDisplay={item.listOfValueDisplay}
-                      placeholder={item.placeholder}
+                      fieldId={item?.fieldId}
+                      fieldCode={item?.fieldCode}
+                      fieldName={item?.fieldName}
+                      fieldValue={item?.fieldValue}
+                      fieldType={item?.fieldType}
+                      valType={item?.valType}
+                      mandatory={item?.mandatory}
+                      minVal={item?.minVal}
+                      maxVal={item?.maxVal}
+                      minlength={item?.minlength}
+                      maxlength={item?.maxlength}
+                      listOfValue={item?.listOfValue}
+                      listOfValueDisplay={item?.listOfValueDisplay}
+                      placeholder={item?.placeholder}
                       register={register}
                       setValueFnc={setValue}
                       errors={errors}

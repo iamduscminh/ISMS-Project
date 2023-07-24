@@ -96,6 +96,57 @@ function CustomField({
           )}
         </>
       )}
+      {/* ----Text---- */}
+      {fieldType === "P" && (
+        <>
+          {!!fieldName && (
+            <label
+              htmlFor={`${fieldId}_${fieldCode}`}
+              className="block mb-2 text-sm font-medium text-gray-500 "
+            >
+              {fieldName}
+              {mandatory && <span className="text-red-600">*</span>}
+            </label>
+          )}
+
+          <input
+            type="password"
+            name={fieldCode}
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+            id={`${fieldId}_${fieldCode}`}
+            value={fieldValue}
+            placeholder={placeholder}
+            {...register(`${fieldCode}`, {
+              required: mandatory && "This field is required.",
+              min: minVal && {
+                value: minVal,
+                message: `The value of ${fieldName} must be more than ${minVal}!`,
+              },
+              max: maxVal && {
+                value: maxVal,
+                message: `The value of ${fieldName} must be less than ${maxVal}!`,
+              },
+              minLength: minlength && {
+                value: minlength,
+                message: `${fieldName} must be more than ${minlength} characters!`,
+              },
+              maxLength: {
+                value: maxlength,
+                message: `${fieldName} must be less than ${maxlength} characters!`,
+              },
+              pattern: valType == "N" && {
+                value: /^[0-9]*$/,
+                message: `${fieldName} must be only number!`,
+              },
+            })}
+          />
+          {errors && errors[fieldCode] && errors[fieldCode].message && (
+            <p className="mt-2 text-sm text-red-600 ">
+              {errors[fieldCode].message}
+            </p>
+          )}
+        </>
+      )}
       {/* ----TextArea---- */}
       {fieldType === "TA" && (
         <>

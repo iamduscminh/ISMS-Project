@@ -8,50 +8,12 @@ import Swal from "sweetalert2";
 import { axiosPrivate } from "../../utils/axiosConfig";
 function Catalog() {
   const { auth } = useAuth();
-  const requestTypeTemp = [
-    {
-      id: "1",
-      requestTypeName: "Get a guest wifi account",
-      description: "",
-      serviceId: 1,
-      iconDisplay: "",
-    },
-    {
-      id: "2",
-      requestTypeName: "Request a new account",
-      description: "",
-      serviceId: 1,
-      iconDisplay: "",
-    },
-    {
-      id: "3",
-      requestTypeName: "Request admin access",
-      description: "",
-      serviceId: 1,
-      iconDisplay: "",
-    },
-    {
-      id: "4",
-      requestTypeName: "Request new hardware",
-      description: "",
-      serviceId: 1,
-      iconDisplay: "",
-    },
-    {
-      id: "5",
-      requestTypeName: "Set up VPN to the office",
-      description: "",
-      serviceId: 1,
-      iconDisplay: "",
-    },
-  ];
-
   const [services, setServices] = useState([]);
   const [requestTypes, setRequestTypes] = useState([]);
   const [requestTypesBySvc, setRequestTypesBySvc] = useState([]);
   const [selectedServiceId, setSelectedServiceId] = useState(0);
-  //API CONFIG
 
+  //API CONFIG
   const headers = {
     Authorization: `Bearer ${auth?.token}`,
     withCredentials: true,

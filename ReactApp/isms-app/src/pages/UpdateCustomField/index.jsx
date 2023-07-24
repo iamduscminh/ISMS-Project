@@ -300,6 +300,7 @@ function UpdateCustomField() {
                       onChange={onChangeFieldType}
                     >
                       <option value="T">Text</option>
+                      <option value="P">Password</option>
                       <option value="TA">TextArea</option>
                       <option value="LOV">Combobox</option>
                       <option value="C">Checkbox</option>
