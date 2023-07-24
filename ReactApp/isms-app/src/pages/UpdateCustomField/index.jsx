@@ -1,25 +1,144 @@
-import { React, useState, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { React, useState, useRef, useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import IconTag from "../../components/Elements/IconTag";
 import UnderlineAnimation from "../../components/Animation/UnderlineText";
-
+import useAuth from "../../hooks/useAuth";
+import { axiosPrivate } from "../../utils/axiosConfig";
+import Swal from "sweetalert2";
 function UpdateCustomField() {
+  const { id } = useParams();
+  const { auth } = useAuth();
+
+  const token = auth?.accessToken;
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+    withCredentials: true,
+  };
   const [containListValue, setContainListValue] = useState(false);
   const [isUpdateView, setIsUpdateView] = useState(false);
-
   //định nghĩa form
   const {
     register,
     handleSubmit,
     formState: { errors },
     getValues,
+    setValue,
   } = useForm({
     criteriaMode: "all",
   });
+  useEffect(() => {
+    if (id == 0) setIsUpdateView(false);
+    else {
+      setIsUpdateView(true);
+      const apiUrlGetCustomField = `api/CustomFields/${id}`;
+      const fetchData = () => {
+        try {
+          Swal.fire({
+            title: "Loading...",
+            allowOutsideClick: false,
+            onBeforeOpen: () => {
+              Swal.showLoading();
+            },
+          });
+
+          axiosPrivate
+            .get(apiUrlGetCustomField, { headers })
+            .then((response) => {
+              console.log(response.data);
+              setValue("ctFieldId", response.data.customFieldId);
+              setValue("ctFieldCode", response.data.fieldCode);
+              setValue("ctFieldName", response.data.fieldName);
+              setValue("ctDesc", response.data.fieldDescription);
+              setValue("ctFieldType", response.data.fieldType);
+              setValue("ctValType", response.data.valType);
+              setValue("ctMinValue", response.data.minVal);
+              setValue("ctMaxValue", response.data.maxVal);
+              setValue("ctMinLength", response.data.minLength);
+              setValue("ctMaxLength", response.data.maxLength);
+              setValue("ctDefaultValue", response.data.defaultValue);
+              setValue("ctListOfValue", response.data.listOfValue);
+              setValue(
+                "ctListOfValueDisplay",
+                response.data.listOfValueDisplay
+              );
+            })
+            .catch((error) => {
+              const result = Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: `${error}`,
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+              });
+
+              if (result.isConfirmed) {
+                console.log("User confirmed!");
+              } else {
+                console.log(error + "User canceled!");
+              }
+            });
+          Swal.close();
+        } catch (error) {
+          // Handle errors if needed
+          console.log(error);
+          Swal.close();
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "An error occurred while fetching data.",
+          });
+        }
+      };
+      fetchData();
+    }
+  }, []);
+
   const onSubmit = (data) => {
-    console.log(data);
-    console.log(getValues("ctValType"));
+    const customFieldData = {
+      fieldId: getValues("ctFieldId"),
+      fieldCode: getValues("ctFieldCode"),
+      fieldName: getValues("ctFieldName"),
+      fieldDescription: getValues("ctDesc"),
+      fieldType: getValues("ctFieldType"),
+      valType: getValues("ctValType"),
+      minVal: getValues("ctMinValue"),
+      maxVal: getValues("ctMaxValue"),
+      minLength: getValues("ctMinLength"),
+      maxLength: getValues("ctMaxLength"),
+      defaultValue: getValues("ctDefaultValue"),
+      listOfValue: getValues("ctListOfValue") ?? "",
+      listOfValueDisplay: getValues("ctListOfValueDisplay") ?? "",
+    };
+    //console.log(JSON.stringify(customFieldData));
+
+    if (!isUpdateView) {
+      const apiUrlCreateCustomField = `api/CustomFields/create`;
+      axiosPrivate
+        .post(apiUrlCreateCustomField, JSON.stringify(customFieldData), {
+          headers,
+        })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.error("API Error:", error);
+        });
+    } else {
+      const apiUrlUpdateCustomField = `api/CustomFields/update?customFieldId=${id}`;
+      axiosPrivate
+        .put(apiUrlUpdateCustomField, JSON.stringify(customFieldData), {
+          headers,
+        })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.error("API Error:", error);
+        });
+    }
   };
   //hiện input list value khi chọn field type cần thiết
   const onChangeFieldType = (e) => {
@@ -27,7 +146,7 @@ function UpdateCustomField() {
     let fieldTypeHasListValue = ["LOV", "CL", "RD"];
     if (fieldTypeHasListValue.some((item) => item == fieldType)) {
       setContainListValue(true);
-    }
+    } else setContainListValue(false);
   };
   return (
     <div className="request-types-container pb-4 w-full h-full bg-[#3E5481] bg-blend-lighten">
@@ -47,7 +166,7 @@ function UpdateCustomField() {
                 </div>
               </li>
               <li className="header-nav-item ml-1">
-                <Link className="header-nav-url ">
+                <Link to={"/viewCustomFields"} className="header-nav-url ">
                   <UnderlineAnimation>CustomFields</UnderlineAnimation>
                 </Link>
               </li>
@@ -87,6 +206,14 @@ function UpdateCustomField() {
             <div className="p-5 w-full h-full">
               <div className="request-ticket-form-ctn w-[60%] m-auto">
                 <form onSubmit={handleSubmit(onSubmit)}>
+                  <input
+                    type="hidden"
+                    id="ctFieldId"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                    placeholder=""
+                    defaultValue={0}
+                    {...register("ctFieldId")}
+                  />
                   <div className="mb-6">
                     <label
                       htmlFor="ctFieldCode"
@@ -169,8 +296,8 @@ function UpdateCustomField() {
                       id="ctFieldType"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                       defaultValue={"T"}
-                      onChange={onChangeFieldType}
                       {...register("ctFieldType")}
+                      onChange={onChangeFieldType}
                     >
                       <option value="T">Text</option>
                       <option value="TA">TextArea</option>
@@ -284,7 +411,7 @@ function UpdateCustomField() {
                       id="ctMaxLength"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                       placeholder=""
-                      {...register("ctMinLength", {
+                      {...register("ctMaxLength", {
                         pattern: {
                           value: /^[0-9]*$/,
                           message: "This field is number only.",
@@ -307,6 +434,12 @@ function UpdateCustomField() {
                       id="ctDefaultValue"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                       placeholder=""
+                      {...register("ctDefaultValue", {
+                        maxLength: {
+                          value: 500,
+                          message: "This field must less than 500 characters",
+                        },
+                      })}
                     />
                   </div>
                   {containListValue && (
@@ -326,6 +459,13 @@ function UpdateCustomField() {
                           id="ctListOfValue"
                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                           placeholder=""
+                          {...register("ctListOfValue", {
+                            maxLength: {
+                              value: 500,
+                              message:
+                                "This field must less than 500 characters",
+                            },
+                          })}
                         />
                       </div>
                       <div className="mb-6">
@@ -343,6 +483,13 @@ function UpdateCustomField() {
                           id="ctListOfValueDisplay"
                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                           placeholder=""
+                          {...register("ctListOfValueDisplay", {
+                            maxLength: {
+                              value: 2500,
+                              message:
+                                "This field must less than 2500 characters",
+                            },
+                          })}
                         />
                       </div>
                     </>

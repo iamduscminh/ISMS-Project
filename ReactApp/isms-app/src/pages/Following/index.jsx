@@ -1,37 +1,23 @@
 import React from "react";
-import { useForm } from "react-hook-form";
-
-const MyForm = () => {
-  const { handleSubmit, register } = useForm();
-
-  const options = [
-    { id: 1, label: "Option 1" },
-    { id: 2, label: "Option 2" },
-    { id: 3, label: "Option 3" },
-  ];
-
-  const onSubmit = (data) => {
-    console.log(data);
+import Swal from "sweetalert2";
+import {
+  handleShowError,
+  handleAsyncTask,
+} from "../../components/Elements/SwalCustom";
+const MyComponent = () => {
+  const handleClick = () => {
+    handleAsyncTask();
   };
-
+  const taskFunc = () => {
+    setTimeout(4000);
+    console.log("Minh oi");
+  };
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      {options.map((option) => (
-        <div key={option.id}>
-          <label>
-            <input
-              type="radio"
-              value={option.id}
-              {...register("selectedOption")}
-            />
-            {option.label}
-          </label>
-        </div>
-      ))}
-
-      <button type="submit">Submit</button>
-    </form>
+    <div>
+      <button onClick={handleShowError}>Show Error</button>
+      <button onClick={handleClick}>Start Asynchronous Task</button>
+    </div>
   );
 };
 
-export default MyForm;
+export default MyComponent;

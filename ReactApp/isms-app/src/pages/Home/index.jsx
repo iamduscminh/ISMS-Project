@@ -3,9 +3,30 @@ import classNames from "classnames/bind";
 import styles from "./Home.module.scss";
 import * as Icon from "../../components/Elements/Icon";
 import CardItem from "../../components/Elements/CardItem";
+import useAuth from "../../hooks/useAuth";
+import request from "../../utils/axiosConfig";
 const cx = classNames.bind(styles);
 
 function Home() {
+  const { auth } = useAuth();
+  console.log(auth?.accessToken);
+  const apiUrl = "https://localhost:7134/api/ServiceCategories/getall";
+  const headers = {
+    Authorization: `Bearer ${auth?.accessToken}`,
+    // Add any other required headers here
+  };
+
+  request
+    .get(apiUrl, { headers })
+    .then((response) => {
+      // Handle the API response here
+      //console.log("API Response:", response.data);
+    })
+    .catch((error) => {
+      // Handle errors here
+      //console.error("API Error:", error);
+    });
+
   return (
     <div className={cx("home-container mt-14")}>
       <div className={cx("home-top-section")}>
@@ -34,12 +55,6 @@ function Home() {
             url="#"
             title="View All Request"
             description="Browse your list request ticket"
-            iconName={"HiOutlineDesktopComputer"}
-          />
-          <CardItem
-            url="#"
-            title="Report for hardware problem"
-            description="Raise your problem to IT Service about your device"
             iconName={"HiOutlineDesktopComputer"}
           />
         </div>

@@ -36,6 +36,11 @@ const publicRoutes = [
   { path: "/createRequestType", component: Page.CreateRequestType, layout: Layout.CustomLayout },
   { path: "/updateCustomField", component: Page.UpdateCustomField },
   {
+    path: "/viewCustomFields",
+    component: Page.ViewCustomFields,
+    layout: Layout.CustomLayout,
+  },
+  {
     path: ROUTES_PATHS.ADMIN,
     component: Page.Dashboard,
     layout: Layout.AdminLayout,
@@ -65,6 +70,7 @@ const publicRoutes = [
     component: Page.Dashboard,
     layout: Layout.AdminLayout,
   }
+
 ];
 
 //private route: dành cho những route cần đăng nhập
