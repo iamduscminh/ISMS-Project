@@ -1,5 +1,5 @@
-import {useLocation, Navigate, Outlet } from 'react-router-dom'
-import useAuth from '../../hooks/useAuth';
+import { useLocation, Navigate, Outlet } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 
 // eslint-disable-next-line react/prop-types
 const RequireAuth = ({ allowPer }) => {
@@ -15,5 +15,4 @@ const RequireAuth = ({ allowPer }) => {
                 : <Navigate to="/login" state={{from: location}} replace/>
     )
 }
-
 export default RequireAuth;
