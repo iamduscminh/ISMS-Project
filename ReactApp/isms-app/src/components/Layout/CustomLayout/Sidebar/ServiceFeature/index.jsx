@@ -22,7 +22,7 @@ const ServiceFeature = ({ changeSidebar }) => {
   <div className="grow shrink w-[full] relative px-[0.5rem] py-[1rem]">
     <div onClick={handleClick} className="w-[full] flex justify-start items-center cursor-pointer hover:bg-[#ebecf0] px-[0.75rem] py-[0.5rem] rounded-sm">
       <IconTag name="BsFillArrowLeftCircleFill" className="text-[1.25rem] text-[#42526E] mr-[1rem]"/>
-      <span className="text-[#42526E]">Back to project</span>
+      <span className="text-[#42526E] text-[0.75rem]">Back to project</span>
     </div>
     <div className="w-full h-[2px] bg-[#ebecf0] mt-[0.5rem]"></div>
     <div className="mt-[1rem] text-[#42526E]">

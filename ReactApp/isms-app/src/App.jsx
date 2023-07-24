@@ -1,9 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import { Fragment } from "react";
 import * as myRoutes from "./routes";
 import DefaultLayout from "./components/Layout/DefaultLayout";
 import RequiredAuth from "./components/HOC/RequiredAuth";
-import { ROLES } from "../src/routes/Roles";
+import { PERMISSIONS } from "./routes/Permissions";
 
 function App() {
   return (
@@ -38,20 +38,12 @@ function App() {
                 })
               }
 
-              <Route
-                element={
-                  <RequiredAuth
-                    allowedRoles={[
-                      ROLES.Customer,
-                      ROLES.Agent,
-                      ROLES.Administrator,
-                    ]}
-                  />
-                }
-              >
+              <Route element={<RequiredAuth allowPer={[
+                PERMISSIONS["Manage service items"]
+              ]} />}>
                 {
                   //Định tuyến cho các Route public
-                  myRoutes.privateRoutes.map((route, index) => {
+                  myRoutes.PERM000003Routes.map((route, index) => {
                     const Page = route.component;
                     let Layout = DefaultLayout;
 

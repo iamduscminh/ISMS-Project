@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 
 const Unauthorized = () => {
   const navigate = useNavigate();
-  const goBack = ()=> navigate(-1);
+  const goBack = ()=> navigate('/');
 
   return (
     <div>
@@ -11,7 +11,7 @@ const Unauthorized = () => {
       <br/>
       <p>You do not have access to requested page.</p>
       <div className='flexGrow'>
-        <button onClick={goBack}>Go Back</button>
+        <button onClick={goBack}>Go Home</button>
       </div>
     </div>
   )

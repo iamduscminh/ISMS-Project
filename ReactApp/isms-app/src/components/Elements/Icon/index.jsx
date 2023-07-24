@@ -54,7 +54,7 @@ export {
   AiFillWarning,
   AiFillSetting,
   AiFillDelete, AiFillCustomerService
-};
+}
 export {
   BsThreeDotsVertical,
   BsFillInfoSquareFill,
@@ -63,7 +63,7 @@ export {
   BsFillArrowLeftCircleFill,
 };
 export { GrNotification };
-export { BiUserCircle };
+export { BiUserCircle, BsFillArrowLeftCircleFill };
 export { HiOutlineDesktopComputer };
 export { FaExchangeAlt, FaMobileAlt, FaServer };
 export { RiComputerLine };
