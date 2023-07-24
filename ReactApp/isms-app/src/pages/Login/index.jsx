@@ -1,12 +1,11 @@
 import classNames from "classnames/bind";
 import styles from "./Login.module.scss";
-import React, { useRef, useEffect, useState} from 'react';
-import {useNavigate, useLocation, Link} from 'react-router-dom';
+import React, { useRef, useEffect, useState } from "react";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import image from "../../assets/images";
-import UnderlineAnimation from '../../components/Animation/UnderlineText';
-import ChangeBgButton from '../../components/Animation/ChangeBgButton';
-import useAuth from '../../hooks/useAuth';
-
+import UnderlineAnimation from "../../components/Animation/UnderlineText";
+import ChangeBgButton from "../../components/Animation/ChangeBgButton";
+import useAuth from "../../hooks/useAuth";
 
 import { TypeAnimation } from "react-type-animation";
 
@@ -15,25 +14,22 @@ import axios from "axios";
 
 const cx = classNames.bind(styles);
 
-const LOGIN_URL = 'api/Users/login';
+const LOGIN_URL = "api/Users/login";
 
 const Login = () => {
-
   //Lấy lại Context
 
   const { setAuth } = useAuth();
 
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
-
-
+  const from = location.state?.from?.pathname || "/viewCustomFields";
 
   //Khai báo các hook
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [errorPass, setErrorPass] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [errorPass, setErrorPass] = useState("");
   const inputRef = useRef(null);
   const passRef = useRef(null);
 
@@ -61,19 +57,19 @@ const Login = () => {
     const handleClickOutside = (event) => {
       if (inputRef.current && !inputRef.current.contains(event.target)) {
         if (!email) {
-          setError(prev => '⚠ Business Email is required');
+          setError((prev) => "⚠ Business Email is required");
         } else if (!validateEmail(email)) {
-          setError(prev => '⚠ Suggested format (name@company.com)')
+          setError((prev) => "⚠ Suggested format (name@company.com)");
         } else {
-          setError('');
+          setError("");
         }
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [email]);
 
@@ -81,49 +77,49 @@ const Login = () => {
     const handleClickOutsidePass = (event) => {
       if (passRef.current && !passRef.current.contains(event.target)) {
         if (!password) {
-          setErrorPass(prev => '⚠ Password is required');
+          setErrorPass((prev) => "⚠ Password is required");
         } else {
-          setErrorPass('');
+          setErrorPass("");
         }
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutsidePass);
+    document.addEventListener("mousedown", handleClickOutsidePass);
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutsidePass);
+      document.removeEventListener("mousedown", handleClickOutsidePass);
     };
   }, [password]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if(error!='' || errorPass != ''){
+    if (error != "" || errorPass != "") {
       return;
     }
-    try { //Comment lại đợi API này
-      const response = await request.post(LOGIN_URL,
+    try {
+      //Comment lại đợi API này
+      const response = await request.post(
+        LOGIN_URL,
         JSON.stringify({ email: email, password: password }),
         {
-          headers: { 'Content-Type': 'application/json' },
-          withCredentials: true
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
         }
       );
-
-      const accessToken = response?.data?.accessToken;
-      const roles = [response?.data?.roles];
-
+      const accessToken = response?.data?.token;
+      const roles = [response?.data?.role];
       setAuth({ email, password, roles, accessToken });
-      navigate(from, {replace: true});
+      navigate(from, { replace: true });
     } catch (err) {
       if (!err?.response) {
-        alert('No server response');
+        alert("No server response");
       } else if (err.response?.status === 400) {
-        alert('Bad request');
+        alert("Bad request");
       } else {
-        alert('Login failed');
+        alert("Login failed");
       }
     }
-  }
+  };
 
   return (
     <div
@@ -162,37 +158,101 @@ const Login = () => {
         >
           <div className={cx("h-[32%] flex flex-col mb-2")}>
             <h2>Log in QuickService with your account</h2>
-            <p>Don’t have account yet? <UnderlineAnimation><a href="#">Create your account</a></UnderlineAnimation></p>
-            <img src={image.IllusForm} alt="" className={cx('illusForm')} />
+            <p>
+              Don’t have account yet?{" "}
+              <UnderlineAnimation>
+                <a href="#">Create your account</a>
+              </UnderlineAnimation>
+            </p>
+            <img src={image.IllusForm} alt="" className={cx("illusForm")} />
           </div>
-          <form className={cx('h-[63%]')} onSubmit={handleSubmit}>
+          <form className={cx("h-[63%]")} onSubmit={handleSubmit}>
             <div className={cx("w-full h-full flex flex-col mt-4")}>
-
               <label className={cx("input-label")}>
-                <input ref={inputRef} value={email} onChange={handleChange} type="text" placeholder=" " className={cx('input-custom')} />
-                <span className={cx("absolute top-[0.25rem] left-[0.75rem] cursor-text")}>Business Email</span>
+                <input
+                  ref={inputRef}
+                  value={email}
+                  onChange={handleChange}
+                  type="text"
+                  placeholder=" "
+                  className={cx("input-custom")}
+                />
+                <span
+                  className={cx(
+                    "absolute top-[0.25rem] left-[0.75rem] cursor-text"
+                  )}
+                >
+                  Business Email
+                </span>
               </label>
 
-              <div className={cx('mb-[0.75rem] ml-[0.75rem] transition-all ease-150')}>{error ? <span className={cx('text-[#B33233] text-[0.7rem]')}>{error}</span> : <span className={cx('text-[#B33233] text-[0.7rem]')}></span>}</div>
+              <div
+                className={cx(
+                  "mb-[0.75rem] ml-[0.75rem] transition-all ease-150"
+                )}
+              >
+                {error ? (
+                  <span className={cx("text-[#B33233] text-[0.7rem]")}>
+                    {error}
+                  </span>
+                ) : (
+                  <span className={cx("text-[#B33233] text-[0.7rem]")}></span>
+                )}
+              </div>
 
               <label className={cx("input-label")}>
-                <input ref={passRef} value={password} onChange={handleChangePass} type="password" placeholder=" " className={cx('input-custom')} />
-                <span className={cx("absolute top-[0.25rem] left-[0.75rem] cursor-text")}>Password</span>
+                <input
+                  ref={passRef}
+                  value={password}
+                  onChange={handleChangePass}
+                  type="password"
+                  placeholder=" "
+                  className={cx("input-custom")}
+                />
+                <span
+                  className={cx(
+                    "absolute top-[0.25rem] left-[0.75rem] cursor-text"
+                  )}
+                >
+                  Password
+                </span>
               </label>
 
-              <div className={cx('mb-[0.2rem] ml-[0.75rem] transition-all ease-150')}>{errorPass ? <span className={cx('text-[#B33233] text-[0.7rem]')}>{errorPass}</span> : <span className={cx('text-[#B33233] text-[0.7rem]')}></span>}</div>
+              <div
+                className={cx(
+                  "mb-[0.2rem] ml-[0.75rem] transition-all ease-150"
+                )}
+              >
+                {errorPass ? (
+                  <span className={cx("text-[#B33233] text-[0.7rem]")}>
+                    {errorPass}
+                  </span>
+                ) : (
+                  <span className={cx("text-[#B33233] text-[0.7rem]")}></span>
+                )}
+              </div>
 
               <div className={cx("input-checkbox")}>
-                <input type="checkbox" className={cx('checkbox-remember')} />
+                <input type="checkbox" className={cx("checkbox-remember")} />
                 <span>Remember Account</span>
               </div>
 
-              <div className={cx('h-[17%] w-[20%] self-end relative')}><ChangeBgButton type="submit">Continue</ChangeBgButton></div>
+              <div className={cx("h-[17%] w-[20%] self-end relative")}>
+                <ChangeBgButton type="submit">Continue</ChangeBgButton>
+              </div>
             </div>
           </form>
-          <div className={cx("h-[5%] flex flex-col items-center justify-center")}>
-            <div className={cx('w-[60%] border-t-2 border-[#525252]')}></div>
-            <h3 className={cx('mt-[0.2rem]')}><UnderlineAnimation><a href="#" className={cx('text-[#043AC5] text-[0.7rem]')}>Login problem? FAQ can help</a></UnderlineAnimation></h3>
+          <div
+            className={cx("h-[5%] flex flex-col items-center justify-center")}
+          >
+            <div className={cx("w-[60%] border-t-2 border-[#525252]")}></div>
+            <h3 className={cx("mt-[0.2rem]")}>
+              <UnderlineAnimation>
+                <a href="#" className={cx("text-[#043AC5] text-[0.7rem]")}>
+                  Login problem? FAQ can help
+                </a>
+              </UnderlineAnimation>
+            </h3>
           </div>
         </div>
       </div>
@@ -202,4 +262,3 @@ const Login = () => {
 };
 
 export default Login;
-

@@ -8,7 +8,10 @@ import CustomFieldTag from "../../components/Elements/CustomFieldTag";
 import ModalDialog from "../../components/Elements/PopupModal";
 import CustomField from "../../components/Elements/CustomField";
 import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
+import useAuth from "../../hooks/useAuth";
 function CreateRequestType() {
+  const { auth } = useAuth();
+  console.log(auth);
   const iconRequestTypes = [
     "BsFillInfoSquareFill",
     "HiOutlineDesktopComputer",
@@ -122,10 +125,10 @@ function CreateRequestType() {
     criteriaMode: "all",
   });
   const onSubmit = (data) => {
-    console.log(data);
-    console.log(iconRequestType);
-    console.log(selectedService);
-    console.log(listFieldConfig);
+    // console.log(data);
+    // console.log(iconRequestType);
+    // console.log(selectedService);
+    // console.log(listFieldConfig);
   };
   const handleCreateRequestType = () => {
     if (Object.keys(errors).length !== 0) setActiveTabIndex(0);

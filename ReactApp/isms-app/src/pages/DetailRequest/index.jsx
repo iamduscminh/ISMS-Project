@@ -29,12 +29,12 @@ function CreateRequest() {
             >
               <li className={cx("header-nav-item ml-1")}>
                 <a
-                  className={cx("header-nav-url text-blue-700")}
+                  className={cx("header-nav-url hover:underline")}
                   href="/"
                   title="Home"
                   aria-label="Home"
                 >
-                  <UnderlineAnimation>Home</UnderlineAnimation>
+                  Home
                 </a>
               </li>
 
@@ -45,12 +45,12 @@ function CreateRequest() {
               </li>
               <li className={cx("header-nav-item ml-1")}>
                 <a
-                  className={cx("header-nav-url text-blue-700")}
+                  className={cx("header-nav-url hover:underline")}
                   href="/catalog"
                   title="Create Request"
                   aria-label="Create Request"
                 >
-                  <UnderlineAnimation>Request Tickets</UnderlineAnimation>
+                  Request Tickets
                 </a>
               </li>
               <li className={cx("header-nav-item ml-1")}>
@@ -146,7 +146,7 @@ function CreateRequest() {
                 actionHandler={cancelRequestDetail}
                 triggerComponent={
                   <div className="inline-block cursor-pointer">
-                    <div className="flex items-center hover:bg-gray-500 hover:text-white">
+                    <div className="flex items-center hover:underline">
                       <Icon.FaExchangeAlt />
                       <p className="text-lg font-bold ml-3">Cancel Request</p>
                     </div>

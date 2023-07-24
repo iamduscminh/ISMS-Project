@@ -19,14 +19,27 @@ const publicRoutes = [
   { path: "/catalog", component: Page.Catalog },
   { path: "/createRequest/:id", component: Page.CreateRequest },
   { path: "/detailRequest", component: Page.DetailRequest },
-  { path: "/admin/", component: Page.ListTicket, layout: Layout.CustomLayout},
-  { path: "/admin/query", component: Page.TicketQuery, layout: Layout.CustomLayout},
-  { path: "/admin/sla", component: Page.SLA, layout: Layout.CustomLayout},
-  { path: "/admin/ticket/:ticketId", component: Page.TicketDetail, layout: Layout.CustomLayout},
+  { path: "/admin/", component: Page.ListTicket, layout: Layout.CustomLayout },
+  {
+    path: "/admin/query",
+    component: Page.TicketQuery,
+    layout: Layout.CustomLayout,
+  },
+  { path: "/admin/sla", component: Page.SLA, layout: Layout.CustomLayout },
+  {
+    path: "/admin/ticket/:ticketId",
+    component: Page.TicketDetail,
+    layout: Layout.CustomLayout,
+  },
   { path: "/viewRequests", component: Page.ViewRequests },
   { path: "/viewRequestTypes", component: Page.ViewRequestTypes },
   { path: "/createRequestType", component: Page.CreateRequestType },
-  { path: "/updateCustomField", component: Page.UpdateCustomField },
+  { path: "/updateCustomField/:id", component: Page.UpdateCustomField },
+  {
+    path: "/viewCustomFields",
+    component: Page.ViewCustomFields,
+    layout: Layout.CustomLayout,
+  },
 ];
 
 //private route: dành cho những route cần đăng nhập
