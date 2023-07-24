@@ -190,12 +190,12 @@ function CreateRequestType() {
     }
   };
   return (
-    <div className="request-types-container pb-4 w-full h-full bg-[#294a8d] bg-blend-lighten mt-14">
-      <div className="request-types-section mx-auto max-w-7xl ">
+    <div className="request-types-container pb-4 w-full h-full bg-[#fff] bg-blend-lighten overflow-y-scroll">
+      <div className="request-types-section">
         {/* HEADER SECTION*/}
-        <div className="request-types-header w-full text-white ">
+        <div className="request-types-header w-full text-white bg-[#294a8d] ">
           <nav className="request-types-header-nav pt-3 pb-1 ">
-            <ul className="header-nav-content flex items-center text-[18px]">
+            <ul className="header-nav-content flex items-center text-[0.75rem] pl-[1.25rem]">
               <li className="header-nav-item ml-1">
                 <Link className="header-nav-url" to="/">
                   <UnderlineAnimation className="">Home</UnderlineAnimation>
@@ -223,7 +223,7 @@ function CreateRequestType() {
               </li>
             </ul>
           </nav>
-          <div className="request-types-header-content pb-2 flex items-center">
+          <div className="request-types-header-content pb-2 flex items-center pl-[1.25rem]">
             <div className="request-types-header-icon">
               <Icon.BsFillInfoSquareFill className="h-[50px] w-[50px]" />
             </div>
@@ -261,7 +261,7 @@ function CreateRequestType() {
             </div>
             <form onSubmit={handleSubmit(onSubmit)}>
               {/* All tab content. */}
-              <div className="tab-content tab-space">
+              <div className="tab-content tab-space text-[#42526E]">
                 {/*Information Tab*/}
                 <div
                   className={activeTabIndex === 0 ? "block" : "hidden"}
@@ -388,7 +388,7 @@ function CreateRequestType() {
                           }
                           triggerComponent={
                             <div className="inline-block cursor-pointer">
-                              <span className="font-bold text-black text-xl hover:underline">
+                              <span className="font-bold text-[#42526E] text-xl hover:underline">
                                 {selectedService?.serviceName}
                               </span>
                             </div>
