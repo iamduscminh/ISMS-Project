@@ -31,6 +31,11 @@ const publicRoutes = [
     component: Page.TicketDetail,
     layout: Layout.CustomLayout,
   },
+  {
+    path: "/admin/setting/workflows",
+    component: Page.ListWorkflow,
+    layout: Layout.CustomLayout,
+  },
   { path: "/viewRequests", component: Page.ViewRequests },
   { path: "/viewRequestTypes", component: Page.ViewRequestTypes, layout: Layout.CustomLayout },
   { path: "/createRequestType", component: Page.CreateRequestType, layout: Layout.CustomLayout },
