@@ -36,15 +36,28 @@ const publicRoutes = [
     component: Page.ListWorkflow,
     layout: Layout.CustomLayout,
   },
-  { path: "/viewRequests", component: Page.ViewRequests },
-  { path: "/viewRequestTypes", component: Page.ViewRequestTypes, layout: Layout.CustomLayout },
-  { path: "/createRequestType", component: Page.CreateRequestType, layout: Layout.CustomLayout },
-  { path: "/updateCustomField", component: Page.UpdateCustomField },
   {
-    path: "/viewCustomFields",
-    component: Page.ViewCustomFields,
+    path: "/admin/setting/workflows/:mode/:flowId?",
+    component: Page.ViewWorkflow,
     layout: Layout.CustomLayout,
   },
+  { path: "/viewRequests", component: Page.ViewRequests },
+  {
+    path: "/viewRequestTypes",
+    component: Page.ViewRequestTypes,
+    layout: Layout.CustomLayout,
+  },
+  {
+    path: "/createRequestType",
+    component: Page.CreateRequestType,
+    layout: Layout.CustomLayout,
+  },
+  { path: "/updateCustomField", component: Page.UpdateCustomField },
+  // {
+  //   path: "/viewCustomFields",
+  //   component: Page.ViewCustomFields,
+  //   layout: Layout.CustomLayout,
+  // },
   {
     path: ROUTES_PATHS.ADMIN,
     component: Page.Dashboard,
@@ -74,8 +87,7 @@ const publicRoutes = [
     path: ROUTES_PATHS.ADMIN_CONTACT,
     component: Page.Dashboard,
     layout: Layout.AdminLayout,
-  }
-
+  },
 ];
 
 //private route: dành cho những route cần đăng nhập
