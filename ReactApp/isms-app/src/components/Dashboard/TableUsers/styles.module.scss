@@ -1,0 +1,25 @@
+.table {
+    color: #727272;
+
+    & tr:first-child {
+        border-bottom: 1px solid #CFCACA;
+        font-size: 26px;
+        font-weight: 600;
+
+        & th {
+            padding-bottom: 15px;
+        }
+    }
+
+    & td {
+        font-size: 24px;
+        padding-right: 20px;
+        padding-bottom: 15px;
+        padding-top: 15px;
+        vertical-align: top;
+    }
+
+    & tr:nth-child(2) td {
+        padding-top: 50px;
+    }
+}
