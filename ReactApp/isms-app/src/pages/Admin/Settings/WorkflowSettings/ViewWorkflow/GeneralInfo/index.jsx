@@ -2,23 +2,25 @@ import React, { useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import ModalDialog from "../../../../../../components/Elements/PopupModal";
 
-const GeneralInfor = () => {
+const GeneralInfo = () => {
   //Dữ liệu cho WorkflowName
   const [workflowName, setWorkflowName] = useState(
     "Server Infrastructure Management"
   );
+  const [workflowNameInput, setWorkflowNameInput] = useState(workflowName);
 
   const handleWorkflowNameChange = (e) => {
-    setWorkflowName(e.target.value);
+    setWorkflowNameInput(e.target.value);
   }
 
   //Dữ liệu cho Workflow Description
   const [workflowDes, setWorkflowDes] = useState(
     "Server Infrastructure Management is an IT service that provides comprehensive support and management for an organization's server infrastructure."
   );
+  const [workflowDesInput, setWorkflowDesInput] = useState(workflowDes)
 
   const handleWorkflowDesChange = (e) => {
-    setWorkflowDes(e.target.value);
+    setWorkflowDesInput(e.target.value);
   }
 
   //Dữ liệu thể hiện việc workflow active hay không
@@ -27,13 +29,19 @@ const GeneralInfor = () => {
   //Các dữ liệu cho form Edit
   const [RequireMessage, setRequireMessage] = useState(false);
 
+  //Handle Click Thay đổi Name và Des
+  const handleChangeNameDes = () => {
+    setWorkflowName(workflowNameInput);
+    setWorkflowDes(workflowDesInput);
+  }
   return (
     <div className="ml-[3rem] mt-[2rem]">
       <div className="flex items-baseline">
         <span className="text-[2rem] font-medium">{workflowName}</span>
         <ModalDialog
-          title={"Create New Workflow"}
-          actionText={"Create"}
+          title={"Change workflow name"}
+          actionText={"Change"}
+          actionHandler={handleChangeNameDes}
           triggerComponent={
             <CiEdit className="text-[1.5rem] ml-[1rem] cursor-pointer font-medium" />
           }
@@ -46,14 +54,14 @@ const GeneralInfor = () => {
             <input
               type="text"
               className="w-[90%] border border-[#42526E] rounded-md px-[1rem] py-[0.5rem]"
-              value={workflowName}
+              value={workflowNameInput}
               onChange={handleWorkflowNameChange}
             />
             <label>Description</label>
             <input
               type="text"
               className="w-[90%] border border-[#42526E] rounded-md px-[1rem] py-[0.5rem]"
-              value={workflowDes}
+              value={workflowDesInput}
               onChange={handleWorkflowDesChange}
             />
           </div>
@@ -85,4 +93,4 @@ const GeneralInfor = () => {
   );
 };
 
-export default GeneralInfor;
+export default GeneralInfo;

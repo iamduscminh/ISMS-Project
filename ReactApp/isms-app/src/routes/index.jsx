@@ -31,16 +31,6 @@ const publicRoutes = [
     component: Page.TicketDetail,
     layout: Layout.CustomLayout,
   },
-  {
-    path: "/admin/setting/workflows",
-    component: Page.ListWorkflow,
-    layout: Layout.CustomLayout,
-  },
-  {
-    path: "/admin/setting/workflows/:mode/:flowId?",
-    component: Page.ViewWorkflow,
-    layout: Layout.CustomLayout,
-  },
   { path: "/viewRequests", component: Page.ViewRequests },
   {
     path: "/viewRequestTypes",
@@ -53,6 +43,21 @@ const publicRoutes = [
     layout: Layout.CustomLayout,
   },
   { path: "/updateCustomField", component: Page.UpdateCustomField },
+  {
+    path: "/admin/setting/workflows",
+    component: Page.ListWorkflow,
+    layout: Layout.CustomLayout,
+  },
+  {
+    path: "/admin/setting/workflows/:mode/:flowId?",
+    component: Page.ViewWorkflow,
+    layout: Layout.CustomLayout,
+  },
+  {
+    path: "/createRequestType",
+    component: Page.CreateRequestType,
+    layout: Layout.CustomLayout,
+  },
   // {
   //   path: "/viewCustomFields",
   //   component: Page.ViewCustomFields,
@@ -69,11 +74,6 @@ const publicRoutes = [
     layout: Layout.AdminLayout,
   },
   {
-    path: ROUTES_PATHS.ADMIN_USER,
-    component: Page.AdminUser,
-    layout: Layout.AdminLayout,
-  },
-  {
     path: ROUTES_PATHS.ADMIN_REPORT,
     component: Page.AdminReport,
     layout: Layout.AdminLayout,
@@ -87,6 +87,16 @@ const publicRoutes = [
     path: ROUTES_PATHS.ADMIN_CONTACT,
     component: Page.Dashboard,
     layout: Layout.AdminLayout,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN_ROLE,
+    component: Page.AdminRole,
+    layout: Layout.CustomLayout2,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN_USERS,
+    component: Page.AdminUserManage,
+    layout: Layout.CustomLayout2,
   },
 ];
 
