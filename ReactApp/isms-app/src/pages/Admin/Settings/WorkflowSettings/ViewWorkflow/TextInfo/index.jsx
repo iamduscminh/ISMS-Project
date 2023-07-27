@@ -54,6 +54,7 @@ const TextInfo = ({
   listActivity,
   handleAddNewActivity,
   handleDeleteActivity,
+  handleEditActivity
 }) => {
   const activityNameInputRef = useRef();
   const statusInputRef = useRef();
@@ -97,6 +98,7 @@ const TextInfo = ({
           statusData={statusData}
           roleData={roleData}
           handleDeleteActivity={handleDeleteActivity}
+          handleEditActivity={handleEditActivity}
           canDelete={!hasDestination}
         />);
       })}

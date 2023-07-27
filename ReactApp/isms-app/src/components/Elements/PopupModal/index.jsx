@@ -7,6 +7,7 @@ function ModalDialog({
   actionHandler,
   triggerComponent,
   children,
+  customSize = "md"
 }) {
   const [isShow, invokeModal] = React.useState(false);
   const initModal = () => {
@@ -14,13 +15,12 @@ function ModalDialog({
   };
   const onClickHandle = () => {
     actionHandler();
-    console.log(1);
     invokeModal(!isShow);
   };
   return (
     <>
       <div onClick={initModal}>{triggerComponent}</div>
-      <Modal show={isShow}>
+      <Modal show={isShow} size={customSize}>
         <Modal.Header closeButton onClick={initModal}>
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>

@@ -22,9 +22,10 @@ const ViewWorkflow = () => {
   const [listActivity, setListActivity] = useState([
     {
       id: 1,
-      activityName: "Requirement accepted",
-      linkStatus: "New",
-      role: "Service Owner",
+      activityName: "Requirement accepted and evaluated",
+      linkStatus: 1,
+      role: 1,
+      description: "Define the scope of the request and request detailed information from the customer",
       listStatusTrans: [
         {
           id: 1,
@@ -48,10 +49,39 @@ const ViewWorkflow = () => {
     ]);
   };
 
-  const deleteActivity = (id) =>{
+  const deleteActivity = (id) => {
     console.log(id);
-    setListActivity(listActivity.filter(item=>item.id !== id));
+    setListActivity(listActivity.filter(item => item.id !== id));
   }
+
+  const EditActivity = (id, activityNameInput, statusInput, roleInput, activityDes) => {
+    const statusValue = parseInt(statusInput);
+    const roleValue = parseInt(roleInput);
+    // Tạo một bản sao của mảng activities để không thay đổi trực tiếp state
+    const updatedActivities = [...listActivity];
+
+    // Tìm index của activity có id tương ứng trong mảng activities
+    const index = updatedActivities.findIndex((activity) => activity.id === id);
+
+    // Kiểm tra nếu không tìm thấy activity với id tương ứng, thì kết thúc hàm
+    if (index === -1) {
+      alert("Không tìm thấy activity với id tương ứng.");
+      return;
+    }
+
+    // Cập nhật thông tin của activity trong mảng updatedActivities
+    updatedActivities[index] = {
+      ...updatedActivities[index],
+      activityName: activityNameInput,
+      linkStatus: statusValue,
+      role: roleValue,
+      description: activityDes,
+    };
+
+    console.log(updatedActivities);
+    // Cập nhật lại state activities bằng hàm setActivities
+    setListActivity(updatedActivities);
+  };
 
   return (
     <div className="h-full overflow-y-scroll">
@@ -90,7 +120,7 @@ const ViewWorkflow = () => {
           )}
         </div>
         {activeTextDiagram ? (
-          <TextInfo listActivity={listActivity} handleAddNewActivity={addNewActivity} handleDeleteActivity={deleteActivity}/>
+          <TextInfo listActivity={listActivity} handleAddNewActivity={addNewActivity} handleDeleteActivity={deleteActivity} handleEditActivity={EditActivity}/>
         ) : (
           <DiagramInfo />
         )}
