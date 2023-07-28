@@ -91,7 +91,7 @@ const publicRoutes = [
   {
     path: ROUTES_PATHS.ADMIN_ROLE,
     component: Page.AdminRole,
-    layout: Layout.CustomLayout2,
+    layout: Layout.CustomLayout,
   },
   {
     path: ROUTES_PATHS.ADMIN_USERS,
