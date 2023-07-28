@@ -54,7 +54,8 @@ const TextInfo = ({
   listActivity,
   handleAddNewActivity,
   handleDeleteActivity,
-  handleEditActivity
+  handleEditActivity,
+  handleAddStatusTransition
 }) => {
   const activityNameInputRef = useRef();
   const statusInputRef = useRef();
@@ -82,6 +83,14 @@ const TextInfo = ({
     return listActivity.find((item) => item.id === activityId).activityName;
   };
 
+  const getListActivityName = () => {
+    return listActivity.map((item) => {
+      return {
+        id: item.id,
+        activityName: item.activityName,
+      };
+    });
+  }
   return (
     <div className="mt-[2rem] w-[70%]">
       {listActivity.map((activity) => {
@@ -97,8 +106,10 @@ const TextInfo = ({
           activity={activity}
           statusData={statusData}
           roleData={roleData}
+          listActivityName={getListActivityName()}
           handleDeleteActivity={handleDeleteActivity}
           handleEditActivity={handleEditActivity}
+          handleAddStatusTransition={handleAddStatusTransition}
           canDelete={!hasDestination}
         />);
       })}
