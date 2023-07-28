@@ -29,7 +29,7 @@ const DropdownRole = ({ selected, setSelected, className }) => {
     <div
       ref={ref}
       className={clsx(
-        "relative py-2 pl-5 pr-4 bg-white border border-[#C9C5C5] focus:outline-none mt-1 cursor-pointer text-lg xl:text-2xl w-full",
+        "relative rounded-md pl-5 pr-4 bg-white border border-[#C9C5C5] focus:outline-none mt-1 cursor-pointer text-lg xl:text-2xl w-full",
         className
       )}
       onClick={(e) => {
@@ -40,7 +40,7 @@ const DropdownRole = ({ selected, setSelected, className }) => {
       <div>
         <div className="border-0 hover:border-0 flex justify-between rounded-none items-center w-full text-start focus:outline-none">
           <span>{selected?.name || "Select role"}</span>
-          <IconArrowDown />
+          <IconArrowDown/>
         </div>
         <ul
           className={clsx(

@@ -92,9 +92,9 @@ const TableUsers = ({ data, setCurrentRoles }) => {
         className={clsx(styles.table, " max-w-full text-left mt-8 xl:mt-16")}
       >
         <tr>
-          <th>User</th>
-          <th>Work Email</th>
-          <th>Role</th>
+          <th className="px-3 text-[1.5rem] font-medium">User</th>
+          <th className="px-3 text-[1.5rem] font-medium">Work Email</th>
+          <th className="px-3 text-[1.5rem] font-medium">Role</th>
           <th>&nbsp;</th>
         </tr>
         {data.map((item, index) => (
