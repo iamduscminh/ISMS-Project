@@ -96,7 +96,7 @@ const publicRoutes = [
   {
     path: ROUTES_PATHS.ADMIN_USERS,
     component: Page.AdminUserManage,
-    layout: Layout.CustomLayout2,
+    layout: Layout.CustomLayout,
   },
 ];
 

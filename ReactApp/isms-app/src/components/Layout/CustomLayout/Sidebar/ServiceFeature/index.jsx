@@ -13,6 +13,7 @@ const ServiceFeature = ({ changeSidebar }) => {
     if(index === 0) navigate('/admin/setting/services', {state: {from: location}})
     else if(index === 1) navigate('/viewRequestTypes', {state: {from: location}})
     else if(index === 2) navigate('/admin/setting/workflows', {state: {from: location}})
+    else if(index === 3) navigate('/admin/manage/users', {state: {from: location}})
   }
   
   //Hàm này để chuyển về side bar trước đó
@@ -30,7 +31,8 @@ const ServiceFeature = ({ changeSidebar }) => {
     <div className="mt-[1rem] text-[#42526E]">
       <div onClick={()=>handleActive(0)} className={`py-[0.5rem] px-[1rem] hover:bg-[#ebecf0] cursor-pointer ${activeService === 0 ? 'bg-[#ebecf0]' : ''}`}><span>Service Settings</span></div>
       <div onClick={()=>handleActive(1)} className={`py-[0.5rem] px-[1rem] hover:bg-[#ebecf0] cursor-pointer ${activeService === 1 ? 'bg-[#ebecf0]' : ''}`}><span>Request Types</span></div>
-      <div onClick={()=>handleActive(2)} className={`py-[0.5rem] px-[1rem] hover:bg-[#ebecf0] cursor-pointer ${activeService === 1 ? 'bg-[#ebecf0]' : ''}`}><span>Workflow</span></div>
+      <div onClick={()=>handleActive(2)} className={`py-[0.5rem] px-[1rem] hover:bg-[#ebecf0] cursor-pointer ${activeService === 2 ? 'bg-[#ebecf0]' : ''}`}><span>Workflow</span></div>
+      <div onClick={()=>handleActive(3)} className={`py-[0.5rem] px-[1rem] hover:bg-[#ebecf0] cursor-pointer ${activeService === 3 ? 'bg-[#ebecf0]' : ''}`}><span>Users management</span></div>
     </div>
   </div>
   )
