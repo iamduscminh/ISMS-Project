@@ -10,6 +10,8 @@ export { default as ListTicket } from "./Admin/ListTicket";
 export { default as TicketQuery } from "./Admin/TicketQuery";
 export { default as SLA } from "./Admin/SLA";
 export { default as ServiceSettings } from "./Admin/Settings/ServiceSettings";
+export { default as ListWorkflow } from "./Admin/Settings/WorkflowSettings/ListWorkflow";
+export { default as ViewWorkflow } from "./Admin/Settings/WorkflowSettings/ViewWorkflow";
 export { default as TicketDetail } from "./Admin/TicketDetail";
 export { default as ViewRequests } from "./ViewRequests";
 export { default as ViewRequestTypes } from "./ViewRequestTypes";

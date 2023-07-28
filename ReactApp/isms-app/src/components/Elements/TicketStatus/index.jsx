@@ -7,27 +7,27 @@ const cx = classNames.bind(styles);
 const statusData = [
   {
     id: 1,
-    text: "Work in progress",
+    text: "New",
   },
   {
     id: 2,
-    text: "Pending",
+    text: "Reject",
   },
   {
     id: 3,
-    text: "Cancel",
+    text: "Inprogress",
   },
   {
     id: 4,
-    text: "Complete",
+    text: "Resolved",
   },
   {
     id: 5,
-    text: "Open",
+    text: "Pending",
   },
   {
     id: 6,
-    text: "Feedback",
+    text: "Close",
   },
 ];
 const TicketStatus = ({
