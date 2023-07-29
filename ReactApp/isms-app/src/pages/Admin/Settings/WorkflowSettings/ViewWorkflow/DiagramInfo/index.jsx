@@ -1,9 +1,10 @@
 import React from 'react'
+import FlowDiagram from '../../../../../../components/Elements/FlowDiagram'
 
-const DiagramInfo = () => {
+const DiagramInfo = ({data}) => {
   return (
     <div>
-      Diagram
+      <FlowDiagram data={data}/>
     </div>
   )
 }
