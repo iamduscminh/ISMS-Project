@@ -17,50 +17,65 @@ const ViewWorkflow = () => {
     if (!activeTextDiagram) return;
     setActiveTextDiagram(false);
   };
+  let listInitialActivity=[];
+  if(mode==="edit"){
+      listInitialActivity =[
+      {
+        id: 1,
+        activityName: "Requirement accepted and evaluated",
+        linkStatus: 1,
+        role: 1,
+        description:
+          "Define the scope of the request and request detailed information from the customer",
+        listStatusTrans: [
+          {
+            id: 1,
+            statusTran: "Done",
+            checkCondition: true,
+            destination: 2,
+          },
+        ],
+      },
+      {
+        id: 2,
+        activityName: "Planning and implementing:",
+        linkStatus: 3,
+        role: 3,
+        description:
+          "Based on the requirements and information collected, plan the deployment for the server infrastructure management service.",
+        listStatusTrans: [],
+      },
+    ];
+  }else{
+    listInitialActivity = [
+      {
+        id: 1,
+        activityName: "Default activity",
+        linkStatus: 1,
+        role: 1,
+        description:
+          "",
+        listStatusTrans: [],
+      }
+    ]
+  }
 
-  //List các activity của Workflow hiện tại
-  const [listActivity, setListActivity] = useState([
-    {
-      id: 1,
-      activityName: "Requirement accepted and evaluated",
-      linkStatus: 1,
-      role: 1,
-      description:
-        "Define the scope of the request and request detailed information from the customer",
-      listStatusTrans: [
-        {
-          id: 1,
-          statusTran: "Done",
-          checkCondition: true,
-          destination: 2,
-        },
-      ],
-    },
-    {
-      id: 2,
-      activityName: "Planning and implementing:",
-      linkStatus: 3,
-      role: 3,
-      description:
-        "Based on the requirements and information collected, plan the deployment for the server infrastructure management service.",
-      listStatusTrans: [],
-    },
-  ]);
+  const [listActivity, setListActivity] = useState(listInitialActivity);
+  
   const addNewActivity = (name, status, role) => {
     setListActivity([
       ...listActivity,
       {
         id: listActivity.length + 1,
         activityName: name,
-        linkStatus: status,
-        role: role,
+        linkStatus: parseInt(status),
+        role: parseInt(role),
         listStatusTrans: [],
       },
     ]);
   };
 
   const deleteActivity = (id) => {
-    console.log(id);
     setListActivity(listActivity.filter((item) => item.id !== id));
   };
 
@@ -93,8 +108,6 @@ const ViewWorkflow = () => {
       role: roleValue,
       description: activityDes,
     };
-
-    console.log(updatedActivities);
     // Cập nhật lại state activities bằng hàm setActivities
     setListActivity(updatedActivities);
   };
@@ -133,6 +146,26 @@ const ViewWorkflow = () => {
     // Cập nhật lại state listActivity bằng hàm setListActivity
     setListActivity(updatedListActivity);
   };
+
+  const deleteStatusTrans = (activityID, statusTranID, array) => {
+    // Tạo một bản sao của mảng hoạt động ban đầu
+    const newArray = [...listActivity];
+
+    // Tìm hoạt động có activityID cụ thể trong mảng
+    const activity = newArray.find(item => item.id === activityID);
+
+    if (activity) {
+      // Tìm chỉ mục của statusTran có statusTranID cụ thể trong listStatusTrans của hoạt động
+      const statusTransIndex = activity.listStatusTrans.findIndex(item => item.id === statusTranID);
+
+      if (statusTransIndex !== -1) {
+        // Xóa statusTran khỏi listStatusTrans nếu tìm thấy
+        activity.listStatusTrans.splice(statusTransIndex, 1);
+      }
+    }
+    // Cập nhật trạng thái mới với mảng đã được chỉnh sửa
+    setListActivity(newArray);
+  }
   return (
     <div className="h-full overflow-y-scroll">
       <GeneralInfo />
@@ -176,9 +209,10 @@ const ViewWorkflow = () => {
             handleDeleteActivity={deleteActivity}
             handleEditActivity={EditActivity}
             handleAddStatusTransition={addStatusTransition}
+            handleDeleteStatusTransition={deleteStatusTrans}
           />
         ) : (
-          <DiagramInfo />
+          <DiagramInfo data={listActivity} />
         )}
       </div>
     </div>
@@ -186,3 +220,4 @@ const ViewWorkflow = () => {
 };
 
 export default ViewWorkflow;
+

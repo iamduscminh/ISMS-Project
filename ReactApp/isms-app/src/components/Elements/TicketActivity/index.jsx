@@ -14,8 +14,11 @@ const TicketActivity = ({
   canDelete,
   handleDeleteActivity,
   handleEditActivity,
-  handleAddStatusTransition
+  handleAddStatusTransition,
+  handleDeleteStatusTransition,
+  handleEditStatusTransition
 }) => {
+  console.log(activity)
   const getStatusNameById = (id) => {
     return statusData.find((item) => item.id === id).text;
   };
@@ -32,7 +35,7 @@ const TicketActivity = ({
   const [roleInput, setRoleInput] = useState(activity.role);
   const [activityDes, setActivityDes] = useState(activity.description);
 
-  const [statusTranInput, setStatusTranInput] = useState('');
+  const [statusTranInput, setStatusTranInput] = useState("");
   const [destinationInput, setDestinationInput] = useState(0);
   const [checkCondition, setCheckCondition] = useState(false);
 
@@ -202,7 +205,14 @@ const TicketActivity = ({
               <ModalDialog
                 title={"Add New Status Trans"}
                 actionText={"Add"}
-                actionHandler={()=>handleAddStatusTransition(activity.id, statusTranInput, destinationInput, checkCondition)}
+                actionHandler={() =>
+                  handleAddStatusTransition(
+                    activity.id,
+                    statusTranInput,
+                    destinationInput,
+                    checkCondition
+                  )
+                }
                 triggerComponent={
                   <AiFillPlusCircle className="text-[1rem] text-[#42526E] cursor-pointer" />
                 }
@@ -210,12 +220,25 @@ const TicketActivity = ({
               >
                 <div className="w-[70%] m-auto flex flex-col">
                   <div>
-                    <label className="w-[40%] text-[#42526E] font-medium">Status Name</label>
-                    <input value={statusTranInput} onChange={(e)=>setStatusTranInput(e.target.value)} type="text" className="px-[0.5rem] w-[45%] border border-[#42526E] rounded-md"/>
+                    <label className="w-[40%] text-[#42526E] font-medium">
+                      Status Name
+                    </label>
+                    <input
+                      value={statusTranInput}
+                      onChange={(e) => setStatusTranInput(e.target.value)}
+                      type="text"
+                      className="px-[0.5rem] w-[45%] border border-[#42526E] rounded-md"
+                    />
                   </div>
                   <div className="mt-[0.5rem]">
-                    <label className="w-[40%] text-[#42526E] font-medium">Destination</label>
-                    <select value={destinationInput} onChange={(e)=>setDestinationInput(e.target.value)} className="bg-slate-500 text-center rounded-md font-medium px-[0.5rem] text-[#fff]">
+                    <label className="w-[40%] text-[#42526E] font-medium">
+                      Destination
+                    </label>
+                    <select
+                      value={destinationInput}
+                      onChange={(e) => setDestinationInput(e.target.value)}
+                      className="bg-slate-500 text-center rounded-md font-medium px-[0.5rem] text-[#fff]"
+                    >
                       {listDestination.map((item) => (
                         <option
                           className="bg-white text-[#42526E]"
@@ -225,12 +248,24 @@ const TicketActivity = ({
                           {item.activityName}
                         </option>
                       ))}
-                      <option className="bg-white text-[#42526E]" key={listDestination.length+1} value={0}>None</option>
+                      <option
+                        className="bg-white text-[#42526E]"
+                        key={listDestination.length + 1}
+                        value={0}
+                      >
+                        None
+                      </option>
                     </select>
                   </div>
                   <div className="mt-[0.5rem]">
-                    <label className="w-[40%] text-[#42526E] font-medium">Condition</label>
-                    <input value={checkCondition} onChange={(e)=>setCheckCondition(e.target.value)} type="checkbox" />
+                    <label className="w-[40%] text-[#42526E] font-medium">
+                      Condition
+                    </label>
+                    <input
+                      value={checkCondition}
+                      onChange={(e) => setCheckCondition(e.target.value)}
+                      type="checkbox"
+                    />
                   </div>
                 </div>
               </ModalDialog>
@@ -244,7 +279,9 @@ const TicketActivity = ({
                     </span>
                     Transition to
                     <span className="text-[#42526E] font-medium ml-[0.5rem]">
-                      {item.destination === 0 ? "None" : getActivityName(item.destination)}
+                      {item.destination === 0
+                        ? "None"
+                        : getActivityName(item.destination)}
                     </span>
                   </div>
                   <div className="ml-[3rem] flex items-center">
@@ -256,10 +293,20 @@ const TicketActivity = ({
                     )}
                   </div>
                   <div className="ml-[3rem] text-[#043AC5] flex items-center">
-                    <a href="" className="mr-[0.5rem]">
+                    {/* <span className="mr-[0.5rem] cursor-pointer">
                       Edit
-                    </a>
-                    <a href="">Delete</a>
+                    </span> */}
+                    <ModalDialog
+                      title={"Delete Status Trans"}
+                      actionText={"Delete"}
+                      actionHandler={()=>handleDeleteStatusTransition(activity.id, item.id)}
+                      triggerComponent={
+                        <span className="cursor-pointer">Delete</span>
+                      }
+                      customSize="md"
+                    >
+                      <div className="m-auto text-[1.25rem] w-[80%]">Are you sure to delete this Transition?</div>                     
+                    </ModalDialog>
                   </div>
                 </div>
               ))}

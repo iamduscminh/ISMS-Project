@@ -55,7 +55,8 @@ const TextInfo = ({
   handleAddNewActivity,
   handleDeleteActivity,
   handleEditActivity,
-  handleAddStatusTransition
+  handleAddStatusTransition,
+  handleDeleteStatusTransition
 }) => {
   const activityNameInputRef = useRef();
   const statusInputRef = useRef();
@@ -110,6 +111,7 @@ const TextInfo = ({
           handleDeleteActivity={handleDeleteActivity}
           handleEditActivity={handleEditActivity}
           handleAddStatusTransition={handleAddStatusTransition}
+          handleDeleteStatusTransition={handleDeleteStatusTransition}
           canDelete={!hasDestination}
         />);
       })}
@@ -135,7 +137,7 @@ const TextInfo = ({
               <option
                 className="bg-white text-[#42526E]"
                 key={item.id}
-                value={item.text}
+                value={item.id}
               >
                 {item.text}
               </option>
@@ -150,7 +152,7 @@ const TextInfo = ({
               <option
                 className="bg-white text-[#42526E]"
                 key={item.id}
-                value={item.text}
+                value={item.id}
               >
                 {item.text}
               </option>
