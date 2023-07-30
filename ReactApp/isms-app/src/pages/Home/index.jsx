@@ -52,10 +52,22 @@ function Home() {
             iconName={"BsFillInfoSquareFill"}
           />
           <CardItem
+            url="/createRequest"
+            title="Report an issue"
+            description="Having abnormal trouble? Send your issue to us"
+            iconName={"GoReport"}
+          />
+          <CardItem
             url="#"
             title="View All Request"
             description="Browse your list request ticket"
-            iconName={"HiOutlineDesktopComputer"}
+            iconName={"CiViewList"}
+          />
+          <CardItem
+            url="#"
+            title="Request Ticker Filter"
+            description="Filter, search your list request ticket"
+            iconName={"BiFilterAlt"}
           />
         </div>
       </div>

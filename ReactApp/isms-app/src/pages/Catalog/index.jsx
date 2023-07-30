@@ -14,10 +14,13 @@ function Catalog() {
   const [selectedServiceId, setSelectedServiceId] = useState(0);
 
   //API CONFIG
+  const token = auth?.accessToken;
   const headers = {
-    Authorization: `Bearer ${auth?.token}`,
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
     withCredentials: true,
   };
+  console.log(token);
   //CALL API GET ALL SERVICE
   useEffect(() => {
     const apiGetSvcCategoryUrl = "api/ServiceCategories/getall";
@@ -32,7 +35,7 @@ function Catalog() {
           },
         });
         //--------------Get serrvices
-        await axiosPrivate
+        axiosPrivate
           .get(apiGetSvcCategoryUrl, { headers })
           .then((response) => {
             const data = response.data.map((item, i) => ({
@@ -57,7 +60,7 @@ function Catalog() {
         Swal.close();
 
         //-------------Get request type
-        await axiosPrivate
+        axiosPrivate
           .get(apiGetRequestTypesUrl, { headers })
           .then((response) => {
             const data = response.data.map((item, i) => ({

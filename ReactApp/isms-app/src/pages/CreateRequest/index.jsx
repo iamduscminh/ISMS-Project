@@ -13,17 +13,26 @@ const cx = classNames.bind(styles);
 function CreateRequest() {
   const { id } = useParams();
   const { auth } = useAuth();
+  const [isIncident, setIsIncident] = useState(false);
   const [requestType, setRequestType] = useState(null);
   const [requestTypeCustomFields, setRequestTypeCustomFields] = useState([]);
   //API CONFIG
+  const token = auth?.accessToken;
   const headers = {
-    Authorization: `Bearer ${auth?.token}`,
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
     withCredentials: true,
   };
+  console.log(token);
   //CALL API GET REQUEST TYPE
   useEffect(() => {
+    if (id) {
+      setIsIncident(false);
+    } else {
+      setIsIncident(true);
+    }
+
     const apiGetRequestTypeUrl = `api/ServiceItems/${id}`;
-    const apiGetCustomFieldsUrl = `api/ServiceItemCustomFields/getbyserviceitem/${id}`;
     const fetchData = async () => {
       try {
         Swal.fire({
@@ -34,7 +43,7 @@ function CreateRequest() {
           },
         });
         //--------------Get request type
-        await axiosPrivate
+        axiosPrivate
           .get(apiGetRequestTypeUrl, { headers })
           .then((response) => {
             const data = {
@@ -47,7 +56,7 @@ function CreateRequest() {
                 response.data.serviceCategoryEntity.serviceCategoryName,
             };
             setRequestType(data);
-            console.log(data);
+            //console.log(data);
           })
           .catch((error) => {
             const result = Swal.fire({
@@ -58,10 +67,11 @@ function CreateRequest() {
               cancelButtonText: "Cancel",
             });
           });
-        Swal.close();
 
-        //-------------Get custom field
-        await axiosPrivate
+        //CALL API GET REQUEST TYPE
+        const apiGetCustomFieldsUrl = `api/ServiceItemCustomFields/getbyserviceitem/${id}`;
+
+        axiosPrivate
           .get(apiGetCustomFieldsUrl, { headers })
           .then((response) => {
             const data = response.data.map((item, i) => ({
@@ -104,48 +114,18 @@ function CreateRequest() {
         });
       }
     };
-    fetchData();
+    if (id) fetchData();
+    else {
+      setRequestType({
+        id: 0,
+        requestTypeName: "Report an issue",
+        description: "Report an issue when you have abnormal problem",
+        iconDisplay: "GoReport",
+        serviceCategoryId: "",
+        serviceName: "",
+      });
+    }
   }, []);
-  const requestTypeTemp = {
-    id: "1",
-    requestTypeName: "Request new hardware",
-    description: "Request to admin for new hardware",
-    customFields: [
-      {
-        fieldId: 1,
-        fieldCode: "f1",
-        fieldName: "Configuration information",
-        fieldValue: null,
-        fieldType: "T",
-        valType: "N",
-        mandatory: 0,
-        minVal: null,
-        maxVal: null,
-        minlength: null,
-        maxlength: null,
-        listOfValue: null,
-        listOfValueDisplay: null,
-        placeholder: null,
-      },
-      {
-        fieldId: 2,
-        fieldCode: "f2",
-        fieldName: "Brand Expect",
-        fieldValue: null,
-        fieldType: "LOV",
-        valType: "T",
-        mandatory: 0,
-        minVal: null,
-        maxVal: null,
-        minlength: null,
-        maxlength: null,
-        listOfValue: "Dell;HP;Acer;MSI",
-        listOfValueDisplay: "Dell;HP;Acer;MSI",
-        placeholder: null,
-      },
-    ],
-  };
-
   //định nghĩa form
   const {
     register,
@@ -157,7 +137,83 @@ function CreateRequest() {
     criteriaMode: "all",
   });
   const onSubmit = (data) => {
-    console.log(data);
+    const rqtTitle = getValues("rqtTitle");
+    const rqtDesc = getValues("rqtDesc");
+    //console.log(rqtTitle + " " + rqtDesc);
+    const list = ["rqtTitle", "rqtDesc", "rqtFile"];
+    const customFieldsData = Object.fromEntries(
+      Object.entries(data).filter(([key, value]) => !list.includes(key))
+    );
+    const customFieldsDatas = Object.entries(customFieldsData).map(
+      ([key, value]) => {
+        return { fieldId: key, fieldValue: value };
+      }
+    );
+
+    const requestTicketData = {
+      isIncident: isIncident,
+      title: rqtTitle,
+      description: rqtDesc,
+      serviceItemId: requestType.id,
+      requester: auth?.email,
+    };
+    console.log(requestTicketData);
+    //Create Request Ticket
+    const apiCreateRequestTicketUrl = "api/RequestTickets/sendticket";
+    try {
+      Swal.fire({
+        title: "Loading...",
+        allowOutsideClick: false,
+        onBeforeOpen: () => {
+          Swal.showLoading();
+        },
+      });
+      axiosPrivate
+        .post(apiCreateRequestTicketUrl, JSON.stringify(requestTicketData), {
+          headers,
+        })
+        .then((response) => {
+          console.log(response.data);
+        })
+        .catch((error) => {
+          const result = Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: `${error}`,
+            showCancelButton: true,
+            cancelButtonText: "Cancel",
+          });
+        });
+      //Create Request Ticket Ext
+      if (customFieldsDatas.some((item) => typeof item === "object"))
+        axiosPrivate
+          .post(apiCreateRequestTicketUrl, JSON.stringify(requestTicketData), {
+            headers,
+          })
+          .then((response) => {
+            console.log(response.data);
+          })
+          .catch((error) => {
+            const result = Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error}`,
+              showCancelButton: true,
+              cancelButtonText: "Cancel",
+            });
+          });
+
+      Swal.close();
+    } catch (error) {
+      // Handle errors if needed
+      console.log(error);
+      Swal.close();
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error,
+      });
+    }
   };
   return (
     <div
@@ -193,28 +249,37 @@ function CreateRequest() {
                   <UnderlineAnimation>Create Request</UnderlineAnimation>
                 </Link>
               </li>
-              <li className={cx("header-nav-item ml-1")}>
-                <div className={cx("header-nav-arrow")}>
-                  <IconTag name={"AiOutlineRight"} />
-                </div>
-              </li>
-              <li className={cx("header-nav-item ml-1")}>
-                <Link className={cx("header-nav-url")} href="/catalog">
-                  <UnderlineAnimation>
-                    {requestType?.serviceName}
-                  </UnderlineAnimation>
-                </Link>
-              </li>
-              <li className={cx("header-nav-item ml-1")}>
-                <div className={cx("header-nav-arrow")}>
-                  <IconTag name={"AiOutlineRight"} />
-                </div>
-              </li>
-              <li className={cx("header-nav-item ml-1")}>
-                <Link className={cx("header-nav-url")}>
-                  <span>{requestType?.requestTypeName}</span>
-                </Link>
-              </li>
+              {requestType?.serviceName && (
+                <>
+                  <li className={cx("header-nav-item ml-1")}>
+                    <div className={cx("header-nav-arrow")}>
+                      <IconTag name={"AiOutlineRight"} />
+                    </div>
+                  </li>
+                  <li className={cx("header-nav-item ml-1")}>
+                    <Link className={cx("header-nav-url")} href="/catalog">
+                      <UnderlineAnimation>
+                        {requestType?.serviceName}
+                      </UnderlineAnimation>
+                    </Link>
+                  </li>
+                </>
+              )}
+
+              {requestType?.requestTypeName && (
+                <>
+                  <li className={cx("header-nav-item ml-1")}>
+                    <div className={cx("header-nav-arrow")}>
+                      <IconTag name={"AiOutlineRight"} />
+                    </div>
+                  </li>
+                  <li className={cx("header-nav-item ml-1")}>
+                    <Link className={cx("header-nav-url")}>
+                      <span>{requestType.requestTypeName}</span>
+                    </Link>
+                  </li>
+                </>
+              )}
             </ul>
           </nav>
           <div
@@ -223,10 +288,12 @@ function CreateRequest() {
             )}
           >
             <div className={cx("cre-request-header-icon")}>
-              <IconTag
-                name={requestType?.iconDisplay}
-                className={"h-[50px] w-[50px]"}
-              />
+              {requestType?.iconDisplay && (
+                <IconTag
+                  name={requestType?.iconDisplay}
+                  className={"h-[50px] w-[50px]"}
+                />
+              )}
             </div>
             <div className={cx("cre-request-header-description ml-5")}>
               <h4 className="text-2xl font-bold">
@@ -287,6 +354,24 @@ function CreateRequest() {
                   {errors.rqtDesc && errors.rqtDesc.message}
                 </p>
               </div>
+              <div className="mb-6">
+                <label
+                  htmlFor="rqtFile"
+                  className="block mb-2 text-sm font-medium text-gray-500 "
+                >
+                  File Attachment
+                </label>
+                <input
+                  type="file"
+                  id="rqtFile"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                  placeholder=""
+                  {...register("rqtFile", {})}
+                />
+                <p className="mt-2 text-sm text-red-600 ">
+                  {errors.rqtFile && errors.rqtFile.message}
+                </p>
+              </div>
               <div className="customFieldSection mt-3">
                 {requestTypeCustomFields.map((item, i) => {
                   return (
@@ -295,7 +380,9 @@ function CreateRequest() {
                       fieldId={item?.fieldId}
                       fieldCode={item?.fieldCode}
                       fieldName={item?.fieldName}
-                      fieldValue={item?.fieldValue}
+                      fieldValue={
+                        item?.fieldValue ?? item?.defaultValue ?? null
+                      }
                       fieldType={item?.fieldType}
                       valType={item?.valType}
                       mandatory={item?.mandatory}

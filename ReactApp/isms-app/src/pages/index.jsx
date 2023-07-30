@@ -15,8 +15,8 @@ export { default as ViewRequests } from "./ViewRequests";
 export { default as ViewRequestTypes } from "./ViewRequestTypes";
 export { default as CreateRequestType } from "./CreateRequestType";
 export { default as UpdateCustomField } from "./UpdateCustomField";
+export { default as ViewCustomFields } from "./ViewCustomFields";
 export { default as Dashboard } from "./Dashboard";
 export { default as AdminUser } from "./AdminUser";
 export { default as AdminTicket } from "./AdminTicket";
 export { default as AdminReport } from "./AdminReport";
-

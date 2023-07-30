@@ -17,7 +17,7 @@ const publicRoutes = [
     layout: Layout.FooterOnly,
   },
   { path: "/catalog", component: Page.Catalog },
-  { path: "/createRequest/:id", component: Page.CreateRequest },
+  { path: "/createRequest/:id?", component: Page.CreateRequest },
   { path: "/detailRequest", component: Page.DetailRequest },
   { path: "/admin/", component: Page.ListTicket, layout: Layout.CustomLayout },
   {

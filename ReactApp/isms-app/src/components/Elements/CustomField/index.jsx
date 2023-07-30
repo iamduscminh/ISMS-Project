@@ -65,7 +65,7 @@ function CustomField({
             id={`${fieldId}_${fieldCode}`}
             value={fieldValue}
             placeholder={placeholder}
-            {...register(`${fieldCode}`, {
+            {...register(`${fieldId}`, {
               required: mandatory && "This field is required.",
               min: minVal && {
                 value: minVal,
@@ -116,7 +116,7 @@ function CustomField({
             id={`${fieldId}_${fieldCode}`}
             value={fieldValue}
             placeholder={placeholder}
-            {...register(`${fieldCode}`, {
+            {...register(`${fieldId}`, {
               required: mandatory && "This field is required.",
               min: minVal && {
                 value: minVal,
@@ -163,7 +163,7 @@ function CustomField({
             name={fieldCode}
             className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 "
             value={fieldValue}
-            {...register(`${fieldCode}`, {
+            {...register(`${fieldId}`, {
               required: mandatory && "This field is required.",
               min: minVal && {
                 value: minVal,
@@ -209,7 +209,7 @@ function CustomField({
             id={`${fieldId}_${fieldCode}`}
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             defaultValue={fieldValue != null ? fieldValue : null}
-            {...register(`${fieldCode}`)}
+            {...register(`${fieldId}`)}
           >
             <option></option>
             {listOfValue.split(";").map((item, i) => {
@@ -233,7 +233,7 @@ function CustomField({
                 name={fieldCode}
                 defaultChecked={fieldValue == "true"}
                 className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300"
-                {...register(`${fieldCode}`, { valueAsNumber: true })}
+                {...register(`${fieldId}`, { valueAsNumber: true })}
               />
             </div>
             <label
@@ -264,7 +264,7 @@ function CustomField({
                     value={item}
                     onChange={handleCheckList}
                     className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300"
-                    {...register(`${fieldCode}`)}
+                    {...register(`${fieldId}`)}
                   />
                 </div>
                 <label
@@ -319,7 +319,7 @@ function CustomField({
                   value={item}
                   name={`${fieldCode}`}
                   className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500  focus:ring-2"
-                  {...register(`${fieldCode}`)}
+                  {...register(`${fieldId}`)}
                 />
                 <label
                   htmlFor={`${fieldId}_${fieldCode}_${i}`}
@@ -349,7 +349,7 @@ function CustomField({
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
               placeholder=""
               value={fieldValue}
-              {...register(`${fieldCode}`)}
+              {...register(`${fieldId}`)}
             />
           </div>
         </>

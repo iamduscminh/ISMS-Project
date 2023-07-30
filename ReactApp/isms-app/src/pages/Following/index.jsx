@@ -1,5 +1,6 @@
 import React from "react";
 import Swal from "sweetalert2";
+import IconTag from "../../components/Elements/IconTag";
 import {
   handleShowError,
   handleAsyncTask,
@@ -14,8 +15,7 @@ const MyComponent = () => {
   };
   return (
     <div>
-      <button onClick={handleShowError}>Show Error</button>
-      <button onClick={handleClick}>Start Asynchronous Task</button>
+      <IconTag name={"MdPassword"} className={"h-[50px] w-[50px]"} />
     </div>
   );
 };
