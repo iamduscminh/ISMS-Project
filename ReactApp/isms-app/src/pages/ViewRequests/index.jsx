@@ -1,26 +1,91 @@
-import { React, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { React, useState, useEffect } from "react";
+import { Link, json, useNavigate } from "react-router-dom";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import Swal from "sweetalert2";
 import UnderlineAnimation from "../../components/Animation/UnderlineText";
 import * as Icon from "../../components/Elements/Icon";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useAuth from "../../hooks/useAuth";
 function ViewRequests() {
   const navigate = useNavigate();
+  const axiosInstance = useAxiosPrivate();
+  const { auth } = useAuth();
   const columns = [
-    { field: "id", headerName: "ID", width: 100 },
-    { field: "type", headerName: "Request Type", width: 200 },
-    { field: "title", headerName: "Title", width: 300 },
+    { field: "stt", headerName: "STT", width: 100 },
+    { field: "id", headerName: "ID", hide: true },
+    { field: "type", headerName: "Type", width: 200 },
+    { field: "title", headerName: "Title", width: 200 },
     { field: "status", headerName: "Status", width: 200 },
+    { field: "createAt", headerName: "Create At", width: 200 },
   ];
-
-  const rows = [
-    { id: 1, type: "Computers", title: "Doe", status: "Done" },
-    { id: 2, type: "Computers", title: "Smith", status: "Done" },
-    { id: 3, type: "Computers", title: "Johnson", status: "Done" },
-  ];
-
+  const options = {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    hour12: true,
+  };
+  const [requestTicketData, setrequestTicketData] = useState([]);
+  const [filteredRows, setFilteredRows] = useState([]);
+  useEffect(() => {
+    const requester = { requester: auth?.email, requestTicketId: "" };
+    const apiGetRequestTicketsUrl = `api/RequestTickets/getalltickets/${requester.requester}/${requester.requestTicketId}`;
+    const fetchData = async () => {
+      try {
+        Swal.fire({
+          title: "Loading...",
+          allowOutsideClick: false,
+          onBeforeOpen: () => {
+            Swal.showLoading();
+          },
+        });
+        //--------------Get request tickets
+        axiosInstance
+          .get(apiGetRequestTicketsUrl)
+          .then((response) => {
+            const data = response.data.map((item, i) => ({
+              stt: i,
+              id: item.requestTicketId,
+              type: item.isIncident,
+              title: item.serviceItemEntity?.serviceItemName,
+              status: item.status,
+              createAt: new Date(item.createdAt).toLocaleString(
+                "en-US",
+                options
+              ),
+            }));
+            setrequestTicketData(data);
+            setFilteredRows(data);
+            console.log(response.data);
+          })
+          .catch((error) => {
+            const result = Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error}`,
+              showCancelButton: true,
+              cancelButtonText: "Cancel",
+            });
+          });
+        Swal.close();
+      } catch (error) {
+        // Handle errors if needed
+        console.log(error);
+        Swal.close();
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: error,
+        });
+      }
+    };
+    fetchData();
+  }, []);
   const handleFilterChange = (e) => {
     const keyword = e.target.value.toLowerCase();
-    const filteredData = rows.filter((row) =>
+    const filteredData = requestTicketData.filter((row) =>
       Object.values(row).some(
         (value) =>
           (typeof value === "string" &&
@@ -36,16 +101,16 @@ function ViewRequests() {
 
     navigate("/viewDetails/" + id);
   };
-  const [filteredRows, setFilteredRows] = useState(rows);
+
   return (
-    <div className="view-requests-container w-full h-full py-5 bg-[#f5f7f9]">
+    <div className="view-requests-container w-full h-full py-5 bg-[#294a8d] mt-3">
       <div className="view-requests-section mt-4 mx-auto max-w-7xl bg-white rounded shadow">
         {/* HEADER SECTION*/}
-        <div className="view-requests-header w-full bg-gray-200">
+        <div className="view-requests-header w-full bg-[#0e3275] text-white">
           <nav className="view-requests-header-nav px-6 pt-3 pb-3">
             <ul className="header-nav-content flex items-center text-[18px]">
               <li className="header-nav-item ml-1">
-                <Link className="header-nav-url text-blue-700" to="/">
+                <Link className="header-nav-url" to="/">
                   <UnderlineAnimation>Home</UnderlineAnimation>
                 </Link>
               </li>
@@ -56,7 +121,7 @@ function ViewRequests() {
                 </div>
               </li>
               <li className="header-nav-item ml-1">
-                <Link className="header-nav-url text-blue-700">
+                <Link className="header-nav-url">
                   <UnderlineAnimation>View Requests</UnderlineAnimation>
                 </Link>
               </li>
@@ -64,11 +129,11 @@ function ViewRequests() {
           </nav>
           <div className="view-requests-header-content px-6 pb-3 flex items-center">
             <div className="view-requests-header-icon">
-              <Icon.BsFillInfoSquareFill className="h-[50px] w-[50px]" />
+              <Icon.CiViewList className="h-[50px] w-[50px]" />
             </div>
             <div className="view-requests-header-description ml-5">
               <h4 className="text-2xl font-bold">View Requests</h4>
-              <span>Views & Filter all your request tickets</span>
+              <span>Views & Filter your request tickets</span>
             </div>
           </div>
         </div>
