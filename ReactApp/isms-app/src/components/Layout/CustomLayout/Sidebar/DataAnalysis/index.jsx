@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ROUTES_PATHS } from "../../../../constants";
+import { ROUTES_PATHS } from "../../../../../../constants";
 
 export const sidebarMenus = {
   main: [
@@ -74,11 +74,8 @@ const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   return (
-    <aside className="bg-[#E0ECF2] pl-2 hidden lg:flex space-y-[70px] flex-col w-0  lg:w-[250px] xl:w-[300px] h-screen absolute top-0 left-0 shadow-xl">
-      <div className="flex w-[200px] mx-auto">
-        <img src="/images/logo.png" alt="" />
-      </div>
-      <div className="flex flex-col flex-1 overflow-y-auto justify-between space-y-4 pb-10 pl-2 xl:pl-5 font-poppins">
+    <aside className="bg-[#E0ECF2] pl-2 hidden lg:flex space-y-[70px] flex-col w-0 lg:w-[250px] xl:w-[300px] shadow-xl">
+      <div className="flex flex-col flex-1 overflow-y-auto justify-between space-y-4 pb-10 pl-2 xl:pl-5 font-poppins mt-40">
         <MenuList
           menus={sidebarMenus.main}
           currentPath={location?.pathname}

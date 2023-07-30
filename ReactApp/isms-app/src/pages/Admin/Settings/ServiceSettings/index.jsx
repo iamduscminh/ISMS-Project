@@ -1,8 +1,10 @@
 import React, { useRef, useState } from "react";
 import ServiceGroup from "../../../../components/Elements/ServiceGroup";
 import { AiFillPlusCircle } from "react-icons/ai";
+import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
 
 const ServiceSettings = () => {
+  const axiosInstance = useAxiosPrivate();
   //Data cho List Service được lấy từ DB lên
   const [listService, setListService] = useState([
     {
@@ -50,25 +52,37 @@ const ServiceSettings = () => {
     const serviceName = serviceNameRef.current.value;
     const serviceDes = serviceDesRef.current.value;
     console.log(serviceName);
-    if(serviceName === '') return;
+    if(serviceName === '') alert('Service Categories is Require');
 
-    //Set lại giá trị
-    setListService((prev) => [
-      ...prev,
-      {
-        id: listService.length + 1,
-        serviceName: serviceName,
-        serviceDes: serviceDes,
-        requestType: [],
-      },
-    ]);
+    // Create the object to be sent to the backend API
+  const newServiceGroup = {
+    ServiceCategoryName: serviceName,
+    Description: serviceDes,
+  };
 
-    //Clear Input
-    serviceDesRef.current.value = '';
-    serviceDesRef.current.value = '';
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  
+  // Make the API request to insert the new service group
+  axiosInstance.post("api/ServiceCategories/create", newServiceGroup)
+    .then((response) => {
+      // Assuming the API returns the newly created service group data
+      const createdServiceGroup = response.data;
 
-    //Đóng trạng thái Insert
-    setIsInsert(false);
+      // Update the state with the new service group data
+      setListService((prev) => [...prev, createdServiceGroup]);
+
+      // Clear Input
+      serviceNameRef.current.value = '';
+      serviceDesRef.current.value = '';
+
+      // Đóng trạng thái Insert
+      setIsInsert(false);
+    })
+    .catch((error) => {
+      // Handle error if the API request fails
+      console.error("Error inserting service group:", error);
+      // Optionally, show an error message to the user
+    });
   };
 
   //
@@ -80,8 +94,9 @@ const ServiceSettings = () => {
   }
   return (
     <div>
-      <div className="relative w-full h-[5vh] bg-[#42526E] pl-[3rem] flex items-center">
-        <h1 className="text-[1.25rem] text-[#fff] font-medium">
+      <div className="relative w-full bg-[#42526E] pl-[5rem] flex justify-start flex-col py-[0.75rem]">
+        <h4 className="mb-[0.75rem] text-[#fff] ">Project/Settings/ServiceGroups</h4>
+        <h1 className="text-[1.5rem] text-[#fff] font-medium ">
           Service Groups Setting
         </h1>
       </div>

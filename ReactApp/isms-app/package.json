@@ -35,8 +35,9 @@
     "react-router-dom": "^6.11.2",
     "react-switch": "^7.0.0",
     "react-type-animation": "^3.0.1",
+    "reactflow": "^11.7.4",
     "styled-components": "^4.4.1",
-    "sweetalert2": "^11.7.19"
+    "sweetalert2": "^11.6.13"
   },
   "devDependencies": {
     "@types/react": "^18.0.37",

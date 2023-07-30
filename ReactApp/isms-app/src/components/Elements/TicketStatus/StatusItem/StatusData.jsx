@@ -1,7 +1,7 @@
 const StatusData = {
-    NotHandle: ['Open','Feedback'],
-    Handle: ['Work in progress','Pending'],
-    Close: ['Cancel','Complete'],
+    NotHandle: ['New'],
+    Handle: ['Inprogress','Pending'],
+    Close: ['Closed','Resolved', 'Reject'],
 }
 
 export default StatusData

@@ -125,7 +125,7 @@ const Login = () => {
 
       console.log(decodedToken);
 
-      setAuth({ email, password, permissions: [decodedToken.sub], roleType: decodedToken.roleType, accessToken });
+      setAuth({ email, password, permissions: decodedToken.permissions, roleType: decodedToken.roleType, accessToken });
       navigate(from, {replace: true});
 
     } catch (err) {

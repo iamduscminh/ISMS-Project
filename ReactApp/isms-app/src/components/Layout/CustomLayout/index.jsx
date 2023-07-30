@@ -8,7 +8,7 @@ function CustomLayout({ children }) {
       <AdminHeader />
       <div className="flex h-[90vh] relative">
         <Sidebar />
-        <div className="shrink grow">{children}</div>
+        <div className="shrink grow overflow-y-scroll">{children}</div>
       </div>
       <Footer />
     </div>

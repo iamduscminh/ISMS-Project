@@ -31,19 +31,41 @@ const publicRoutes = [
     component: Page.TicketDetail,
     layout: Layout.CustomLayout,
   },
+  
   { path: "/viewRequests", component: Page.ViewRequests },
-  { path: "/viewRequestTypes", component: Page.ViewRequestTypes },
+  {
+    path: "/viewRequestTypes",
+    component: Page.ViewRequestTypes,
+    layout: Layout.CustomLayout,
+  },
   {
     path: "/createRequestType",
     component: Page.CreateRequestType,
     layout: Layout.CustomLayout,
   },
+
   { path: "/updateCustomField/:id", component: Page.UpdateCustomField },
+
   {
-    path: "/viewCustomFields",
-    component: Page.ViewCustomFields,
+    path: "/admin/setting/workflows",
+    component: Page.ListWorkflow,
     layout: Layout.CustomLayout,
   },
+  {
+    path: "/admin/setting/workflows/:mode/:flowId?",
+    component: Page.ViewWorkflow,
+    layout: Layout.CustomLayout,
+  },
+  {
+    path: "/createRequestType",
+    component: Page.CreateRequestType,
+    layout: Layout.CustomLayout,
+  },
+  // {
+  //   path: "/viewCustomFields",
+  //   component: Page.ViewCustomFields,
+  //   layout: Layout.CustomLayout,
+  // },
   {
     path: ROUTES_PATHS.ADMIN,
     component: Page.Dashboard,
@@ -52,11 +74,6 @@ const publicRoutes = [
   {
     path: ROUTES_PATHS.ADMIN_TICKET,
     component: Page.AdminTicket,
-    layout: Layout.AdminLayout,
-  },
-  {
-    path: ROUTES_PATHS.ADMIN_USER,
-    component: Page.AdminUser,
     layout: Layout.AdminLayout,
   },
   {
@@ -74,26 +91,38 @@ const publicRoutes = [
     component: Page.Dashboard,
     layout: Layout.AdminLayout,
   },
+  {
+    path: ROUTES_PATHS.ADMIN_ROLE,
+    component: Page.AdminRole,
+    layout: Layout.CustomLayout,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN_USERS,
+    component: Page.AdminUserManage,
+    layout: Layout.CustomLayout,
+  },
 ];
 
 //private route: dành cho những route cần đăng nhập
 
 //Route có Permission là PERM000000: Mange users
-const PERM000000Routes = [];
+const PERM000000Routes = [{
+  path: "/admin/setting/services",
+  component: Page.ServiceSettings,
+  layout: Layout.CustomLayout,
+},];
 
 //Route có Permission là PERM000001: Mange roles
 const PERM000001Routes = [];
 
 //Route có Permission là PERM000002: Manage tickets
-const PERM000002Routes = [];
+const PERM000002Routes = [
+  
+];
 
 //Route có Permission là PERM000003: Manage service items
 const PERM000003Routes = [
-  {
-    path: "/admin/setting/services",
-    component: Page.ServiceSettings,
-    layout: Layout.CustomLayout,
-  },
+  
 ];
 
 //Route có Permission là PERM000004: Manage service categories
