@@ -123,8 +123,6 @@ const Login = () => {
       const accessToken = response?.data?.token;
       const decodedToken = jwtDecode(accessToken);
 
-      console.log(decodedToken);
-
       setAuth({ email, password, permissions: decodedToken.permissions, roleType: decodedToken.roleType, accessToken });
       navigate(from, {replace: true});
 

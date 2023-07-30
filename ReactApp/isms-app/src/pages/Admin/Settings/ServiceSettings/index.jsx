@@ -1,44 +1,30 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import ServiceGroup from "../../../../components/Elements/ServiceGroup";
 import { AiFillPlusCircle } from "react-icons/ai";
-import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
+import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 
 const ServiceSettings = () => {
   const axiosInstance = useAxiosPrivate();
   //Data cho List Service được lấy từ DB lên
-  const [listService, setListService] = useState([
-    {
-      id: 1,
-      serviceName: "Logins and Accounts",
-      serviceDes:
-        "Service Login and Account is a comprehensive system that enables users to access and manage their accounts on a particular platform or website",
-      requestType: [
-        {
-          id: 1,
-          name: "Request a new account",
-          icon: "AiFillCustomerService",
-        },
-        {
-          id: 2,
-          name: "Fix an Account Problem",
-          icon: "AiFillCustomerService",
-        },
-      ],
-    },
-    {
-      id: 2,
-      serviceName: "Computers",
-      serviceDes:
-        "Service Computers is a comprehensive system that offers a wide range of solutions and support for computer-related issues and tasks",
-      requestType: [
-        {
-          id: 3,
-          name: "Report broken Hardware",
-          icon: "AiFillCustomerService",
-        },
-      ],
-    },
-  ]);
+  const [listService, setListService] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Gọi API để lấy danh sách Service Categories từ DB
+    const fetchServiceCategories = async () => {
+      try {
+        const response = await axiosInstance.get("api/ServiceCategories/getallwithserviceitems");
+        console.log(response);
+        setListService(response.data); // Cập nhật listService với dữ liệu trả về từ API
+        setIsLoading(false); // Kết thúc quá trình loading khi đã có dữ liệu
+      } catch (error) {
+        console.error("Error fetching service categories:", error);
+        setIsLoading(false); // Kết thúc quá trình loading nếu có lỗi xảy ra
+      }
+    };
+
+    fetchServiceCategories();
+  }, [axiosInstance]);
 
   //State này lưu trạng thái có đang insert một Group serice mới không
   const [isInsert, setIsInsert] = useState(false);
@@ -51,51 +37,66 @@ const ServiceSettings = () => {
     //Lấy giá trị từ Input
     const serviceName = serviceNameRef.current.value;
     const serviceDes = serviceDesRef.current.value;
-    console.log(serviceName);
-    if(serviceName === '') alert('Service Categories is Require');
+    if (serviceName === "") alert("Service Categories is Require");
 
     // Create the object to be sent to the backend API
-  const newServiceGroup = {
-    ServiceCategoryName: serviceName,
-    Description: serviceDes,
-  };
+    const newServiceGroup = {
+      ServiceCategoryName: serviceName,
+      Description: serviceDes,
+    };
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  
-  // Make the API request to insert the new service group
-  axiosInstance.post("api/ServiceCategories/create", newServiceGroup)
-    .then((response) => {
-      // Assuming the API returns the newly created service group data
-      const createdServiceGroup = response.data;
+    const controller = new AbortController();
 
-      // Update the state with the new service group data
-      setListService((prev) => [...prev, createdServiceGroup]);
+    const createServiceGroup = async () => {
+      try {
+        const response = await axiosInstance.post(
+          "api/ServiceCategories/create",
+          JSON.stringify(newServiceGroup),
+          {
+            signal: controller.signal,
+          }
+        );
+        console.log(response);
+        if (response.status === 200) {
+          const createdServiceGroup = response.data;
+          setListService((prev) => [...prev, createdServiceGroup]);
 
-      // Clear Input
-      serviceNameRef.current.value = '';
-      serviceDesRef.current.value = '';
+          // Clear Input
+          serviceNameRef.current.value = "";
+          serviceDesRef.current.value = "";
 
-      // Đóng trạng thái Insert
-      setIsInsert(false);
-    })
-    .catch((error) => {
-      // Handle error if the API request fails
-      console.error("Error inserting service group:", error);
-      // Optionally, show an error message to the user
-    });
+          // Đóng trạng thái Insert
+          setIsInsert(false);
+        }else{
+         throw response
+        }
+      } catch (err) {
+        // Optionally, show an error message to the user
+        if(err.status === 403){
+          alert("You are not allowed to add Service Category");
+        }else{
+          alert(err.message);
+        }
+      }
+    };
+    createServiceGroup();
   };
 
   //
-  const deleteServiceGroup = (selectedService) =>{
+  const deleteServiceGroup = (selectedService) => {
     console.log(selectedService);
-    const filterListService = listService.filter(e=>e.id !== selectedService);
+    const filterListService = listService.filter(
+      (e) => e.id !== selectedService
+    );
     console.log(filterListService);
     setListService(filterListService);
-  }
+  };
   return (
     <div>
       <div className="relative w-full bg-[#42526E] pl-[5rem] flex justify-start flex-col py-[0.75rem]">
-        <h4 className="mb-[0.75rem] text-[#fff] ">Project/Settings/ServiceGroups</h4>
+        <h4 className="mb-[0.75rem] text-[#fff] ">
+          Project/Settings/ServiceGroups
+        </h4>
         <h1 className="text-[1.5rem] text-[#fff] font-medium ">
           Service Groups Setting
         </h1>
@@ -109,7 +110,11 @@ const ServiceSettings = () => {
           </p>
           <div className="mt-[3rem]">
             {listService.map((item) => (
-              <ServiceGroup key={item.id} service={item} onDeleteService={deleteServiceGroup}/>
+              <ServiceGroup
+                key={item.serviceCategoryId}
+                service={item}
+                onDeleteService={deleteServiceGroup}
+              />
             ))}
           </div>
           {!isInsert && (
@@ -148,7 +153,10 @@ const ServiceSettings = () => {
                   >
                     Cancel
                   </button>
-                  <button onClick={handleInsertService} className="bg-[#0055cc] px-[1rem] py-[0.3rem] font-medium text-[#fff] ml-[1rem]">
+                  <button
+                    onClick={handleInsertService}
+                    className="bg-[#0055cc] px-[1rem] py-[0.3rem] font-medium text-[#fff] ml-[1rem]"
+                  >
                     Create
                   </button>
                 </div>

@@ -9,6 +9,7 @@ const useAxiosPrivate = () => {
     const location = useLocation();
 
     useEffect(()=>{
+        console.log(auth?.accessToken)
         //Intercept cho request để gửi kèm access token
         const requestIntercept = axiosPrivate.interceptors.request.use(
             config => {
