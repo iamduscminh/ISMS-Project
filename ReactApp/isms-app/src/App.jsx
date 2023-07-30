@@ -39,11 +39,11 @@ function App() {
               }
 
               <Route element={<RequiredAuth allowPer={[
-                PERMISSIONS["Manage service items"]
+                PERMISSIONS["Manage users"]
               ]} />}>
                 {
                   //Định tuyến cho các Route public
-                  myRoutes.PERM000003Routes.map((route, index) => {
+                  myRoutes.PERM000000Routes.map((route, index) => {
                     const Page = route.component;
                     let Layout = DefaultLayout;
 

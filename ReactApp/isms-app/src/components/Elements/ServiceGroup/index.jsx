@@ -28,6 +28,8 @@ const allServiceRequestType = [
   },
 ];
 
+const createServiceURL = '/create'
+
 const ServiceGroup = ({ service, onDeleteService }) => {
   //Check xem có show detail của Service hay không?
   const [detailService, setDetailService] = useState(false);

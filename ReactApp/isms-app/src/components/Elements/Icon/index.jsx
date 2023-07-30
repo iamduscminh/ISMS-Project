@@ -6,6 +6,7 @@ import {
   BsMicrosoft
 } from "react-icons/bs";
 import {
+  AiOutlineClose,
   AiOutlineRight,
   AiFillDelete,
   AiFillCustomerService,
@@ -50,7 +51,8 @@ export {
   AiFillDatabase,
   AiFillWarning,
   AiFillSetting,
-  AiFillCustomerService
+  AiFillCustomerService,
+  AiOutlineClose
 }
 export {
   BsThreeDotsVertical,

@@ -31,6 +31,7 @@ const publicRoutes = [
     component: Page.TicketDetail,
     layout: Layout.CustomLayout,
   },
+  
   { path: "/viewRequests", component: Page.ViewRequests },
   {
     path: "/viewRequestTypes",
@@ -103,21 +104,23 @@ const publicRoutes = [
 //private route: dành cho những route cần đăng nhập
 
 //Route có Permission là PERM000000: Mange users
-const PERM000000Routes = [];
+const PERM000000Routes = [{
+  path: "/admin/setting/services",
+  component: Page.ServiceSettings,
+  layout: Layout.CustomLayout,
+},];
 
 //Route có Permission là PERM000001: Mange roles
 const PERM000001Routes = [];
 
 //Route có Permission là PERM000002: Manage tickets
-const PERM000002Routes = [];
+const PERM000002Routes = [
+  
+];
 
 //Route có Permission là PERM000003: Manage service items
 const PERM000003Routes = [
-  {
-    path: "/admin/setting/services",
-    component: Page.ServiceSettings,
-    layout: Layout.CustomLayout,
-  },
+  
 ];
 
 //Route có Permission là PERM000004: Manage service categories

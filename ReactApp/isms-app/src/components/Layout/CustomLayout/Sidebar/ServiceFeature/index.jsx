@@ -15,6 +15,7 @@ const ServiceFeature = ({ changeSidebar }) => {
     else if(index === 2) navigate('/admin/setting/workflows', {state: {from: location}})
     else if(index === 3) navigate('/admin/manage/users', {state: {from: location}})
     else if(index === 4) navigate('/admin/manage/role', {state: {from: location}})
+    else if(index === 5) navigate('/admin/sla', {state: {from: location}})
   }
   
   //Hàm này để chuyển về side bar trước đó
@@ -35,6 +36,7 @@ const ServiceFeature = ({ changeSidebar }) => {
       <div onClick={()=>handleActive(2)} className={`py-[0.5rem] px-[1rem] hover:bg-[#ebecf0] cursor-pointer ${activeService === 2 ? 'bg-[#ebecf0]' : ''}`}><span>Workflow</span></div>
       <div onClick={()=>handleActive(3)} className={`py-[0.5rem] px-[1rem] hover:bg-[#ebecf0] cursor-pointer ${activeService === 3 ? 'bg-[#ebecf0]' : ''}`}><span>Users management</span></div>
       <div onClick={()=>handleActive(4)} className={`py-[0.5rem] px-[1rem] hover:bg-[#ebecf0] cursor-pointer ${activeService === 4 ? 'bg-[#ebecf0]' : ''}`}><span>Roles management</span></div>
+      <div onClick={()=>handleActive(5)} className={`py-[0.5rem] px-[1rem] hover:bg-[#ebecf0] cursor-pointer ${activeService === 5 ? 'bg-[#ebecf0]' : ''}`}><span>SLAs</span></div>
     </div>
   </div>
   )
