@@ -28,13 +28,13 @@ const useAxiosPrivate = () => {
                     prevRequest.sent = true;
                     navigate('/login', {state: {from: location}, replace: true})
                 }
-                return Promise.eject(error);
+                return Promise.reject(error);
             }
         );
 
         return () =>{
-            axiosPrivate.interceptors.response.eject();
-            axiosPrivate.interceptors.request.eject();
+            axiosPrivate.interceptors.response.eject(responseIntercept);
+            axiosPrivate.interceptors.request.eject(requestIntercept);
         }
     },[auth])
     return axiosPrivate;

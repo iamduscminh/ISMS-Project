@@ -6,6 +6,8 @@ const RequireAuth = ({ allowPer }) => {
     const { auth } = useAuth();
     const location = useLocation();
 
+    console.log(auth)
+    console.log(allowPer);
     return(
         // eslint-disable-next-line react/prop-types
         auth?.permissions?.find(per => allowPer?.includes(per))
