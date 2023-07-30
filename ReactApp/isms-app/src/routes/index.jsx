@@ -17,7 +17,7 @@ const publicRoutes = [
     layout: Layout.FooterOnly,
   },
   { path: "/catalog", component: Page.Catalog },
-  { path: "/createRequest/:id", component: Page.CreateRequest },
+  { path: "/createRequest/:id?", component: Page.CreateRequest },
   { path: "/detailRequest", component: Page.DetailRequest },
   { path: "/admin/", component: Page.ListTicket, layout: Layout.CustomLayout },
   {
@@ -43,7 +43,9 @@ const publicRoutes = [
     component: Page.CreateRequestType,
     layout: Layout.CustomLayout,
   },
-  { path: "/updateCustomField", component: Page.UpdateCustomField },
+
+  { path: "/updateCustomField/:id", component: Page.UpdateCustomField },
+
   {
     path: "/admin/setting/workflows",
     component: Page.ListWorkflow,

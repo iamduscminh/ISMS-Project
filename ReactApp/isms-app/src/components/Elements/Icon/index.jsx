@@ -3,7 +3,7 @@ import {
   BsThreeDotsVertical,
   BsSearch,
   BsFillArrowLeftCircleFill,
-  BsMicrosoft
+  BsMicrosoft,
 } from "react-icons/bs";
 import {
   AiOutlineClose,
@@ -25,7 +25,7 @@ import {
   AiFillSetting,
 } from "react-icons/ai";
 import { GrNotification } from "react-icons/gr";
-import { BiUserCircle } from "react-icons/bi";
+import { BiUserCircle, BiFilterAlt } from "react-icons/bi";
 import { HiOutlineDesktopComputer } from "react-icons/hi";
 import { FaExchangeAlt, FaMobileAlt, FaServer } from "react-icons/fa";
 import { RiComputerLine } from "react-icons/ri";
@@ -34,6 +34,8 @@ import { CgSoftwareDownload } from "react-icons/cg";
 import { SlEarphonesAlt } from "react-icons/sl";
 import { GiAutoRepair } from "react-icons/gi";
 import { IoMdNotifications } from "react-icons/io";
+import { CiViewList } from "react-icons/ci";
+import { GoReport } from "react-icons/go";
 
 export {
   AiOutlineRight,
@@ -59,9 +61,11 @@ export {
   BsFillInfoSquareFill,
   BsSearch,
   BsMicrosoft,
+  BsFillArrowLeftCircleFill,
 };
+export { CiViewList };
 export { GrNotification };
-export { BiUserCircle, BsFillArrowLeftCircleFill };
+export { BiUserCircle, BiFilterAlt };
 export { HiOutlineDesktopComputer };
 export { FaExchangeAlt, FaMobileAlt, FaServer };
 export { RiComputerLine };
@@ -69,6 +73,7 @@ export { MdPassword, MdPublishedWithChanges };
 export { CgSoftwareDownload };
 export { SlEarphonesAlt };
 export { GiAutoRepair };
+export { GoReport };
 export { IoMdNotifications };
 //Request Type Icon
 /*

@@ -8,7 +8,6 @@ import IconTag from "../../components/Elements/IconTag";
 import { axiosPrivate } from "../../utils/axiosConfig";
 function ViewRequestTypes() {
   const navigate = useNavigate();
-  const { auth } = useAuth();
   const columns = [
     { field: "stt", headerName: "STT", width: 100 },
     { field: "id", headerName: "ID", width: 100 },
@@ -18,6 +17,7 @@ function ViewRequestTypes() {
     { field: "valType", headerName: "Value Type", width: 200 },
   ];
 
+  const { auth } = useAuth();
   //API CONFIG
   const apiUrl = "api/CustomFields/getall";
   const headers = {
@@ -75,7 +75,7 @@ function ViewRequestTypes() {
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: "An error occurred while fetching data.",
+          text: error,
         });
       }
     };

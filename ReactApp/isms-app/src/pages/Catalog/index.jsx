@@ -4,61 +4,104 @@ import UnderlineAnimation from "../../components/Animation/UnderlineText";
 import CardItem from "../../components/Elements/CardItem";
 import IconTag from "../../components/Elements/IconTag";
 import useAuth from "../../hooks/useAuth";
+import Swal from "sweetalert2";
+import { axiosPrivate } from "../../utils/axiosConfig";
 function Catalog() {
   const { auth } = useAuth();
-  console.log(auth?.accessToken);
-
-  const requestTypeTemp = [
-    {
-      id: "1",
-      requestTypeName: "Get a guest wifi account",
-      description: "",
-      serviceId: 1,
-      iconDisplay: "",
-    },
-    {
-      id: "2",
-      requestTypeName: "Request a new account",
-      description: "",
-      serviceId: 1,
-      iconDisplay: "",
-    },
-    {
-      id: "3",
-      requestTypeName: "Request admin access",
-      description: "",
-      serviceId: 1,
-      iconDisplay: "",
-    },
-    {
-      id: "4",
-      requestTypeName: "Request new hardware",
-      description: "",
-      serviceId: 1,
-      iconDisplay: "",
-    },
-    {
-      id: "5",
-      requestTypeName: "Set up VPN to the office",
-      description: "",
-      serviceId: 1,
-      iconDisplay: "",
-    },
-  ];
-  const services = [
-    { id: 0, serviceName: "All Services Items", description: "" },
-    { id: 1, serviceName: "Computers", description: "" },
-    { id: 2, serviceName: "Account and Login", description: "" },
-    { id: 3, serviceName: "Network", description: "" },
-  ];
-  const [requestTypes, setRequestTypes] = useState(requestTypeTemp);
-  const [requestTypesBySvc, setRequestTypesBySvc] = useState(requestTypeTemp);
+  const [services, setServices] = useState([]);
+  const [requestTypes, setRequestTypes] = useState([]);
+  const [requestTypesBySvc, setRequestTypesBySvc] = useState([]);
   const [selectedServiceId, setSelectedServiceId] = useState(0);
+
+  //API CONFIG
+  const token = auth?.accessToken;
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+    withCredentials: true,
+  };
+  console.log(token);
+  //CALL API GET ALL SERVICE
   useEffect(() => {
-    setRequestTypes(requestTypeTemp);
+    const apiGetSvcCategoryUrl = "api/ServiceCategories/getall";
+    const apiGetRequestTypesUrl = "api/ServiceItems/getall";
+    const fetchData = async () => {
+      try {
+        Swal.fire({
+          title: "Loading...",
+          allowOutsideClick: false,
+          onBeforeOpen: () => {
+            Swal.showLoading();
+          },
+        });
+        //--------------Get serrvices
+        axiosPrivate
+          .get(apiGetSvcCategoryUrl, { headers })
+          .then((response) => {
+            const data = response.data.map((item, i) => ({
+              id: item.serviceCategoryId,
+              serviceName: item.serviceCategoryName,
+              description: item.description,
+            }));
+            setServices([
+              { id: 0, serviceName: "All Services Items" },
+              ...data,
+            ]);
+          })
+          .catch((error) => {
+            const result = Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error}`,
+              showCancelButton: true,
+              cancelButtonText: "Cancel",
+            });
+          });
+        Swal.close();
+
+        //-------------Get request type
+        axiosPrivate
+          .get(apiGetRequestTypesUrl, { headers })
+          .then((response) => {
+            const data = response.data.map((item, i) => ({
+              id: item.serviceItemId,
+              requestTypeName: item.serviceItemName,
+              description: item.description,
+              serviceId: item?.serviceCategoryEntity?.serviceCategoryId,
+              iconDisplay: item?.iconDisplay,
+            }));
+
+            setRequestTypes(data);
+            setRequestTypesBySvc(data);
+            //console.log(requestTypesBySvc);
+          })
+          .catch((error) => {
+            const result = Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error}`,
+              showCancelButton: true,
+              cancelButtonText: "Cancel",
+            });
+          });
+        Swal.close();
+      } catch (error) {
+        // Handle errors if needed
+        console.log(error);
+        Swal.close();
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: error,
+        });
+      }
+    };
+    fetchData();
   }, []);
+
   const serviceSelectedClick = (id) => {
     setSelectedServiceId(id);
+    console.log(id);
     const filterRequestTypes = requestTypes.filter(
       (x) => id == 0 || x.serviceId == id
     );
@@ -144,8 +187,8 @@ function Catalog() {
                     key={i}
                     url={`/createRequest/${item.id}`}
                     title={item.requestTypeName}
-                    description="Send your problem to It Service"
-                    iconName={"BsFillInfoSquareFill"}
+                    description={item.description}
+                    iconName={`${item.iconDisplay}`}
                   />
                 );
               })}
