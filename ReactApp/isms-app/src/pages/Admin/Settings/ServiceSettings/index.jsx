@@ -13,8 +13,9 @@ const ServiceSettings = () => {
     // Gọi API để lấy danh sách Service Categories từ DB
     const fetchServiceCategories = async () => {
       try {
-        const response = await axiosInstance.get("api/ServiceCategories/getallwithserviceitems");
-        console.log(response);
+        const response = await axiosInstance.get(
+          "api/ServiceCategories/getall"
+        );
         setListService(response.data); // Cập nhật listService với dữ liệu trả về từ API
         setIsLoading(false); // Kết thúc quá trình loading khi đã có dữ liệu
       } catch (error) {
@@ -56,7 +57,6 @@ const ServiceSettings = () => {
             signal: controller.signal,
           }
         );
-        console.log(response);
         if (response.status === 200) {
           const createdServiceGroup = response.data;
           setListService((prev) => [...prev, createdServiceGroup]);
@@ -67,14 +67,14 @@ const ServiceSettings = () => {
 
           // Đóng trạng thái Insert
           setIsInsert(false);
-        }else{
-         throw response
+        } else {
+          throw response;
         }
       } catch (err) {
         // Optionally, show an error message to the user
-        if(err.status === 403){
+        if (err.status === 403) {
           alert("You are not allowed to add Service Category");
-        }else{
+        } else {
           alert(err.message);
         }
       }
@@ -84,12 +84,48 @@ const ServiceSettings = () => {
 
   //
   const deleteServiceGroup = (selectedService) => {
-    console.log(selectedService);
-    const filterListService = listService.filter(
-      (e) => e.id !== selectedService
-    );
-    console.log(filterListService);
-    setListService(filterListService);
+    // Gọi API để xóa dữ liệu dưới cơ sở dữ liệu
+    axiosInstance
+      .delete(
+        `api/ServiceCategories/delete?serviceCategoryId=${selectedService}`
+      )
+      .then((response) => {
+        // Nếu xóa thành công, cập nhật lại state bằng cách loại bỏ phần tử đã xóa
+        setListService((prevListService) => {
+          return prevListService.filter(
+            (e) => e.serviceCategoryId !== selectedService
+          );
+        });
+
+        alert(response.data.message);
+      })
+      .catch((error) => {
+        alert("Lỗi khi xóa:", error);
+      });
+  };
+
+  const updateServiceGroup = (serviceName, serviceDes, serviceCategoryId) => {
+    const updatedService = {
+      serviceCategoryName: serviceName,
+      description: serviceDes,
+    };
+
+    axiosInstance
+      .put(
+        `api/ServiceCategories/update?serviceCategoryId=${serviceCategoryId}`,
+        updatedService
+      )
+      .then((response) => {
+        const newData = response.data;
+        const updatedData = listService.map((item) =>
+          item.serviceCategoryId === newData.serviceCategoryId ? newData : item
+        );
+
+        setListService(updatedData);
+      })
+      .catch((error) => {
+        alert("Có lỗi khi cập nhật: ", error);
+      });
   };
   return (
     <div>
@@ -114,6 +150,7 @@ const ServiceSettings = () => {
                 key={item.serviceCategoryId}
                 service={item}
                 onDeleteService={deleteServiceGroup}
+                updateServiceGroup={updateServiceGroup}
               />
             ))}
           </div>
