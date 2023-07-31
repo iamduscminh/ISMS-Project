@@ -51,7 +51,7 @@ const TicketActivity = ({
           {activity.activityName}
         </div>
         <div className="flex items-center">
-          <ModalDialog
+          {getStatusNameById(activity.linkStatus) !== "Close" && <ModalDialog
             title={"Edit New Workflow"}
             actionText={"Edit"}
             triggerComponent={<CiEdit className="mr-[0.5rem] cursor-pointer" />}
@@ -127,8 +127,8 @@ const TicketActivity = ({
                 ></textarea>
               </div>
             </div>
-          </ModalDialog>
-          {canDelete && (
+          </ModalDialog>}
+          {canDelete && getStatusNameById(activity.linkStatus) !== "Close" && (
             <TiDocumentDelete
               onClick={() => handleDeleteActivity(activity.id)}
               className="cursor-pointer"
