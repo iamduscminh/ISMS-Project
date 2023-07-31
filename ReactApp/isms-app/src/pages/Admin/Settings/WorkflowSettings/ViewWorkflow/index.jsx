@@ -17,11 +17,20 @@ const ViewWorkflow = () => {
     if (!activeTextDiagram) return;
     setActiveTextDiagram(false);
   };
-  let listInitialActivity=[];
-  if(mode==="edit"){
-      listInitialActivity =[
+  let listInitialActivity = [];
+  if (mode === "edit") {
+    listInitialActivity = [
       {
         id: 1,
+        activityName: "Close Activity",
+        linkStatus: 6,
+        role: 0,
+        description:
+          "The last activity if this workflow",
+        listStatusTrans: [],
+      },
+      {
+        id: 2,
         activityName: "Requirement accepted and evaluated",
         linkStatus: 1,
         role: 1,
@@ -32,12 +41,12 @@ const ViewWorkflow = () => {
             id: 1,
             statusTran: "Done",
             checkCondition: true,
-            destination: 2,
+            destination: 3,
           },
         ],
       },
       {
-        id: 2,
+        id: 3,
         activityName: "Planning and implementing:",
         linkStatus: 3,
         role: 3,
@@ -46,22 +55,22 @@ const ViewWorkflow = () => {
         listStatusTrans: [],
       },
     ];
-  }else{
+  } else {
     listInitialActivity = [
       {
         id: 1,
-        activityName: "Default activity",
-        linkStatus: 1,
-        role: 1,
+        activityName: "Close Activity",
+        linkStatus: 6,
+        role: 0,
         description:
-          "",
+          "The last activity if this workflow",
         listStatusTrans: [],
       }
     ]
   }
 
   const [listActivity, setListActivity] = useState(listInitialActivity);
-  
+
   const addNewActivity = (name, status, role) => {
     setListActivity([
       ...listActivity,

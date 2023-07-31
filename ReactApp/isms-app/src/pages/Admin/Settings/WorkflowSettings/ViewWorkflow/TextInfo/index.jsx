@@ -30,6 +30,10 @@ const statusData = [
 
 const roleData = [
   {
+    id: 0,
+    text: "All Role"
+  },
+  {
     id: 1,
     text: "Service Owner",
   },
