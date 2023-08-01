@@ -26,8 +26,8 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const from = location.state?.from?.pathname || "/";
-
+  
+  
 
   // useEffect(() => {
   //   // Nếu có accessToken, chuyển hướng về trang chính
@@ -122,8 +122,9 @@ const Login = () => {
 
       const accessToken = response?.data?.token;
       const decodedToken = jwtDecode(accessToken);
-
-      setAuth({ email, password, permissions: decodedToken.permissions, roleType: decodedToken.roleType, accessToken });
+      console.log(decodedToken);
+      const from = location.state?.from?.pathname || (decodedToken.roletype === "Admin" ? '/admin' : '/')
+      setAuth({ email, password, permissions: decodedToken.permissions, roletype: decodedToken.roleType, accessToken });
       navigate(from, {replace: true});
 
     } catch (err) {
