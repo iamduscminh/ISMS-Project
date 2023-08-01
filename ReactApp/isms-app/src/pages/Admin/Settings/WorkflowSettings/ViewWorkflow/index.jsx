@@ -142,13 +142,13 @@ const ViewWorkflow = () => {
     }
 
     // Tạo một đối tượng mới để thêm vào listStatusTrans của activity tìm thấy
+    console.log(checkCondition);
     const newStatusTrans = {
       id: updatedListActivity[index].listStatusTrans.length + 1,
       statusTran: statusTranInput,
       checkCondition: checkCondition,
       destination: parseInt(destinationInput),
     };
-    console.log(newStatusTrans);
     // Thêm đối tượng mới vào listStatusTrans của activity tìm thấy
     updatedListActivity[index].listStatusTrans.push(newStatusTrans);
 

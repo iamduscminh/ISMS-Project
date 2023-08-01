@@ -19,6 +19,7 @@ import DefaultChange from "../../../components/Elements/ActivityComponent/Defaul
 import UserChange from "../../../components/Elements/ActivityComponent/UserChange";
 import styled from "styled-components";
 import ActivityComponent from "../../../components/Elements/ActivityComponent";
+import { BiTask } from "react-icons/bi";
 
 const TicketDetail = () => {
   const { ticketId } = useParams();
@@ -43,7 +44,7 @@ const TicketDetail = () => {
   //Value cho Status
   const [status, setStatus] = useState({
     id: 1,
-    text: "Work in progress",
+    text: "Inprogress",
   });
   //Data cho Service Combobox
   const serviceData = [
@@ -108,47 +109,45 @@ const TicketDetail = () => {
 
   const [ActivityData, setActivityData] = useState([
     {
-      id:1,
-      type:'UserChange',
-      image:image.avatar3,
-      username: 'Calyrex',
-      action: 'Change assigned user',
-      time:'06:06 PM July 13, 2023',
-      previous:'',
-      update:{
-        updateUser: 'Gardevoir',
-        image: image.avatar
-      }
+      id: 1,
+      type: "UserChange",
+      image: image.avatar3,
+      username: "Calyrex",
+      action: "Change assigned user",
+      time: "06:06 PM July 13, 2023",
+      previous: "",
+      update: {
+        updateUser: "Gardevoir",
+        image: image.avatar,
+      },
     },
     {
-      id:2,
-      type:'a',
-      image:image.avatar3,
-      username: 'Calyrex',
-      action: 'Changed status',
-      time:'05:06 PM July 13, 2023',
-      previous:'Open',
-      update:'Work in progress'
-    }
-  ])
+      id: 2,
+      type: "a",
+      image: image.avatar3,
+      username: "Calyrex",
+      action: "Changed status",
+      time: "05:06 PM July 13, 2023",
+      previous: "Open",
+      update: "Work in progress",
+    },
+  ]);
   const commentRef = useRef();
   const [checkPersonal, setCheckPersonal] = useState(false);
 
   const handleAddComment = (e) => {
     if (commentRef.current.value === "") return;
-    setCommentData((prev) => 
-      [
-        {
-          id: prev.length + 1,
-          username: "Tu Doan",
-          time: "Just Now",
-          isPersonal: checkPersonal,
-          image: image.avatar2,
-          content: commentRef.current.value,
-        },
-        ...prev
-      ]
-    );
+    setCommentData((prev) => [
+      {
+        id: prev.length + 1,
+        username: "Tu Doan",
+        time: "Just Now",
+        isPersonal: checkPersonal,
+        image: image.avatar2,
+        content: commentRef.current.value,
+      },
+      ...prev,
+    ]);
   };
 
   const changeCommentType = (check) => {
@@ -405,6 +404,32 @@ const TicketDetail = () => {
                 onSelect={handleStatusSelect}
               />
             </div>
+            <div className="h-[25vh] overflow-y-scroll">
+              <div className="flex items-center text-[#42526E] px-[1rem] py-[0.5rem]">
+                <BiTask className="mr-[2rem]" />
+                <h3>Workflow task name</h3>
+              </div>
+              <div className="flex items-center font-medium bg-[#043AC5] text-[#fff] px-[1rem] py-[0.5rem]">
+                <BiTask className="mr-[2rem]" />
+                <h3>Workflow task name</h3>
+              </div>
+              <div className="flex items-center text-[#42526E] px-[1rem] py-[0.5rem]">
+                <BiTask className="mr-[2rem]" />
+                <h3>Workflow task name</h3>
+              </div>
+              <div className="flex items-center text-[#42526E] px-[1rem] py-[0.5rem]">
+                <BiTask className="mr-[2rem]" />
+                <h3>Workflow task name</h3>
+              </div>
+              <div className="flex items-center text-[#42526E] px-[1rem] py-[0.5rem]">
+                <BiTask className="mr-[2rem]" />
+                <h3>Workflow task name</h3>
+              </div>
+              <div className="flex items-center text-[#42526E] px-[1rem] py-[0.5rem]">
+                <BiTask className="mr-[2rem]" />
+                <h3>Workflow task name</h3>
+              </div>
+            </div>
           </div>
         </div>
         <div className="w-[40%] ml-[1rem]">
@@ -426,64 +451,70 @@ const TicketDetail = () => {
               </div>
               <TabSelect />
             </div>
-            { commentTab ?      
-            <div>
+            {commentTab ? (
               <div>
-                <div className="w-[full] flex justify-center mt-[1rem]">
-                  <div
-                    onClick={(e) => {
-                      changeCommentType(false);
-                    }}
-                    className="cursor-pointer w-[25%] bg-[#42526E] text-center font-medium text-[#fff] rounded-md"
-                  >
-                    Customer
-                  </div>
-                  <div
-                    onClick={(e) => {
-                      changeCommentType(true);
-                    }}
-                    className="cursor-pointer ml-[3rem] w-[25%] bg-[#D4DAE4] text-center font-medium text-[#000000] rounded-md"
-                  >
-                    Personal
+                <div>
+                  <div className="w-[full] flex justify-center mt-[1rem]">
+                    <div
+                      onClick={(e) => {
+                        changeCommentType(false);
+                      }}
+                      className="cursor-pointer w-[25%] bg-[#42526E] text-center font-medium text-[#fff] rounded-md"
+                    >
+                      Customer
+                    </div>
+                    <div
+                      onClick={(e) => {
+                        changeCommentType(true);
+                      }}
+                      className="cursor-pointer ml-[3rem] w-[25%] bg-[#D4DAE4] text-center font-medium text-[#000000] rounded-md"
+                    >
+                      Personal
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="w-[full] px-[2rem] py-[0.75rem] ">
-                <textarea
-                  ref={commentRef}
-                  rows={4}
-                  className="w-full h-full resize-none px-[0.75rem] py-[0.5rem] border-2 border-[#747272] rounded-md"
-                  placeholder="@ to tag someone"
-                ></textarea>
-              </div>
+                <div className="w-[full] px-[2rem] py-[0.75rem] ">
+                  <textarea
+                    ref={commentRef}
+                    rows={4}
+                    className="w-full h-full resize-none px-[0.75rem] py-[0.5rem] border-2 border-[#747272] rounded-md"
+                    placeholder="@ to tag someone"
+                  ></textarea>
+                </div>
 
-              <div className="flex justify-end px-[2rem]">
-                {checkPersonal ? (
-                  <button onClick={handleAddComment} className="px-[1rem] py-[0.25rem] bg-[#043AC5] font-medium text-[#fff]">
-                    Add Personal
+                <div className="flex justify-end px-[2rem]">
+                  {checkPersonal ? (
+                    <button
+                      onClick={handleAddComment}
+                      className="px-[1rem] py-[0.25rem] bg-[#043AC5] font-medium text-[#fff]"
+                    >
+                      Add Personal
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleAddComment}
+                      className="px-[1rem] py-[0.25rem] bg-[#043AC5] font-medium text-[#fff]"
+                    >
+                      Add Public
+                    </button>
+                  )}
+                  <button className="px-[1rem] py-[0.25rem] bg-[#fff] font-medium text-[#043AC5]">
+                    Cancel
                   </button>
-                ) : (
-                  <button onClick={handleAddComment} className="px-[1rem] py-[0.25rem] bg-[#043AC5] font-medium text-[#fff]">
-                    Add Public
-                  </button>
-                )}
-                <button className="px-[1rem] py-[0.25rem] bg-[#fff] font-medium text-[#043AC5]">
-                  Cancel
-                </button>
+                </div>
+                <div className="w-full mt-[1rem] px-[2rem] max-h-[50vh] overflow-y-scroll">
+                  {commentData.map((item) => (
+                    <CommentComponent key={item.id} comment={item} />
+                  ))}
+                </div>
               </div>
-              <div className="w-full mt-[1rem] px-[2rem] max-h-[50vh] overflow-y-scroll">
-                {commentData.map((item) => (
-                  <CommentComponent key={item.id} comment={item} />
+            ) : (
+              <div className="px-[2rem] my-[2rem]">
+                {ActivityData.map((item) => (
+                  <ActivityComponent key={item.id} activity={item} />
                 ))}
               </div>
-            </div> : 
-            <div className="px-[2rem] my-[2rem]">
-              {ActivityData.map((item)=>(
-                  <ActivityComponent key={item.id} activity={item}/>
-              ))            
-              }
-            </div>
-            }
+            )}
           </div>
         </div>
       </div>

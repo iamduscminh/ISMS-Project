@@ -18,7 +18,6 @@ const TicketActivity = ({
   handleDeleteStatusTransition,
   handleEditStatusTransition
 }) => {
-  console.log(activity)
   const getStatusNameById = (id) => {
     return statusData.find((item) => item.id === id).text;
   };
@@ -42,6 +41,11 @@ const TicketActivity = ({
   const listDestination = listActivityName.filter(
     (item) => item.id !== activity.id
   );
+
+  const handleCheckConditionInput = (isCheck) => {
+    console.log(isCheck);
+    setCheckCondition(isCheck);
+  }
   return (
     <div className="border border-slate-200 mb-[0.5rem]">
       {/* Phần Header của activity */}
@@ -263,7 +267,7 @@ const TicketActivity = ({
                     </label>
                     <input
                       value={checkCondition}
-                      onChange={(e) => setCheckCondition(e.target.value)}
+                      onChange={(e) => {handleCheckConditionInput(e.target.checked)}}
                       type="checkbox"
                     />
                   </div>
