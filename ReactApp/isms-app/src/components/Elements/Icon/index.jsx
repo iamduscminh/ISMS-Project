@@ -36,7 +36,7 @@ import { GiAutoRepair } from "react-icons/gi";
 import { IoMdNotifications } from "react-icons/io";
 import { CiViewList } from "react-icons/ci";
 import { GoReport } from "react-icons/go";
-
+import { FaUserCircle } from "react-icons/fa";
 export {
   AiOutlineRight,
   AiFillDelete,
@@ -54,8 +54,8 @@ export {
   AiFillWarning,
   AiFillSetting,
   AiFillCustomerService,
-  AiOutlineClose
-}
+  AiOutlineClose,
+};
 export {
   BsThreeDotsVertical,
   BsFillInfoSquareFill,
@@ -75,6 +75,7 @@ export { SlEarphonesAlt };
 export { GiAutoRepair };
 export { GoReport };
 export { IoMdNotifications };
+export { FaUserCircle };
 //Request Type Icon
 /*
 BsFillInfoSquareFill
