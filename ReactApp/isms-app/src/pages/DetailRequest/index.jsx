@@ -18,22 +18,16 @@ function CreateRequest() {
   };
 
   return (
-    <div
-      className="detail-request-container w-full h-full py-5 bg-[#294a8d] mt-3"
-    >
-      <div
-        className=
-          "detail-request-section mt-4 mx-auto max-w-7xl min-h-screen bg-white rounded shadow"
-        
-      > {/* HEADER SECTION*/}
+    <div className="detail-request-container w-full h-full py-5 bg-[#294a8d] mt-3">
+      <div className="detail-request-section mt-4 mx-auto max-w-7xl min-h-screen bg-white rounded shadow">
+        {" "}
+        {/* HEADER SECTION*/}
         <div className="detail-request-header w-full bg-[#0e3275] text-white">
           <nav className="detail-request-header-nav px-6 pt-3 pb-3">
-            <ul
-              className="header-nav-content flex items-center text-[18px]"
-            >
+            <ul className="header-nav-content flex items-center text-[18px]">
               <li className="header-nav-item ml-1">
                 <Link
-                  className="header-nav-url hover:underline"
+                  className="header-nav-url hover:underline hover:text-white"
                   to="/"
                   title="Home"
                   aria-label="Home"
@@ -44,45 +38,38 @@ function CreateRequest() {
 
               <li className="header-nav-item ml-1">
                 <div className="header-nav-arrow">
-                  <IconTag name={"AiOutlineRight"}/>
+                  <IconTag name={"AiOutlineRight"} />
                 </div>
               </li>
               <li className="header-nav-item ml-1">
-                <a
-                  className="header-nav-url hover:underline"
-                  href="/catalog"
+                <Link
+                  className="header-nav-url hover:underline hover:text-white"
+                  to="/viewRequests"
                   title="Create Request"
                   aria-label="Create Request"
                 >
                   Request Tickets
-                </a>
+                </Link>
               </li>
               <li className="header-nav-item ml-1">
                 <div className="header-nav-arrow">
-                <IconTag name={"AiOutlineRight"}/>
-                  
+                  <IconTag name={"AiOutlineRight"} />
                 </div>
               </li>
               <li className="header-nav-item ml-1">
-                <a
-                  className="header-nav-url"
-                  href="#"
-                  title="Reset Password"
-                  aria-label="Reset Password"
-                >
+                <p className="header-nav-url">
                   <span>#043AC5</span>
-                </a>
+                </p>
               </li>
             </ul>
           </nav>
-          <div
-            className=
-              "detail-request-header-content px-6 pb-3 flex items-center justify-between"
-            
-          >
+          <div className="detail-request-header-content px-6 pb-3 flex items-center justify-between">
             <div className="detail-request-header-left  flex items-center">
-              <div className="detail-request-header-icon">            
-                <IconTag name={"BsFillInfoSquareFill"} className={"h-[50px] w-[50px]"}/>
+              <div className="detail-request-header-icon">
+                <IconTag
+                  name={"BsFillInfoSquareFill"}
+                  className={"h-[50px] w-[50px]"}
+                />
               </div>
               <div className="detail-request-header-description ml-5">
                 <h4 className="text-2xl font-bold">Reset Password</h4>
@@ -99,7 +86,6 @@ function CreateRequest() {
             </div>
           </div>
         </div>
-
         <div className="p-5 w-full h-full flex">
           <div className="detail-request-content w-[60%] flex flex-col">
             <div className="detail-request-content">
@@ -150,7 +136,7 @@ function CreateRequest() {
                 triggerComponent={
                   <div className="inline-block cursor-pointer">
                     <div className="flex items-center hover:underline">
-                      <IconTag name={"FaExchangeAlt"}/>
+                      <IconTag name={"FaExchangeAlt"} />
                       <p className="text-lg font-bold ml-3">Cancel Request</p>
                     </div>
                   </div>
