@@ -10,6 +10,7 @@ import CustomField from "../../components/Elements/CustomField";
 import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import useAuth from "../../hooks/useAuth";
 function CreateRequestType() {
+  const navigate = useNavigate();
   const { auth } = useAuth();
   console.log(auth);
   const iconRequestTypes = [
@@ -103,7 +104,7 @@ function CreateRequestType() {
     { id: 2, serviceName: "Account & Pass" },
     { id: 3, serviceName: "Wiffi" },
   ]);
-  const navigate = useNavigate();
+
   //Icon
   const [iconRequestType, setIconRequestType] = useState(
     "BsFillInfoSquareFill"
