@@ -1,87 +1,77 @@
-import { React, useRef } from "react";
-import classNames from "classnames/bind";
-import styles from "./DetailRequest.module.scss";
+import { React, useState, useEffect, useRef } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import UnderlineAnimation from "../../components/Animation/UnderlineText";
 import RequestComment from "../../components/Elements/RequestComment";
 import ModalDialog from "../../components/Elements/PopupModal";
 import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
-import * as Icon from "../../components/Elements/Icon";
-const cx = classNames.bind(styles);
+import IconTag from "../../components/Elements/IconTag";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useAuth from "../../hooks/useAuth";
+import Swal from "sweetalert2";
 function CreateRequest() {
+  const { id } = useParams();
+  const { auth } = useAuth();
+
   const reasonCancelRef = useRef(null);
   const cancelRequestDetail = () => {
     console.log(reasonCancelRef.current.value);
   };
 
   return (
-    <div
-      className={cx("detail-request-container w-full h-full py-5 bg-[#f5f7f9]")}
-    >
-      <div
-        className={cx(
-          "detail-request-section mt-4 mx-auto max-w-7xl min-h-screen bg-white rounded shadow"
-        )}
-      >
-        <div className={cx("detail-request-header w-full bg-gray-200")}>
-          <nav className={cx("detail-request-header-nav px-6 pt-3 pb-3")}>
-            <ul
-              className={cx("header-nav-content flex items-center text-[18px]")}
-            >
-              <li className={cx("header-nav-item ml-1")}>
-                <a
-                  className={cx("header-nav-url hover:underline")}
-                  href="/"
+    <div className="detail-request-container w-full h-full py-5 bg-[#294a8d] mt-3">
+      <div className="detail-request-section mt-4 mx-auto max-w-7xl min-h-screen bg-white rounded shadow">
+        {" "}
+        {/* HEADER SECTION*/}
+        <div className="detail-request-header w-full bg-[#0e3275] text-white">
+          <nav className="detail-request-header-nav px-6 pt-3 pb-3">
+            <ul className="header-nav-content flex items-center text-[18px]">
+              <li className="header-nav-item ml-1">
+                <Link
+                  className="header-nav-url hover:underline hover:text-white"
+                  to="/"
                   title="Home"
                   aria-label="Home"
                 >
                   Home
-                </a>
+                </Link>
               </li>
 
-              <li className={cx("header-nav-item ml-1")}>
-                <div className={cx("header-nav-arrow")}>
-                  <Icon.AiOutlineRight />
+              <li className="header-nav-item ml-1">
+                <div className="header-nav-arrow">
+                  <IconTag name={"AiOutlineRight"} />
                 </div>
               </li>
-              <li className={cx("header-nav-item ml-1")}>
-                <a
-                  className={cx("header-nav-url hover:underline")}
-                  href="/catalog"
+              <li className="header-nav-item ml-1">
+                <Link
+                  className="header-nav-url hover:underline hover:text-white"
+                  to="/viewRequests"
                   title="Create Request"
                   aria-label="Create Request"
                 >
                   Request Tickets
-                </a>
+                </Link>
               </li>
-              <li className={cx("header-nav-item ml-1")}>
-                <div className={cx("header-nav-arrow")}>
-                  <Icon.AiOutlineRight />
+              <li className="header-nav-item ml-1">
+                <div className="header-nav-arrow">
+                  <IconTag name={"AiOutlineRight"} />
                 </div>
               </li>
-              <li className={cx("header-nav-item ml-1")}>
-                <a
-                  className={cx("header-nav-url")}
-                  href="#"
-                  title="Reset Password"
-                  aria-label="Reset Password"
-                >
+              <li className="header-nav-item ml-1">
+                <p className="header-nav-url">
                   <span>#043AC5</span>
-                </a>
+                </p>
               </li>
             </ul>
           </nav>
-          <div
-            className={cx(
-              "detail-request-header-content px-6 pb-3 flex items-center justify-between"
-            )}
-          >
+          <div className="detail-request-header-content px-6 pb-3 flex items-center justify-between">
             <div className="detail-request-header-left  flex items-center">
-              <div className={cx("detail-request-header-icon")}>
-                <Icon.BsFillInfoSquareFill
-                  className={cx("h-[50px] w-[50px]")}
+              <div className="detail-request-header-icon">
+                <IconTag
+                  name={"BsFillInfoSquareFill"}
+                  className={"h-[50px] w-[50px]"}
                 />
               </div>
-              <div className={cx("detail-request-header-description ml-5")}>
+              <div className="detail-request-header-description ml-5">
                 <h4 className="text-2xl font-bold">Reset Password</h4>
                 <span>Reset your Password Account</span>
               </div>
@@ -96,10 +86,9 @@ function CreateRequest() {
             </div>
           </div>
         </div>
-
-        <div className={cx("p-5 w-full h-full flex")}>
-          <div className={cx("detail-request-content w-[60%] flex flex-col")}>
-            <div className={cx("detail-request-content")}>
+        <div className="p-5 w-full h-full flex">
+          <div className="detail-request-content w-[60%] flex flex-col">
+            <div className="detail-request-content">
               <h2 className="mb-4 text-4xl font-bold text-gray-900">
                 New Macbook computer request
               </h2>
@@ -118,7 +107,7 @@ function CreateRequest() {
                 ></textarea>
               </div>
             </div>
-            <div className={cx("detail-request-activity")}>
+            <div className="detail-request-activity">
               <h6 className="text-lg font-bold text-gray-800">Activity</h6>
               <hr />
               <RequestComment
@@ -135,8 +124,8 @@ function CreateRequest() {
               />
             </div>
           </div>
-          <div className={cx("w-[40%] p-5 ml-4 mt-10")}>
-            <div className={cx("detail-request-status")}>
+          <div className="w-[40%] p-5 ml-4 mt-10">
+            <div className="detail-request-status">
               <h6 className="text-lg font-bold ">Status</h6>
               <hr />
               <h3 className="text-3xl font-extrabold ">INPROGRESS</h3>
@@ -147,7 +136,7 @@ function CreateRequest() {
                 triggerComponent={
                   <div className="inline-block cursor-pointer">
                     <div className="flex items-center hover:underline">
-                      <Icon.FaExchangeAlt />
+                      <IconTag name={"FaExchangeAlt"} />
                       <p className="text-lg font-bold ml-3">Cancel Request</p>
                     </div>
                   </div>

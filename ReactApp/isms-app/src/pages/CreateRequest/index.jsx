@@ -154,8 +154,8 @@ function CreateRequest() {
       isIncident: isIncident,
       title: rqtTitle,
       description: rqtDesc,
-      serviceItemId: requestType.id,
-      requester: auth?.email,
+      serviceItemId: isIncident ? null : requestType.id,
+      requesterEmail: auth?.email,
     };
     console.log(requestTicketData);
     //Create Request Ticket

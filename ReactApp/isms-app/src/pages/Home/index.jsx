@@ -58,7 +58,7 @@ function Home() {
             iconName={"GoReport"}
           />
           <CardItem
-            url="#"
+            url="/viewRequests"
             title="View All Request"
             description="Browse your list request ticket"
             iconName={"CiViewList"}
