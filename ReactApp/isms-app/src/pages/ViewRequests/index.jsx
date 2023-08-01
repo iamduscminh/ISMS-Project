@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from "react";
-import { Link, json, useNavigate } from "react-router-dom";
+import { Link, useNavigate,  } from "react-router-dom";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import Swal from "sweetalert2";
 import UnderlineAnimation from "../../components/Animation/UnderlineText";
@@ -12,10 +12,10 @@ function ViewRequests() {
   const { auth } = useAuth();
   const columns = [
     { field: "stt", headerName: "STT", width: 100 },
-    { field: "id", headerName: "ID", hide: true },
+    { field: "id", headerName: "ID", width: 50, hide: true },
     { field: "type", headerName: "Type", width: 200 },
-    { field: "title", headerName: "Title", width: 200 },
-    { field: "status", headerName: "Status", width: 200 },
+    { field: "title", headerName: "Title", width: 400 },
+    { field: "status", headerName: "Status", width: 100 },
     { field: "createAt", headerName: "Create At", width: 200 },
   ];
   const options = {
@@ -48,7 +48,9 @@ function ViewRequests() {
             const data = response.data.map((item, i) => ({
               stt: i,
               id: item.requestTicketId,
-              type: item.isIncident,
+              type: item.isIncident
+                ? "Issue Abnormal"
+                : item.serviceItemEntity?.serviceItemName,
               title: item.serviceItemEntity?.serviceItemName,
               status: item.status,
               createAt: new Date(item.createdAt).toLocaleString(
@@ -99,7 +101,7 @@ function ViewRequests() {
   const handleRowClick = (params) => {
     const { id } = params.row;
 
-    navigate("/viewDetails/" + id);
+    navigate("/detailRequest/" + id);
   };
 
   return (
