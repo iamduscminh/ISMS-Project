@@ -119,6 +119,8 @@ const TicketActivity = ({
                     </option>
                   ))}
                 </select>
+
+                
               </div>
               <div className="mt-[1rem] flex items-center">
                 <label className="text-[#42526E] font-medium w-[5rem]">

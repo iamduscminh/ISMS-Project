@@ -404,29 +404,29 @@ const TicketDetail = () => {
                 onSelect={handleStatusSelect}
               />
             </div>
-            <div className="h-[25vh] overflow-y-scroll">
+            <div className="h-[25vh] overflow-y-scroll cursor-default">
               <div className="flex items-center text-[#42526E] px-[1rem] py-[0.5rem]">
-                <BiTask className="mr-[2rem]" />
+                <BiTask className="mr-[0.5rem]" />
                 <h3>Workflow task name</h3>
               </div>
               <div className="flex items-center font-medium bg-[#043AC5] text-[#fff] px-[1rem] py-[0.5rem]">
-                <BiTask className="mr-[2rem]" />
+                <BiTask className="mr-[0.5rem]" />
                 <h3>Workflow task name</h3>
               </div>
               <div className="flex items-center text-[#42526E] px-[1rem] py-[0.5rem]">
-                <BiTask className="mr-[2rem]" />
+                <BiTask className="mr-[0.5rem]" />
                 <h3>Workflow task name</h3>
               </div>
               <div className="flex items-center text-[#42526E] px-[1rem] py-[0.5rem]">
-                <BiTask className="mr-[2rem]" />
+                <BiTask className="mr-[0.5rem]" />
                 <h3>Workflow task name</h3>
               </div>
               <div className="flex items-center text-[#42526E] px-[1rem] py-[0.5rem]">
-                <BiTask className="mr-[2rem]" />
+                <BiTask className="mr-[0.5rem]" />
                 <h3>Workflow task name</h3>
               </div>
               <div className="flex items-center text-[#42526E] px-[1rem] py-[0.5rem]">
-                <BiTask className="mr-[2rem]" />
+                <BiTask className="mr-[0.5rem]" />
                 <h3>Workflow task name</h3>
               </div>
             </div>

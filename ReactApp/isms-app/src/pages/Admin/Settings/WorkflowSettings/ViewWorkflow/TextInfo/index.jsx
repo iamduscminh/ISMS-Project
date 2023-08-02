@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import TicketActivity from "../../../../../../components/Elements/TicketActivity";
+import SearchAgent from "../SearchAgent";
 
 const statusData = [
   {
@@ -31,7 +32,7 @@ const statusData = [
 const roleData = [
   {
     id: 0,
-    text: "All Role"
+    text: "All Group",
   },
   {
     id: 1,
@@ -54,17 +55,20 @@ const roleData = [
     text: "Network Engineer",
   },
 ];
+
 const TextInfo = ({
   listActivity,
   handleAddNewActivity,
   handleDeleteActivity,
   handleEditActivity,
   handleAddStatusTransition,
-  handleDeleteStatusTransition
+  handleDeleteStatusTransition,
 }) => {
   const activityNameInputRef = useRef();
   const statusInputRef = useRef();
   const roleInputRef = useRef();
+  const agentValue = useState("None");
+
   const handleAddClick = () => {
     if (activityNameInputRef.current.value.trim() === "") {
       alert("Activity Name cannot be empty.");
@@ -95,7 +99,7 @@ const TextInfo = ({
         activityName: item.activityName,
       };
     });
-  }
+  };
   return (
     <div className="mt-[2rem] w-[70%]">
       {listActivity.map((activity) => {
@@ -104,22 +108,23 @@ const TextInfo = ({
             (statusTrans) => statusTrans.destination === activity.id
           );
         });
-        return(
-        <TicketActivity
-          key={activity.id}
-          getActivityName={getActivityName}
-          activity={activity}
-          statusData={statusData}
-          roleData={roleData}
-          listActivityName={getListActivityName()}
-          handleDeleteActivity={handleDeleteActivity}
-          handleEditActivity={handleEditActivity}
-          handleAddStatusTransition={handleAddStatusTransition}
-          handleDeleteStatusTransition={handleDeleteStatusTransition}
-          canDelete={!hasDestination}
-        />);
+        return (
+          <TicketActivity
+            key={activity.id}
+            getActivityName={getActivityName}
+            activity={activity}
+            statusData={statusData}
+            roleData={roleData}
+            listActivityName={getListActivityName()}
+            handleDeleteActivity={handleDeleteActivity}
+            handleEditActivity={handleEditActivity}
+            handleAddStatusTransition={handleAddStatusTransition}
+            handleDeleteStatusTransition={handleDeleteStatusTransition}
+            canDelete={!hasDestination}
+          />
+        );
       })}
-      <div className="mt-[3rem]">
+      <div className="mt-[2rem]">
         <h1 className="text-[1.5rem] text-[#42526E] font-medium">
           Add new Activity
         </h1>
@@ -130,7 +135,7 @@ const TextInfo = ({
             ref={activityNameInputRef}
             className="w-[10rem] ml-[1rem] border border-[#42526E] px-[1rem] py-[0.25rem] rounded-md"
           />
-          <label className="text-[#42526E] text-[1.1rem] ml-[3rem]">
+          <label className="text-[#42526E] text-[1.1rem] ml-[2rem]">
             Status
           </label>
           <select
@@ -147,7 +152,9 @@ const TextInfo = ({
               </option>
             ))}
           </select>
-          <label className="text-[#42526E] text-[1.1rem] ml-[3rem]">Role</label>
+          <label className="text-[#42526E] text-[1.1rem] ml-[2rem]">
+            Group
+          </label>
           <select
             ref={roleInputRef}
             className="bg-slate-500 ml-[1rem] text-center rounded-md font-medium px-[0.5rem] text-[#fff]"
@@ -162,6 +169,21 @@ const TextInfo = ({
               </option>
             ))}
           </select>
+
+          <label className="text-[#42526E] text-[1.1rem] ml-[2rem]">
+            Agent
+          </label>
+          <div className="relative">
+            <h1
+            ref={roleInputRef}
+            className="bg-slate-500 ml-[1rem] w-[10rem] text-center rounded-md font-medium px-[0.5rem] text-[#fff]"
+            >{agentValue}</h1>
+            <div className="absolute left-0 top-[120%]">
+              <SearchAgent/>
+            </div>    
+          </div>
+          
+
           <div className="ml-[3rem] ">
             <button
               onClick={handleAddClick}
