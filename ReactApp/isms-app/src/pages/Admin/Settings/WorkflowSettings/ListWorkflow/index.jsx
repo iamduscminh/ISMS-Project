@@ -36,7 +36,7 @@ const ListWorkflow = () => {
     {
       field: "description",
       headerName: "Description",
-      width: 490,
+      width: 480,
       editable: true,
     },
     {

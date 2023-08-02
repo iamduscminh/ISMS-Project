@@ -19,6 +19,7 @@ import DefaultChange from "../../../components/Elements/ActivityComponent/Defaul
 import UserChange from "../../../components/Elements/ActivityComponent/UserChange";
 import styled from "styled-components";
 import ActivityComponent from "../../../components/Elements/ActivityComponent";
+import { BiTask } from "react-icons/bi";
 
 const TicketDetail = () => {
   const { ticketId } = useParams();
@@ -43,7 +44,7 @@ const TicketDetail = () => {
   //Value cho Status
   const [status, setStatus] = useState({
     id: 1,
-    text: "Work in progress",
+    text: "Inprogress",
   });
   //Data cho Service Combobox
   const serviceData = [
@@ -402,6 +403,32 @@ const TicketDetail = () => {
                 currentStatus={status}
                 onSelect={handleStatusSelect}
               />
+            </div>
+            <div className="h-[25vh] overflow-y-scroll cursor-default">
+              <div className="flex items-center text-[#42526E] px-[1rem] py-[0.5rem]">
+                <BiTask className="mr-[0.5rem]" />
+                <h3>Workflow task name</h3>
+              </div>
+              <div className="flex items-center font-medium bg-[#043AC5] text-[#fff] px-[1rem] py-[0.5rem]">
+                <BiTask className="mr-[0.5rem]" />
+                <h3>Workflow task name</h3>
+              </div>
+              <div className="flex items-center text-[#42526E] px-[1rem] py-[0.5rem]">
+                <BiTask className="mr-[0.5rem]" />
+                <h3>Workflow task name</h3>
+              </div>
+              <div className="flex items-center text-[#42526E] px-[1rem] py-[0.5rem]">
+                <BiTask className="mr-[0.5rem]" />
+                <h3>Workflow task name</h3>
+              </div>
+              <div className="flex items-center text-[#42526E] px-[1rem] py-[0.5rem]">
+                <BiTask className="mr-[0.5rem]" />
+                <h3>Workflow task name</h3>
+              </div>
+              <div className="flex items-center text-[#42526E] px-[1rem] py-[0.5rem]">
+                <BiTask className="mr-[0.5rem]" />
+                <h3>Workflow task name</h3>
+              </div>
             </div>
           </div>
         </div>
