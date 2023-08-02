@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MdArrowDropDown, MdArrowDropUp } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { TiDocumentDelete } from "react-icons/ti";
 import { AiFillPlusCircle } from "react-icons/ai";
 import ModalDialog from "../PopupModal";
+import SearchAgent from "../../../pages/Admin/Settings/WorkflowSettings/ViewWorkflow/SearchAgent";
 
 const TicketActivity = ({
   activity,
   getActivityName,
   statusData,
   roleData,
+  agentData,
   listActivityName,
   canDelete,
   handleDeleteActivity,
@@ -24,6 +26,9 @@ const TicketActivity = ({
   const getRolesNameById = (id) => {
     return roleData.find((item) => item.id === id).text;
   };
+  const getAgentNameById = (id) => {
+    return agentData.find((item) => item.id === id).name;
+  };
   //Đóng mở Activity
   const [isOpenActivity, setIsOpenActivity] = useState(false);
 
@@ -32,6 +37,7 @@ const TicketActivity = ({
   );
   const [statusInput, setStatusInput] = useState(activity.linkStatus);
   const [roleInput, setRoleInput] = useState(activity.role);
+  const [agentInput, setAgentInput] = useState(activity.agent);
   const [activityDes, setActivityDes] = useState(activity.description);
 
   const [statusTranInput, setStatusTranInput] = useState("");
@@ -46,6 +52,22 @@ const TicketActivity = ({
     console.log(isCheck);
     setCheckCondition(isCheck);
   }
+
+  const handleAddAgent = (agent) => {
+    setAgentInput(agent)
+  }
+
+  useEffect(() => {
+    if (agentInput) {
+      setRoleInput(-1);
+    }
+  }, [agentInput]);
+
+  useEffect(() => {
+    if (roleInput !== -1) {
+      setAgentInput(null);
+  }}, [roleInput]);
+
   return (
     <div className="border border-slate-200 mb-[0.5rem]">
       {/* Phần Header của activity */}
@@ -66,7 +88,8 @@ const TicketActivity = ({
                 activityNameInput,
                 statusInput,
                 roleInput,
-                activityDes
+                agentInput,
+                activityDes,
               )
             }
           >
@@ -119,8 +142,19 @@ const TicketActivity = ({
                     </option>
                   ))}
                 </select>
-
-                
+              </div>
+              <div className="mt-[1rem] flex">
+                <label className="text-[#42526E] font-medium w-[5rem]">
+                  Agent
+                </label>
+                <div className="relative">
+                  <h1
+                    className="bg-slate-500 w-[10rem] text-center rounded-md font-medium px-[0.5rem] py-[0.25rem] text-[#fff]"
+                  >{agentInput ? getAgentNameById(agentInput)  : "None"}</h1>
+                  <div className="absolute left-[120%] top-0">
+                    <SearchAgent agentData={agentData} handleAddAgent={handleAddAgent} />
+                  </div>
+                </div>
               </div>
               <div className="mt-[1rem] flex items-center">
                 <label className="text-[#42526E] font-medium w-[5rem]">
@@ -182,7 +216,7 @@ const TicketActivity = ({
             </div>
 
             <div className="mr-[2rem]">
-              <h2 className="text-[#42526E] font-medium">Role</h2>
+              <h2 className="text-[#42526E] font-medium">Group</h2>
             </div>
             {/* <select
                 value={activity.role}
@@ -198,8 +232,15 @@ const TicketActivity = ({
                   </option>
                 ))}
               </select> */}
-            <div className="bg-slate-500 text-center rounded-md font-medium px-[0.5rem] text-[#fff]">
+            <div className="bg-slate-500 text-center rounded-md font-medium px-[0.5rem] text-[#fff] mr-[5rem]">
               {getRolesNameById(activity.role)}
+            </div>
+            <div className="mr-[2rem]">
+              <h2 className="text-[#42526E] font-medium">Agent</h2>
+            </div>
+            {console.log(activity.agent)}
+            <div className="bg-slate-500 text-center rounded-md font-medium px-[0.5rem] text-[#fff]">
+              {activity.agent ? getAgentNameById(activity.agent) : "None"}
             </div>
           </div>
 
@@ -269,7 +310,7 @@ const TicketActivity = ({
                     </label>
                     <input
                       value={checkCondition}
-                      onChange={(e) => {handleCheckConditionInput(e.target.checked)}}
+                      onChange={(e) => { handleCheckConditionInput(e.target.checked) }}
                       type="checkbox"
                     />
                   </div>
@@ -305,13 +346,13 @@ const TicketActivity = ({
                     <ModalDialog
                       title={"Delete Status Trans"}
                       actionText={"Delete"}
-                      actionHandler={()=>handleDeleteStatusTransition(activity.id, item.id)}
+                      actionHandler={() => handleDeleteStatusTransition(activity.id, item.id)}
                       triggerComponent={
                         <span className="cursor-pointer">Delete</span>
                       }
                       customSize="md"
                     >
-                      <div className="m-auto text-[1.25rem] w-[80%]">Are you sure to delete this Transition?</div>                     
+                      <div className="m-auto text-[1.25rem] w-[80%]">Are you sure to delete this Transition?</div>
                     </ModalDialog>
                   </div>
                 </div>

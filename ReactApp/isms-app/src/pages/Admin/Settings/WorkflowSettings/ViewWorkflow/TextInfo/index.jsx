@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import TicketActivity from "../../../../../../components/Elements/TicketActivity";
 import SearchAgent from "../SearchAgent";
 
@@ -31,6 +31,10 @@ const statusData = [
 
 const roleData = [
   {
+    id: -1,
+    text: "None"
+  },
+  {
     id: 0,
     text: "All Group",
   },
@@ -56,6 +60,20 @@ const roleData = [
   },
 ];
 
+const agentData = [
+  {
+    id: 1,
+    name: "Tu Doan",
+  },
+  {
+    id: 2,
+    name: "Calyrex",
+  },
+  {
+    id: 3,
+    name: "Spectrier",
+  },
+];
 const TextInfo = ({
   listActivity,
   handleAddNewActivity,
@@ -67,7 +85,8 @@ const TextInfo = ({
   const activityNameInputRef = useRef();
   const statusInputRef = useRef();
   const roleInputRef = useRef();
-  const agentValue = useState("None");
+  const [roleInputValue, setRoleInputValue] = useState(-1)
+  const [agentValue, setAgentValue] = useState(null);
 
   const handleAddClick = () => {
     if (activityNameInputRef.current.value.trim() === "") {
@@ -79,11 +98,14 @@ const TextInfo = ({
       )
     ) {
       alert("Activity Name is specified");
+    }else if(agentValue===null && roleInputValue === -1){
+      alert("You must choose Group or Agent to handle this activity");
     } else {
       handleAddNewActivity(
         activityNameInputRef.current.value.trim(),
         statusInputRef.current.value,
-        roleInputRef.current.value
+        roleInputValue,
+        agentValue
       );
     }
   };
@@ -92,6 +114,9 @@ const TextInfo = ({
     return listActivity.find((item) => item.id === activityId).activityName;
   };
 
+  const getAgentName = (agentId)=>{
+    return agentData.find(item=>item.id === agentId).name;
+  }
   const getListActivityName = () => {
     return listActivity.map((item) => {
       return {
@@ -100,6 +125,29 @@ const TextInfo = ({
       };
     });
   };
+
+  const handleAddAgent = (agent) => {
+    setAgentValue(agent)
+  }
+
+  useEffect(() => {
+    if (agentValue) {
+      // Nếu agentValue có giá trị, đặt giá trị của select thành null
+      setRoleInputValue(-1);
+    }
+  }, [agentValue]);
+
+  useEffect(() => {
+    if (roleInputValue !== -1) {
+      // Nếu agentValue có giá trị, đặt giá trị của select thành null
+      setAgentValue(null);
+  }}, [roleInputValue]);
+
+  const handleRoleInputChange = (event) => {
+    const selectedValue = event.target.value;
+    setRoleInputValue(selectedValue);
+  };
+
   return (
     <div className="mt-[2rem] w-[70%]">
       {listActivity.map((activity) => {
@@ -115,6 +163,7 @@ const TextInfo = ({
             activity={activity}
             statusData={statusData}
             roleData={roleData}
+            agentData={agentData}
             listActivityName={getListActivityName()}
             handleDeleteActivity={handleDeleteActivity}
             handleEditActivity={handleEditActivity}
@@ -141,6 +190,7 @@ const TextInfo = ({
           <select
             ref={statusInputRef}
             className="bg-slate-500 ml-[1rem] text-center rounded-md font-medium px-[0.5rem] text-[#fff]"
+            value={null}
           >
             {statusData.map((item) => (
               <option
@@ -158,6 +208,8 @@ const TextInfo = ({
           <select
             ref={roleInputRef}
             className="bg-slate-500 ml-[1rem] text-center rounded-md font-medium px-[0.5rem] text-[#fff]"
+            onChange={handleRoleInputChange}
+            value={roleInputValue}
           >
             {roleData.map((item) => (
               <option
@@ -177,9 +229,9 @@ const TextInfo = ({
             <h1
             ref={roleInputRef}
             className="bg-slate-500 ml-[1rem] w-[10rem] text-center rounded-md font-medium px-[0.5rem] text-[#fff]"
-            >{agentValue}</h1>
+            >{agentValue ? getAgentName(agentValue)  : "None"}</h1>
             <div className="absolute left-0 top-[120%]">
-              <SearchAgent/>
+              <SearchAgent agentData={agentData} handleAddAgent={handleAddAgent} />
             </div>    
           </div>
           
