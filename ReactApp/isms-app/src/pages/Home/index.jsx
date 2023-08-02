@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import classNames from "classnames/bind";
 import styles from "./Home.module.scss";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import * as Icon from "../../components/Elements/Icon";
 import CardItem from "../../components/Elements/CardItem";
 import useAuth from "../../hooks/useAuth";
@@ -9,23 +10,13 @@ const cx = classNames.bind(styles);
 
 function Home() {
   const { auth } = useAuth();
-  console.log(auth?.accessToken);
-  const apiUrl = "https://localhost:7134/api/ServiceCategories/getall";
-  const headers = {
-    Authorization: `Bearer ${auth?.accessToken}`,
-    // Add any other required headers here
-  };
+  const navigate = useNavigate();
 
-  request
-    .get(apiUrl, { headers })
-    .then((response) => {
-      // Handle the API response here
-      //console.log("API Response:", response.data);
-    })
-    .catch((error) => {
-      // Handle errors here
-      //console.error("API Error:", error);
-    });
+  useEffect(() => {
+    const from = location.state?.from?.pathname || "/login";
+    if (!auth?.accessToken) navigate(from, { replace: true });
+    console.log(!auth?.accessToken);
+  }, []);
 
   return (
     <div className={cx("home-container mt-14")}>
