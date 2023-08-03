@@ -6,7 +6,7 @@ import CustomCombobox from "../../../components/Elements/CustomCombobox";
 import ServiceTypeItem from "../../../components/Elements/CustomCombobox/ServiceTypeItem";
 import PriorityItem from "../../../components/Elements/CustomCombobox/PriorityItem";
 import TicketStatus from "../../../components/Elements/TicketStatus";
-import { MdKeyboardArrowDown, MdElectricalServices } from "react-icons/md";
+import { MdKeyboardArrowDown, MdElectricalServices, MdDelete } from "react-icons/md";
 import { RiComputerLine } from "react-icons/ri";
 import { SiMicrosoftword, SiMicrosoftexcel } from "react-icons/si";
 import {
@@ -14,12 +14,14 @@ import {
   FcMediumPriority,
   FcLowPriority,
 } from "react-icons/fc";
+import { AiOutlineCloudUpload, AiOutlineUpload } from 'react-icons/ai'
 import CommentComponent from "../../../components/Elements/CommentComponent";
 import DefaultChange from "../../../components/Elements/ActivityComponent/DefaultChange";
 import UserChange from "../../../components/Elements/ActivityComponent/UserChange";
 import styled from "styled-components";
 import ActivityComponent from "../../../components/Elements/ActivityComponent";
 import { BiTask } from "react-icons/bi";
+import { Button, Grid, IconButton, Input, Stack, Typography } from "@mui/material";
 
 const TicketDetail = () => {
   const { ticketId } = useParams();
@@ -169,6 +171,40 @@ const TicketDetail = () => {
     setPriority(selectedItem);
   };
 
+
+  const [selectedFiles, setSelectedFiles] = useState([]);
+
+  const handleFileChange = (event) => {
+    setSelectedFiles([...event.target.files]);
+  };
+
+  const handleFileUpload = () => {
+    // Xử lý upload file ở đây
+    if (selectedFiles.length > 0) {
+      // Gọi API hoặc thực hiện hành động cần thiết với selectedFiles
+      console.log("Đã upload các file:", selectedFiles);
+    } else {
+      console.log("Vui lòng chọn file để upload.");
+    }
+  };
+
+  const handleFileClear = (index) => {
+    const newSelectedFiles = [...selectedFiles];
+    newSelectedFiles.splice(index, 1);
+    setSelectedFiles(newSelectedFiles);
+  };
+
+  const formatFileName = (fileName, maxLength) => {
+    if (fileName.length <= maxLength) {
+      return fileName;
+    } else {
+      return fileName.substr(0, maxLength - 3) + "...";
+    }
+  };
+
+  const maxLength = 20; // Độ dài tối đa của tên file
+
+
   const TabSelect = styled.div`
     width: 50%;
     height: 6px;
@@ -191,7 +227,7 @@ const TicketDetail = () => {
         </div>
       </div>
       <div className="w-full px-[1rem] py-[1rem] flex">
-        <div className="w-[35%]">
+        <div className="w-[30%]">
           <div className="w-[full] bg-[#fff] px-[1.25rem] py-[1rem] flex flex-col rounded-lg shadow-md border-2 border-[#E1DEDE]">
             <div className="w-[full] flex items-center justify-start">
               <div className="w-[1.75rem] h-[1.75rem] rounded-full overflow-hidden mr-[1rem]">
@@ -208,13 +244,32 @@ const TicketDetail = () => {
             </div>
 
             <div className="mt-[1.75rem]">
-              <h3 className="text-[1.25rem] font-medium text-[#42526E] mb-[0.75rem]">
+              {/* <h3 className="text-[1rem] font-medium text-[#42526E] mb-[0.75rem]">
                 Description
-              </h3>
+              </h3> */}
               <p className="text-[#747272] text-[1rem]">
                 My computer is broken, I want a new computer with the same
                 configuration as the old one
               </p>
+            </div>
+            <div className="flex items-center mt-[1rem]">
+              <h3 className="text-[#42526E] min-w-[40%] font-medium">
+                Request Type
+              </h3>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginLeft: "0.5rem",
+                }}
+              >
+                <RiComputerLine className="cursor-pointer" />
+                <div className="ml-[0.5rem]">
+                  <span className="text-[#747272]">
+                    <a href="#">Laptop Broken Problem</a>
+                  </span>
+                </div>
+              </div>
             </div>
 
             <CustomCombobox
@@ -227,6 +282,17 @@ const TicketDetail = () => {
               showProp2="serviceName"
               wrapper="FF7452"
             />
+            <div className="w-[full] mt-[3rem] mb-[1rem]">
+              <TicketStatus
+                currentStatus={status}
+                onSelect={handleStatusSelect}
+                customStyles={{
+                  'paddingY': "py-[0.5rem]",
+                  'zIndex': 'z-50'
+                }
+                }
+              />
+            </div>
           </div>
           <div className="mt-[1.5rem] w-[full] bg-[#fff] px-[1.25rem] py-[1rem] flex flex-col rounded-lg shadow-md border-2 border-[#E1DEDE]">
             <div className="flex justify-between items-center">
@@ -271,7 +337,7 @@ const TicketDetail = () => {
             </div>
           </div>
         </div>
-        <div className="w-[25%] ml-[1rem]">
+        <div className="w-[30%] ml-[1rem]">
           <div className="w-full bg-[#fff] px-[1.25rem] py-[1rem] flex flex-col rounded-lg shadow-md border-2 border-[#E1DEDE]">
             <div>
               <div className="flex items-center mt-[1rem]">
@@ -321,26 +387,6 @@ const TicketDetail = () => {
                   <div className="ml-[0.5rem]">
                     <span className="text-[#747272]">
                       <a href="#">Spectrier</a>
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center mt-[1rem]">
-                <h3 className="text-[#42526E] min-w-[40%] font-medium">
-                  Request Type
-                </h3>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    marginLeft: "0.5rem",
-                  }}
-                >
-                  <RiComputerLine className="cursor-pointer" />
-                  <div className="ml-[0.5rem]">
-                    <span className="text-[#747272]">
-                      <a href="#">Laptop Broken Problem</a>
                     </span>
                   </div>
                 </div>
@@ -398,13 +444,7 @@ const TicketDetail = () => {
                 </div>
               </div>
             </div>
-            <div className="w-[full] mt-[3rem] mb-[1rem]">
-              <TicketStatus
-                currentStatus={status}
-                onSelect={handleStatusSelect}
-              />
-            </div>
-            <div className="h-[25vh] overflow-y-scroll cursor-default">
+            <div className="h-[25vh] overflow-y-scroll cursor-default mt-[1rem]">
               <div className="flex items-center text-[#42526E] px-[1rem] py-[0.5rem]">
                 <BiTask className="mr-[0.5rem]" />
                 <h3>Workflow task name</h3>
@@ -518,6 +558,33 @@ const TicketDetail = () => {
           </div>
         </div>
       </div>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Stack direction="row" spacing={2} alignItems="center">
+            <Input
+              type="file"
+              onChange={handleFileChange}
+              inputProps={{ accept: "image/*", multiple: true }}
+              style={{ display: "none" }}
+              id="file-input"
+            />
+            <label htmlFor="file-input">
+              <Button variant="contained" component="span" startIcon={<AiOutlineUpload />}>
+                Chọn file
+              </Button>
+            </label>
+            {selectedFiles.length > 0 &&
+              selectedFiles.map((file, index) => (
+                <React.Fragment key={index}>
+                  <Typography>{formatFileName(file.name, maxLength)}</Typography>
+                  <IconButton onClick={() => handleFileClear(index)} size="small">
+                    <MdDelete />
+                  </IconButton>
+                </React.Fragment>
+              ))}
+          </Stack>
+        </Grid>
+      </Grid>
     </div>
   );
 };
