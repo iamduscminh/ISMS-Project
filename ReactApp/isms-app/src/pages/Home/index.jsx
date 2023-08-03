@@ -2,20 +2,88 @@ import React, { useEffect, useState } from "react";
 import classNames from "classnames/bind";
 import styles from "./Home.module.scss";
 import { useNavigate, useLocation, Link } from "react-router-dom";
+import Swal from "sweetalert2";
 import * as Icon from "../../components/Elements/Icon";
 import CardItem from "../../components/Elements/CardItem";
 import useAuth from "../../hooks/useAuth";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import request from "../../utils/axiosConfig";
 const cx = classNames.bind(styles);
 
 function Home() {
   const { auth } = useAuth();
   const navigate = useNavigate();
+  const axiosInstance = useAxiosPrivate();
+  const options = {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    hour12: true,
+  };
+  const [requestTicketData, setrequestTicketData] = useState([]);
 
   useEffect(() => {
     const from = location.state?.from?.pathname || "/login";
     if (!auth?.accessToken) navigate(from, { replace: true });
-    console.log(!auth?.accessToken);
+
+    const requester = { requester: auth?.email, requestTicketId: "" };
+    const apiGetRequestTicketsUrl = `api/RequestTickets/getalltickets/${requester.requester}/${requester.requestTicketId}`;
+    const fetchData = async () => {
+      try {
+        Swal.fire({
+          title: "Loading...",
+          allowOutsideClick: false,
+          onBeforeOpen: () => {
+            Swal.showLoading();
+          },
+        });
+        //--------------Get request tickets
+        axiosInstance
+          .get(apiGetRequestTicketsUrl)
+          .then((response) => {
+            const data = response.data
+              .sort((a, b) => a.createdAt - b.createdAt)
+              .slice(0, 5)
+              .map((item, i) => ({
+                id: item.requestTicketId,
+                type: item.isIncident
+                  ? "Issue Abnormal"
+                  : item.serviceItemEntity?.serviceItemName,
+                title: item.serviceItemEntity?.serviceItemName,
+                status: item.status,
+                createAt: new Date(item.createdAt).toLocaleString(
+                  "en-US",
+                  options
+                ),
+              }));
+            setrequestTicketData(data);
+            console.log(data);
+          })
+          .catch((error) => {
+            const result = Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error}`,
+              showCancelButton: true,
+              cancelButtonText: "Cancel",
+            });
+          });
+        Swal.close();
+      } catch (error) {
+        // Handle errors if needed
+        console.log(error);
+        Swal.close();
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: error,
+        });
+      }
+    };
+    fetchData();
   }, []);
 
   return (
@@ -66,47 +134,33 @@ function Home() {
         <div className={cx("home-bottom-content")}>
           <h2>Your Request</h2>
           <div className={cx("top-requests")}>
-            <a className={cx("top-request-item")} href="#">
-              <div className={cx("request-content")}>
-                <div className={cx("request-content-title")}>
-                  <p>Device Problem : Support me with computer problem #RQ01</p>
-                </div>
-                <div className={cx("request-content-date")}>
-                  <span>Created on 19 May 13:17 PM</span>
-                </div>
-              </div>
-              <div className={cx("request-status")}>
-                <span>Inprogress</span>
-              </div>
-            </a>
-            <a className={cx("top-request-item")} href="#">
-              <div className={cx("request-content")}>
-                <div className={cx("request-content-title")}>
-                  <p>Device Problem : Support me with computer problem #RQ01</p>
-                </div>
-                <div className={cx("request-content-date")}>
-                  <span>Created on 19 May 13:17 PM</span>
-                </div>
-              </div>
-              <div className={cx("request-status")}>
-                <span>Inprogress</span>
-              </div>
-            </a>
-            <a className={cx("top-request-item")} href="#">
-              <div className={cx("request-content")}>
-                <div className={cx("request-content-title")}>
-                  <p>Device Problem : Support me with computer problem #RQ01</p>
-                </div>
-                <div className={cx("request-content-date")}>
-                  <span>Created on 19 May 13:17 PM</span>
-                </div>
-              </div>
-              <div className={cx("request-status")}>
-                <span>Inprogress</span>
-              </div>
-            </a>
+            {requestTicketData.map((item, i) => {
+              return (
+                <Link
+                  className={cx("top-request-item")}
+                  to={`detailRequest/${item.id}`}
+                >
+                  <div className={cx("request-content")}>
+                    <div className={cx("request-content-title")}>
+                      <p>{item.title}</p>
+                    </div>
+                    <div className={cx("request-content-date")}>
+                      <span>Created on {item.createAt}</span>
+                    </div>
+                  </div>
+                  <div className={cx("request-status")}>
+                    <span>{item.status}</span>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
-          <a href="#">View All</a>
+          <Link
+            className="text-xl font-bold text-blue-400 hover:text-blue-950 hover:underline"
+            to="/viewRequests"
+          >
+            View All
+          </Link>
         </div>
       </div>
     </div>

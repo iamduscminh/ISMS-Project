@@ -8,14 +8,16 @@ import UnderlineAnimation from "../../components/Animation/UnderlineText";
 import IconTag from "../../components/Elements/IconTag";
 import useAuth from "../../hooks/useAuth";
 import Swal from "sweetalert2";
-import { axiosPrivate } from "../../utils/axiosConfig";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 const cx = classNames.bind(styles);
 function CreateRequest() {
   const { id } = useParams();
   const { auth } = useAuth();
+  const axiosInstance = useAxiosPrivate();
   const [isIncident, setIsIncident] = useState(false);
   const [requestType, setRequestType] = useState(null);
   const [requestTypeCustomFields, setRequestTypeCustomFields] = useState([]);
+  const [ticketIdResponse, setTicketIdResponse] = useState("1");
   //API CONFIG
   const token = auth?.accessToken;
   const headers = {
@@ -43,8 +45,8 @@ function CreateRequest() {
           },
         });
         //--------------Get request type
-        axiosPrivate
-          .get(apiGetRequestTypeUrl, { headers })
+        axiosInstance
+          .get(apiGetRequestTypeUrl)
           .then((response) => {
             const data = {
               id: response.data.serviceItemId,
@@ -71,14 +73,14 @@ function CreateRequest() {
         //CALL API GET REQUEST TYPE
         const apiGetCustomFieldsUrl = `api/ServiceItemCustomFields/getbyserviceitem/${id}`;
 
-        axiosPrivate
+        axiosInstance
           .get(apiGetCustomFieldsUrl, { headers })
           .then((response) => {
             const data = response.data.map((item, i) => ({
               fieldId: item.customField.customFieldId,
               fieldCode: item.customField.fieldCode,
               fieldName: item.customField.fieldName,
-              fieldValue: item.customField.defaultValue ?? null,
+              fieldValue: item.customField.defaultValue ?? undefined,
               fieldType: item.customField.fieldType,
               valType: item.customField.valType,
               mandatory: item.mandatory,
@@ -141,12 +143,12 @@ function CreateRequest() {
     const rqtDesc = getValues("rqtDesc");
     //console.log(rqtTitle + " " + rqtDesc);
     const list = ["rqtTitle", "rqtDesc", "rqtFile"];
-    const customFieldsData = Object.fromEntries(
+    const customFieldsDataForm = Object.fromEntries(
       Object.entries(data).filter(([key, value]) => !list.includes(key))
     );
-    const customFieldsDatas = Object.entries(customFieldsData).map(
+    const customFieldsData = Object.entries(customFieldsDataForm).map(
       ([key, value]) => {
-        return { fieldId: key, fieldValue: value };
+        return { fieldId: key, fieldValue: value ?? "" };
       }
     );
 
@@ -158,8 +160,9 @@ function CreateRequest() {
       requesterEmail: auth?.email,
     };
     console.log(requestTicketData);
-    //Create Request Ticket
+    //CREATE REQUEST TICKET
     const apiCreateRequestTicketUrl = "api/RequestTickets/sendticket";
+    const apiCreateRequestTicketExtUrl = "api/RequestTicketExts/create";
     try {
       Swal.fire({
         title: "Loading...",
@@ -168,12 +171,35 @@ function CreateRequest() {
           Swal.showLoading();
         },
       });
-      axiosPrivate
-        .post(apiCreateRequestTicketUrl, JSON.stringify(requestTicketData), {
-          headers,
-        })
+      axiosInstance
+        .post(apiCreateRequestTicketUrl, JSON.stringify(requestTicketData))
         .then((response) => {
           console.log(response.data);
+          setTicketIdResponse(response.data.ticketId);
+          //CREATE REQUEST TICKET EXT
+          if (customFieldsData.some((item) => typeof item === "object")) {
+            const customFieldsDataArray = customFieldsData.map((item) => {
+              return { ...item, ticketId: ticketIdResponse };
+            });
+            console.log(customFieldsDataArray);
+            axiosInstance
+              .post(
+                apiCreateRequestTicketExtUrl,
+                JSON.stringify(customFieldsDataArray)
+              )
+              .then((response) => {
+                console.log(response.data);
+              })
+              .catch((error) => {
+                const result = Swal.fire({
+                  icon: "error",
+                  title: "Oops...",
+                  text: `${error}`,
+                  showCancelButton: true,
+                  cancelButtonText: "Cancel",
+                });
+              });
+          }
         })
         .catch((error) => {
           const result = Swal.fire({
@@ -184,24 +210,6 @@ function CreateRequest() {
             cancelButtonText: "Cancel",
           });
         });
-      //Create Request Ticket Ext
-      if (customFieldsDatas.some((item) => typeof item === "object"))
-        axiosPrivate
-          .post(apiCreateRequestTicketUrl, JSON.stringify(requestTicketData), {
-            headers,
-          })
-          .then((response) => {
-            console.log(response.data);
-          })
-          .catch((error) => {
-            const result = Swal.fire({
-              icon: "error",
-              title: "Oops...",
-              text: `${error}`,
-              showCancelButton: true,
-              cancelButtonText: "Cancel",
-            });
-          });
 
       Swal.close();
     } catch (error) {

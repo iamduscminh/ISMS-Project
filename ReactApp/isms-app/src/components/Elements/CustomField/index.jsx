@@ -16,7 +16,6 @@ function CustomField({
   listOfValueDisplay,
   placeholder,
   register,
-  setValueFnc,
   errors,
 }) {
   const [error, setError] = useState("");
@@ -63,7 +62,7 @@ function CustomField({
             name={fieldCode}
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
             id={`${fieldId}_${fieldCode}`}
-            value={fieldValue}
+            value={fieldValue ?? undefined}
             placeholder={placeholder}
             {...register(`${fieldId}`, {
               required: mandatory && "This field is required.",
