@@ -78,7 +78,7 @@
 }
 .home-bottom-section {
   width: 100%;
-  height: 400px;
+  //height: 400px;
   background-color: #ffff;
   display: flex;
   justify-content: center;
@@ -95,6 +95,9 @@
       margin-right: 0;
       font-weight: bold;
     }
+  }
+  .top-requests {
+    margin-bottom: 32px;
   }
   .top-request-item {
     padding: 16px;

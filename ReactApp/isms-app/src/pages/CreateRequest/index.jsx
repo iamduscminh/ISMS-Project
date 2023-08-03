@@ -17,7 +17,7 @@ function CreateRequest() {
   const [isIncident, setIsIncident] = useState(false);
   const [requestType, setRequestType] = useState(null);
   const [requestTypeCustomFields, setRequestTypeCustomFields] = useState([]);
-  const [ticketIdResponse, setTicketIdResponse] = useState(1);
+  const [ticketIdResponse, setTicketIdResponse] = useState("1");
   //API CONFIG
   const token = auth?.accessToken;
   const headers = {
@@ -80,7 +80,7 @@ function CreateRequest() {
               fieldId: item.customField.customFieldId,
               fieldCode: item.customField.fieldCode,
               fieldName: item.customField.fieldName,
-              fieldValue: item.customField.defaultValue ?? null,
+              fieldValue: item.customField.defaultValue ?? undefined,
               fieldType: item.customField.fieldType,
               valType: item.customField.valType,
               mandatory: item.mandatory,
@@ -148,7 +148,7 @@ function CreateRequest() {
     );
     const customFieldsData = Object.entries(customFieldsDataForm).map(
       ([key, value]) => {
-        return { fieldId: key, fieldValue: value };
+        return { fieldId: key, fieldValue: value ?? "" };
       }
     );
 
@@ -162,6 +162,7 @@ function CreateRequest() {
     console.log(requestTicketData);
     //CREATE REQUEST TICKET
     const apiCreateRequestTicketUrl = "api/RequestTickets/sendticket";
+    const apiCreateRequestTicketExtUrl = "api/RequestTicketExts/create";
     try {
       Swal.fire({
         title: "Loading...",
@@ -175,6 +176,30 @@ function CreateRequest() {
         .then((response) => {
           console.log(response.data);
           setTicketIdResponse(response.data.ticketId);
+          //CREATE REQUEST TICKET EXT
+          if (customFieldsData.some((item) => typeof item === "object")) {
+            const customFieldsDataArray = customFieldsData.map((item) => {
+              return { ...item, ticketId: ticketIdResponse };
+            });
+            console.log(customFieldsDataArray);
+            axiosInstance
+              .post(
+                apiCreateRequestTicketExtUrl,
+                JSON.stringify(customFieldsDataArray)
+              )
+              .then((response) => {
+                console.log(response.data);
+              })
+              .catch((error) => {
+                const result = Swal.fire({
+                  icon: "error",
+                  title: "Oops...",
+                  text: `${error}`,
+                  showCancelButton: true,
+                  cancelButtonText: "Cancel",
+                });
+              });
+          }
         })
         .catch((error) => {
           const result = Swal.fire({
@@ -185,29 +210,6 @@ function CreateRequest() {
             cancelButtonText: "Cancel",
           });
         });
-
-      //CREATE REQUEST TICKET EXT
-      const apiCreateRequestTicketExtUrl = "api/RequestTicketExts/create";
-      if (customFieldsData.some((item) => typeof item === "object")) {
-        const customFieldsDataArray = customFieldsData.map((item) => {
-          return { ...item, ticketId: ticketIdResponse };
-        });
-        //console.log(customFieldsDataArray);
-        axiosInstance
-          .post(apiCreateRequestTicketExtUrl, customFieldsDataArray)
-          .then((response) => {
-            console.log(response.data);
-          })
-          .catch((error) => {
-            const result = Swal.fire({
-              icon: "error",
-              title: "Oops...",
-              text: `${error}`,
-              showCancelButton: true,
-              cancelButtonText: "Cancel",
-            });
-          });
-      }
 
       Swal.close();
     } catch (error) {

@@ -309,8 +309,9 @@ function CreateRequest() {
                       </button>
                     </div>
                     <div className="w-full mt-[1rem] px-[2rem] max-h-[50vh] overflow-y-scroll">
-                      {commentData.map((item) => (
+                      {commentData.map((item, i) => (
                         <RequestComment
+                          key={i}
                           isAutoCmt={false}
                           name={item.sender}
                           comment={item.content}
