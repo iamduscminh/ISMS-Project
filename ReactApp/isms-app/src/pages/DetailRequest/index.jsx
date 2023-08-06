@@ -14,21 +14,9 @@ function CreateRequest() {
   const axiosInstance = useAxiosPrivate();
   const { id } = useParams();
   const { auth } = useAuth();
-
   const [requestTicket, setRequestTicket] = useState();
   const [activeTabIndex, setActiveTabIndex] = useState(0);
 
-  //tab hiển thị comment section
-  const tabsData = [
-    {
-      label: "Comment",
-      tabIndex: 0,
-    },
-    {
-      label: "Activity",
-      tabIndex: 1,
-    },
-  ];
   useEffect(() => {
     const apiGetRequestTicketsUrl = `api/RequestTickets/get/${id}`;
     const fetchData = async () => {
@@ -87,6 +75,13 @@ function CreateRequest() {
   const cancelRequestDetail = () => {
     console.log(reasonCancelRef.current.value);
   };
+
+  //Comment
+  const commentRef = useRef();
+  const [commentValue, setCommentValue] = useState();
+  const [isValidComment, setIsValidComment] = useState(true);
+  const [errorComment, setErrorComment] = useState();
+
   const [commentData, setCommentData] = useState([
     {
       id: 1,
@@ -114,7 +109,7 @@ function CreateRequest() {
     },
   ]);
 
-  const [ActivityData, setActivityData] = useState([
+  const [activityData, setActivityData] = useState([
     {
       id: 1,
       type: "UserChange",
@@ -138,8 +133,7 @@ function CreateRequest() {
       update: "Work in progress",
     },
   ]);
-  const commentRef = useRef();
-  const [checkPersonal, setCheckPersonal] = useState(false);
+
   const [commentTab, setCommentTab] = useState(true);
   const showCommentTab = (queryCondition) => {
     setCommentTab(queryCondition);
@@ -153,10 +147,62 @@ function CreateRequest() {
     left: ${commentTab ? "0" : "50%"}
     transition: 350ms;
   `;
-  const changeCommentType = (check) => {
-    setCheckPersonal(check);
+  const handleChangeComment = (e) => {
+    const { value } = e.target;
+    if (value.length > 1000) {
+      setErrorComment("Comment must not exceed 1000 characters");
+      setIsValidComment(false);
+    } else {
+      setErrorComment("");
+      setIsValidComment(true);
+      setCommentValue(value);
+    }
   };
   const handleAddComment = (e) => {
+    let commentVal = commentRef.current.value;
+    console.log(commentVal);
+
+    try {
+      Swal.fire({
+        title: "Loading...",
+        allowOutsideClick: false,
+        onBeforeOpen: () => {
+          Swal.showLoading();
+        },
+      });
+      const apiCreateCommentUrl = "api/Comments/create";
+      const commentDto = {
+        commentText: commentVal,
+        commentBy: auth?.email,
+        requestTicketId: id,
+      };
+      console.log(commentDto);
+      axiosInstance
+        .post(apiCreateCommentUrl, JSON.stringify(commentDto))
+        .then((response) => {
+          console.log(response.data);
+        })
+        .catch((error) => {
+          const result = Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: `${error}`,
+            showCancelButton: true,
+            cancelButtonText: "Cancel",
+          });
+        });
+
+      Swal.close();
+    } catch (error) {
+      // Handle errors if needed
+      console.log(error);
+      Swal.close();
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error,
+      });
+    }
     // if (commentRef.current.value === "") return;
     // setCommentData((prev) =>
     //   [
@@ -297,9 +343,14 @@ function CreateRequest() {
                         rows={3}
                         className="w-full h-full resize-none mx-2 px-[0.75rem] py-[0.5rem] border-2 border-[#747272] rounded-md"
                         placeholder="Typing your comment"
+                        onChange={handleChangeComment}
                       ></textarea>
                     </div>
-
+                    {errorComment && (
+                      <p className="w-[full] px-[2rem] py-[0.75rem] mt-2 text-sm text-red-600 ">
+                        {errorComment}
+                      </p>
+                    )}
                     <div className="flex justify-end px-[2rem]">
                       <button
                         onClick={handleAddComment}
@@ -322,7 +373,7 @@ function CreateRequest() {
                   </div>
                 ) : (
                   <div className="px-[2rem] my-[2rem]">
-                    {ActivityData.map((item) => (
+                    {activityData.map((item) => (
                       <RequestComment
                         isAutoCmt={true}
                         name={"Duc Minh"}
