@@ -6,7 +6,11 @@ import CustomCombobox from "../../../components/Elements/CustomCombobox";
 import ServiceTypeItem from "../../../components/Elements/CustomCombobox/ServiceTypeItem";
 import PriorityItem from "../../../components/Elements/CustomCombobox/PriorityItem";
 import TicketStatus from "../../../components/Elements/TicketStatus";
-import { MdKeyboardArrowDown, MdElectricalServices, MdDelete } from "react-icons/md";
+import {
+  MdKeyboardArrowDown,
+  MdElectricalServices,
+  MdDelete,
+} from "react-icons/md";
 import { RiComputerLine } from "react-icons/ri";
 import { SiMicrosoftword, SiMicrosoftexcel } from "react-icons/si";
 import {
@@ -14,15 +18,22 @@ import {
   FcMediumPriority,
   FcLowPriority,
 } from "react-icons/fc";
-import { AiOutlineCloudUpload, AiOutlineUpload } from 'react-icons/ai'
+import { AiOutlineCloudUpload, AiOutlineUpload } from "react-icons/ai";
 import CommentComponent from "../../../components/Elements/CommentComponent";
 import DefaultChange from "../../../components/Elements/ActivityComponent/DefaultChange";
 import UserChange from "../../../components/Elements/ActivityComponent/UserChange";
 import styled from "styled-components";
 import ActivityComponent from "../../../components/Elements/ActivityComponent";
 import { BiTask } from "react-icons/bi";
-import { Button, Grid, IconButton, Input, Stack, Typography } from "@mui/material";
-
+import {
+  Button,
+  Grid,
+  IconButton,
+  Input,
+  Stack,
+  Typography,
+} from "@mui/material";
+import ModalDialog from "../../../components/Elements/PopupModal";
 const TicketDetail = () => {
   const { ticketId } = useParams();
   const [commentTab, setCommentTab] = useState(true);
@@ -171,7 +182,6 @@ const TicketDetail = () => {
     setPriority(selectedItem);
   };
 
-
   const [selectedFiles, setSelectedFiles] = useState([]);
 
   const handleFileChange = (event) => {
@@ -203,7 +213,6 @@ const TicketDetail = () => {
   };
 
   const maxLength = 20; // Độ dài tối đa của tên file
-
 
   const TabSelect = styled.div`
     width: 50%;
@@ -287,10 +296,9 @@ const TicketDetail = () => {
                 currentStatus={status}
                 onSelect={handleStatusSelect}
                 customStyles={{
-                  'paddingY': "py-[0.5rem]",
-                  'zIndex': 'z-50'
-                }
-                }
+                  paddingY: "py-[0.5rem]",
+                  zIndex: "z-50",
+                }}
               />
             </div>
           </div>
@@ -337,8 +345,18 @@ const TicketDetail = () => {
             </div>
           </div>
         </div>
-        <div className="w-[30%] ml-[1rem]">
+        <div className="w-[33%] ml-[1rem]">
           <div className="w-full bg-[#fff] px-[1.25rem] py-[1rem] flex flex-col rounded-lg shadow-md border-2 border-[#E1DEDE]">
+            <div>
+              <h1 className="text-[1.25rem] font-semibold text-[#42526E]">
+                Task: Evaluating and Planning
+              </h1>
+              <p className="text-[#747272]">
+                This step focuses on gathering information from stakeholders,
+                identifying customer requirements, and evaluating available
+                capabilities and resources.{" "}
+              </p>
+            </div>
             <div>
               <div className="flex items-center mt-[1rem]">
                 <h3 className="text-[#42526E] min-w-[40%] font-medium">
@@ -443,8 +461,72 @@ const TicketDetail = () => {
                   </div>
                 </div>
               </div>
+              <div>
+                <h3 className="text-[#42526E] min-w-[40%] font-medium">
+                  Check Transition
+                </h3>
+                <div className="mt-[1rem] translate-x-[-1rem]">
+                  <div className="w-[full] mx-[0.25rem] ml-[1rem]">
+                    <textarea
+                      rows={2}
+                      className="w-full h-full resize-none px-[0.75rem] py-[0.5rem] border-2 border-[#747272] rounded-md"
+                      placeholder="@ to tag someone"
+                    ></textarea>
+                  </div>
+                  <div className="mt-[0.25rem]">
+                    <Grid container spacing={2}>
+                      <Grid item xs={12}>
+                        <Stack
+                          direction="row"
+                          spacing={2}
+                          alignItems="self-start"
+                        >
+                          <Input
+                            type="file"
+                            onChange={handleFileChange}
+                            inputProps={{
+                              accept:
+                                "image/*, .pdf, .doc, .docx, .xls, .xlsx, .txt, .csv",
+                              multiple: true,
+                            }}
+                            style={{ display: "none" }}
+                            id="file-input"
+                          />
+                          <label htmlFor="file-input">
+                            <Button
+                              variant="contained"
+                              component="span"
+                              startIcon={<AiOutlineUpload />}
+                            >
+                              Upload
+                            </Button>
+                          </label>
+                          <div className="flex flex-col items-start">
+                            {selectedFiles.length > 0 &&
+                              selectedFiles.map((file, index) => (
+                                <React.Fragment key={index}>
+                                  <div className="flex ">
+                                    <Typography>
+                                      {formatFileName(file.name, maxLength)}
+                                    </Typography>
+                                    <IconButton
+                                      onClick={() => handleFileClear(index)}
+                                      size="small"
+                                    >
+                                      <MdDelete />
+                                    </IconButton>
+                                  </div>
+                                </React.Fragment>
+                              ))}
+                          </div>
+                        </Stack>
+                      </Grid>
+                    </Grid>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="h-[25vh] overflow-y-scroll cursor-default mt-[1rem]">
+            <div className="h-[20vh] overflow-y-scroll cursor-default mt-[1rem]">
               <div className="flex items-center text-[#42526E] px-[1rem] py-[0.5rem]">
                 <BiTask className="mr-[0.5rem]" />
                 <h3>Workflow task name</h3>
@@ -470,9 +552,26 @@ const TicketDetail = () => {
                 <h3>Workflow task name</h3>
               </div>
             </div>
+            <div className="mt-[1rem] flex">
+              <select
+                name=""
+                id=""
+                className="border-2 border-[#42526E] rounded-md px-[0.75rem] mr-[1rem]"
+              >
+                <option value="">Done</option>
+                <option value="">Return</option>
+                <option value="">Pending</option>
+              </select>
+              <ModalDialog
+                title={"Transition Task"}
+                actionText={"Change"}
+                triggerComponent={<button className="px-[0.75rem] bg-[#043AC5] text-[#fff] font-medium">Change</button>}
+                customSize="md"
+              ></ModalDialog>
+            </div>
           </div>
         </div>
-        <div className="w-[40%] ml-[1rem]">
+        <div className="w-[37%] ml-[1rem]">
           <div className="w-full bg-[#fff] flex flex-col rounded-lg shadow-md border-2 border-[#E1DEDE] overflow-hidden">
             <div className=" relative w-full h-[2.75rem]">
               <div className="w-full flex justify-center items-center">
@@ -558,33 +657,6 @@ const TicketDetail = () => {
           </div>
         </div>
       </div>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Stack direction="row" spacing={2} alignItems="center">
-            <Input
-              type="file"
-              onChange={handleFileChange}
-              inputProps={{ accept: "image/*", multiple: true }}
-              style={{ display: "none" }}
-              id="file-input"
-            />
-            <label htmlFor="file-input">
-              <Button variant="contained" component="span" startIcon={<AiOutlineUpload />}>
-                Chọn file
-              </Button>
-            </label>
-            {selectedFiles.length > 0 &&
-              selectedFiles.map((file, index) => (
-                <React.Fragment key={index}>
-                  <Typography>{formatFileName(file.name, maxLength)}</Typography>
-                  <IconButton onClick={() => handleFileClear(index)} size="small">
-                    <MdDelete />
-                  </IconButton>
-                </React.Fragment>
-              ))}
-          </Stack>
-        </Grid>
-      </Grid>
     </div>
   );
 };
