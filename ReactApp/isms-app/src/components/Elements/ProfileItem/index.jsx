@@ -1,9 +1,15 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import PropTypes from 'prop-types';
 
-const ProfileItem = ({ name, value, icon: IconComponent, isEditing, inputType, onChange, children, error }) => {
+const ProfileItem = ({ name, itemValue, icon: IconComponent, isEditing, inputType, onChange, children, error }) => {
 
-  const [editedValue, setEditedValue] = useState(value);
+  const [editedValue, setEditedValue] = useState(itemValue);
+
+  // Sử dụng useEffect để cập nhật editedValue khi itemValue thay đổi
+  useEffect(() => {
+    setEditedValue(itemValue);
+  }, [itemValue]);
+
   const today = new Date().toISOString().split('T')[0];
   const handleInputChange = (e) => {
     const inputValue = e.target.value;
@@ -16,7 +22,7 @@ const ProfileItem = ({ name, value, icon: IconComponent, isEditing, inputType, o
         <h1 className='text-[#42526E] font-medium text-[1.2rem] mb-[0.75rem]'>{name}</h1>
         <div className='flex leading-none items-center'>
           <IconComponent className="text-[#42526E] mr-[1.75rem] text-[1.4rem]" />
-          <h4 className='text-[#828282] mr-[0.5rem]'>{value}</h4>
+          <h4 className='text-[#828282] mr-[0.5rem]'>{itemValue}</h4>
           {children}
         </div>
       </div>
@@ -47,7 +53,6 @@ const ProfileItem = ({ name, value, icon: IconComponent, isEditing, inputType, o
 }
 ProfileItem.propTypes = {
   name: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
   icon: PropTypes.elementType.isRequired,
 };
 export default ProfileItem
