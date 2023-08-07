@@ -55,6 +55,9 @@ const ServiceSettings = () => {
           JSON.stringify(newServiceGroup),
           {
             signal: controller.signal,
+            headers: {
+              "Content-Type": "application/json",
+            },
           }
         );
         if (response.status === 200) {
@@ -113,7 +116,12 @@ const ServiceSettings = () => {
     axiosInstance
       .put(
         `api/ServiceCategories/update?serviceCategoryId=${serviceCategoryId}`,
-        updatedService
+        updatedService,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       )
       .then((response) => {
         const newData = response.data;
