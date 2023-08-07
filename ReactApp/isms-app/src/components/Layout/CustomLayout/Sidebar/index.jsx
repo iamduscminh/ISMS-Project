@@ -1,5 +1,6 @@
 import image from "../../../../assets/images";
 import React, { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "./Sidebar.module.scss";
 import { GrServices } from "react-icons/gr";
 import classNames from "classnames/bind";
@@ -8,6 +9,9 @@ import { Link } from "react-router-dom";
 import { MdQueryStats, MdOutlineLabelImportant } from "react-icons/md";
 import QueryCategory from "./QueryCategory";
 import ServiceFeature from "./ServiceFeature";
+import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
+import {URL} from '../../../../utils/Url';
+import useAuth from "../../../../hooks/useAuth";
 
 const Nav = styled.div`
   background: #15171c;
@@ -50,6 +54,12 @@ function Sidebar() {
   const [profile, setProfile] = useState(false);
   const [queryTab, setQueryTab] = useState(true);
   const [currentSidebar, setCurrentSidebar] = useState(0);
+  const axiosInstance = useAxiosPrivate();
+  const { auth, setAuth } = useAuth();
+  const navigate = useNavigate();
+
+  const [userInformation, setUserInformation] = useState({});
+
   const showQueryTab = (queryCondition) => {
     setQueryTab(queryCondition);
   };
@@ -62,6 +72,40 @@ function Sidebar() {
     <ServiceFeature changeSidebar={changeSidebar} />,
   ];
 
+  useEffect(() => {
+    // Gọi API để lấy Thông tin Users từ DB
+    const fetchUserById = async () => {
+      try {
+        const response = await axiosInstance.post(
+          `${URL.USER_URL}/get/${auth.userId}`
+        );
+
+        console.log(response.data);
+
+        setUserInformation({
+          avatar: response.data.avatar,
+          userName: response.data.fullName,
+          roleName: auth.roleName
+        });
+      } catch (error) {
+        console.error("Error get user information:", error);
+      }
+    };
+
+    fetchUserById();
+  }, [axiosInstance]);
+
+  const handleLogout = () => {
+    // Thực hiện xóa giá trị trong auth
+    setAuth(null); // Hoặc bạn có thể đặt lại thành giá trị mặc định cho auth, ví dụ: setAuth({userId: null, roleName: null, token: null})
+    
+    // Điều hướng về trang login
+    navigate("/login");
+  };
+
+  const handleGoToProfile = () => {
+    navigate('/profile');
+  }
   return (
     <SidebarOver>
       <div className="w-full h-[5%] flex relative bg-[#DCE4FF]">
@@ -94,31 +138,32 @@ function Sidebar() {
           onClick={(e) => setProfile(!profile)}
           className="w-full h-[35%] flex justify-start items-center mt-[0.5rem] cursor-pointer relative"
         >
+          {console.log(userInformation)}
           <div className="w-[1.75rem] h-[1.75rem] rounded-full overflow-hidden">
             <img
               className="w-full h-full object-cover object-center"
-              src={image.avatar2}
+              src={userInformation.avatar || image.avatar2}
               alt=""
             />
           </div>
 
           <div className="ml-[0.7rem] flex justify-center items-start flex-col leading-none">
             <div>
-              <span className="text-[0.9rem] font-medium">Tu Doan</span>
+              <span className="text-[0.9rem] font-medium">{userInformation.userName || "Tu Doan"}</span>
             </div>
             <div>
               <span className="text-[0.7rem] text-[#686868]">
-                Administrator
+                {userInformation.roleName || "Administrator"}
               </span>
             </div>
           </div>
 
           {profile && (
             <div className="border-2 text-[#42526E] font-medium text-[1rem]  shadow-md flex flex-col absolute bottom-0 right-0 w-[8rem] translate-x-[100%] bg-[#ffffff] z-[9999] rounded-[5px]">
-              <div className="border-b-2 mt-[0.5rem]">
+              <div onClick={handleGoToProfile} className="border-b-2 mt-[0.5rem]">
                 <span className="ml-[1.25rem]">Profile</span>
               </div>
-              <div className="mb-[0.5rem]">
+              <div onClick={handleLogout} className="mb-[0.5rem]">
                 <span className="ml-[1.25rem]">Log out</span>
               </div>
             </div>

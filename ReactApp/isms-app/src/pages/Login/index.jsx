@@ -124,7 +124,7 @@ const Login = () => {
       const decodedToken = jwtDecode(accessToken);
       console.log(decodedToken);
       const from = location.state?.from?.pathname || (decodedToken.roletype === "Admin" ? '/admin' : '/')
-      setAuth({ email, password, userId: decodedToken.sub, permissions: decodedToken.permissions, roletype: decodedToken.roleType, accessToken });
+      setAuth({ email, password, userId: decodedToken.sub, permissions: decodedToken.permissions, roletype: decodedToken.roleType, roleName: decodedToken.role, accessToken });
       navigate(from, {replace: true});
 
     } catch (err) {
