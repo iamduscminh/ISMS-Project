@@ -7,6 +7,7 @@ import { PERMISSIONS } from "../../../routes/Permissions";
 
 function DefaultLayout({ children }) {
   const { auth } = useAuth();
+  console.log(auth);
   return (
     <div className="h-screen">
       {/* {auth?.roles?.find((role) => role === ROLES.Administrator) ? (

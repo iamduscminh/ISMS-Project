@@ -13,9 +13,32 @@ import { AiOutlineMail } from "react-icons/ai";
 import { MdWorkOutline } from "react-icons/md";
 import { BsPhone } from "react-icons/bs";
 import Switch from "react-switch";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import {URL} from '../../utils/Url';
+import useAuth from "../../hooks/useAuth";
 
 const cx = classNames.bind(styles);
+const getUserURL = `${URL.USER_URL}`
+
 function Profile() {
+  const { auth } = useAuth();
+  const axiosInstance = useAxiosPrivate();
+  useEffect(() => {
+    // Gọi API để lấy Thông tin Users từ DB
+    const fetchUserById = async () => {
+      try {
+        const response = await axiosInstance.post(
+          `${getUserURL}/get/${auth.userId}`
+        );
+        console.log(response.data);
+      } catch (error) {
+        console.error("Error fetching service categories:", error);
+      }
+    };
+
+     fetchUserById();
+  }, [axiosInstance]);
+
   const [isEditing, setIsEditing] = useState(false);
 
   const [selectedImage, setSelectedImage] = useState(null);
