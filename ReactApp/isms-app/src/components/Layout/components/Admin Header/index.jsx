@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import {Link} from 'react-router-dom'
 import classNames from "classnames/bind";
 import styles from "./AdminHeader.module.scss";
 import image from "../../../../assets/images";
@@ -40,11 +41,11 @@ const AdminHeader = () => {
   return (
     <div className={cx("h-[7%] w-full bg-[#7F91B0] flex")}>
       <div className={cx("w-[8%] h-full flex justify-center items-center")}>
-        <img
+        <Link to={'/admin'}><img
           src={image.logo}
           alt=""
           className={cx("w-[100%] h-[100%] ml-[2rem]")}
-        />
+        /></Link>
       </div>
       <div
         className={cx(

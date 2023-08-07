@@ -44,12 +44,6 @@ const publicRoutes = [
   },
 
   { path: "/updateCustomField/:id", component: Page.UpdateCustomField },
-
-  {
-    path: "/admin/setting/workflows",
-    component: Page.ListWorkflow,
-    layout: Layout.CustomLayout,
-  },
   {
     path: "/admin/setting/workflows/:mode/:flowId?",
     component: Page.ViewWorkflow,
@@ -111,6 +105,11 @@ const PERM000000Routes = [
     component: Page.ServiceSettings,
     layout: Layout.CustomLayout,
   },
+  {
+    path: "/admin/setting/workflows",
+    component: Page.ListWorkflow,
+    layout: Layout.CustomLayout,
+  },
 ];
 
 //Route có Permission là PERM000001: Mange roles
@@ -130,7 +129,7 @@ const PERM000005Routes = [];
 
 //
 const loginRoutes = [
-  { path: "/profile", component: Page.Profile, layout: Layout.DefaultLayout },
+  { path: "/profile/:userId?", component: Page.Profile, layout: Layout.DefaultLayout },
 ];
 export {
   publicRoutes,
