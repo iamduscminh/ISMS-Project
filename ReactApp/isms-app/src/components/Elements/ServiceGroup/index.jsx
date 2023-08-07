@@ -3,61 +3,54 @@ import IconTag from "../IconTag";
 import { SlArrowDown, SlArrowUp } from "react-icons/sl";
 import Tippy from "@tippyjs/react/headless";
 import ModalDialog from "../PopupModal";
+import { CiEdit } from "react-icons/ci";
+import { MdOutlineDone } from "react-icons/md";
 
-//List tất cả các request Type theo ID truyền vào/ Lấy từ API
-const allServiceRequestType = [
-  {
-    id: 1,
-    name: "Request a new account",
-    icon: "AiFillCustomerService",
-  },
-  {
-    id: 2,
-    name: "Fix an Account Problem",
-    icon: "AiFillCustomerService",
-  },
-  {
-    id: 3,
-    name: "Set up VPN",
-    icon: "AiFillCustomerService",
-  },
-  {
-    id: 4,
-    name: "Change Password",
-    icon: "AiFillCustomerService",
-  },
-];
+const createServiceURL = "/create";
 
-const createServiceURL = '/create'
-
-const ServiceGroup = ({ service, onDeleteService }) => {
+const ServiceGroup = ({ service, onDeleteService, updateServiceGroup }) => {
+  //List tất cả các request Type theo ID truyền vào/ Lấy từ API
+  const allServiceRequestType = service.serviceItemEntities.filter(
+    (item) => item.status !== "Published"
+  );
   //Check xem có show detail của Service hay không?
   const [detailService, setDetailService] = useState(false);
 
+  //Check xem có đang Edit không?
+  const [isDelete, setIsDelete] = useState(false);
   //Data for ServiceName
-  const [serviceName, setServiceName] = useState(service.serviceName);
+  const [serviceName, setServiceName] = useState(service.serviceCategoryName);
   const handleChangeName = (e) => {
     setServiceName(e.target.value);
   };
 
   //Data for Service Description
-  const [serviceDes, setServiceDes] = useState(service.serviceDes);
+  const [serviceDes, setServiceDes] = useState(service.description);
   const handleChangeDes = (e) => {
     setServiceDes(e.target.value);
   };
 
   //Data For Request Type
-  const [listRequestType, setListRequestType] = useState(service.requestType);
+  const [listRequestType, setListRequestType] = useState(
+    service.serviceItemEntities.filter((item) => item.status === "Published")
+  );
   const handleDeleteRequestType = (selectedItem) => {
     const updatedList = listRequestType.filter(
-      (item) => item.id !== selectedItem.id
+      (item) => item.serviceItemId !== selectedItem.serviceItemId
     );
+    const removeRequestType = listRequestType.find(item => item.serviceItemId === selectedItem.serviceItemId);
+    SetAvailableService((prev) => ([
+      ...prev,
+      removeRequestType
+    ]))
     setListRequestType(updatedList);
   };
 
   //Các request Type available(được phép add) cho Service Group
   const filteredServices = allServiceRequestType.filter((requestType) => {
-    return !listRequestType.some((item) => item.id === requestType.id);
+    return !listRequestType.some(
+      (item) => item.serviceItemId === requestType.serviceItemId
+    );
   });
   const [availableService, SetAvailableService] = useState(filteredServices);
 
@@ -70,7 +63,7 @@ const ServiceGroup = ({ service, onDeleteService }) => {
   //Check mỗi khi giá trị Request Search thay đổi thì sẽ lọc ra list Request thích hợp
   useEffect(() => {
     const filteredArray = availableService.filter((item) =>
-      item.name.toLowerCase().includes(requestSearch.toLowerCase())
+      item.serviceItemName.toLowerCase().includes(requestSearch.toLowerCase())
     );
     setSearchResult(filteredArray);
   }, [requestSearch]);
@@ -79,7 +72,7 @@ const ServiceGroup = ({ service, onDeleteService }) => {
   //ra khỏi list Available
   const handleAddRequestType = (selectedItem) => {
     const filterAvailable = availableService.filter(
-      (item) => item.id !== selectedItem.id
+      (item) => item.serviceItemId !== selectedItem.serviceItemId
     );
     console.log(filterAvailable);
     SetAvailableService(filterAvailable);
@@ -92,43 +85,65 @@ const ServiceGroup = ({ service, onDeleteService }) => {
   //Check Xem có ở trạng thái có thể add service không
   const [isAddRequestType, setIsAddRequestType] = useState(false);
 
-  const handleDeleteServiceGroup = () =>{
+  const handleDeleteServiceGroup = () => {};
 
+  const handleServiceGroup = () => {
+    updateServiceGroup(serviceName, serviceDes, service.serviceCategoryId);
+    setIsDelete(false);
   }
 
   return (
     <div className="bg-[#fff] w-[45vw] px-[2rem] py-[0.75rem] rounded-sm border border-[#abadb0] mt-[0.5rem]">
       {/* Div này là header của thẻ Service */}
       <div className="flex justify-between items-center">
-        <input
-          value={serviceName}
-          onChange={handleChangeName}
-          className="text-[1.4rem] text-[#42526E]"
-        />
+        {isDelete ? (
+          <input
+            value={serviceName}
+            onChange={handleChangeName}
+            className="text-[1.4rem] text-[#42526E]"
+          />
+        ) : (
+          <h3
+            value={serviceName}
+            onChange={handleChangeName}
+            className="text-[1.4rem] text-[#42526E]"
+          >{serviceName}</h3>
+        )}
         <div className="flex text-[#42526E]">
-          <ModalDialog
-            title={"Delete Service Group"}
-            actionText={"Delete"}
-            actionHandler={()=>{
-              onDeleteService(service.id);
-              
-            }}
-            triggerComponent={
-              <IconTag
-              className="text-[1.1rem] cursor-pointer"
-              name="AiFillDelete"
-            />
-            }
-          >
-            <div>
-              <h1 className="text-[0.8rem] text-[#42526E]">The following Request Type will no longer be visible in your customer catalog:</h1>
-              <div className="ml-[2rem] text-[0.75rem] text-[#42526E] mt-[1rem]">
-                {listRequestType.map((item)=>(
-                  <h3 className="mt-[0.3rem]" key={item.id}>- {item.name}</h3>
-                ))}
+          {!isDelete ? (
+            <CiEdit onClick={() => setIsDelete(true)} />
+          ) : (
+            <MdOutlineDone onClick={() => handleServiceGroup()} />
+          )}
+          {service.serviceItemEntities.length === 0 && (
+            <ModalDialog
+              title={"Delete Service Group"}
+              actionText={"Delete"}
+              actionHandler={() => {
+                onDeleteService(service.serviceCategoryId);
+              }}
+              triggerComponent={
+                <IconTag
+                  className="text-[1.1rem] cursor-pointer"
+                  name="AiFillDelete"
+                />
+              }
+            >
+              <div>
+                <h1 className="text-[0.8rem] text-[#42526E]">
+                  The following Request Type will no longer be visible in your
+                  customer catalog:
+                </h1>
+                <div className="ml-[2rem] text-[0.75rem] text-[#42526E] mt-[1rem]">
+                  {listRequestType.map((item) => (
+                    <h3 className="mt-[0.3rem]" key={item.serviceItemId}>
+                      - {item.serviceItemName}
+                    </h3>
+                  ))}
+                </div>
               </div>
-            </div>          
-          </ModalDialog>
+            </ModalDialog>
+          )}
 
           {!detailService ? (
             <SlArrowUp
@@ -147,19 +162,25 @@ const ServiceGroup = ({ service, onDeleteService }) => {
       {/* Div này là phần sẽ toggle */}
       {detailService && (
         <div>
-          <textarea
-            value={serviceDes}
-            onChange={handleChangeDes}
-            className="text-[#42526E] mt-[0.75rem] mb-[1rem] w-full h-[9vh] resize-none px-[0.5rem] py-[0.25rem]"
-          ></textarea>
+          {isDelete ? (
+            <textarea
+              value={serviceDes}
+              onChange={handleChangeDes}
+              className="text-[#42526E] mt-[0.75rem] mb-[1rem] w-full h-[9vh] resize-none px-[0.5rem] py-[0.25rem]"
+            ></textarea>
+          ) : (
+            <p className="text-[#42526E] mt-[0.75rem] mb-[1rem] w-full h-[9vh] resize-none px-[0.5rem] py-[0.25rem]">
+              {serviceDes}
+            </p>
+          )}
           <div>
             {listRequestType.map((item) => (
               <div
-                key={item.id}
+                key={item.serviceItemId}
                 className="flex pl-[2rem] py-[0.5rem] text-[#42526E] items-center hover:bg-[#ebecf0] cursor-grab"
               >
-                <IconTag name={item.icon} />
-                <h3 className="ml-[1rem]">{item.name}</h3>
+                <IconTag name={item.iconDisplay} />
+                <h3 className="ml-[1rem]">{item.serviceItemName}</h3>
                 <IconTag
                   onClickHandle={() => handleDeleteRequestType(item)}
                   className="ml-auto cursor-pointer"
@@ -187,11 +208,11 @@ const ServiceGroup = ({ service, onDeleteService }) => {
                   {searchResult.map((item) => (
                     <div
                       onClick={() => handleAddRequestType(item)}
-                      key={item.id}
+                      key={item.serviceItemId}
                       className="flex pl-[2rem] py-[0.5rem] text-[#42526E] items-center hover:bg-[#ebecf0] cursor-pointer"
                     >
-                      <IconTag name={item.icon} />
-                      <h3 className="ml-[1rem]">{item.name}</h3>
+                      <IconTag name={item.iconDisplay} />
+                      <h3 className="ml-[1rem]">{item.serviceItemName}</h3>
                     </div>
                   ))}
                 </div>

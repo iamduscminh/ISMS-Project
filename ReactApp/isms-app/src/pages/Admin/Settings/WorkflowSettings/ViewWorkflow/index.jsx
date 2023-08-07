@@ -17,14 +17,25 @@ const ViewWorkflow = () => {
     if (!activeTextDiagram) return;
     setActiveTextDiagram(false);
   };
-  let listInitialActivity=[];
-  if(mode==="edit"){
-      listInitialActivity =[
+  let listInitialActivity = [];
+  if (mode === "edit") {
+    listInitialActivity = [
       {
         id: 1,
+        activityName: "Close Activity",
+        linkStatus: 6,
+        role: 0,
+        agent: null,
+        description:
+          "The last activity if this workflow",
+        listStatusTrans: [],
+      },
+      {
+        id: 2,
         activityName: "Requirement accepted and evaluated",
         linkStatus: 1,
         role: 1,
+        agent: null,
         description:
           "Define the scope of the request and request detailed information from the customer",
         listStatusTrans: [
@@ -32,37 +43,39 @@ const ViewWorkflow = () => {
             id: 1,
             statusTran: "Done",
             checkCondition: true,
-            destination: 2,
+            destination: 3,
           },
         ],
       },
       {
-        id: 2,
+        id: 3,
         activityName: "Planning and implementing:",
         linkStatus: 3,
         role: 3,
+        agent: null,
         description:
           "Based on the requirements and information collected, plan the deployment for the server infrastructure management service.",
         listStatusTrans: [],
       },
     ];
-  }else{
+  } else {
     listInitialActivity = [
       {
         id: 1,
-        activityName: "Default activity",
-        linkStatus: 1,
-        role: 1,
+        activityName: "Close Activity",
+        linkStatus: 6,
+        role: 0,
+        agent: null,
         description:
-          "",
+          "The last activity if this workflow",
         listStatusTrans: [],
       }
     ]
   }
 
   const [listActivity, setListActivity] = useState(listInitialActivity);
-  
-  const addNewActivity = (name, status, role) => {
+
+  const addNewActivity = (name, status, role, agent) => {
     setListActivity([
       ...listActivity,
       {
@@ -71,6 +84,7 @@ const ViewWorkflow = () => {
         linkStatus: parseInt(status),
         role: parseInt(role),
         listStatusTrans: [],
+        agent: agent ? parseInt(agent) : null
       },
     ]);
   };
@@ -84,6 +98,7 @@ const ViewWorkflow = () => {
     activityNameInput,
     statusInput,
     roleInput,
+    agentInput,
     activityDes
   ) => {
     const statusValue = parseInt(statusInput);
@@ -106,6 +121,7 @@ const ViewWorkflow = () => {
       activityName: activityNameInput,
       linkStatus: statusValue,
       role: roleValue,
+      agent: agentInput ? parseInt(agentInput) : null,
       description: activityDes,
     };
     // Cập nhật lại state activities bằng hàm setActivities
@@ -133,13 +149,13 @@ const ViewWorkflow = () => {
     }
 
     // Tạo một đối tượng mới để thêm vào listStatusTrans của activity tìm thấy
+    console.log(checkCondition);
     const newStatusTrans = {
       id: updatedListActivity[index].listStatusTrans.length + 1,
       statusTran: statusTranInput,
       checkCondition: checkCondition,
       destination: parseInt(destinationInput),
     };
-    console.log(newStatusTrans);
     // Thêm đối tượng mới vào listStatusTrans của activity tìm thấy
     updatedListActivity[index].listStatusTrans.push(newStatusTrans);
 

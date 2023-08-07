@@ -13,30 +13,75 @@ import { AiOutlineMail } from "react-icons/ai";
 import { MdWorkOutline } from "react-icons/md";
 import { BsPhone } from "react-icons/bs";
 import Switch from "react-switch";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { URL } from "../../utils/Url";
+import useAuth from "../../hooks/useAuth";
+import { format } from "date-fns";
 
 const cx = classNames.bind(styles);
+const getUserURL = `${URL.USER_URL}`;
+const convertBase64ToBlob = (base64Data) => {
+  const byteString = atob(base64Data.split(",")[1]);
+  const mimeString = base64Data.split(",")[0].split(":")[1].split(";")[0];
+  const ab = new ArrayBuffer(byteString.length);
+  const ia = new Uint8Array(ab);
+  for (let i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
+  }
+  return new Blob([ab], { type: mimeString });
+};
+
 function Profile() {
+  const { auth } = useAuth();
+  const axiosInstance = useAxiosPrivate();
+
+  //Dữ liệu cho phần Thông tin chung
+  const [avatar, setAvatar] = useState(null);
+  const [wallpaper, setWallpaper] = useState(null);
+  const [userName, setUserName] = useState("");
+
+  //Dữ liệu cho các thông tin khác
+  const [itemValue, setItemValue] = useState({});
+  useEffect(() => {
+    // Gọi API để lấy Thông tin Users từ DB
+    const fetchUserById = async () => {
+      try {
+        const response = await axiosInstance.post(
+          `${getUserURL}/get/${auth.userId}`
+        );
+        setAvatar(response.data.avatar);
+        setWallpaper(response.data.wallPaper);
+        setUserName(response.data.fullName);
+        setItemValue({
+          userIdentification: auth.userId,
+          effectiveDate: format(
+            new Date(response.data.createdTime),
+            "yyyy-MM-dd HH:mm:ss"
+          ),
+          workEmail: response.data.email,
+          personalEmail: response.data.personalEmail,
+          phoneNumber: response.data.phoneNumber,
+          birthDate: format(new Date(response.data.birthDate), "yyyy-MM-dd"),
+          jobTitle: response.data.jobTitle,
+          department: response.data.department,
+        });
+      } catch (error) {
+        console.error("Error fetching service categories:", error);
+      }
+    };
+
+    fetchUserById();
+  }, [axiosInstance]);
+
   const [isEditing, setIsEditing] = useState(false);
 
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedAvatar, setSelectedAvatar] = useState(null);
-  const [userName, setUserName] = useState("Calyrex Spectrier");
-
-  const [itemValue, setItemValue] = useState({
-    userIdentification: "#25072001",
-    effectiveDate: "2023-07-02",
-    workEmail: "tuda@service.com",
-    personalEmail: "doantu@gmail.com",
-    phoneNumber: "0967856010",
-    birthDate: "2001-07-25",
-    jobTitle: "Customer Care Staff",
-    department: "Customer Service",
-  });
 
   const [privateValue, setPrivateValue] = useState({
     personalEmailSwitchVal: true,
     phoneNumberSwitchVal: true,
-    birthDateVal: true
+    birthDateVal: true,
   });
 
   const [inputErrors, setInputErrors] = useState({});
@@ -44,13 +89,52 @@ function Profile() {
   const wallpaperRef = useRef(null);
   const avatarRef = useRef(null);
 
-
   //Thay đổi giữa state show và edit profile
   const handleEditProfile = () => {
-    const hasErrors = Object.values(inputErrors).some((error) => error !== '');
+    const hasErrors = Object.values(inputErrors).some((error) => error !== "");
 
     if (!hasErrors) {
-      setIsEditing((prev) => !prev);
+      const formData = new FormData();
+
+      if(selectedAvatar === null){
+        formData.append("AvatarUpload", null);
+      }else{
+        const avatarBlob = convertBase64ToBlob(selectedAvatar);
+        formData.append("AvatarUpload", avatarBlob, `avatar${auth.userId}.png`);
+      }
+
+      if(selectedImage === null){
+        formData.append("WallpaperUpload", null);
+      }else{
+        const wallPaperBlob = convertBase64ToBlob(selectedImage);
+        formData.append("WallpaperUpload", wallPaperBlob, `wallpaper${auth.userId}.png`);
+      }
+      
+      formData.append("UserId", auth.userId);
+      formData.append("FirstName", userName);
+      formData.append("MiddleName", "");
+      formData.append("LastName", "");
+      formData.append("PhoneNumber", itemValue.phoneNumber);
+      formData.append("PersonalEmail", itemValue.personalEmail);
+      formData.append("BirthDate", itemValue.birthDate);
+      formData.append("JobTitle", itemValue.jobTitle);
+      formData.append("Department", itemValue.department);
+
+      axiosInstance
+        .post(`${URL.USER_URL}/update`, formData,{
+          headers: {
+            "Content-Type": "multipart/form-data",
+            // Add any other headers if required
+          },
+        })
+        .then((response) => {
+          // setSelectedImage(null);
+          // setSelectedAvatar(null);
+          setIsEditing((prev) => !prev);
+        })
+        .catch((error) => {
+          alert("Có lỗi khi cập nhật: ", error);
+        });
     }
   };
 
@@ -81,7 +165,6 @@ function Profile() {
 
   const handleAvatarClick = () => {
     if (isEditing) {
-      console.log(1);
       avatarRef.current.click();
     }
   };
@@ -99,18 +182,18 @@ function Profile() {
   };
   const validateInput = (name, value) => {
     // Kiểm tra và cập nhật lỗi validate cho từng input
-    let error = '';
+    let error = "";
 
-    if (name === 'personalEmail') {
+    if (name === "personalEmail") {
       const isValidEmail = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value);
       if (!isValidEmail) {
-        error = 'Invalid email format';
+        error = "Invalid email format";
       }
     }
-    if(name === 'phoneNumber'){
+    if (name === "phoneNumber") {
       const isValidPhone = /^\d{10}$/.test(value);
       if (!isValidPhone) {
-        error = 'Invalid Phone Number';
+        error = "Invalid Phone Number";
         console.log(1);
       }
     }
@@ -135,7 +218,7 @@ function Profile() {
           className={cx(`${isEditing ? "wallpaper-wrapper" : ""}`)}
         ></div>
         <img
-          src={selectedImage || image.wallpaper}
+          src={selectedImage || wallpaper}
           alt=""
           onClick={handleImageClick}
           className={`w-full h-full object-cover object-center`}
@@ -143,7 +226,7 @@ function Profile() {
 
         <div className="absolute w-[10%] aspect-square bg-[#f5f5f5] rounded-full overflow-hidden left-[15%] top-[50%] border-4 border-[#fff] z-10">
           <img
-            src={selectedAvatar || image.avatar}
+            src={selectedAvatar || avatar}
             alt=""
             className="w-full h-full object-cover object-center z-10"
           />
@@ -185,7 +268,7 @@ function Profile() {
       {!isEditing ? (
         <button
           className="w-[17%] border-2 border-[#42526E] text-[#42526E] font-medium left-[15%] relative mb-[0.5rem]"
-          onClick={handleEditProfile}
+          onClick={() => setIsEditing(true)}
         >
           Edit Your Profile
         </button>
@@ -201,14 +284,14 @@ function Profile() {
       <div className="w-[65%] left-[15%] relative rounded-[8px] border-2 border-[#C3B6B6] shadow-md grid grid-cols-3 gap-0">
         <ProfileItem
           name="User Identification"
-          value={itemValue.userIdentification}
+          itemValue={itemValue.userIdentification}
           icon={HiOutlineIdentification}
           isEditing={false}
           inputType="text"
         />
         <ProfileItem
           name="Personal Email"
-          value={itemValue.personalEmail}
+          itemValue={itemValue.personalEmail}
           icon={AiOutlineMail}
           isEditing={isEditing}
           inputType="email"
@@ -217,7 +300,7 @@ function Profile() {
           }
           error={inputErrors.personalEmail}
         >
-          <Switch
+          {/* <Switch
             disabled={!isEditing ? true : false}
             checked={privateValue.personalEmailSwitchVal}
             onChange={handleSwitchChange}
@@ -225,11 +308,11 @@ function Profile() {
             height={12}
             handleDiameter={12}
             onColor="#42526E"
-          />
+          /> */}
         </ProfileItem>
         <ProfileItem
           name="Job Title"
-          value={itemValue.jobTitle}
+          itemValue={itemValue.jobTitle}
           icon={MdWorkOutline}
           isEditing={isEditing}
           inputType="text"
@@ -237,14 +320,14 @@ function Profile() {
         />
         <ProfileItem
           name="Effective Date"
-          value={itemValue.effectiveDate}
+          itemValue={itemValue.effectiveDate}
           icon={VscVmActive}
           isEditing={false}
           inputType="date"
         />
         <ProfileItem
           name="Phone Number"
-          value={itemValue.phoneNumber}
+          itemValue={itemValue.phoneNumber}
           icon={BsPhone}
           isEditing={isEditing}
           inputType="text"
@@ -253,19 +336,19 @@ function Profile() {
           }
           error={inputErrors.phoneNumber}
         >
-          <Switch
+          {/* <Switch
             disabled={!isEditing ? true : false}
             checked={privateValue.phoneNumberSwitchVal}
-            onChange={() => { }}
+            onChange={() => {}}
             width={24}
             height={12}
             handleDiameter={12}
             onColor="#42526E"
-          />
+          /> */}
         </ProfileItem>
         <ProfileItem
           name="Department"
-          value={itemValue.department}
+          itemValue={itemValue.department}
           icon={HiOutlineOfficeBuilding}
           isEditing={isEditing}
           inputType="text"
@@ -275,28 +358,28 @@ function Profile() {
         />
         <ProfileItem
           name="Work Email"
-          value={itemValue.workEmail}
+          itemValue={itemValue.workEmail}
           icon={AiOutlineMail}
           isEditing={false}
           inputType="email"
         />
         <ProfileItem
           name="Birth Date"
-          value={itemValue.birthDate}
+          itemValue={itemValue.birthDate}
           icon={HiOutlineCake}
           isEditing={isEditing}
           inputType="date"
           onChange={(value) => handleProfileItemValueChange("birthDate", value)}
         >
-          <Switch
+          {/* <Switch
             disabled={!isEditing ? true : false}
             checked={privateValue.birthDateVal}
-            onChange={() => { }}
+            onChange={() => {}}
             width={24}
             height={12}
             handleDiameter={12}
             onColor="#42526E"
-          />
+          /> */}
         </ProfileItem>
       </div>
     </div>
