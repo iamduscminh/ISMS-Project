@@ -1,5 +1,7 @@
 import { React, useState, useEffect, useRef } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import styled from "styled-components";
 import UnderlineAnimation from "../../components/Animation/UnderlineText";
 import RequestComment from "../../components/Elements/RequestComment";
 import ModalDialog from "../../components/Elements/PopupModal";
@@ -7,30 +9,35 @@ import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import IconTag from "../../components/Elements/IconTag";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useAuth from "../../hooks/useAuth";
-import Swal from "sweetalert2";
-import styled from "styled-components";
+import { URL } from "../../utils/Url";
+
 function CreateRequest() {
   const navigate = useNavigate();
   const axiosInstance = useAxiosPrivate();
   const { id } = useParams();
   const { auth } = useAuth();
-
+  const getUserURL = `${URL.USER_URL}`;
+  const commentUrl = `${URL.COMMENT_URL}`;
   const [requestTicket, setRequestTicket] = useState();
   const [activeTabIndex, setActiveTabIndex] = useState(0);
-
-  //tab hiển thị comment section
-  const tabsData = [
-    {
-      label: "Comment",
-      tabIndex: 0,
-    },
-    {
-      label: "Activity",
-      tabIndex: 1,
-    },
-  ];
+  const [userName, setUserName] = useState("");
+  const options = {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    hour12: true,
+  };
+  const headers = {
+    Authorization: `Bearer ${auth?.accessToken}`,
+    "Content-Type": "application/json",
+    withCredentials: true,
+  };
   useEffect(() => {
     const apiGetRequestTicketsUrl = `api/RequestTickets/get/${id}`;
+    const apiGetCommentsUrl = `${commentUrl}/getall/${id}`;
     const fetchData = async () => {
       try {
         Swal.fire({
@@ -56,7 +63,7 @@ function CreateRequest() {
               createAt: dataRp.createdAt,
               status: dataRp.status,
             };
-            console.log(response.data);
+            //console.log(response.data);
             setRequestTicket(rqTicket);
           })
           .catch((error) => {
@@ -68,6 +75,38 @@ function CreateRequest() {
               cancelButtonText: "Cancel",
             });
           });
+        //get data comment
+        axiosInstance
+          .get(apiGetCommentsUrl, { headers })
+          .then((response) => {
+            const dataRp = response.data;
+            console.log(dataRp);
+            const dataCmts = response.data.map((item, i) => ({
+              id: item.commentId,
+              senderId: item.commentBy,
+              sender: item.commentByUserEntity.fullName,
+              content: item.commentText,
+              time: new Date(item.commentTime).toLocaleString("en-US", options),
+            }));
+            setCommentData(dataCmts);
+            //console.log(dataCmts);
+          })
+          .catch((error) => {
+            const result = Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error}`,
+              showCancelButton: true,
+              cancelButtonText: "Cancel",
+            });
+          });
+
+        //get data user
+        const responseUser = await axiosInstance.post(
+          `${getUserURL}/get/${auth?.userId}`
+        );
+        setUserName(responseUser.data.fullName);
+        console.log(userName);
         Swal.close();
       } catch (error) {
         // Handle errors if needed
@@ -77,6 +116,8 @@ function CreateRequest() {
           icon: "error",
           title: "Error",
           text: error,
+          showCancelButton: true,
+          cancelButtonText: "Cancel",
         });
       }
     };
@@ -87,34 +128,16 @@ function CreateRequest() {
   const cancelRequestDetail = () => {
     console.log(reasonCancelRef.current.value);
   };
-  const [commentData, setCommentData] = useState([
-    {
-      id: 1,
-      sender: "Duc Minh",
-      time: "26/May/23 12:34 PM",
-      content: "I need you to provide some more information",
-    },
-    {
-      id: 2,
-      sender: "Duc Minh",
-      time: "26/May/23 12:34 PM",
-      content: "I need you to provide some more information",
-    },
-    {
-      id: 3,
-      sender: "Duc Minh",
-      time: "26/May/23 12:34 PM",
-      content: "Temporarily not resolved due to insufficient information",
-    },
-    {
-      id: 4,
-      sender: "Duc Minh",
-      time: "26/May/23 12:34 PM",
-      content: "Temporarily not resolved due to insufficient information",
-    },
-  ]);
 
-  const [ActivityData, setActivityData] = useState([
+  //Comment
+  const commentRef = useRef();
+  const [commentValue, setCommentValue] = useState();
+  const [isValidComment, setIsValidComment] = useState(true);
+  const [errorComment, setErrorComment] = useState();
+
+  const [commentData, setCommentData] = useState([]);
+
+  const [activityData, setActivityData] = useState([
     {
       id: 1,
       type: "UserChange",
@@ -138,8 +161,7 @@ function CreateRequest() {
       update: "Work in progress",
     },
   ]);
-  const commentRef = useRef();
-  const [checkPersonal, setCheckPersonal] = useState(false);
+
   const [commentTab, setCommentTab] = useState(true);
   const showCommentTab = (queryCondition) => {
     setCommentTab(queryCondition);
@@ -153,24 +175,72 @@ function CreateRequest() {
     left: ${commentTab ? "0" : "50%"}
     transition: 350ms;
   `;
-  const changeCommentType = (check) => {
-    setCheckPersonal(check);
+  const handleChangeComment = (e) => {
+    const { value } = e.target;
+    if (value.length > 1000) {
+      setErrorComment("Comment must not exceed 1000 characters");
+      setIsValidComment(false);
+    } else {
+      setErrorComment("");
+      setIsValidComment(true);
+      setCommentValue(value);
+    }
   };
   const handleAddComment = (e) => {
-    // if (commentRef.current.value === "") return;
-    // setCommentData((prev) =>
-    //   [
-    //     {
-    //       id: prev.length + 1,
-    //       username: "Tu Doan",
-    //       time: "Just Now",
-    //       isPersonal: checkPersonal,
-    //       image: image.avatar2,
-    //       content: commentRef.current.value,
-    //     },
-    //     ...prev
-    //   ]
-    // );
+    if (!isValidComment) return;
+    try {
+      Swal.fire({
+        title: "Loading...",
+        allowOutsideClick: false,
+        onBeforeOpen: () => {
+          Swal.showLoading();
+        },
+      });
+      const apiCreateCommentUrl = "api/Comments/create";
+      const commentDto = {
+        commentText: commentValue,
+        commentBy: auth?.userId,
+        requestTicketId: id,
+      };
+      //console.log(commentDto);
+      axiosInstance
+        .post(apiCreateCommentUrl, JSON.stringify(commentDto), { headers })
+        .then((response) => {
+          //console.log(response.data);
+          setCommentData((prev) => [
+            {
+              id: response.data.commentId,
+              sender: userName,
+              senderId: auth?.userId,
+              time: "Just Now",
+              content: commentValue,
+            },
+            ...prev,
+          ]);
+          commentRef.current.value = "";
+        })
+
+        .catch((error) => {
+          const result = Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: `${error}`,
+            showCancelButton: true,
+            cancelButtonText: "Cancel",
+          });
+        });
+
+      Swal.close();
+    } catch (error) {
+      // Handle errors if needed
+      console.log(error);
+      Swal.close();
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error,
+      });
+    }
   };
   return (
     <div className="detail-request-container w-full h-full py-5 bg-[#294a8d] mt-3">
@@ -233,12 +303,14 @@ function CreateRequest() {
               </div>
             </div>
             <div className="detail-request-header-right">
-              <button
-                type="button"
-                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-              >
-                New Request
-              </button>
+              <Link to={"/catalog"}>
+                <button
+                  type="button"
+                  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                >
+                  New Request
+                </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -297,9 +369,14 @@ function CreateRequest() {
                         rows={3}
                         className="w-full h-full resize-none mx-2 px-[0.75rem] py-[0.5rem] border-2 border-[#747272] rounded-md"
                         placeholder="Typing your comment"
+                        onChange={handleChangeComment}
                       ></textarea>
                     </div>
-
+                    {errorComment && (
+                      <p className="w-[full] px-[2rem] py-[0.75rem] mt-2 text-sm text-red-600 ">
+                        {errorComment}
+                      </p>
+                    )}
                     <div className="flex justify-end px-[2rem]">
                       <button
                         onClick={handleAddComment}
@@ -313,7 +390,9 @@ function CreateRequest() {
                         <RequestComment
                           key={i}
                           isAutoCmt={false}
+                          id={item.id}
                           name={item.sender}
+                          userId={item.senderId}
                           comment={item.content}
                           time={item.time}
                         />
@@ -322,7 +401,7 @@ function CreateRequest() {
                   </div>
                 ) : (
                   <div className="px-[2rem] my-[2rem]">
-                    {ActivityData.map((item) => (
+                    {activityData.map((item) => (
                       <RequestComment
                         isAutoCmt={true}
                         name={"Duc Minh"}
