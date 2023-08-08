@@ -2,7 +2,6 @@ import { React, useState, useEffect, useRef } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import styled from "styled-components";
-import UnderlineAnimation from "../../components/Animation/UnderlineText";
 import RequestComment from "../../components/Elements/RequestComment";
 import ModalDialog from "../../components/Elements/PopupModal";
 import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
@@ -35,6 +34,7 @@ function CreateRequest() {
     "Content-Type": "application/json",
     withCredentials: true,
   };
+
   useEffect(() => {
     const apiGetRequestTicketsUrl = `api/RequestTickets/get/${id}`;
     const apiGetCommentsUrl = `${commentUrl}/getall/${id}`;
@@ -80,7 +80,7 @@ function CreateRequest() {
           .get(apiGetCommentsUrl, { headers })
           .then((response) => {
             const dataRp = response.data;
-            console.log(dataRp);
+            //console.log(dataRp);
             const dataCmts = response.data.map((item, i) => ({
               id: item.commentId,
               senderId: item.commentBy,
@@ -106,7 +106,6 @@ function CreateRequest() {
           `${getUserURL}/get/${auth?.userId}`
         );
         setUserName(responseUser.data.fullName);
-        console.log(userName);
         Swal.close();
       } catch (error) {
         // Handle errors if needed
@@ -126,7 +125,7 @@ function CreateRequest() {
 
   const reasonCancelRef = useRef(null);
   const cancelRequestDetail = () => {
-    console.log(reasonCancelRef.current.value);
+    //console.log(reasonCancelRef.current.value);
   };
 
   //Comment
@@ -360,7 +359,7 @@ function CreateRequest() {
                 </div>
                 {commentTab ? (
                   <div>
-                    <div className="w-[full] px-[2rem] py-[0.75rem] flex ">
+                    <div className="w-[full] px-[1rem] py-[0.75rem] flex ">
                       <div className="text-3xl">
                         <IconTag name={"FaUserCircle"} />
                       </div>
@@ -385,7 +384,7 @@ function CreateRequest() {
                         Comment
                       </button>
                     </div>
-                    <div className="w-full mt-[1rem] px-[2rem] max-h-[50vh] overflow-y-scroll">
+                    <div className="w-full mt-[1rem] mb-8 px-[2rem] max-h-[80vh] overflow-y-scroll">
                       {commentData.map((item, i) => (
                         <RequestComment
                           key={i}
@@ -395,14 +394,17 @@ function CreateRequest() {
                           userId={item.senderId}
                           comment={item.content}
                           time={item.time}
+                          isIndividual={item.senderId === auth?.userId}
+                          authObj={auth}
                         />
                       ))}
                     </div>
                   </div>
                 ) : (
                   <div className="px-[2rem] my-[2rem]">
-                    {activityData.map((item) => (
+                    {activityData.map((item, i) => (
                       <RequestComment
+                        key={i}
                         isAutoCmt={true}
                         name={"Duc Minh"}
                         comment={
