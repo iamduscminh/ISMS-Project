@@ -42,9 +42,10 @@ const AdminTicket = () => {
   useEffect(() => {
     const getAllAdminTicket = async () => {
       try {
-        const response = await axiosInstance.get("api/RequestTickets");
-        setCreateTicket(response.data.length);
-        console.log(response.data);
+        const response = await axiosInstance.get(
+          "/api/Dashboards/countRequestTicket"
+        );
+        setCreateTicket(response.data.requestTicket);
       } catch (error) {
         console.error("Error get all Tickets [AdminTicket]:", error);
       }
@@ -82,7 +83,7 @@ const AdminTicket = () => {
         <div className="py-[45px] px-10 space-y-6 xl:space-y-10 gap-6 xl:gap-y-[60px] xl:gap-x-[68px]">
           <div className="flex flex-col gap-6 xl:flex-row xl:gap-x-[60px]">
             <CardStatistic
-              title="Ticket"
+              title="Tickets"
               value={createTicket}
               className="w-full xl:w-[340px]"
             />

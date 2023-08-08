@@ -19,8 +19,6 @@ const Dashboard = () => {
   const [ticketStatusSelected, setTicketStatusSelected] =
     useState(ticketStatus);
   const [createTicket, setCreateTicket] = useState(0);
-  const [changeTicket, setChangeTicket] = useState(0);
-  const [problemTicket, setProblemTicket] = useState(0);
   const [ticketByPriority, setTicketByPriority] = useState([]);
   const [ticketByStatus, setTicketByStatus] = useState([]);
   const [ticketByType, setTicketByType] = useState([]);
@@ -36,35 +34,32 @@ const Dashboard = () => {
   );
 
   useEffect(() => {
-    const getChangeTickets = async () => {
+    const getProblemAndChangeTickets = async () => {
       try {
         const response = await axiosInstance.get(
-          "api/ServiceCategories/getall"
+          "api/Dashboards/countRequestTicket"
         );
-        setChangeTicket(response.data.length);
+        const problemTickets = response.data.problem;
+        const changeTickets = response.data.change;
+        const incidentTickets = response.data.incident;
+        const serviceRequests = response.data.serviceRequests.length;
+        setTicketByType([
+          incidentTickets,
+          serviceRequests,
+          changeTickets,
+          problemTickets,
+        ]);
+        setCreateTicket(response.data.requestTicket);
+
         setIsLoading(false);
       } catch (error) {
-        console.error("Error fetching service categories:", error);
-        setIsLoading(false);
-      }
-    };
-    const getProblemTickets = async () => {
-      try {
-        const response = await axiosInstance.get(
-          "api/ServiceCategories/getall"
-        );
-        setProblemTicket(response.data.length);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching service categories:", error);
+        console.error("Error count request tickets [Dashboard]:", error);
         setIsLoading(false);
       }
     };
     const getRequestTickets = async () => {
       try {
         const response = await axiosInstance.get("api/RequestTickets");
-        //Created ticket
-        setCreateTicket(response.data.length);
         //Ticket By Status
         var open = 0,
           inProgress = 0,
@@ -116,31 +111,12 @@ const Dashboard = () => {
           }
         });
         setTicketByPriority([low, medium, high]);
-        //Ticket By Type
-        var incident = 0,
-          serviceRequest = 0;
-        response.data.forEach((ticket) => {
-          console.log(ticket.serviceItemId);
-          if (ticket.isIncident === true) {
-            incident++;
-          } else serviceRequest++;
-        });
-        setTicketByType([
-          incident,
-          serviceRequest,
-          changeTicket,
-          problemTicket,
-        ]);
-        console.log(ticketByType);
-        setIsLoading(false);
       } catch (error) {
-        console.error("Error get all Request Tickets:", error);
+        console.error("Error get all Request Tickets [Dashboard]:", error);
         setIsLoading(false);
       }
     };
-
-    getProblemTickets();
-    getChangeTickets();
+    getProblemAndChangeTickets();
     getRequestTickets();
   }, [axiosInstance]);
   return (
@@ -207,10 +183,10 @@ const Dashboard = () => {
             <CardStatistic title="Service Request" value={ticketByType[1]} />
           )}
           {ticketTypesSelectedNormalized?.includes(ticketTypes?.[2]?.value) && (
-            <CardStatistic title="Change" value={changeTicket} />
+            <CardStatistic title="Change" value={ticketByType[2]} />
           )}
           {ticketTypesSelectedNormalized?.includes(ticketTypes?.[3]?.value) && (
-            <CardStatistic title="Problem" value={problemTicket} />
+            <CardStatistic title="Problem" value={ticketByType[3]} />
           )}
           {ticketPrioritiesSelectedNormalized?.includes(
             ticketPriorities?.[0]?.value

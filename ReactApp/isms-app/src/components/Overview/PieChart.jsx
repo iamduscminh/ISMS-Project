@@ -23,39 +23,30 @@ const PieChart = ({ data, title, index }) => {
   const axiosInstance = useAxiosPrivate();
   const [isLoading, setIsLoading] = useState(true);
 
-  const [ticketTypesSelected, setTicketTypesSelected] = useState(ticketTypes);
-  const [ticketPrioritiesSelected, setTicketPrioritiesSelected] =
-    useState(ticketPriorities);
-  const [ticketStatusSelected, setTicketStatusSelected] =
-    useState(ticketStatus);
-  const [changeTicket, setChangeTicket] = useState(0);
-  const [problemTicket, setProblemTicket] = useState(0);
   const [ticketByPriority, setTicketByPriority] = useState([]);
   const [ticketByStatus, setTicketByStatus] = useState([]);
   const [ticketByType, setTicketByType] = useState([]);
 
   useEffect(() => {
-    const getChangeTickets = async () => {
+    const getProblemAndChangeTickets = async () => {
       try {
         const response = await axiosInstance.get(
-          "api/ServiceCategories/getall"
+          "api/Dashboards/countRequestTicket"
         );
-        setChangeTicket(response.data.length);
+        const problemTickets = response.data.problem;
+        const changeTickets = response.data.change;
+        const incidentTickets = response.data.incident;
+        const serviceRequests = response.data.serviceRequests.length;
+        setTicketByType([
+          incidentTickets,
+          serviceRequests,
+          changeTickets,
+          problemTickets,
+        ]);
+
         setIsLoading(false);
       } catch (error) {
-        console.error("Error fetching service categories:", error);
-        setIsLoading(false);
-      }
-    };
-    const getProblemTickets = async () => {
-      try {
-        const response = await axiosInstance.get(
-          "api/ServiceCategories/getall"
-        );
-        setProblemTicket(response.data.length);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching service categories:", error);
+        console.error("Error count request tickets [Dashboard]:", error);
         setIsLoading(false);
       }
     };
@@ -113,29 +104,13 @@ const PieChart = ({ data, title, index }) => {
           }
         });
         setTicketByPriority([low, medium, high]);
-        //Ticket By Type
-        var incident = 0,
-          serviceRequest = 0;
-        response.data.forEach((ticket) => {
-          if (ticket.isIncident === true) {
-            incident++;
-          } else serviceRequest++;
-        });
-        setTicketByType([
-          incident,
-          serviceRequest,
-          changeTicket,
-          problemTicket,
-        ]);
         setIsLoading(false);
       } catch (error) {
         console.error("Error get all Request Tickets [PieChart]:", error);
         setIsLoading(false);
       }
     };
-
-    getProblemTickets();
-    getChangeTickets();
+    getProblemAndChangeTickets();
     getRequestTickets();
   }, [axiosInstance]);
 
