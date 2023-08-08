@@ -3,4 +3,6 @@ export const URL = {
   SERVICE_CATEGORY_URL: "api/ServiceCategories",
   USER_URL: "api/Users",
   COMMENT_URL: "api/Comments",
+  REQUEST_TICKET_URL: 'api/RequestTickets',
+  DASHBOARD_URL: 'api/Dashboards'
 };
