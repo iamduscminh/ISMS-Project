@@ -275,7 +275,7 @@ function Profile() {
         onChange={handleFileInputChange}
       />
 
-      {!userId && (!isEditing ? (
+      {(!userId || userId === auth.userId) && (!isEditing ? (
         <button
           className="w-[17%] border-2 border-[#42526E] text-[#42526E] font-medium left-[15%] relative mb-[0.5rem]"
           onClick={() => setIsEditing(true)}

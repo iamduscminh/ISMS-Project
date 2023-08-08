@@ -7,10 +7,10 @@ import UnderlineAnimation from '../../components/Animation/UnderlineText';
 import ChangeBgButton from '../../components/Animation/ChangeBgButton';
 import useAuth from '../../hooks/useAuth';
 import jwtDecode from "jwt-decode";
-
 import { TypeAnimation } from "react-type-animation";
-
 import request from "../../utils/axiosConfig";
+import { PERMISSIONS } from "../../routes/Permissions";
+
 
 const cx = classNames.bind(styles);
 
@@ -124,7 +124,10 @@ const Login = () => {
       const decodedToken = jwtDecode(accessToken);
       console.log(decodedToken);
       const from = location.state?.from?.pathname || (decodedToken.roletype === "Admin" ? '/admin' : '/')
-      setAuth({ email, password, userId: decodedToken.sub, permissions: decodedToken.permissions, roletype: decodedToken.roleType, roleName: decodedToken.role, accessToken });
+
+      const permissions = decodedToken.permissions ? decodedToken.permissions : Object.keys(PERMISSIONS);
+
+      setAuth({ email, password, userId: decodedToken.sub, permissions: permissions, roletype: decodedToken.roletype, roleName: decodedToken.role, accessToken });
       navigate(from, {replace: true});
 
     } catch (err) {

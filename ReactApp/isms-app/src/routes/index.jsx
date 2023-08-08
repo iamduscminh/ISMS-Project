@@ -127,10 +127,46 @@ const PERM000004Routes = [];
 //Route có Permission là PERM000005: Manage custom fields
 const PERM000005Routes = [];
 
+//Route có Permission là PERM000006: Manage attachments
+const PERM000006Routes = [];
+
+//Route có Permission là PERM000007: Manage groups
+const PERM000007Routes = [];
+
+//Route có Permission là PERM000008: Manage service desk hours
+const PERM000008Routes = [];
+
+//Route có Permission là PERM000009 Manage services
+const PERM000009Routes = [];
+
+//Route có Permission là PERM000010 Manage service types
+const PERM000010Routes = [];
+
+//Route có Permission là PERM000011 Manage slametrics
+const PERM000011Routes = [];
+
+//Route có Permission là PERM000012 Manage slas
+const PERM000012Routes = [];
+
+//Route có Permission là PERM000013 Manage workflows
+const PERM000013Routes = [];
+
+//Route có Permission là PERM000014 Manage workflow steps
+const PERM000014Routes = [];
+
+//Route có Permission là PERM000015 Manage yearly holiday list
+const PERM000015Routes = [];
+
+//Route có Permission là PERM000016 Manage business hours
+const PERM000016Routes = [];
+
+//Route có Permission là PERM000017 Manage business hours
+const PERM000017Routes = [];
 //
 const loginRoutes = [
   { path: "/profile/:userId?", component: Page.Profile, layout: Layout.DefaultLayout },
 ];
+
 export {
   publicRoutes,
   loginRoutes,
@@ -140,4 +176,16 @@ export {
   PERM000003Routes,
   PERM000004Routes,
   PERM000005Routes,
+  PERM000006Routes,
+  PERM000007Routes,
+  PERM000008Routes,
+  PERM000009Routes,
+  PERM000010Routes,
+  PERM000011Routes,
+  PERM000012Routes,
+  PERM000013Routes,
+  PERM000014Routes,
+  PERM000015Routes,
+  PERM000016Routes,
+  PERM000017Routes
 };

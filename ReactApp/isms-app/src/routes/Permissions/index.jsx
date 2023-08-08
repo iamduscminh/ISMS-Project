@@ -4,5 +4,17 @@ export const PERMISSIONS = {
     'Manage tickets': 'Manage tickets',
     'Manage service items': 'Manage service items',
     'Manage service categories': 'Manage service categories',
-    'Manage custom fields': 'Manage custom fields'
+    'Manage custom fields': 'Manage custom fields',
+    'Manage attachments': 'Manage attachments',
+    'Manage groups': 'Manage groups',
+    'Manage service desk hours': 'Manage service desk hours',
+    'Manage services': 'Manage services',
+    'Manage service types': 'Manage service types',
+    'Manage slametrics': 'Manage slametrics',
+    'Manage slas': 'Manage slas',
+    'Manage workflows': 'Manage workflows',
+    'Manage workflow steps': 'Manage workflow steps',
+    'Manage yearly holiday list': 'Manage yearly holiday list',
+    'Manage business hours': 'Manage business hours',
+    'Manage comments': 'Manage comments'
 }
