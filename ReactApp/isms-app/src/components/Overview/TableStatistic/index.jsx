@@ -50,7 +50,7 @@ const TableStatistic = () => {
               <td>{ticket.status}</td>
               <td>{ticket.priority}</td>
               <td>{formatDate(ticket.createdAt)}</td>
-              <td>{ticket.requestTicketId}</td>
+              <td>{ticket.sla.slaname}</td>
             </tr>
           );
         })}
