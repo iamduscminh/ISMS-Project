@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import FilterDropdownSelect from "../../components/Filter/DropdownSelect";
 import {
   ticketPriorities,
@@ -8,15 +8,23 @@ import {
 import CardStatistic from "../../components/Overview/CardStatistic";
 import TableStatistic from "../../components/Overview/TableStatistic";
 import PieChart from "../../components/Overview/PieChart";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const AdminTicket = () => {
+  const axiosInstance = useAxiosPrivate();
   const [ticketTypesSelected, setTicketTypesSelected] = useState(ticketTypes);
   const [ticketPrioritiesSelected, setTicketPrioritiesSelected] =
     useState(ticketPriorities);
   const [ticketStatusSelected, setTicketStatusSelected] =
     useState(ticketStatus);
+  const [createTicket, setCreateTicket] = useState(0);
 
-  const dataByTypes = [{ label: "Request" }, { label: "Incident" }];
+  const dataByTypes = [
+    { label: "Request" },
+    { label: "Incident" },
+    { label: "Change" },
+    { label: "Problem" },
+  ];
   const dataByPriorities = [
     { label: "Low" },
     { label: "Medium" },
@@ -27,7 +35,23 @@ const AdminTicket = () => {
     { label: "Solve" },
     { label: "Pending" },
     { label: "Closed" },
+    { label: "Inprogress" },
+    { label: "Cancel" },
   ];
+
+  useEffect(() => {
+    const getAllAdminTicket = async () => {
+      try {
+        const response = await axiosInstance.get("api/RequestTickets");
+        setCreateTicket(response.data.length);
+        console.log(response.data);
+      } catch (error) {
+        console.error("Error get all Tickets [AdminTicket]:", error);
+      }
+    };
+
+    getAllAdminTicket();
+  }, [axiosInstance]);
 
   return (
     <>
@@ -59,7 +83,7 @@ const AdminTicket = () => {
           <div className="flex flex-col gap-6 xl:flex-row xl:gap-x-[60px]">
             <CardStatistic
               title="Ticket"
-              value={1253}
+              value={createTicket}
               className="w-full xl:w-[340px]"
             />
             <TableStatistic />

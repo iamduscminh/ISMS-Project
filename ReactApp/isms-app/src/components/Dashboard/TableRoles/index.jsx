@@ -6,8 +6,8 @@ import * as Dialog from "@radix-ui/react-dialog";
 
 const TableItem = ({ item, setCurrentRoles, currentIndex, setOpen }) => {
   const [isEdit, setIsEdit] = useState(false);
-  const [roleName, setRoleName] = useState(item?.name);
-  const [desc, setDesc] = useState(item?.desc);
+  const [roleName, setRoleName] = useState(item?.roleName);
+  const [desc, setDesc] = useState(item?.description);
 
   return (
     <tr>
@@ -56,9 +56,6 @@ const TableItem = ({ item, setCurrentRoles, currentIndex, setOpen }) => {
           <button
             className="text-[#3A7DFF] focus:outline-none border-0"
             onClick={() => {
-              // setCurrentRoles((prev) =>
-              //   prev?.filter((_, index) => index !== currentIndex)
-              // );
               setOpen(true);
             }}
           >
@@ -72,14 +69,12 @@ const TableItem = ({ item, setCurrentRoles, currentIndex, setOpen }) => {
     </tr>
   );
 };
-
 export const roles = [
   { name: "Administrator", desc: "Description for IT Service Administrator" },
   { name: "Team Member", desc: "Description for IT Service Administrator" },
   { name: "Service Owner", desc: "Description for IT Service Administrator" },
   { name: "Customer", desc: "Description for IT Service Administrator" },
 ];
-
 const TableRoles = ({ data, setCurrentRoles }) => {
   const [open, setOpen] = useState(false);
   // const [selectedRole, setSelectedRole] = useState();
