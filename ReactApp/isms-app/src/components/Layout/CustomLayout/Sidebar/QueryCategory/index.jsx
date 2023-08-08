@@ -1,19 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { IconContext } from "react-icons/lib";
 import styled from "styled-components";
 import { SidebarData } from "../SideBarData";
 import SubMenu from "../SubMenu";
-import ServiceFeature from '../ServiceFeature';
-import useAuth from '../../../../../hooks/useAuth';
-import { URL } from '../../../../../utils/Url';
-import useAxiosPrivate from '../../../../../hooks/useAxiosPrivate';
-import { set } from 'date-fns';
-import {
-  MdElectricalServices,
-  MdOutlineDesignServices
-} from 'react-icons/md'
-import{IoMdArrowDropdown, IoMdArrowDropup} from 'react-icons/io'
-
+import ServiceFeature from "../ServiceFeature";
+import useAuth from "../../../../../hooks/useAuth";
+import { URL } from "../../../../../utils/Url";
+import useAxiosPrivate from "../../../../../hooks/useAxiosPrivate";
+import { set } from "date-fns";
+import { MdElectricalServices, MdOutlineDesignServices } from "react-icons/md";
+import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
 
 const SidebarNav = styled.nav`
   background: #f4f7ff;
@@ -29,16 +25,15 @@ const SidebarWrap = styled.div`
 `;
 
 const QueryCategory = ({ changeSidebar }) => {
-
   const axiosInstance = useAxiosPrivate();
   const { auth } = useAuth();
 
   const [serviceCategories, setServiceCategories] = useState({});
 
   //Lấy dữ liệu của các Service Categories
-  useEffect(()=>{
+  useEffect(() => {
     const fetchServiceCategories = async () => {
-      try{
+      try {
         const response = await axiosInstance.get(
           `${URL.SERVICE_CATEGORY_URL}/getall`
         );
@@ -53,45 +48,41 @@ const QueryCategory = ({ changeSidebar }) => {
             title: category.serviceCategoryName,
             path: "",
             icon: <MdElectricalServices />,
+            cateId: category.serviceCategoryId
           })),
         });
       } catch (error) {
         console.error("Error Get Service Categories", error);
       }
-    }
+    };
     fetchServiceCategories();
-  }, [axiosInstance])
+  }, [axiosInstance]);
 
-  const sideBar = [...SidebarData, serviceCategories]
+  const sideBar = [...SidebarData, serviceCategories];
 
   const handleClick = () => {
     changeSidebar(1);
-  }
+  };
 
-  const [listNumberOfTicket, setListNumberOfTicket] = useState({})
+  const [listNumberOfTicket, setListNumberOfTicket] = useState({});
+  useEffect(() => {
+    // Gọi API để lấy Thông tin Users từ DB
+    const fetchUserById = async () => {
+      if (auth.roletype == "Admin") {
+        try {
+          const response = await axiosInstance.get(
+            `${URL.DASHBOARD_URL}/countRequestTicket`
+          );
+          console.log(response.data);
+          setListNumberOfTicket(response.data);
+        } catch (error) {
+          console.error("Error Get Data", error);
+        }
+      }
+    };
 
-  const getNumberOfTicket = () => {
-    if (auth.roletype === 'Admin') {
-      useEffect(() => {
-        // Gọi API để lấy Thông tin Users từ DB
-        const fetchUserById = async () => {
-          try {
-            const response = await axiosInstance.get(
-              `${URL.REQUEST_TICKET_URL}`
-            );
-            console.log(response.data);
-            
-          } catch (error) {
-            console.error("Error Get Request TIcket", error);
-          }
-        };
-
-        fetchUserById();
-      }, [axiosInstance]);
-    }
-  }
-
-  getNumberOfTicket();
+    fetchUserById();
+  }, [axiosInstance]);
 
   return (
     <div className="grow shrink w-[full] relative">
@@ -99,13 +90,13 @@ const QueryCategory = ({ changeSidebar }) => {
         <SidebarNav>
           <SidebarWrap>
             {sideBar.map((item, index) => {
-              return <SubMenu item={item} key={index} />;
+              return <SubMenu item={item} key={index} listNumberTicket={listNumberOfTicket}/>;
             })}
           </SidebarWrap>
         </SidebarNav>
       </IconContext.Provider>
     </div>
-  )
-}
+  );
+};
 
-export default QueryCategory
+export default QueryCategory;
