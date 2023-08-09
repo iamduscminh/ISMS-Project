@@ -15,6 +15,7 @@ import ServiceTypeItem from "../CustomCombobox/ServiceTypeItem";
 import { MdElectricalServices } from "react-icons/md";
 import image from "../../../assets/images";
 import AdminTicketGrid from "../AdminTicketGrid";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 const priorityData = [
   {
@@ -171,6 +172,13 @@ const FilterCondition = () => {
   const renderQueryStatement = () =>{
     return `pri = (${priority.priority}) AND sts = (${status.text}) AND sv = (${ticketService.serviceName}) AND sum = ${summary} AND rp = ${reporter.id} AND as = ${assignee.id} from ${createdDate.from} to ${createdDate.to} ${orderValue.orderBy} ${orderValue.isAsc}`
   }
+
+
+  // const axiosInstance = useAxiosPrivate();
+  // useEffect(()=>{
+  //   const fetch
+  // }, [])
+
   return (
     <div className="mt-[0.75rem]">
       <div className="flex">
