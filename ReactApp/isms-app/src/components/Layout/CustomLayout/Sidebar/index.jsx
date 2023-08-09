@@ -12,6 +12,7 @@ import ServiceFeature from "./ServiceFeature";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import {URL} from '../../../../utils/Url';
 import useAuth from "../../../../hooks/useAuth";
+import ManageQuery from "./ManageQuery";
 
 const Nav = styled.div`
   background: #15171c;
@@ -60,6 +61,7 @@ function Sidebar() {
 
   const [userInformation, setUserInformation] = useState({});
 
+  const [queryType, setQueryType] = useState('');
   const showQueryTab = (queryCondition) => {
     setQueryTab(queryCondition);
   };
@@ -68,8 +70,9 @@ function Sidebar() {
     setCurrentSidebar(changeIndex);
   };
   const sideBar = [
-    <QueryCategory changeSidebar={changeSidebar} />,
+    <QueryCategory changeSidebar={changeSidebar} setQueryType={setQueryType}/>,
     <ServiceFeature changeSidebar={changeSidebar} />,
+    <ManageQuery changeSidebar={changeSidebar} type={queryType}/>,
   ];
 
   useEffect(() => {

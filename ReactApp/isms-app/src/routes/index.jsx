@@ -19,11 +19,6 @@ const publicRoutes = [
   { path: "/createRequest/:id?", component: Page.CreateRequest },
   { path: "/detailRequest/:id", component: Page.DetailRequest },
   { path: "/admin/", component: Page.ListTicket, layout: Layout.CustomLayout },
-  {
-    path: "/admin/query",
-    component: Page.TicketQuery,
-    layout: Layout.CustomLayout,
-  },
   { path: "/admin/sla", component: Page.SLA, layout: Layout.CustomLayout },
   {
     path: "/admin/ticket/:ticketId",
@@ -116,7 +111,13 @@ const PERM000000Routes = [
 const PERM000001Routes = [];
 
 //Route có Permission là PERM000002: Manage tickets
-const PERM000002Routes = [];
+const PERM000002Routes = [
+  {
+    path: "/admin/query/:type",
+    component: Page.TicketQuery,
+    layout: Layout.CustomLayout,
+  },
+];
 
 //Route có Permission là PERM000003: Manage service items
 const PERM000003Routes = [];

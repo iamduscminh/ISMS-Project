@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import classNames from "classnames/bind";
 import styles from "./FilterCondition.module.scss";
 import OrderCombobox from "./OrderCombobox";
