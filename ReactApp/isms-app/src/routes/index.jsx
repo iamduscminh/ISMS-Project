@@ -7,7 +7,6 @@ import { ROUTES_PATHS } from "../../constants";
    nếu ko sẽ mặc định dùng layout default */
 //public route
 const publicRoutes = [
-  { path: "/", component: Page.Home },
   { path: "/following", component: Page.Following, layout: null },
   { path: "/login", component: Page.Login, layout: Layout.FooterOnly },
   {
@@ -15,9 +14,7 @@ const publicRoutes = [
     component: Page.Unauthorized,
     layout: Layout.FooterOnly,
   },
-  { path: "/catalog", component: Page.Catalog },
-  { path: "/createRequest/:id?", component: Page.CreateRequest },
-  { path: "/detailRequest/:id", component: Page.DetailRequest },
+
   { path: "/admin/", component: Page.ListTicket, layout: Layout.CustomLayout },
   {
     path: "/admin/query",
@@ -30,8 +27,6 @@ const publicRoutes = [
     component: Page.TicketDetail,
     layout: Layout.CustomLayout,
   },
-
-  { path: "/viewRequests", component: Page.ViewRequests },
   {
     path: "/viewRequestTypes",
     component: Page.ViewRequestTypes,
@@ -54,11 +49,11 @@ const publicRoutes = [
     component: Page.CreateRequestType,
     layout: Layout.CustomLayout,
   },
-  // {
-  //   path: "/viewCustomFields",
-  //   component: Page.ViewCustomFields,
-  //   layout: Layout.CustomLayout,
-  // },
+  {
+    path: "/viewCustomFields",
+    component: Page.ViewCustomFields,
+    layout: Layout.CustomLayout,
+  },
   {
     path: ROUTES_PATHS.ADMIN,
     component: Page.Dashboard,
@@ -164,7 +159,16 @@ const PERM000016Routes = [];
 const PERM000017Routes = [];
 //
 const loginRoutes = [
-  { path: "/profile/:userId?", component: Page.Profile, layout: Layout.DefaultLayout },
+  { path: "/", component: Page.Home },
+  { path: "/catalog", component: Page.Catalog },
+  { path: "/createRequest/:id?", component: Page.CreateRequest },
+  { path: "/detailRequest/:id", component: Page.DetailRequest },
+  { path: "/viewRequests", component: Page.ViewRequests },
+  {
+    path: "/profile/:userId?",
+    component: Page.Profile,
+    layout: Layout.DefaultLayout,
+  },
 ];
 
 export {
@@ -187,5 +191,5 @@ export {
   PERM000014Routes,
   PERM000015Routes,
   PERM000016Routes,
-  PERM000017Routes
+  PERM000017Routes,
 };
