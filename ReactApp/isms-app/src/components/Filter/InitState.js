@@ -1,6 +1,8 @@
 export const ticketTypes = [
   { value: "incident", label: "Incident" },
-  { value: "request", label: "Request" },
+  { value: "request", label: "Service Request" },
+  { value: "change", label: "Change" },
+  { value: "problem", label: "Problem" },
 ];
 
 export const ticketPriorities = [
@@ -12,8 +14,10 @@ export const ticketPriorities = [
 export const ticketStatus = [
   { value: "open", label: "Open" },
   { value: "pending", label: "Pending" },
-  { value: "solve", label: "Solve" },
+  { value: "inProgress", label: "In Progress" },
   { value: "closed", label: "Closed" },
+  { value: "cancel", label: "Cancel" },
+  { value: "resolve", label: "Resolve" },
 ];
 
 export const RANGE_VALUES = {

@@ -44,7 +44,19 @@ const DropdownLink = styled(Link)`
   }
 `
 
-const SubMenu = ({ item }) => {
+const SubMenu = ({ item, listNumberTicket }) => {
+
+  let numberTicket;
+  if(item.title === 'All Tickets'){
+    numberTicket = listNumberTicket.requestTicket + listNumberTicket.change + listNumberTicket.problem
+  }else if(item.title === 'Changes'){
+    numberTicket = listNumberTicket.change;
+  }else if(item.title === 'Incidents'){
+    numberTicket = listNumberTicket.incident
+  }else if(item.title === 'Problems'){
+    numberTicket = listNumberTicket.problem
+  }
+
   const [subnav, setSubnav] = useState(false);
 
   const showSubnav = () => setSubnav(!subnav);
@@ -60,7 +72,7 @@ const SubMenu = ({ item }) => {
             ? item.openedIcon
             : item.subNav
             ? item.closedIcon
-            : <div className="rounded-full bg-[#42526E] w-[1.25rem] aspect-square] text-[#fff] text-center text-[0.75rem]">1</div>}
+            : <div className="rounded-full bg-[#42526E] w-[1.25rem] aspect-square] text-[#fff] text-center text-[0.75rem]">{numberTicket}</div>}
         </div>
       </SidebarLink>
       {subnav && (

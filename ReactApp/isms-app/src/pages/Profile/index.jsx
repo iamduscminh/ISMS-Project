@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import classNames from "classnames/bind";
 import styles from "./Profile.module.scss";
 import image from "../../assets/images";
@@ -35,6 +36,11 @@ function Profile() {
   const { auth } = useAuth();
   const axiosInstance = useAxiosPrivate();
 
+  const { userId } = useParams();
+  let profileId = auth.userId;
+  if (userId) {
+    profileId = userId;
+  }
   //Dữ liệu cho phần Thông tin chung
   const [avatar, setAvatar] = useState(null);
   const [wallpaper, setWallpaper] = useState(null);
@@ -47,13 +53,13 @@ function Profile() {
     const fetchUserById = async () => {
       try {
         const response = await axiosInstance.post(
-          `${getUserURL}/get/${auth.userId}`
+          `${getUserURL}/get/${profileId}`
         );
         setAvatar(response.data.avatar);
         setWallpaper(response.data.wallPaper);
         setUserName(response.data.fullName);
         setItemValue({
-          userIdentification: auth.userId,
+          userIdentification: profileId,
           effectiveDate: format(
             new Date(response.data.createdTime),
             "yyyy-MM-dd HH:mm:ss"
@@ -66,7 +72,7 @@ function Profile() {
           department: response.data.department,
         });
       } catch (error) {
-        console.error("Error fetching service categories:", error);
+        console.error("Error Get User Information:", error);
       }
     };
 
@@ -96,20 +102,24 @@ function Profile() {
     if (!hasErrors) {
       const formData = new FormData();
 
-      if(selectedAvatar === null){
+      if (selectedAvatar === null) {
         formData.append("AvatarUpload", null);
-      }else{
+      } else {
         const avatarBlob = convertBase64ToBlob(selectedAvatar);
         formData.append("AvatarUpload", avatarBlob, `avatar${auth.userId}.png`);
       }
 
-      if(selectedImage === null){
+      if (selectedImage === null) {
         formData.append("WallpaperUpload", null);
-      }else{
+      } else {
         const wallPaperBlob = convertBase64ToBlob(selectedImage);
-        formData.append("WallpaperUpload", wallPaperBlob, `wallpaper${auth.userId}.png`);
+        formData.append(
+          "WallpaperUpload",
+          wallPaperBlob,
+          `wallpaper${auth.userId}.png`
+        );
       }
-      
+
       formData.append("UserId", auth.userId);
       formData.append("FirstName", userName);
       formData.append("MiddleName", "");
@@ -121,7 +131,7 @@ function Profile() {
       formData.append("Department", itemValue.department);
 
       axiosInstance
-        .post(`${URL.USER_URL}/update`, formData,{
+        .post(`${URL.USER_URL}/update`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
             // Add any other headers if required
@@ -265,7 +275,7 @@ function Profile() {
         onChange={handleFileInputChange}
       />
 
-      {!isEditing ? (
+      {(!userId || userId === auth.userId) && (!isEditing ? (
         <button
           className="w-[17%] border-2 border-[#42526E] text-[#42526E] font-medium left-[15%] relative mb-[0.5rem]"
           onClick={() => setIsEditing(true)}
@@ -279,7 +289,7 @@ function Profile() {
         >
           Confirm Change
         </button>
-      )}
+      ))}
 
       <div className="w-[65%] left-[15%] relative rounded-[8px] border-2 border-[#C3B6B6] shadow-md grid grid-cols-3 gap-0">
         <ProfileItem
