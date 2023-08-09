@@ -72,7 +72,7 @@ const SubMenu = ({ item, listNumberTicket }) => {
             ? item.openedIcon
             : item.subNav
             ? item.closedIcon
-            : <div className="rounded-full bg-[#42526E] w-[1.25rem] aspect-square] text-[#fff] text-center text-[0.75rem]">{numberTicket}</div>}
+            : <div className="rounded-full bg-[#42526E] w-[1.25rem] aspect-square] text-[#fff] text-center text-[0.75rem]">{""+numberTicket}</div>}
         </div>
       </SidebarLink>
       {subnav && (
@@ -82,7 +82,7 @@ const SubMenu = ({ item, listNumberTicket }) => {
               <DropdownLink to={item.path} key={index}>
                 {item.icon}
                 <SidebarLabel>{item.title}</SidebarLabel>
-                <div className="rounded-full bg-[#42526E] w-[1.25rem] aspect-square] text-[#fff] text-center text-[0.75rem]">1</div>
+                <div className="rounded-full bg-[#42526E] w-[1.25rem] aspect-square] text-[#fff] text-center text-[0.75rem]">{listNumberTicket.serviceRequests.find(obj => item.cateId in obj)[item.cateId]}</div>
               </DropdownLink>
             );
           })}
