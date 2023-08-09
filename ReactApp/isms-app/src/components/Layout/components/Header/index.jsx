@@ -1,11 +1,12 @@
 import { React, useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import Tippy from "@tippyjs/react/headless";
+import { useNavigate } from "react-router-dom";
 import image from "../../../../assets/images";
 import Dropdown from "../../../Elements/Dropdown";
 import TippyItem from "../../../Elements/TippyItem";
 import IconTag from "../../../Elements/IconTag";
-
+import useAuth from "../../../../hooks/useAuth";
 function Header() {
   const [toggleNoti, setToggleNoti] = useState(false);
   const tippyWrapperRefNoti = useRef(null);
@@ -13,7 +14,8 @@ function Header() {
   const [toggleUser, setToggleUser] = useState(false);
   const tippyWrapperRefUser = useRef(null);
   const settingRefUser = useRef(null);
-
+  const { auth, setAuth } = useAuth();
+  const navigate = useNavigate();
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -82,16 +84,18 @@ function Header() {
   const handleOpenProf = () => {
     setOpenDrProf(!openDrProf);
   };
-  const handleDrNotiItem1 = () => {
-    // do something
-    setOpenDrNoti(false);
-    console.log("clicked one");
+
+  const handleLogout = () => {
+    // Thực hiện xóa giá trị trong auth
+    setAuth(null); // Hoặc bạn có thể đặt lại thành giá trị mặc định cho auth, ví dụ: setAuth({userId: null, roleName: null, token: null})
+
+    // Điều hướng về trang login
+    navigate("/login");
   };
 
-  const handleDrNotiItem2 = () => {
-    // do something
-    setOpenDrNoti(false);
-    console.log("clicked two");
+  const handleGoToProfile = () => {
+    navigate("/profile");
+    setToggleUser((prev) => !prev);
   };
   return (
     <div
@@ -190,38 +194,21 @@ function Header() {
             placement="bottom-end"
             render={(attrs) => (
               <div
-                className="tippy-wrapper bg-white w-[20vw] p-3 rounded shadow"
+                className="tippy-wrapper bg-white w-[7vw] p-3 rounded shadow"
                 tabIndex="-1"
                 ref={tippyWrapperRefUser}
                 {...attrs}
               >
-                <h1 className="w-full h-[10%] text-[1.25rem] text-[#172b4d] font-medium ">
-                  Profiles
-                </h1>
                 <div className="my-[0.75rem]">
                   <TippyItem
-                    name="Setting Name"
-                    description="This is Description for setting"
-                    icon="HiOutlineDesktopComputer"
+                    name="View Profiles"
                     color="default"
+                    handleClick={handleGoToProfile}
                   />
                   <TippyItem
-                    name="Setting Name"
-                    description="This is Description for setting"
-                    icon="HiOutlineDesktopComputer"
+                    name="Logout"
                     color="default"
-                  />
-                  <TippyItem
-                    name="Setting Name"
-                    description="This is Description for setting"
-                    icon="HiOutlineDesktopComputer"
-                    color="default"
-                  />
-                  <TippyItem
-                    name="Setting Name"
-                    description="This is Description for setting"
-                    icon="HiOutlineDesktopComputer"
-                    color="default"
+                    handleClick={handleLogout}
                   />
                 </div>
               </div>

@@ -26,9 +26,6 @@ function Home() {
   const [requestTicketData, setrequestTicketData] = useState([]);
 
   useEffect(() => {
-    // const from = location.state?.from?.pathname || "/login";
-    // if (!auth?.accessToken) navigate(from, { replace: true });
-
     const requester = { requester: auth?.email, requestTicketId: "" };
     const apiGetRequestTicketsUrl = `api/RequestTickets/getalltickets/${requester.requester}/${requester.requestTicketId}`;
     const fetchData = async () => {
