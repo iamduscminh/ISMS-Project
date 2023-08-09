@@ -1,9 +1,11 @@
 import { React, useState, useEffect, useRef } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import styled from "styled-components";
 import RequestComment from "../../components/Elements/RequestComment";
 import ModalDialog from "../../components/Elements/PopupModal";
+import CustomField from "../../components/Elements/CustomField";
 import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import IconTag from "../../components/Elements/IconTag";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
@@ -15,9 +17,20 @@ function CreateRequest() {
   const axiosInstance = useAxiosPrivate();
   const { id } = useParams();
   const { auth } = useAuth();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    getValues,
+  } = useForm({
+    criteriaMode: "all",
+  });
   const getUserURL = `${URL.USER_URL}`;
   const commentUrl = `${URL.COMMENT_URL}`;
+  const ticketUrl = `${URL.REQUEST_TICKET_URL}`;
+  const ticketExtUrl = `${URL.REQUEST_TICKET_EXT_URL}`;
   const [requestTicket, setRequestTicket] = useState();
+  const [requestTicketExts, setRequestTicketExts] = useState([]);
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [userName, setUserName] = useState("");
   const options = {
@@ -36,7 +49,8 @@ function CreateRequest() {
   };
 
   useEffect(() => {
-    const apiGetRequestTicketsUrl = `api/RequestTickets/get/${id}`;
+    const apiGetRequestTicketsUrl = `${ticketUrl}/get/${id}`;
+    const apiGetRequestTicketExtUrl = `${ticketExtUrl}/getExtForTicket/${id}`;
     const apiGetCommentsUrl = `${commentUrl}/getall/${id}`;
     const fetchData = async () => {
       try {
@@ -75,6 +89,37 @@ function CreateRequest() {
               cancelButtonText: "Cancel",
             });
           });
+
+        //--------------Get request tickets Ext
+        axiosInstance
+          .get(apiGetRequestTicketExtUrl)
+          .then((response) => {
+            if (response.data.length > 0) {
+              const dataExtRp = response.data.map((item, i) => ({
+                ticketId: item.ticketId,
+                fieldId: item.fieldId,
+                fieldValue: item.fieldValue,
+                fieldCode: item.fieldEntity.fieldCode,
+                fieldName: item.fieldEntity.fieldName,
+                fieldType: item.fieldEntity.fieldType,
+                valType: item.fieldEntity.valType,
+                listOfValue: item.fieldEntity.listOfValue,
+                listOfValueDisplay: item.fieldEntity.listOfValueDisplay,
+              }));
+              setRequestTicketExts(dataExtRp);
+            }
+            //console.log();
+          })
+          .catch((error) => {
+            const result = Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error}`,
+              showCancelButton: true,
+              cancelButtonText: "Cancel",
+            });
+          });
+
         //get data comment
         axiosInstance
           .get(apiGetCommentsUrl, { headers })
@@ -133,9 +178,7 @@ function CreateRequest() {
   const [commentValue, setCommentValue] = useState();
   const [isValidComment, setIsValidComment] = useState(true);
   const [errorComment, setErrorComment] = useState();
-
   const [commentData, setCommentData] = useState([]);
-
   const [activityData, setActivityData] = useState([
     {
       id: 1,
@@ -218,7 +261,6 @@ function CreateRequest() {
           ]);
           commentRef.current.value = "";
         })
-
         .catch((error) => {
           const result = Swal.fire({
             icon: "error",
@@ -336,7 +378,23 @@ function CreateRequest() {
                   ></textarea>
                 </div>
               </div>
-              <div className="detail-content-custom"></div>
+              <div className="detail-content-custom">
+                {requestTicketExts.length > 0 &&
+                  requestTicketExts.map((item, i) => (
+                    <CustomField
+                      key={i}
+                      fieldId={item.fieldId}
+                      fieldCode={item.fieldCode}
+                      fieldName={item.fieldName}
+                      fieldType={item.fieldType}
+                      valType={item.valType}
+                      fieldValue={item.fieldValue}
+                      listOfValue={item.listOfValue}
+                      listOfValueDisplay={item.listOfValueDisplay}
+                      register={register}
+                    />
+                  ))}
+              </div>
             </div>
             <div className="detail-request-activity">
               <div className="w-full bg-[#fff] flex flex-col rounded-lg shadow-md border-2 border-[#E1DEDE] overflow-hidden">
