@@ -60,7 +60,7 @@ function Home() {
                 ),
               }));
             setrequestTicketData(data);
-            console.log(data);
+            //console.log(data);
           })
           .catch((error) => {
             const result = Swal.fire({
@@ -83,7 +83,7 @@ function Home() {
         });
       }
     };
-    fetchData();
+    if (auth?.accessToken) fetchData();
   }, []);
 
   return (
@@ -139,6 +139,7 @@ function Home() {
                 <Link
                   className={cx("top-request-item")}
                   to={`detailRequest/${item.id}`}
+                  key={i}
                 >
                   <div className={cx("request-content")}>
                     <div className={cx("request-content-title")}>
