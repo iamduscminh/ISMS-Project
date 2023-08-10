@@ -1,10 +1,11 @@
 import { React, useState, useEffect, useRef } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import styled from "styled-components";
-import UnderlineAnimation from "../../components/Animation/UnderlineText";
 import RequestComment from "../../components/Elements/RequestComment";
 import ModalDialog from "../../components/Elements/PopupModal";
+import CustomField from "../../components/Elements/CustomField";
 import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import IconTag from "../../components/Elements/IconTag";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
@@ -16,9 +17,20 @@ function CreateRequest() {
   const axiosInstance = useAxiosPrivate();
   const { id } = useParams();
   const { auth } = useAuth();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    getValues,
+  } = useForm({
+    criteriaMode: "all",
+  });
   const getUserURL = `${URL.USER_URL}`;
   const commentUrl = `${URL.COMMENT_URL}`;
+  const ticketUrl = `${URL.REQUEST_TICKET_URL}`;
+  const ticketExtUrl = `${URL.REQUEST_TICKET_EXT_URL}`;
   const [requestTicket, setRequestTicket] = useState();
+  const [requestTicketExts, setRequestTicketExts] = useState([]);
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [userName, setUserName] = useState("");
   const options = {
@@ -35,8 +47,10 @@ function CreateRequest() {
     "Content-Type": "application/json",
     withCredentials: true,
   };
+
   useEffect(() => {
-    const apiGetRequestTicketsUrl = `api/RequestTickets/get/${id}`;
+    const apiGetRequestTicketsUrl = `${ticketUrl}/get/${id}`;
+    const apiGetRequestTicketExtUrl = `${ticketExtUrl}/getExtForTicket/${id}`;
     const apiGetCommentsUrl = `${commentUrl}/getall/${id}`;
     const fetchData = async () => {
       try {
@@ -75,12 +89,43 @@ function CreateRequest() {
               cancelButtonText: "Cancel",
             });
           });
+
+        //--------------Get request tickets Ext
+        axiosInstance
+          .get(apiGetRequestTicketExtUrl)
+          .then((response) => {
+            if (response.data.length > 0) {
+              const dataExtRp = response.data.map((item, i) => ({
+                ticketId: item.ticketId,
+                fieldId: item.fieldId,
+                fieldValue: item.fieldValue,
+                fieldCode: item.fieldEntity.fieldCode,
+                fieldName: item.fieldEntity.fieldName,
+                fieldType: item.fieldEntity.fieldType,
+                valType: item.fieldEntity.valType,
+                listOfValue: item.fieldEntity.listOfValue,
+                listOfValueDisplay: item.fieldEntity.listOfValueDisplay,
+              }));
+              setRequestTicketExts(dataExtRp);
+            }
+            //console.log();
+          })
+          .catch((error) => {
+            const result = Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error}`,
+              showCancelButton: true,
+              cancelButtonText: "Cancel",
+            });
+          });
+
         //get data comment
         axiosInstance
           .get(apiGetCommentsUrl, { headers })
           .then((response) => {
             const dataRp = response.data;
-            console.log(dataRp);
+            //console.log(dataRp);
             const dataCmts = response.data.map((item, i) => ({
               id: item.commentId,
               senderId: item.commentBy,
@@ -106,7 +151,6 @@ function CreateRequest() {
           `${getUserURL}/get/${auth?.userId}`
         );
         setUserName(responseUser.data.fullName);
-        console.log(userName);
         Swal.close();
       } catch (error) {
         // Handle errors if needed
@@ -126,7 +170,7 @@ function CreateRequest() {
 
   const reasonCancelRef = useRef(null);
   const cancelRequestDetail = () => {
-    console.log(reasonCancelRef.current.value);
+    //console.log(reasonCancelRef.current.value);
   };
 
   //Comment
@@ -134,9 +178,7 @@ function CreateRequest() {
   const [commentValue, setCommentValue] = useState();
   const [isValidComment, setIsValidComment] = useState(true);
   const [errorComment, setErrorComment] = useState();
-
   const [commentData, setCommentData] = useState([]);
-
   const [activityData, setActivityData] = useState([
     {
       id: 1,
@@ -219,7 +261,6 @@ function CreateRequest() {
           ]);
           commentRef.current.value = "";
         })
-
         .catch((error) => {
           const result = Swal.fire({
             icon: "error",
@@ -337,7 +378,23 @@ function CreateRequest() {
                   ></textarea>
                 </div>
               </div>
-              <div className="detail-content-custom"></div>
+              <div className="detail-content-custom">
+                {requestTicketExts.length > 0 &&
+                  requestTicketExts.map((item, i) => (
+                    <CustomField
+                      key={i}
+                      fieldId={item.fieldId}
+                      fieldCode={item.fieldCode}
+                      fieldName={item.fieldName}
+                      fieldType={item.fieldType}
+                      valType={item.valType}
+                      fieldValue={item.fieldValue}
+                      listOfValue={item.listOfValue}
+                      listOfValueDisplay={item.listOfValueDisplay}
+                      register={register}
+                    />
+                  ))}
+              </div>
             </div>
             <div className="detail-request-activity">
               <div className="w-full bg-[#fff] flex flex-col rounded-lg shadow-md border-2 border-[#E1DEDE] overflow-hidden">
@@ -360,7 +417,7 @@ function CreateRequest() {
                 </div>
                 {commentTab ? (
                   <div>
-                    <div className="w-[full] px-[2rem] py-[0.75rem] flex ">
+                    <div className="w-[full] px-[1rem] py-[0.75rem] flex ">
                       <div className="text-3xl">
                         <IconTag name={"FaUserCircle"} />
                       </div>
@@ -385,7 +442,7 @@ function CreateRequest() {
                         Comment
                       </button>
                     </div>
-                    <div className="w-full mt-[1rem] px-[2rem] max-h-[50vh] overflow-y-scroll">
+                    <div className="w-full mt-[1rem] mb-8 px-[2rem] max-h-[80vh] overflow-y-scroll">
                       {commentData.map((item, i) => (
                         <RequestComment
                           key={i}
@@ -395,14 +452,17 @@ function CreateRequest() {
                           userId={item.senderId}
                           comment={item.content}
                           time={item.time}
+                          isIndividual={item.senderId === auth?.userId}
+                          authObj={auth}
                         />
                       ))}
                     </div>
                   </div>
                 ) : (
                   <div className="px-[2rem] my-[2rem]">
-                    {activityData.map((item) => (
+                    {activityData.map((item, i) => (
                       <RequestComment
+                        key={i}
                         isAutoCmt={true}
                         name={"Duc Minh"}
                         comment={

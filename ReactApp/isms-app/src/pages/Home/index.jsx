@@ -26,9 +26,6 @@ function Home() {
   const [requestTicketData, setrequestTicketData] = useState([]);
 
   useEffect(() => {
-    const from = location.state?.from?.pathname || "/login";
-    if (!auth?.accessToken) navigate(from, { replace: true });
-
     const requester = { requester: auth?.email, requestTicketId: "" };
     const apiGetRequestTicketsUrl = `api/RequestTickets/getalltickets/${requester.requester}/${requester.requestTicketId}`;
     const fetchData = async () => {
@@ -60,7 +57,7 @@ function Home() {
                 ),
               }));
             setrequestTicketData(data);
-            console.log(data);
+            //console.log(data);
           })
           .catch((error) => {
             const result = Swal.fire({
@@ -83,7 +80,7 @@ function Home() {
         });
       }
     };
-    fetchData();
+    if (auth?.accessToken) fetchData();
   }, []);
 
   return (
@@ -139,6 +136,7 @@ function Home() {
                 <Link
                   className={cx("top-request-item")}
                   to={`detailRequest/${item.id}`}
+                  key={i}
                 >
                   <div className={cx("request-content")}>
                     <div className={cx("request-content-title")}>

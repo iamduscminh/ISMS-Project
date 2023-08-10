@@ -1,11 +1,76 @@
-import React, { useState } from "react";
-import TableRoles, { roles } from "../../components/Dashboard/TableRoles";
+import React, { useState, useEffect, useRef } from "react";
+import TableRoles from "../../components/Dashboard/TableRoles";
 import MessageError from "../../components/Dashboard/MessageError";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const AdminRole = () => {
+  const axiosInstance = useAxiosPrivate();
   const [newRole, setNewRole] = useState(" ");
   const [desc, setDesc] = useState(" ");
-  const [currentRoles, setCurrentRoles] = useState(roles);
+  const [currentRoles, setCurrentRoles] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const getAllRoles = async () => {
+      try {
+        const response = await axiosInstance.get("api/Roles/getall");
+        setCurrentRoles(response.data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching service categories:", error);
+        setIsLoading(false);
+      }
+    };
+
+    getAllRoles();
+  }, [axiosInstance]);
+
+  const [isInsert, setIsInsert] = useState(false);
+
+  const roleNameRef = useRef(null);
+  const roleDesRef = useRef(null);
+
+  const handleInsertRole = (e) => {
+    const roleName = roleNameRef.current.value;
+    const roleDes = roleDesRef.current.value;
+
+    const newRoleGroup = {
+      RoleName: roleName,
+      Description: roleDes,
+    };
+
+    const controller = new AbortController();
+
+    const createRoleGroup = async () => {
+      try {
+        const response = await axiosInstance.post(
+          "api/Roles/create",
+          JSON.stringify(newRoleGroup),
+          {
+            signal: controller.signal,
+          }
+        );
+        if (response.status === 200) {
+          const createdRoleGroup = response.data;
+          console.log(response.data);
+          setCurrentRoles((prev) => [...prev, createdRoleGroup]);
+          console.log(currentRoles);
+          // Clear Input
+          setDesc(" ");
+          setNewRole(" ");
+        } else {
+          throw response;
+        }
+      } catch (err) {
+        if (err.status === 403) {
+          alert("You are not allowed to add Role");
+        } else {
+          alert(err.message);
+        }
+      }
+    };
+    createRoleGroup();
+  };
 
   return (
     <div className="bg-[#F7F7F7] text-[#727272]">
@@ -29,6 +94,7 @@ const AdminRole = () => {
             </label>
             <div className="flex-1">
               <input
+                ref={roleNameRef}
                 type="text"
                 value={newRole}
                 onChange={(e) => {
@@ -46,6 +112,7 @@ const AdminRole = () => {
             </label>
             <div className="flex-1">
               <textarea
+                ref={roleDesRef}
                 value={desc}
                 onChange={(e) => {
                   setDesc(e.target.value);
@@ -57,7 +124,10 @@ const AdminRole = () => {
             </div>
           </div>
           <div className="flex justify-center mt-8 xl:mt-16">
-            <button className="text-white bg-[#043AC5] py-2 font-semibold w-[200px] text-center text-xl xl:text-3xl">
+            <button
+              onClick={handleInsertRole}
+              className="text-white bg-[#043AC5] py-2 font-semibold w-[200px] text-center text-xl xl:text-3xl"
+            >
               Add role
             </button>
           </div>

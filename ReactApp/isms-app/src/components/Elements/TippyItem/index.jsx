@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import IconTag from "../IconTag";
 const cx = classNames.bind(styles);
 
-const TippyItem = ({ name, description, color, icon }) => {
+const TippyItem = ({ name, description, color, icon, handleClick }) => {
   const dynamicClass = classNames(
     "w-[100%]",
     "aspect-square",
@@ -18,16 +18,24 @@ const TippyItem = ({ name, description, color, icon }) => {
       "bg-[#172B4D]": color === "personal",
     }
   );
+  const handleItemClick = () => {
+    handleClick();
+  };
   return (
-    <div className="w-full hover:bg-[#f5f5f5] flex flex-start items-center px-[0.5rem] py-[0.2rem] my-[0.4rem] cursor-pointer">
-      <div className="w-[10%] text-[#fff] text-[0.8rem]">
-        <div className={dynamicClass}>
-          <IconTag name={icon} />
+    <div
+      className="w-full hover:bg-[#f5f5f5] flex flex-start items-center px-[0.5rem] py-[0.2rem] my-[0.4rem] cursor-pointer"
+      onClick={handleItemClick}
+    >
+      {icon && (
+        <div className="w-[10%] text-[#fff] text-[0.8rem]">
+          <div className={dynamicClass}>
+            <IconTag name={icon} />
+          </div>
         </div>
-      </div>
+      )}
       <div className="ml-[0.4rem] flex justify-center items-start flex-col leading-none">
         <div>
-          <span className="text-[0.75rem]">{name}</span>
+          <span className="text-[1rem]">{name}</span>
         </div>
         <div>
           <span className="text-[0.7rem]">{description}</span>

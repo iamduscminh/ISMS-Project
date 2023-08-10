@@ -1,4 +1,3 @@
- 
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import AdminHeader from "../components/Admin Header";
@@ -10,12 +9,7 @@ function DefaultLayout({ children }) {
   console.log(auth);
   return (
     <div className="h-screen">
-      {/* {auth?.roles?.find((role) => role === ROLES.Administrator) ? (
-        <Header />
-      ) : (
-        <AdminHeader />
-      )} */}
-      <AdminHeader />
+      {!auth?.roletype ? <Header /> : <AdminHeader />}
       <div>{children}</div>
       <Footer />
     </div>
