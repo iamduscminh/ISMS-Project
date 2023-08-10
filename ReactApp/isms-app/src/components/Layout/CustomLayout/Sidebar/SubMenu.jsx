@@ -1,8 +1,8 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-const SidebarLink = styled(Link)`
+const SidebarLink = styled.div`
   display: flex;
   color: #e1e9fc;
   justify-content: space-between;
@@ -44,25 +44,39 @@ const DropdownLink = styled(Link)`
   }
 `
 
-const SubMenu = ({ item, listNumberTicket }) => {
+const SubMenu = ({ item, listNumberTicket, changeSidebar, setQueryType }) => {
 
   let numberTicket;
-  if(item.title === 'All Tickets'){
+  if (item.title === 'All Tickets') {
     numberTicket = listNumberTicket.requestTicket + listNumberTicket.change + listNumberTicket.problem
-  }else if(item.title === 'Changes'){
+  } else if (item.title === 'Changes') {
     numberTicket = listNumberTicket.change;
-  }else if(item.title === 'Incidents'){
+  } else if (item.title === 'Incidents') {
     numberTicket = listNumberTicket.incident
-  }else if(item.title === 'Problems'){
+  } else if (item.title === 'Problems') {
     numberTicket = listNumberTicket.problem
   }
 
   const [subnav, setSubnav] = useState(false);
 
   const showSubnav = () => setSubnav(!subnav);
+
+  const handleChangeTab = () => {
+    if (item.subNav) {
+      showSubnav();
+    } else {
+      setQueryType(item.title);
+      changeSidebar(2);
+    }
+  }
+
+  const handleChangeTabSubMenu = (data) => {
+    setQueryType(data);
+    changeSidebar(2);
+  }
   return (
     <>
-      <SidebarLink to={item.path} onClick={item.subNav && showSubnav}>
+      <SidebarLink onClick={handleChangeTab} >
         <div className="flex items-center text-[#686868] text-[0.85rem]">
           {item.icon}
           <SidebarLabel>{item.title}</SidebarLabel>
@@ -71,18 +85,18 @@ const SubMenu = ({ item, listNumberTicket }) => {
           {item.subNav && subnav
             ? item.openedIcon
             : item.subNav
-            ? item.closedIcon
-            : <div className="rounded-full bg-[#42526E] w-[1.25rem] aspect-square] text-[#fff] text-center text-[0.75rem]">{numberTicket}</div>}
+              ? item.closedIcon
+              : <div className="rounded-full bg-[#42526E] w-[1.25rem] aspect-square] text-[#fff] text-center text-[0.75rem]">{"" + numberTicket}</div>}
         </div>
       </SidebarLink>
       {subnav && (
         <div className="overflow-y-auto max-h-52">
           {item.subNav.map((item, index) => {
             return (
-              <DropdownLink to={item.path} key={index}>
+              <DropdownLink to={item.path} key={index} onClick={() => handleChangeTabSubMenu(item.title)}>
                 {item.icon}
                 <SidebarLabel>{item.title}</SidebarLabel>
-                <div className="rounded-full bg-[#42526E] w-[1.25rem] aspect-square] text-[#fff] text-center text-[0.75rem]">1</div>
+                <div className="rounded-full bg-[#42526E] w-[1.25rem] aspect-square] text-[#fff] text-center text-[0.75rem]">{listNumberTicket.serviceRequests[item.cateId]}</div>
               </DropdownLink>
             );
           })}

@@ -24,7 +24,7 @@ const SidebarWrap = styled.div`
   width: 100%;
 `;
 
-const QueryCategory = ({ changeSidebar }) => {
+const QueryCategory = ({ changeSidebar, setQueryType }) => {
   const axiosInstance = useAxiosPrivate();
   const { auth } = useAuth();
 
@@ -60,10 +60,6 @@ const QueryCategory = ({ changeSidebar }) => {
 
   const sideBar = [...SidebarData, serviceCategories];
 
-  const handleClick = () => {
-    changeSidebar(1);
-  };
-
   const [listNumberOfTicket, setListNumberOfTicket] = useState({});
   useEffect(() => {
     // Gọi API để lấy Thông tin Users từ DB
@@ -90,7 +86,7 @@ const QueryCategory = ({ changeSidebar }) => {
         <SidebarNav>
           <SidebarWrap>
             {sideBar.map((item, index) => {
-              return <SubMenu item={item} key={index} listNumberTicket={listNumberOfTicket}/>;
+              return <SubMenu item={item} key={index} listNumberTicket={listNumberOfTicket} changeSidebar={changeSidebar} setQueryType={setQueryType} />;
             })}
           </SidebarWrap>
         </SidebarNav>
