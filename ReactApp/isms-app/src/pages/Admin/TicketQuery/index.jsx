@@ -3,11 +3,15 @@ import classNames from "classnames/bind";
 import styles from "./TicketQuery.module.scss";
 import FilterCondition from "../../../components/Elements/FilterCondition";
 import { useParams, useNavigate } from "react-router-dom";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import { URL } from "../../../utils/Url";
 
 const cx = classNames.bind(styles);
 const TicketQuery = () => {
   const navigate = useNavigate();
   const { type, mode, queryId } = useParams();
+  const axiosInstance = useAxiosPrivate();
+
   if(!type) navigate('/admin');
 
   let queryData;
@@ -44,6 +48,14 @@ const TicketQuery = () => {
     }
   }
   const [queryCondition, setQueryCondition] = useState(queryData);
+
+  // const handleTestQuery = () =>{
+  //   const testParam = async () =>{
+  //     const response = await axiosInstance.get(`${URL.QUERY_URL}/getall`, {
+  //       assignee:
+  //     })
+  //   }
+  // }
 
   return (
     <div>
