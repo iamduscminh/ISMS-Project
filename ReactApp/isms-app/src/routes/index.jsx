@@ -113,7 +113,7 @@ const PERM000001Routes = [];
 //Route có Permission là PERM000002: Manage tickets
 const PERM000002Routes = [
   {
-    path: "/admin/query/:type",
+    path: "/admin/query/:type/:mode/:queryId?",
     component: Page.TicketQuery,
     layout: Layout.CustomLayout,
   },

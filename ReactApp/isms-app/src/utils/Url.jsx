@@ -4,5 +4,7 @@ export const URL = {
   USER_URL: "api/Users",
   COMMENT_URL: "api/Comments",
   REQUEST_TICKET_URL: 'api/RequestTickets',
-  DASHBOARD_URL: 'api/Dashboards'
+  DASHBOARD_URL: 'api/Dashboards',
+  SERVICE_ITEM_URL: 'api/ServiceItems',
+  GROUP_URL: 'api/Groups'
 };

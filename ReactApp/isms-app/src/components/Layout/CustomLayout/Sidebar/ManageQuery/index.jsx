@@ -11,7 +11,7 @@ const ManageQuery = ({ changeSidebar, type }) => {
     };
 
     const handleCreateQuery = () => {
-        navigate(`/admin/query/${type}`);
+        navigate(`/admin/query/${type}/create`);
     }
 
     return (

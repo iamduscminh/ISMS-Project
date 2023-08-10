@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import classNames from "classnames/bind";
 import styles from "./TicketQuery.module.scss";
 import FilterCondition from "../../../components/Elements/FilterCondition";
@@ -7,8 +7,44 @@ import { useParams, useNavigate } from "react-router-dom";
 const cx = classNames.bind(styles);
 const TicketQuery = () => {
   const navigate = useNavigate();
-  const { type } = useParams();
+  const { type, mode, queryId } = useParams();
   if(!type) navigate('/admin');
+
+  let queryData;
+
+  if(mode === 'edit'){
+    queryData = {
+      orderBy: null,
+      orderASC: true,
+      priority: ['High', 'Medium'],
+      status: [],
+      requestType: [],
+      service: [],
+      assignee: [],
+      reporter: [],
+      group: [],
+      description: null,
+      createdFrom: null,
+      createdTo: null
+    }
+  }else{
+    queryData = {
+      orderBy: null,
+      orderASC: true,
+      priority: [],
+      status: [],
+      requestType: [],
+      service: [],
+      assignee: [],
+      reporter: [],
+      group: [],
+      description: null,
+      createdFrom: null,
+      createdTo: null
+    }
+  }
+  const [queryCondition, setQueryCondition] = useState(queryData);
+
   return (
     <div>
       <div className="w-full h-[18vh] bg-[#42526E]">
@@ -40,11 +76,11 @@ const TicketQuery = () => {
             </h2>
             <div className="mr-[10rem]">
               <button className="text-[#fff] font-medium border-2 bg-[#043AC5] px-[1rem]">Test </button>
-              <button className="ml-[1rem] text-[#fff] font-medium border-2 bg-[#42526E] px-[1rem]">Create</button>
+              <button className="ml-[1rem] text-[#fff] font-medium border-2 bg-[#42526E] px-[1rem]">{mode}</button>
               <button onClick={()=>{navigate('/admin')}} className="ml-[1rem] text-[#42526E] font-medium border-2 border-[#42526E] px-[1rem]">Cancel</button>
             </div>
           </div>
-          <FilterCondition />
+          <FilterCondition queryCondition={queryCondition} setQueryCondition={setQueryCondition}/>
         </div>
       </div>
     </div>

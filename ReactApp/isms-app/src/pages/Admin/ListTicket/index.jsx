@@ -38,91 +38,109 @@ const ListTicket = () => {
       id: 1,
       description: "Demo test Service Ticket",
       service: "Hardware",
+      requestType: "Request new hardware",
+      group:'Group 1',
       reporter: "Tu Doan",
       assignee: "Calyrex",
       status: "WIP",
       createdDate: "2023/07/04 14:00:00",
-      sla: "2023/07/04 14:00:00",
+      priority:'High'
     },
     {
       id: 2,
       description: "Demo test Service Ticket",
       service: "Hardware",
+      requestType: "Request new hardware",
+      group:'Group 1',
       reporter: "Tu Doan",
       assignee: "Calyrex",
       status: "WIP",
       createdDate: "2023/07/04 14:00:00",
-      sla: "2023/07/04 14:00:00",
+      priority:'High'
     },
     {
       id: 3,
       description: "Demo test Service Ticket",
       service: "Hardware",
+      requestType: "Request new hardware",
+      group:'Group 1',
       reporter: "Tu Doan",
       assignee: "Calyrex",
       status: "WIP",
       createdDate: "2023/07/04 14:00:00",
-      sla: "2023/07/04 14:00:00",
+      priority:'High'
     },
     {
       id: 4,
       description: "Demo test Service Ticket",
       service: "Hardware",
+      requestType: "Request new hardware",
+      group:'Group 1',
       reporter: "Tu Doan",
       assignee: "Calyrex",
       status: "WIP",
       createdDate: "2023/07/04 14:00:00",
-      sla: "2023/07/04 14:00:00",
+      priority:'High'
     },
     {
       id: 5,
       description: "Demo test Service Ticket",
       service: "Hardware",
+      requestType: "Request new hardware",
+      group:'Group 1',
       reporter: "Tu Doan",
       assignee: "Calyrex",
       status: "WIP",
       createdDate: "2023/07/04 14:00:00",
-      sla: "2023/07/04 14:00:00",
+      priority:'High'
     },
     {
       id: 6,
       description: "Demo test Service Ticket",
       service: "Hardware",
+      requestType: "Request new hardware",
+      group:'Group 1',
       reporter: "Tu Doan",
       assignee: "Calyrex",
       status: "WIP",
       createdDate: "2023/07/04 14:00:00",
-      sla: "2023/07/04 14:00:00",
+      priority:'High'
     },
     {
       id: 7,
       description: "Demo test Service Ticket",
       service: "Hardware",
+      requestType: "Request new hardware",
+      group:'Group 1',
       reporter: "Tu Doan",
       assignee: "Calyrex",
       status: "WIP",
       createdDate: "2023/07/04 14:00:00",
-      sla: "2023/07/04 14:00:00",
+      priority:'High'
     },
     {
       id: 8,
       description: "Demo test Service Ticket",
       service: "Hardware",
+      requestType: "Request new hardware",
+      group:'Group 1',
       reporter: "Tu Doan",
       assignee: "Calyrex",
       status: "WIP",
       createdDate: "2023/07/04 14:00:00",
-      sla: "2023/07/04 14:00:00",
+      priority:'High'
     },
     {
       id: 9,
       description: "Demo test Service Ticket",
       service: "Hardware",
+      requestType: "Request new hardware",
+      group:'Group 1',
       reporter: "Tu Doan",
       assignee: "Calyrex",
       status: "WIP",
       createdDate: "2023/07/04 14:00:00",
-      sla: "2023/07/04 14:00:00",
+      priority:'High'
     },
   ]);
 
@@ -139,6 +157,18 @@ const ListTicket = () => {
       field: "service",
       headerName: "Service",
       width: 120,
+      editable: true,
+    },
+    {
+      field: "requestType",
+      headerName: "RequestType",
+      width: 160,
+      editable: true,
+    },
+    {
+      field: "group",
+      headerName: "Group",
+      width: 100,
       editable: true,
     },
     {
@@ -197,11 +227,10 @@ const ListTicket = () => {
         format(new Date(params.value), "yyyy/MM/dd HH:mm:ss"),
     },
     {
-      field: "sla",
-      headerName: "SLA",
-      width: 155,
-      valueFormatter: (params) =>
-        format(new Date(params.value), "yyyy/MM/dd HH:mm:ss"),
+      field: "priority",
+      headerName: "Priority",
+      width: 60,
+      editable: true,
     },
   ];
   const headerHeight = "2rem";
@@ -244,7 +273,7 @@ const ListTicket = () => {
         </h2>
       </div>
       <div>
-        <div className="w-[92%] pl-[4.5rem] relative translate-y-[-56px] z-10">
+        <div className="w-[98%] pl-[4.5rem] relative translate-y-[-56px] z-10">
           <div className={cx("action-wrapper")}>
             <FaRegClone className={cx("action-icon")} />
             <MdDeleteForever className={cx("action-icon")} />

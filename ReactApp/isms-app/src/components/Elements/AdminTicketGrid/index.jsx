@@ -19,6 +19,18 @@ const AdminTicketGrid = () => {
       editable: true,
     },
     {
+      field: "requestType",
+      headerName: "RequestType",
+      width: 160,
+      editable: true,
+    },
+    {
+      field: "group",
+      headerName: "Group",
+      width: 100,
+      editable: true,
+    },
+    {
       field: "reporter",
       headerName: "Reporter",
       width: 105,
@@ -74,11 +86,10 @@ const AdminTicketGrid = () => {
         format(new Date(params.value), "yyyy/MM/dd HH:mm:ss"),
     },
     {
-      field: "sla",
-      headerName: "SLA",
-      width: 155,
-      valueFormatter: (params) =>
-        format(new Date(params.value), "yyyy/MM/dd HH:mm:ss"),
+      field: "priority",
+      headerName: "Priority",
+      width: 60,
+      editable: true,
     },
   ];
   const [ticketData, setTicketData] = useState([
@@ -86,55 +97,65 @@ const AdminTicketGrid = () => {
       id: 1,
       description: "Demo test Service Ticket",
       service: "Hardware",
+      requestType: "Request new hardware",
+      group:'Group 1',
       reporter: "Tu Doan",
       assignee: "Calyrex",
       status: "WIP",
       createdDate: "2023/07/04 14:00:00",
-      sla: "2023/07/04 14:00:00",
+      priority:'High'
     },
     {
       id: 2,
       description: "Demo test Service Ticket",
       service: "Hardware",
+      requestType: "Request new hardware",
+      group:'Group 1',
       reporter: "Tu Doan",
       assignee: "Calyrex",
       status: "WIP",
       createdDate: "2023/07/04 14:00:00",
-      sla: "2023/07/04 14:00:00",
+      priority:'High'
     },
     {
       id: 3,
       description: "Demo test Service Ticket",
       service: "Hardware",
+      requestType: "Request new hardware",
+      group:'Group 1',
       reporter: "Tu Doan",
       assignee: "Calyrex",
       status: "WIP",
       createdDate: "2023/07/04 14:00:00",
-      sla: "2023/07/04 14:00:00",
+      priority:'High'
     },
     {
       id: 4,
       description: "Demo test Service Ticket",
       service: "Hardware",
+      requestType: "Request new hardware",
+      group:'Group 1',
       reporter: "Tu Doan",
       assignee: "Calyrex",
       status: "WIP",
       createdDate: "2023/07/04 14:00:00",
-      sla: "2023/07/04 14:00:00",
+      priority:'High'
     },
     {
       id: 5,
       description: "Demo test Service Ticket",
       service: "Hardware",
+      requestType: "Request new hardware",
+      group:'Group 1',
       reporter: "Tu Doan",
       assignee: "Calyrex",
       status: "WIP",
       createdDate: "2023/07/04 14:00:00",
-      sla: "2023/07/04 14:00:00",
+      priority:'High'
     },
   ]);
   return (
-    <div className="w-[90%] h-[30vh]">
+    <div className="w-[97%] h-[50vh]">
       <DataGrid
         sx={{
           backgroundColor: "#FFFFFF",

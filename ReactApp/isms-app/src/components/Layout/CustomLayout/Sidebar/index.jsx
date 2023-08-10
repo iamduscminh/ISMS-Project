@@ -13,6 +13,7 @@ import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import {URL} from '../../../../utils/Url';
 import useAuth from "../../../../hooks/useAuth";
 import ManageQuery from "./ManageQuery";
+import TeamQuery from "./TeamQuery";
 
 const Nav = styled.div`
   background: #15171c;
@@ -64,6 +65,8 @@ function Sidebar() {
   const [queryType, setQueryType] = useState('');
   const showQueryTab = (queryCondition) => {
     setQueryTab(queryCondition);
+    if(queryCondition) changeSidebar(0);
+    else changeSidebar(3);
   };
 
   const changeSidebar = (changeIndex) => {
@@ -73,6 +76,7 @@ function Sidebar() {
     <QueryCategory changeSidebar={changeSidebar} setQueryType={setQueryType}/>,
     <ServiceFeature changeSidebar={changeSidebar} />,
     <ManageQuery changeSidebar={changeSidebar} type={queryType}/>,
+    <TeamQuery/>
   ];
 
   useEffect(() => {
