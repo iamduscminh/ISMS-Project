@@ -8,5 +8,5 @@ export const URL = {
   SERVICE_ITEM_URL: 'api/ServiceItems',
   GROUP_URL: 'api/Groups',
   REQUEST_TICKET_EXT_URL: "api/RequestTicketExts",
-  DASHBOARD_URL: "api/Dashboards",
+  QUERY_URL: 'api/Queries' 
 };
