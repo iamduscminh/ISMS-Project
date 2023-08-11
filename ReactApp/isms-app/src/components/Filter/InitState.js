@@ -9,6 +9,7 @@ export const ticketPriorities = [
   { value: "low", label: "Low" },
   { value: "medium", label: "Medium" },
   { value: "high", label: "High" },
+  { value: "urgency", label: "Urgency" },
 ];
 
 export const ticketStatus = [
@@ -18,6 +19,35 @@ export const ticketStatus = [
   { value: "closed", label: "Closed" },
   { value: "cancel", label: "Cancel" },
   { value: "resolve", label: "Resolve" },
+];
+
+export const changeTypes = [
+  { value: "incident", label: "Incident" },
+  { value: "request", label: "Service Request" },
+  { value: "change", label: "Change" },
+  { value: "problem", label: "Problem" },
+];
+
+export const changePriorities = [
+  { value: "low", label: "Low" },
+  { value: "medium", label: "Medium" },
+  { value: "high", label: "High" },
+  { value: "urgency", label: "Urgency" },
+];
+
+export const changeStatus = [
+  { value: "open", label: "Open" },
+  { value: "pending", label: "Pending" },
+  { value: "inProgress", label: "In Progress" },
+  { value: "closed", label: "Closed" },
+  { value: "cancel", label: "Cancel" },
+  { value: "resolve", label: "Resolve" },
+];
+
+export const problemImpact = [
+  { value: "low", label: "Low" },
+  { value: "medium", label: "Medium" },
+  { value: "high", label: "High" },
 ];
 
 export const RANGE_VALUES = {
