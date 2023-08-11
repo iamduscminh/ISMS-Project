@@ -7,6 +7,8 @@ import Dropdown from "../../../Elements/Dropdown";
 import TippyItem from "../../../Elements/TippyItem";
 import IconTag from "../../../Elements/IconTag";
 import useAuth from "../../../../hooks/useAuth";
+import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
+import { URL } from "../../../../utils/Url";
 function Header() {
   const [toggleNoti, setToggleNoti] = useState(false);
   const tippyWrapperRefNoti = useRef(null);
@@ -15,8 +17,28 @@ function Header() {
   const tippyWrapperRefUser = useRef(null);
   const settingRefUser = useRef(null);
   const { auth, setAuth } = useAuth();
+  const [avatar, setAvatar] = useState(null);
+  const [userName, setUserName] = useState("");
   const navigate = useNavigate();
+  const axiosInstance = useAxiosPrivate();
+  const getUserURL = `${URL.USER_URL}`;
+
   useEffect(() => {
+    // Gọi API để lấy Thông tin Users từ DB
+    const fetchUserById = async () => {
+      try {
+        const response = await axiosInstance.post(
+          `${getUserURL}/get/${auth.userId}`
+        );
+        setAvatar(response.data.avatar);
+        setUserName(response.data.fullName);
+      } catch (error) {
+        console.error("Error Get User Information:", error);
+      }
+    };
+
+    fetchUserById();
+
     const handleClickOutside = (event) => {
       if (
         tippyWrapperRefNoti.current &&
@@ -26,7 +48,6 @@ function Header() {
         setToggleNoti(false);
       }
     };
-
     document.addEventListener("click", handleClickOutside);
 
     return () => {
@@ -194,11 +215,23 @@ function Header() {
             placement="bottom-end"
             render={(attrs) => (
               <div
-                className="tippy-wrapper bg-white w-[7vw] p-3 rounded shadow"
+                className="tippy-wrapper bg-white w-[12vw] p-3 rounded shadow"
                 tabIndex="-1"
                 ref={tippyWrapperRefUser}
                 {...attrs}
               >
+                <div
+                  className="top-drd-user flex items-center mb-2 hover:bg-slate-100 cursor-pointer"
+                  onClick={handleGoToProfile}
+                >
+                  <img
+                    src={avatar}
+                    alt=""
+                    className="w-[50px] h-[50px] rounded-full object-cover object-center z- mr-2"
+                  />
+                  <h3 className="text-xl font-bold">{userName}</h3>
+                </div>
+                <hr />
                 <div className="my-[0.75rem]">
                   <TippyItem
                     name="View Profiles"
