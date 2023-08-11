@@ -11,7 +11,7 @@ function Catalog() {
   const [services, setServices] = useState([]);
   const [requestTypes, setRequestTypes] = useState([]);
   const [requestTypesBySvc, setRequestTypesBySvc] = useState([]);
-  const [selectedServiceId, setSelectedServiceId] = useState(0);
+  const [selectedService, setSelectedService] = useState(null);
 
   //API CONFIG
   const token = auth?.accessToken;
@@ -47,14 +47,13 @@ function Catalog() {
               { id: 0, serviceName: "All Services Items" },
               ...data,
             ]);
+            setSelectedService({ id: 0, serviceName: "All Services Items" });
           })
           .catch((error) => {
             const result = Swal.fire({
               icon: "error",
               title: "Oops...",
               text: `${error}`,
-              showCancelButton: true,
-              cancelButtonText: "Cancel",
             });
           });
         Swal.close();
@@ -80,8 +79,6 @@ function Catalog() {
               icon: "error",
               title: "Oops...",
               text: `${error}`,
-              showCancelButton: true,
-              cancelButtonText: "Cancel",
             });
           });
         Swal.close();
@@ -100,8 +97,8 @@ function Catalog() {
   }, []);
 
   const serviceSelectedClick = (id) => {
-    setSelectedServiceId(id);
-    console.log(id);
+    let selectedService = services.find((item) => item.id == id);
+    setSelectedService(selectedService);
     const filterRequestTypes = requestTypes.filter(
       (x) => id == 0 || x.serviceId == id
     );
@@ -114,8 +111,11 @@ function Catalog() {
           <nav className="catalog-header-nav px-6 pt-3 pb-3">
             <ul className="header-nav-content flex items-center text-[18px]">
               <li className="header-nav-item ml-1">
-                <Link className="header-nav-url" to="/">
-                  <UnderlineAnimation>Home</UnderlineAnimation>
+                <Link
+                  className="header-nav-url hover:underline hover:text-white"
+                  to="/"
+                >
+                  Home
                 </Link>
               </li>
 
@@ -136,7 +136,7 @@ function Catalog() {
               </li>
               <li className="header-nav-item ml-1">
                 <Link className="header-nav-url">
-                  <span>All</span>
+                  <span>{selectedService?.serviceName}</span>
                 </Link>
               </li>
             </ul>
@@ -166,14 +166,14 @@ function Catalog() {
               >
                 <span
                   className={` ${
-                    item.id == selectedServiceId
+                    item.id == selectedService.id
                       ? "font-bold text-blue-700"
                       : ""
                   }`}
                 >
                   {item.serviceName}
                 </span>
-                {item.id == selectedServiceId && (
+                {item.id == selectedService.id && (
                   <IconTag name={"AiOutlineRight"} />
                 )}
               </div>

@@ -76,8 +76,10 @@ function CreateRequest() {
               description: dataRp.description,
               createAt: dataRp.createdAt,
               status: dataRp.status,
+              fileName: dataRp.attachmentEntity?.filename,
+              filePath: dataRp.attachmentEntity?.filePath,
             };
-            //console.log(response.data);
+            console.log(rqTicket);
             setRequestTicket(rqTicket);
           })
           .catch((error) => {
@@ -85,8 +87,6 @@ function CreateRequest() {
               icon: "error",
               title: "Oops...",
               text: `${error}`,
-              showCancelButton: true,
-              cancelButtonText: "Cancel",
             });
           });
 
@@ -115,8 +115,6 @@ function CreateRequest() {
               icon: "error",
               title: "Oops...",
               text: `${error}`,
-              showCancelButton: true,
-              cancelButtonText: "Cancel",
             });
           });
 
@@ -141,8 +139,6 @@ function CreateRequest() {
               icon: "error",
               title: "Oops...",
               text: `${error}`,
-              showCancelButton: true,
-              cancelButtonText: "Cancel",
             });
           });
 
@@ -160,8 +156,6 @@ function CreateRequest() {
           icon: "error",
           title: "Error",
           text: error,
-          showCancelButton: true,
-          cancelButtonText: "Cancel",
         });
       }
     };
@@ -266,8 +260,6 @@ function CreateRequest() {
             icon: "error",
             title: "Oops...",
             text: `${error}`,
-            showCancelButton: true,
-            cancelButtonText: "Cancel",
           });
         });
 
@@ -377,6 +369,28 @@ function CreateRequest() {
                     value={requestTicket?.description}
                   ></textarea>
                 </div>
+                {requestTicket?.fileName && (
+                  <div className="mb-6">
+                    <label
+                      htmlFor="rqtFile"
+                      className="block mb-2 text-lg font-bold text-gray-800 "
+                    >
+                      File Attachment
+                    </label>
+                    <div className="file-attachment flex">
+                      <IconTag name={"AiFillFile"} className={"mr-2"} />
+                      <a
+                        href={requestTicket?.filePath}
+                        className="underline text-blue-500"
+                      >
+                        {requestTicket?.fileName}
+                      </a>
+                    </div>
+                    <p className="mt-2 text-sm text-red-600 ">
+                      {errors.rqtFile && errors.rqtFile.message}
+                    </p>
+                  </div>
+                )}
               </div>
               <div className="detail-content-custom">
                 {requestTicketExts.length > 0 &&

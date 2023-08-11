@@ -1,15 +1,11 @@
 import { React, useState, useEffect, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import classNames from "classnames/bind";
-import styles from "./CreateRequest.module.scss";
 import CustomField from "../../components/Elements/CustomField";
-import UnderlineAnimation from "../../components/Animation/UnderlineText";
 import IconTag from "../../components/Elements/IconTag";
 import useAuth from "../../hooks/useAuth";
 import Swal from "sweetalert2";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-const cx = classNames.bind(styles);
 function CreateRequest() {
   const { id } = useParams();
   const { auth } = useAuth();
@@ -18,6 +14,8 @@ function CreateRequest() {
   const [requestType, setRequestType] = useState(null);
   const [requestTypeCustomFields, setRequestTypeCustomFields] = useState([]);
   const [ticketIdResponse, setTicketIdResponse] = useState("1");
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFileName, setSelectedFileName] = useState();
   //API CONFIG
   const token = auth?.accessToken;
   const headers = {
@@ -25,7 +23,15 @@ function CreateRequest() {
     "Content-Type": "application/json",
     withCredentials: true,
   };
-  console.log(token);
+  const handleFileChange = (event) => {
+    const selectedFile = event.target.files[0];
+    if (selectedFile) {
+      setSelectedFile(selectedFile);
+      const fileName = selectedFile.name;
+      setSelectedFileName(fileName);
+    }
+  };
+
   //CALL API GET REQUEST TYPE
   useEffect(() => {
     if (id) {
@@ -65,8 +71,6 @@ function CreateRequest() {
               icon: "error",
               title: "Oops...",
               text: `${error}`,
-              showCancelButton: true,
-              cancelButtonText: "Cancel",
             });
           });
 
@@ -100,8 +104,6 @@ function CreateRequest() {
               icon: "error",
               title: "Oops...",
               text: `${error}`,
-              showCancelButton: true,
-              cancelButtonText: "Cancel",
             });
           });
         Swal.close();
@@ -141,7 +143,6 @@ function CreateRequest() {
   const onSubmit = (data) => {
     const rqtTitle = getValues("rqtTitle");
     const rqtDesc = getValues("rqtDesc");
-    //console.log(rqtTitle + " " + rqtDesc);
     const list = ["rqtTitle", "rqtDesc", "rqtFile"];
     const customFieldsDataForm = Object.fromEntries(
       Object.entries(data).filter(([key, value]) => !list.includes(key))
@@ -152,14 +153,16 @@ function CreateRequest() {
       }
     );
 
-    const requestTicketData = {
-      isIncident: isIncident,
-      title: rqtTitle,
-      description: rqtDesc,
-      serviceItemId: isIncident ? null : requestType.id,
-      requesterEmail: auth?.email,
-    };
-    console.log(requestTicketData);
+    //Main Request Information
+    const formData = new FormData();
+    const fileName = selectedFile.name;
+    formData.append("IsIncident", isIncident);
+    formData.append("Title", rqtTitle);
+    formData.append("Description", rqtDesc);
+    formData.append("ServiceItemId", isIncident ? "" : requestType.id);
+    formData.append("RequesterEmail", auth?.email);
+    formData.append("Attachment", selectedFile, fileName);
+
     //CREATE REQUEST TICKET
     const apiCreateRequestTicketUrl = "api/RequestTickets/sendticket";
     const apiCreateRequestTicketExtUrl = "api/RequestTicketExts/create";
@@ -172,7 +175,7 @@ function CreateRequest() {
         },
       });
       axiosInstance
-        .post(apiCreateRequestTicketUrl, JSON.stringify(requestTicketData))
+        .post(apiCreateRequestTicketUrl, formData)
         .then((response) => {
           console.log(response.data);
           setTicketIdResponse(response.data.ticketId);
@@ -195,8 +198,6 @@ function CreateRequest() {
                   icon: "error",
                   title: "Oops...",
                   text: `${error}`,
-                  showCancelButton: true,
-                  cancelButtonText: "Cancel",
                 });
               });
           }
@@ -206,8 +207,6 @@ function CreateRequest() {
             icon: "error",
             title: "Oops...",
             text: `${error}`,
-            showCancelButton: true,
-            cancelButtonText: "Cancel",
           });
         });
 
@@ -224,65 +223,59 @@ function CreateRequest() {
     }
   };
   return (
-    <div
-      className={cx(
-        "cre-request-container w-full h-full py-5 bg-[#294a8d] mt-3"
-      )}
-    >
-      <div
-        className={cx(
-          "cre-request-section mt-4 mx-auto max-w-7xl min-h-screen bg-white rounded shadow "
-        )}
-      >
-        <div
-          className={cx("cre-request-header  w-full bg-[#0e3275] text-white")}
-        >
-          <nav className={cx("cre-request-header-nav px-6 pt-3 pb-3")}>
-            <ul
-              className={cx("header-nav-content flex items-center text-[18px]")}
-            >
-              <li className={cx("header-nav-item ml-1")}>
-                <Link className={cx("header-nav-url")} to="/">
-                  <UnderlineAnimation>Home</UnderlineAnimation>
+    <div className="cre-request-container w-full h-full py-5 bg-[#294a8d] mt-3">
+      <div className="cre-request-section mt-4 mx-auto max-w-7xl min-h-screen bg-white rounded shadow ">
+        <div className="cre-request-header  w-full bg-[#0e3275] text-white">
+          <nav className="cre-request-header-nav px-6 pt-3 pb-3">
+            <ul className="header-nav-content flex items-center text-[18px]">
+              <li className="header-nav-item ml-1">
+                <Link
+                  className="header-nav-url hover:underline hover:text-white"
+                  to="/"
+                >
+                  Home
                 </Link>
               </li>
 
-              <li className={cx("header-nav-item ml-1")}>
-                <div className={cx("header-nav-arrow")}>
-                  <IconTag name={"AiOutlineRight"} />
+              <li className="header-nav-item ml-1">
+                <div className="header-nav-arrow">
+                  <IconTag name="AiOutlineRight" />
                 </div>
               </li>
-              <li className={cx("header-nav-item ml-1")}>
-                <Link className={cx("header-nav-url")} href="/catalog">
-                  <UnderlineAnimation>Create Request</UnderlineAnimation>
+              <li className="header-nav-item ml-1">
+                <Link
+                  className="header-nav-url hover:underline hover:text-white"
+                  to="/catalog"
+                >
+                  Create Request
                 </Link>
               </li>
               {requestType?.serviceName && (
                 <>
-                  <li className={cx("header-nav-item ml-1")}>
-                    <div className={cx("header-nav-arrow")}>
+                  <li className="header-nav-item ml-1">
+                    <div className="header-nav-arrow">
                       <IconTag name={"AiOutlineRight"} />
                     </div>
                   </li>
-                  <li className={cx("header-nav-item ml-1")}>
-                    <Link className={cx("header-nav-url")} href="/catalog">
-                      <UnderlineAnimation>
-                        {requestType?.serviceName}
-                      </UnderlineAnimation>
+                  <li className="header-nav-item ml-1">
+                    <Link
+                      className="header-nav-url hover:underline hover:text-white"
+                      to="/catalog"
+                    >
+                      {requestType?.serviceName}
                     </Link>
                   </li>
                 </>
               )}
-
               {requestType?.requestTypeName && (
                 <>
-                  <li className={cx("header-nav-item ml-1")}>
-                    <div className={cx("header-nav-arrow")}>
+                  <li className="header-nav-item ml-1">
+                    <div className="header-nav-arrow">
                       <IconTag name={"AiOutlineRight"} />
                     </div>
                   </li>
-                  <li className={cx("header-nav-item ml-1")}>
-                    <Link className={cx("header-nav-url")}>
+                  <li className="header-nav-item ml-1">
+                    <Link className="header-nav-url hover:underline hover:text-white">
                       <span>{requestType.requestTypeName}</span>
                     </Link>
                   </li>
@@ -290,12 +283,8 @@ function CreateRequest() {
               )}
             </ul>
           </nav>
-          <div
-            className={cx(
-              "cre-request-header-content px-6 pb-3 flex items-center"
-            )}
-          >
-            <div className={cx("cre-request-header-icon")}>
+          <div className="cre-request-header-content px-6 pb-3 flex items-center">
+            <div className="cre-request-header-icon">
               {requestType?.iconDisplay && (
                 <IconTag
                   name={requestType?.iconDisplay}
@@ -303,7 +292,7 @@ function CreateRequest() {
                 />
               )}
             </div>
-            <div className={cx("cre-request-header-description ml-5")}>
+            <div className="cre-request-header-description ml-5">
               <h4 className="text-2xl font-bold">
                 {requestType?.requestTypeName}
               </h4>
@@ -312,8 +301,8 @@ function CreateRequest() {
           </div>
         </div>
         {/* REQUEST FORM SECTION*/}
-        <div className={cx("p-5 w-full h-full")}>
-          <div className={cx("request-ticket-form-ctn w-[60%] m-auto")}>
+        <div className="p-5 w-full h-full">
+          <div className="request-ticket-form-ctn w-[60%] m-auto">
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="mb-6">
                 <label
@@ -373,8 +362,7 @@ function CreateRequest() {
                   type="file"
                   id="rqtFile"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                  placeholder=""
-                  {...register("rqtFile", {})}
+                  onChange={handleFileChange}
                 />
                 <p className="mt-2 text-sm text-red-600 ">
                   {errors.rqtFile && errors.rqtFile.message}

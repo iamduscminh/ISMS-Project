@@ -16,7 +16,8 @@ function ViewRequestTypes() {
     {
       id: 1,
       requestType: "Fix an account problem",
-      description: "Having trouble accessing certain websites or systems? We'll help you out",
+      description:
+        "Having trouble accessing certain websites or systems? We'll help you out",
       service: "Logins and Accounts",
     },
     {
@@ -75,8 +76,11 @@ function ViewRequestTypes() {
           <nav className="request-types-header-nav pt-3 pb-1 ">
             <ul className="header-nav-content flex items-center text-[1rem] ml-[1.25rem]">
               <li className="header-nav-item ml-1">
-                <Link className="header-nav-url" to="/">
-                  <UnderlineAnimation className="">Home</UnderlineAnimation>
+                <Link
+                  className="header-nav-url hover:underline hover:text-white"
+                  to="/"
+                >
+                  Home
                 </Link>
               </li>
 
@@ -86,9 +90,7 @@ function ViewRequestTypes() {
                 </div>
               </li>
               <li className="header-nav-item ml-1">
-                <Link className="header-nav-url ">
-                  <UnderlineAnimation>Service Requests</UnderlineAnimation>
-                </Link>
+                <Link className="header-nav-url ">Service Requests</Link>
               </li>
             </ul>
           </nav>
