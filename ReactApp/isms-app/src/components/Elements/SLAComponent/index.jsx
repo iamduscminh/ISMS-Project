@@ -21,6 +21,10 @@ const priorityData = [
     id:3,
     priority: 'Low'
   },
+  {
+    id:4,
+    priority: 'Urgency'
+  },
 ]
 
 const SLAComponent = ({slaData, onSave}) => {
@@ -31,8 +35,10 @@ const SLAComponent = ({slaData, onSave}) => {
   const [checkShowDetail, setCheckShowDetail] = useState(false);
   const [checkShowPriority, setCheckShowPriority] = useState(false);
 
-  console.log(newData);
-  console.log(slas.SLAMetrics)
+  const [slaNameInput, setSlaNameInput] = useState(slas.SLAName);
+  const [slaDesInput, setSlaDesInput] = useState(slas.Description);
+
+  const[listNewMetric, setListNewMetric] = useState([]);
 
   const [availablePriority, setAvailablePriority] = useState(priorityData.filter(priorityItem => {
     // Kiểm tra xem priority có tồn tại trong bất kỳ condition nào trong SLAMetrics hay không
@@ -41,8 +47,20 @@ const SLAComponent = ({slaData, onSave}) => {
   }));
 
   const handleSave = () => {
-    onSave(slas);
+    onSave(slas, slaNameInput, slaDesInput);
     setCheckEditSla(false);
+    setSlaNameInput(slaNameInput);
+    setSlaDesInput(slaDesInput);
+  }
+
+  const handleCancel = () => {
+    setSlas(prev=>({
+      ...prev,
+      SLAMetrics: prev.SLAMetrics.filter(item=> !listNewMetric.includes(item.SLAMetricID))
+    }))
+    setCheckEditSla(false);
+    setSlaNameInput(slaData.SLAName);
+    setSlaDesInput(slaData.Description);
   }
 
   // const onAddStartTrigger = (activeTrigger) =>{
@@ -89,7 +107,7 @@ const SLAComponent = ({slaData, onSave}) => {
   };
 
   const handleDeleteSlas = (id) => {
-    const newData = slas.SLAMetrics.filter((e) => e.id !== id);
+    const newData = slas.SLAMetrics.filter((e) => e.SLAMetricID !== id);
     setSlas((prev) => ({
       ...prev,
       SLAMetrics: newData,
@@ -107,14 +125,18 @@ const SLAComponent = ({slaData, onSave}) => {
     }
 
     const filter = slas;
+    const tempId = filter.SLAMetrics.length + 1
     filter.SLAMetrics.push({
-        SLAMetricID: filter.SLAMetrics.length + 1 + "",
+        SLAMetricID: tempId + "",
         ResponseTime: newData.ResponseTime,
         ResolutionTime: newData.ResolutionTime,
         condition: newData.condition
     });
     setSlas(filter);
-
+    setListNewMetric(prev=>([
+      ...prev,
+      tempId + ""
+    ]));
     // Đặt lại trạng thái của newData về trống
     setNewData({ ResponseTime: "", ResolutionTime: "", condition: ""});
     setCheckNewMetric(false);
@@ -142,7 +164,7 @@ const SLAComponent = ({slaData, onSave}) => {
       <div className="w-full border border-[#42526E] rounded-md shadow-sm px-[1rem] py-[0.75rem]">
         <div className="flex text-[1.25rem] text-[#42526E] items-center">
           <BiTime className="mr-[1.5rem]" />
-          <h1 className="font-medium">{slas.SLAName}</h1>
+          {!checkEditSla ? <h1 className="font-medium">{slas.SLAName}</h1> : <input value={slaNameInput} onChange={(e)=>setSlaNameInput(e.target.value)} className="font-medium" />}
           <div className="flex ml-auto">
             {!checkEditSla && (
               <div className="flex">
@@ -158,9 +180,11 @@ const SLAComponent = ({slaData, onSave}) => {
             <h1 className="text-[1rem] font-medium text-[#42526E]">
               SLA Description
             </h1>
-            <p className="mt-[0.75rem] text-[#42526E]">
+            {!checkEditSla ? <p className="mt-[0.75rem] text-[#42526E]">
               {slas.Description}
-            </p>
+            </p>: 
+            <textarea className=" mt-[0.75rem] text-[#42526E] px-[0.75rem] py-[0.25rem] w-[80%] h-[5rem]" value={slaDesInput} onChange={(e)=>setSlaDesInput(e.target.value)}></textarea>
+            }
           </div>
           <div>
             <DragDropContext onDragEnd={handleDragEnd}>
@@ -209,7 +233,7 @@ const SLAComponent = ({slaData, onSave}) => {
                                 <div className="flex justify-end text-[1.2rem] text-[#42526E]">
                                   {checkEditSla && (
                                     <AiOutlineClose
-                                      onClick={() => handleDeleteSlas(sla.id)}
+                                      onClick={() => handleDeleteSlas(sla.SLAMetricID)}
                                       className="cursor-pointer"
                                     />
                                   )}
@@ -310,7 +334,7 @@ const SLAComponent = ({slaData, onSave}) => {
               <button onClick={handleSave} className="mr-[0.75rem] px-[1rem] py-[0.25rem] text-[#fff] bg-[#043AC5]">
                 Save
               </button>
-              <button className="mr-[1rem] px-[1rem] py-[0.25rem] bg-[#FFF]">
+              <button onClick={handleCancel} className="mr-[1rem] px-[1rem] py-[0.25rem] bg-[#FFF]">
                 Cancel
               </button>
             </div>

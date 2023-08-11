@@ -16,7 +16,7 @@ const publicRoutes = [
   },
 
   { path: "/admin/", component: Page.ListTicket, layout: Layout.CustomLayout },
-  { path: "/admin/sla", component: Page.SLA, layout: Layout.CustomLayout },
+  
   {
     path: "/admin/ticket/:ticketId",
     component: Page.TicketDetail,
@@ -142,7 +142,9 @@ const PERM000010Routes = [];
 const PERM000011Routes = [];
 
 //Route có Permission là PERM000012 Manage slas
-const PERM000012Routes = [];
+const PERM000012Routes = [
+  { path: "/admin/sla", component: Page.SLA, layout: Layout.CustomLayout },
+];
 
 //Route có Permission là PERM000013 Manage workflows
 const PERM000013Routes = [];
