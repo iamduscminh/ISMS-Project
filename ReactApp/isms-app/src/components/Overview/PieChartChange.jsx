@@ -1,23 +1,6 @@
-import clsx from "clsx";
-import ChartCritical from "./ChartCritical";
 import Chart from "react-apexcharts";
 import React, { useState, useEffect } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import {
-  ticketPriorities,
-  ticketStatus,
-  ticketTypes,
-} from "../../components/Filter/InitState";
-
-const Label = ({ index, label }) => {
-  let color = "bg-[#2C834E]";
-  if (index === 1) color = "bg-[#FA8418]";
-  if (index === 2) color = "bg-[#F8DE22]";
-  if (index === 3) color = "bg-[#272829]";
-  if (index === 4) color = "bg-[#48B8F6]";
-  if (index === 5) color = "bg-[#F61E1E]";
-  return <ChartCritical color={color} label={label} />;
-};
 
 const PieChart = ({ data, title, index }) => {
   const axiosInstance = useAxiosPrivate();
@@ -28,65 +11,43 @@ const PieChart = ({ data, title, index }) => {
   const [ticketByType, setTicketByType] = useState([]);
 
   useEffect(() => {
-    const getProblemAndChangeTickets = async () => {
+    const getChangeTickets = async () => {
       try {
-        const response = await axiosInstance.get(
-          "api/Dashboards/countRequestTicket"
-        );
-        const problemTickets = response.data.problem;
-        const changeTickets = response.data.change;
-        const incidentTickets = response.data.incident;
-        const serviceRequests = 5;
-        setTicketByType([
-          incidentTickets,
-          serviceRequests,
-          changeTickets,
-          problemTickets,
-        ]);
-
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error count request tickets [Dashboard]:", error);
-        setIsLoading(false);
-      }
-    };
-    const getRequestTickets = async () => {
-      try {
-        const response = await axiosInstance.get("api/RequestTickets");
+        const response = await axiosInstance.get("api/Changes/getall");
         //Ticket By Status
         var open = 0,
-          inProgress = 0,
-          pending = 0,
-          closed = 0,
-          canceled = 0,
-          resolve = 0;
+          planning = 0,
+          awaitingApproval = 0,
+          pendingRelease = 0,
+          pendingReview = 0,
+          closed = 0;
         response.data.forEach((ticket) => {
           if (ticket.status.toUpperCase() === "Open".toUpperCase()) {
             open++;
           }
-          if (ticket.status.toUpperCase() == "Pending".toUpperCase()) {
-            pending++;
+          if (ticket.status.toUpperCase() == "Planning".toUpperCase()) {
+            planning++;
           }
-          if (ticket.status.toUpperCase() == "InProgress".toUpperCase()) {
-            inProgress++;
+          if (ticket.status.toUpperCase() == "AwaitingApproval".toUpperCase()) {
+            awaitingApproval++;
+          }
+          if (ticket.status.toUpperCase() == "PendingRelease".toUpperCase()) {
+            pendingRelease++;
+          }
+          if (ticket.status.toUpperCase() == "PendingReview".toUpperCase()) {
+            pendingReview++;
           }
           if (ticket.status.toUpperCase() == "Closed".toUpperCase()) {
             closed++;
           }
-          if (ticket.status.toUpperCase() == "Canceled".toUpperCase()) {
-            canceled++;
-          }
-          if (ticket.status.toUpperCase() == "Resolve".toUpperCase()) {
-            resolve++;
-          }
         });
         setTicketByStatus([
           open,
-          pending,
-          inProgress,
+          planning,
+          awaitingApproval,
+          pendingRelease,
+          pendingReview,
           closed,
-          canceled,
-          resolve,
         ]);
         //Ticket By Priority
         var low = 0,
@@ -108,14 +69,33 @@ const PieChart = ({ data, title, index }) => {
           }
         });
         setTicketByPriority([low, medium, high, urgenry]);
+        //Ticket By Priority
+        var standard = 0,
+          minor = 0,
+          major = 0,
+          emergency = 0;
+        response.data.forEach((ticket) => {
+          if (ticket.changeType.toUpperCase() === "Standard".toUpperCase()) {
+            standard++;
+          }
+          if (ticket.changeType.toUpperCase() == "Minor".toUpperCase()) {
+            minor++;
+          }
+          if (ticket.changeType.toUpperCase() == "Major".toUpperCase()) {
+            major++;
+          }
+          if (ticket.changeType.toUpperCase() == "Emergency".toUpperCase()) {
+            emergency++;
+          }
+        });
+        setTicketByType([standard, minor, major, emergency]);
         setIsLoading(false);
       } catch (error) {
-        console.error("Error get all Request Tickets [PieChart]:", error);
+        console.error("Error get all Request Tickets [PieChartChange]:", error);
         setIsLoading(false);
       }
     };
-    getProblemAndChangeTickets();
-    getRequestTickets();
+    getChangeTickets();
   }, [axiosInstance]);
 
   return (
@@ -132,11 +112,11 @@ const PieChart = ({ data, title, index }) => {
           {index === 0 && (
             <Chart
               type="pie"
-              width={400}
+              width={420}
               height={700}
-              series={ticketByType}
+              series={[1, 1, 1, 1]}
               options={{
-                labels: ["Incident", "Request", "Change", "Problem"],
+                labels: ["Standard", "Minor", "Major", "Emergency"],
                 colors: ["#2C834E", "#FA8418", "#C70039", "#4477CE"],
               }}
             ></Chart>
@@ -156,17 +136,17 @@ const PieChart = ({ data, title, index }) => {
           {index === 2 && (
             <Chart
               type="pie"
-              width={415}
+              width={450}
               height={700}
               series={ticketByStatus}
               options={{
                 labels: [
                   "Open",
-                  "Pending",
-                  "In Progress",
+                  "Planning",
+                  "AwaitingApproval",
+                  "PendingRelease",
+                  "PendingReview",
                   "Closed",
-                  "Cancel",
-                  "Resolve",
                 ],
                 colors: [
                   "#2C834E",

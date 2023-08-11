@@ -1,23 +1,6 @@
-import clsx from "clsx";
-import ChartCritical from "./ChartCritical";
 import Chart from "react-apexcharts";
 import React, { useState, useEffect } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import {
-  ticketPriorities,
-  ticketStatus,
-  ticketTypes,
-} from "../../components/Filter/InitState";
-
-const Label = ({ index, label }) => {
-  let color = "bg-[#2C834E]";
-  if (index === 1) color = "bg-[#FA8418]";
-  if (index === 2) color = "bg-[#F8DE22]";
-  if (index === 3) color = "bg-[#272829]";
-  if (index === 4) color = "bg-[#48B8F6]";
-  if (index === 5) color = "bg-[#F61E1E]";
-  return <ChartCritical color={color} label={label} />;
-};
 
 const PieChart = ({ data, title, index }) => {
   const axiosInstance = useAxiosPrivate();
@@ -28,31 +11,9 @@ const PieChart = ({ data, title, index }) => {
   const [ticketByType, setTicketByType] = useState([]);
 
   useEffect(() => {
-    const getProblemAndChangeTickets = async () => {
+    const getChangeTickets = async () => {
       try {
-        const response = await axiosInstance.get(
-          "api/Dashboards/countRequestTicket"
-        );
-        const problemTickets = response.data.problem;
-        const changeTickets = response.data.change;
-        const incidentTickets = response.data.incident;
-        const serviceRequests = 5;
-        setTicketByType([
-          incidentTickets,
-          serviceRequests,
-          changeTickets,
-          problemTickets,
-        ]);
-
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error count request tickets [Dashboard]:", error);
-        setIsLoading(false);
-      }
-    };
-    const getRequestTickets = async () => {
-      try {
-        const response = await axiosInstance.get("api/RequestTickets");
+        const response = await axiosInstance.get("api/Problems/getall");
         //Ticket By Status
         var open = 0,
           inProgress = 0,
@@ -108,14 +69,32 @@ const PieChart = ({ data, title, index }) => {
           }
         });
         setTicketByPriority([low, medium, high, urgenry]);
+        //Ticket By impact
+        var lowImpact = 0,
+          mediumImpact = 0,
+          highImpact = 0;
+        response.data.forEach((ticket) => {
+          if (ticket.impact.toUpperCase() === "Low".toUpperCase()) {
+            lowImpact++;
+          }
+          if (ticket.impact.toUpperCase() == "Medium".toUpperCase()) {
+            mediumImpact++;
+          }
+          if (ticket.impact.toUpperCase() == "High".toUpperCase()) {
+            highImpact++;
+          }
+        });
+        setTicketByType([lowImpact, mediumImpact, highImpact]);
         setIsLoading(false);
       } catch (error) {
-        console.error("Error get all Request Tickets [PieChart]:", error);
+        console.error(
+          "Error get all Request Tickets [PieChartProblem]:",
+          error
+        );
         setIsLoading(false);
       }
     };
-    getProblemAndChangeTickets();
-    getRequestTickets();
+    getChangeTickets();
   }, [axiosInstance]);
 
   return (
@@ -136,8 +115,8 @@ const PieChart = ({ data, title, index }) => {
               height={700}
               series={ticketByType}
               options={{
-                labels: ["Incident", "Request", "Change", "Problem"],
-                colors: ["#2C834E", "#FA8418", "#C70039", "#4477CE"],
+                labels: ["Low", "Medium", "High"],
+                colors: ["#2C834E", "#FA8418", "#C70039"],
               }}
             ></Chart>
           )}
@@ -162,11 +141,11 @@ const PieChart = ({ data, title, index }) => {
               options={{
                 labels: [
                   "Open",
+                  "InProgress",
                   "Pending",
-                  "In Progress",
+                  "Resolved",
                   "Closed",
-                  "Cancel",
-                  "Resolve",
+                  "Canceled",
                 ],
                 colors: [
                   "#2C834E",

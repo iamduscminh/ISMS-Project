@@ -21,8 +21,9 @@ export { default as ViewCustomFields } from "./ViewCustomFields";
 export { default as Dashboard } from "./Dashboard";
 export { default as AdminUser } from "./AdminUser";
 export { default as AdminTicket } from "./AdminTicket";
+export { default as AdminChange } from "./AdminChange";
+export { default as AdminProblem } from "./AdminProblem";
 export { default as AdminReport } from "./AdminReport";
 
 export { default as AdminRole } from "./AdminRole";
 export { default as AdminUserManage } from "./AdminUserManage";
-

@@ -17,8 +17,13 @@ export const sidebarMenus = {
     },
     {
       icon: "/images/icon-user.svg",
-      label: "User",
-      href: ROUTES_PATHS.ADMIN_USER,
+      label: "Problem",
+      href: ROUTES_PATHS.ADMIN_PROBLEM,
+    },
+    {
+      icon: "/images/icon-user.svg",
+      label: "Change",
+      href: ROUTES_PATHS.ADMIN_CHANGE,
     },
     {
       icon: "/images/icon-report.svg",
@@ -26,16 +31,7 @@ export const sidebarMenus = {
       href: ROUTES_PATHS.ADMIN_REPORT,
     },
   ],
-  sub: [
-    {
-      icon: "/images/icon-setting.svg",
-      label: "Setting",
-    },
-    {
-      icon: "/images/icon-contact.svg",
-      label: "Contact us",
-    },
-  ],
+  sub: [],
 };
 
 const MenuList = ({ menus, currentPath, onNavigate }) => {
