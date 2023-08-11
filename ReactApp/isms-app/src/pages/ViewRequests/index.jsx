@@ -11,8 +11,8 @@ function ViewRequests() {
   const axiosInstance = useAxiosPrivate();
   const { auth } = useAuth();
   const columns = [
-    { field: "stt", headerName: "STT", width: 100 },
-    { field: "id", headerName: "ID", width: 50, hide: true },
+    { field: "stt", headerName: "STT", width: 50 },
+    { field: "id", headerName: "ID", width: 150 },
     { field: "type", headerName: "Type", width: 200 },
     { field: "title", headerName: "Title", width: 400 },
     { field: "status", headerName: "Status", width: 100 },
@@ -51,7 +51,7 @@ function ViewRequests() {
               type: item.isIncident
                 ? "Issue Abnormal"
                 : item.serviceItemEntity?.serviceItemName,
-              title: item.serviceItemEntity?.serviceItemName,
+              title: item.title,
               status: item.status,
               createAt: new Date(item.createdAt).toLocaleString(
                 "en-US",
@@ -185,7 +185,7 @@ function ViewRequests() {
             <DataGrid
               rows={filteredRows}
               columns={columns}
-              pageSize={5}
+              pageSize={20}
               onRowClick={handleRowClick}
             />
           </div>
