@@ -8,5 +8,7 @@ export const URL = {
   SERVICE_ITEM_URL: 'api/ServiceItems',
   GROUP_URL: 'api/Groups',
   REQUEST_TICKET_EXT_URL: "api/RequestTicketExts",
-  QUERY_URL: 'api/Queries' 
+  QUERY_URL: 'api/Queries',
+  SLA_URL: 'api/Slas',
+  SLA_METRIC_URL: 'api/Slametrics' 
 };
