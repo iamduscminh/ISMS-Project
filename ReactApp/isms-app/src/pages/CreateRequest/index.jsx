@@ -155,13 +155,13 @@ function CreateRequest() {
 
     //Main Request Information
     const formData = new FormData();
-    const fileName = selectedFile.name;
+    const fileName = selectedFile?.name;
     formData.append("IsIncident", isIncident);
     formData.append("Title", rqtTitle);
     formData.append("Description", rqtDesc);
     formData.append("ServiceItemId", isIncident ? "" : requestType.id);
     formData.append("RequesterEmail", auth?.email);
-    formData.append("Attachment", selectedFile, fileName);
+    if (selectedFile) formData.append("Attachment", selectedFile, fileName);
 
     //CREATE REQUEST TICKET
     const apiCreateRequestTicketUrl = "api/RequestTickets/sendticket";

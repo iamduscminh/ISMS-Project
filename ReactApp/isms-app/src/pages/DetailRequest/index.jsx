@@ -49,7 +49,7 @@ function CreateRequest() {
   };
 
   useEffect(() => {
-    const apiGetRequestTicketsUrl = `${ticketUrl}/get/${id}`;
+    const apiGetRequestTicketsUrl = `${ticketUrl}/gettickets/${auth?.email}/${id}`;
     const apiGetRequestTicketExtUrl = `${ticketExtUrl}/getExtForTicket/${id}`;
     const apiGetCommentsUrl = `${commentUrl}/getall/${id}`;
     const fetchData = async () => {
@@ -68,10 +68,17 @@ function CreateRequest() {
             const dataRp = response.data;
             const rqTicket = {
               requestType: {
-                requestTypeId: dataRp?.serviceItemId,
-                requestTypeName: dataRp?.serviceItemEntity?.serviceItemName,
-                requestTypeDesc: dataRp?.serviceItemEntity?.description,
+                requestTypeId: dataRp?.serviceItemEntity?.serviceItemId ?? 0,
+                requestTypeName:
+                  dataRp?.serviceItemEntity?.serviceItemName ??
+                  "Report an issue",
+                requestTypeDesc:
+                  dataRp?.serviceItemEntity?.description ??
+                  "Report an issue when you have abnormal problem",
+                requestTypeIcon:
+                  dataRp?.serviceItemEntity?.iconDisplay ?? "GoReport",
               },
+              isIncident: dataRp.isIncident,
               title: dataRp.title,
               description: dataRp.description,
               createAt: dataRp.createdAt,
@@ -79,7 +86,7 @@ function CreateRequest() {
               fileName: dataRp.attachmentEntity?.filename,
               filePath: dataRp.attachmentEntity?.filePath,
             };
-            console.log(rqTicket);
+            console.log(response.data);
             setRequestTicket(rqTicket);
           })
           .catch((error) => {
@@ -323,10 +330,12 @@ function CreateRequest() {
           <div className="detail-request-header-content px-6 pb-3 flex items-center justify-between">
             <div className="detail-request-header-left  flex items-center">
               <div className="detail-request-header-icon">
-                <IconTag
-                  name={"BsFillInfoSquareFill"}
-                  className={"h-[50px] w-[50px]"}
-                />
+                {requestTicket?.requestType?.requestTypeIcon && (
+                  <IconTag
+                    name={requestTicket?.requestType?.requestTypeIcon}
+                    className={"h-[50px] w-[50px]"}
+                  />
+                )}
               </div>
               <div className="detail-request-header-description ml-5">
                 <h4 className="text-2xl font-bold">
