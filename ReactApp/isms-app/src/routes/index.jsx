@@ -65,16 +65,6 @@ const publicRoutes = [
     layout: Layout.AdminLayout,
   },
   {
-    path: ROUTES_PATHS.ADMIN_CHANGE,
-    component: Page.AdminChange,
-    layout: Layout.AdminLayout,
-  },
-  {
-    path: ROUTES_PATHS.ADMIN_PROBLEM,
-    component: Page.AdminProblem,
-    layout: Layout.AdminLayout,
-  },
-  {
     path: ROUTES_PATHS.ADMIN_SETTING,
     component: Page.Dashboard,
     layout: Layout.AdminLayout,
