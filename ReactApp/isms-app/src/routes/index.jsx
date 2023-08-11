@@ -49,22 +49,6 @@ const publicRoutes = [
     component: Page.ViewCustomFields,
     layout: Layout.CustomLayout,
   },
-];
-
-//private route: dành cho những route cần đăng nhập
-
-//Route có Permission là PERM000000: Mange users
-const PERM000000Routes = [
-  {
-    path: "/admin/setting/services",
-    component: Page.ServiceSettings,
-    layout: Layout.CustomLayout,
-  },
-  {
-    path: "/admin/setting/workflows",
-    component: Page.ListWorkflow,
-    layout: Layout.CustomLayout,
-  },
   {
     path: ROUTES_PATHS.ADMIN,
     component: Page.Dashboard,
@@ -96,18 +80,24 @@ const PERM000000Routes = [
     layout: Layout.CustomLayout,
   },
   {
-    path: ROUTES_PATHS.ADMIN_CHANGE,
-    component: Page.AdminChange,
-    layout: Layout.AdminLayout,
-  },
-  {
-    path: ROUTES_PATHS.ADMIN_PROBLEM,
-    component: Page.AdminProblem,
-    layout: Layout.AdminLayout,
-  },
-  {
     path: ROUTES_PATHS.ADMIN_USERS,
     component: Page.AdminUserManage,
+    layout: Layout.CustomLayout,
+  },
+];
+
+//private route: dành cho những route cần đăng nhập
+
+//Route có Permission là PERM000000: Mange users
+const PERM000000Routes = [
+  {
+    path: "/admin/setting/services",
+    component: Page.ServiceSettings,
+    layout: Layout.CustomLayout,
+  },
+  {
+    path: "/admin/setting/workflows",
+    component: Page.ListWorkflow,
     layout: Layout.CustomLayout,
   },
 ];
