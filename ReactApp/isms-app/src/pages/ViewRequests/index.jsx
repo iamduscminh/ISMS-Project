@@ -112,8 +112,11 @@ function ViewRequests() {
           <nav className="view-requests-header-nav px-6 pt-3 pb-3">
             <ul className="header-nav-content flex items-center text-[18px]">
               <li className="header-nav-item ml-1">
-                <Link className="header-nav-url" to="/">
-                  <UnderlineAnimation>Home</UnderlineAnimation>
+                <Link
+                  className="header-nav-url hover:underline hover:text-white"
+                  to="/"
+                >
+                  Home
                 </Link>
               </li>
 
@@ -123,9 +126,7 @@ function ViewRequests() {
                 </div>
               </li>
               <li className="header-nav-item ml-1">
-                <Link className="header-nav-url">
-                  <UnderlineAnimation>View Requests</UnderlineAnimation>
-                </Link>
+                <Link className="header-nav-url">View Requests</Link>
               </li>
             </ul>
           </nav>

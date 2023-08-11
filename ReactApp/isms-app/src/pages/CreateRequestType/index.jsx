@@ -198,8 +198,11 @@ function CreateRequestType() {
           <nav className="request-types-header-nav pt-3 pb-1 ">
             <ul className="header-nav-content flex items-center text-[0.75rem] pl-[1.25rem]">
               <li className="header-nav-item ml-1">
-                <Link className="header-nav-url" to="/">
-                  <UnderlineAnimation className="">Home</UnderlineAnimation>
+                <Link
+                  className="header-nav-url hover:underline hover:text-white"
+                  to="/"
+                >
+                  Home
                 </Link>
               </li>
               <li className="header-nav-item ml-1">
@@ -208,8 +211,8 @@ function CreateRequestType() {
                 </div>
               </li>
               <li className="header-nav-item ml-1">
-                <Link className="header-nav-url ">
-                  <UnderlineAnimation>Service Requests</UnderlineAnimation>
+                <Link className="header-nav-url hover:underline hover:text-white">
+                  Service Requests
                 </Link>
               </li>
               <li className="header-nav-item ml-1">
@@ -218,8 +221,8 @@ function CreateRequestType() {
                 </div>
               </li>
               <li className="header-nav-item ml-1">
-                <Link className="header-nav-url ">
-                  <UnderlineAnimation>Create Request Type</UnderlineAnimation>
+                <Link className="header-nav-url hover:underline hover:text-white">
+                  Create Request Type
                 </Link>
               </li>
             </ul>

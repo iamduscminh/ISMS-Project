@@ -156,8 +156,11 @@ function UpdateCustomField() {
           <nav className="request-types-header-nav pt-3 pb-1 ">
             <ul className="header-nav-content flex items-center text-[18px]">
               <li className="header-nav-item ml-1">
-                <Link className="header-nav-url" to="/">
-                  <UnderlineAnimation className="">Home</UnderlineAnimation>
+                <Link
+                  className="header-nav-url hover:underline hover:text-white"
+                  to="/"
+                >
+                  Home
                 </Link>
               </li>
               <li className="header-nav-item ml-1">
@@ -166,8 +169,11 @@ function UpdateCustomField() {
                 </div>
               </li>
               <li className="header-nav-item ml-1">
-                <Link to={"/viewCustomFields"} className="header-nav-url ">
-                  <UnderlineAnimation>CustomFields</UnderlineAnimation>
+                <Link
+                  to={"/viewCustomFields"}
+                  className="header-nav-url hover:underline hover:text-white"
+                >
+                  CustomFields
                 </Link>
               </li>
               <li className="header-nav-item ml-1">
@@ -177,9 +183,7 @@ function UpdateCustomField() {
               </li>
               <li className="header-nav-item ml-1">
                 <Link className="header-nav-url ">
-                  <UnderlineAnimation>
-                    {isUpdateView ? "Update" : "Create New"}
-                  </UnderlineAnimation>
+                  {isUpdateView ? "Update" : "Create New"}
                 </Link>
               </li>
             </ul>

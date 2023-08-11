@@ -6,6 +6,7 @@ import {
   BsMicrosoft,
 } from "react-icons/bs";
 import {
+  AiFillFile,
   AiOutlineClose,
   AiOutlineRight,
   AiFillDelete,
@@ -38,6 +39,7 @@ import { CiViewList } from "react-icons/ci";
 import { GoReport } from "react-icons/go";
 import { FaUserCircle } from "react-icons/fa";
 export {
+  AiFillFile,
   AiOutlineRight,
   AiFillDelete,
   AiOutlinePlus,
