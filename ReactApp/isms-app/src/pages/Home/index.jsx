@@ -49,7 +49,7 @@ function Home() {
                 type: item.isIncident
                   ? "Issue Abnormal"
                   : item.serviceItemEntity?.serviceItemName,
-                title: item.serviceItemEntity?.serviceItemName,
+                title: item.title,
                 status: item.status,
                 createAt: new Date(item.createdAt).toLocaleString(
                   "en-US",
@@ -140,7 +140,9 @@ function Home() {
                 >
                   <div className={cx("request-content")}>
                     <div className={cx("request-content-title")}>
-                      <p>{item.title}</p>
+                      <p>
+                        {item.type} - {item.title}
+                      </p>
                     </div>
                     <div className={cx("request-content-date")}>
                       <span>Created on {item.createAt}</span>
