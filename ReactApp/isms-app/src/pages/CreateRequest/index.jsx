@@ -109,7 +109,6 @@ function CreateRequest() {
         Swal.close();
       } catch (error) {
         // Handle errors if needed
-        console.log(error);
         Swal.close();
         Swal.fire({
           icon: "error",
@@ -175,10 +174,10 @@ function CreateRequest() {
         },
       });
       axiosInstance
-        .post(apiCreateRequestTicketUrl, formData)
+        .post(apiCreateRequestTicketUrl, formData, headers)
         .then((response) => {
           console.log(response.data);
-          setTicketIdResponse(response.data.ticketId);
+          setTicketIdResponse(response.data.requestTicketDTO.requestTicketId);
           //CREATE REQUEST TICKET EXT
           if (customFieldsData.some((item) => typeof item === "object")) {
             const customFieldsDataArray = customFieldsData.map((item) => {
@@ -188,7 +187,8 @@ function CreateRequest() {
             axiosInstance
               .post(
                 apiCreateRequestTicketExtUrl,
-                JSON.stringify(customFieldsDataArray)
+                JSON.stringify(customFieldsDataArray),
+                { headers }
               )
               .then((response) => {
                 console.log(response.data);
@@ -213,7 +213,6 @@ function CreateRequest() {
       Swal.close();
     } catch (error) {
       // Handle errors if needed
-      console.log(error);
       Swal.close();
       Swal.fire({
         icon: "error",
