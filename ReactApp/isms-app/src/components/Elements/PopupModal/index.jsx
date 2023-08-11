@@ -15,7 +15,7 @@ function ModalDialog({
   };
   const onClickHandle = () => {
     actionHandler();
-    invokeModal(!isShow);
+    // invokeModal(!isShow);
   };
   return (
     <>

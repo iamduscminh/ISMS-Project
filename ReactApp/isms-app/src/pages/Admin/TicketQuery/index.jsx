@@ -12,15 +12,15 @@ const TicketQuery = () => {
   const { type, mode, queryId } = useParams();
   const axiosInstance = useAxiosPrivate();
 
-  if(!type) navigate('/admin');
+  if (!type) navigate("/admin");
 
   let queryData;
 
-  if(mode === 'edit'){
+  if (mode === "edit") {
     queryData = {
       orderBy: null,
       orderASC: true,
-      priority: ['High', 'Medium'],
+      priority: ["High", "Medium"],
       status: [],
       requestType: [],
       service: [],
@@ -29,9 +29,9 @@ const TicketQuery = () => {
       group: [],
       description: null,
       createdFrom: null,
-      createdTo: null
-    }
-  }else{
+      createdTo: null,
+    };
+  } else {
     queryData = {
       orderBy: null,
       orderASC: true,
@@ -44,18 +44,37 @@ const TicketQuery = () => {
       group: [],
       description: null,
       createdFrom: null,
-      createdTo: null
-    }
+      createdTo: null,
+    };
   }
   const [queryCondition, setQueryCondition] = useState(queryData);
 
-  // const handleTestQuery = () =>{
-  //   const testParam = async () =>{
-  //     const response = await axiosInstance.get(`${URL.QUERY_URL}/getall`, {
-  //       assignee:
-  //     })
-  //   }
-  // }
+  const handleTestQuery = () => {
+    const testParam = async () => {
+      try {
+        const response = await axiosInstance.get(`${URL.QUERY_URL}/getall`, {
+          params: {
+            Assignee: queryData.assignee,
+            CreateFrom: queryData.createdFrom,
+            CreateTo: queryData.createdTo,
+            Description: queryData.description,
+            Group: queryData.group,
+            Requester: queryData.reporter,
+            RequestType: queryData.requestType,
+            Priority: queryData.priority,
+            Status: queryData.status,
+          },
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        console.log(response.data);
+      } catch (error) {
+        alert("Error for get Data: ", error);
+      }
+    };
+    testParam();
+  };
 
   return (
     <div>
@@ -87,12 +106,26 @@ const TicketQuery = () => {
               Filter Conditions
             </h2>
             <div className="mr-[10rem]">
-              <button className="text-[#fff] font-medium border-2 bg-[#043AC5] px-[1rem]">Test </button>
-              <button className="ml-[1rem] text-[#fff] font-medium border-2 bg-[#42526E] px-[1rem]">{mode}</button>
-              <button onClick={()=>{navigate('/admin')}} className="ml-[1rem] text-[#42526E] font-medium border-2 border-[#42526E] px-[1rem]">Cancel</button>
+              <button onClick={handleTestQuery} className="text-[#fff] font-medium border-2 bg-[#043AC5] px-[1rem]">
+                Test{" "}
+              </button>
+              <button className="ml-[1rem] text-[#fff] font-medium border-2 bg-[#42526E] px-[1rem]">
+                {mode}
+              </button>
+              <button
+                onClick={() => {
+                  navigate("/admin");
+                }}
+                className="ml-[1rem] text-[#42526E] font-medium border-2 border-[#42526E] px-[1rem]"
+              >
+                Cancel
+              </button>
             </div>
           </div>
-          <FilterCondition queryCondition={queryCondition} setQueryCondition={setQueryCondition}/>
+          <FilterCondition
+            queryCondition={queryCondition}
+            setQueryCondition={setQueryCondition}
+          />
         </div>
       </div>
     </div>
