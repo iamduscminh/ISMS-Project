@@ -1,7 +1,57 @@
 import React from "react";
 import ChartLayout from "./ChartLayout";
 
-const ColumnChart = () => {
+import {
+  BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
+  Title,
+  Tooltip,
+} from "chart.js";
+import { Bar } from "react-chartjs-2";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+export const options = {
+  responsive: true,
+  plugins: {
+    legend: {
+      display: false,
+    },
+  },
+  redraw: true,
+  scales: {
+    x: {
+      grid: {
+        display: false,
+      },
+    },
+  },
+};
+
+const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+const ColumnChart = ({ data }) => {
+  const dataConfig = {
+    labels,
+    datasets: [
+      {
+        label: "New Tickets",
+        data: data,
+        backgroundColor: "#2C834E",
+      },
+    ],
+  };
+
   return (
     <ChartLayout
       title="Last 7 days"
@@ -29,7 +79,9 @@ const ColumnChart = () => {
         </div>
       }
     >
-      <img src="/images/column-chart.png" alt="" className="w-full" />
+      <div className="w-full">
+        <Bar options={options} data={dataConfig} />
+      </div>
       <ul className="flex flex-wrap justify-center gap-x-[60px]">
         <li className="text-center flex flex-col">
           <span className="text-sm">Solved tickets</span>
