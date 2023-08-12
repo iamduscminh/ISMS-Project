@@ -53,21 +53,19 @@ const TicketQuery = () => {
     const testParam = async () => {
       try {
         const response = await axiosInstance.get(`${URL.QUERY_URL}/getall`, {
-          params: {
-            Assignee: queryData.assignee,
-            CreateFrom: queryData.createdFrom,
-            CreateTo: queryData.createdTo,
-            Description: queryData.description,
-            Group: queryData.group,
-            Requester: queryData.reporter,
-            RequestType: queryData.requestType,
+            OrderyBy: queryData.orderBy,
+            OrderASC: queryData.orderASC,
             Priority: queryData.priority,
             Status: queryData.status,
-          },
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
+            RequestType: queryData.requestType,
+            Service: queryData.service,
+            Assignee: queryData.assignee,
+            Reporter: queryData.reporter,
+            Group: queryData.group,
+            Description: queryData.description,
+            CreateTo: queryData.createdTo,
+            CreateFrom: queryData.createdFrom,
+          });
         console.log(response.data);
       } catch (error) {
         alert("Error for get Data: ", error);

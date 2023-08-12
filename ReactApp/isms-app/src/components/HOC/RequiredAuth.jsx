@@ -6,7 +6,6 @@ const RequireAuth = ({ allowPer }) => {
   const { auth } = useAuth();
   const location = useLocation();
 
-  console.log(auth);
   if (allowPer === "login") {
     return auth?.accessToken ? (
       <Outlet />
