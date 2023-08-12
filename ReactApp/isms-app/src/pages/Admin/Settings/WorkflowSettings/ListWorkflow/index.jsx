@@ -1,4 +1,4 @@
-import React, {useState, useRef} from "react";
+import React, {useState, useRef, useEffect} from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { CiEdit } from "react-icons/ci";
 import { TiDelete } from "react-icons/ti";
@@ -6,47 +6,65 @@ import { AiFillEye } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import ModalDialog from "../../../../../components/Elements/PopupModal";
+import useAxiosPrivate from '../../../../../hooks/useAxiosPrivate'
+import { URL } from "../../../../../utils/Url";
+import useAuth from "../../../../../hooks/useAuth";
 
 const ListWorkflow = () => {
   const navigate = useNavigate();
+  const axiosInstance = useAxiosPrivate();
+  const {auth} = useAuth();
 
   const workflowNameRef = useRef();
   const descriptionRef = useRef();
 
-  const [RequireMessage, setRequireMessage] = useState(false)
-  
+  const [RequireMessage, setRequireMessage] = useState(false);
+  const [listWorkflow, setListWorkflow] = useState([]);
+
+  useEffect(()=>{
+    const fetchWorkflow = async () => {
+      try{
+        const response = await axiosInstance.get(`${URL.WORKFLOW_URL}/getall`);
+        setListWorkflow(response.data)
+      }catch(err){
+        alert('System error, sorry, please contact administrator: ', err);
+      }
+    }
+    fetchWorkflow();
+  }, [axiosInstance])
+
   const handleEditWorkflow = (flowId) => {
-    navigate(`/admin/setting/workflows/edit/${flowId}`);
+    navigate(`/admin/setting/workflows/${flowId}`);
   };
   const columns = [
     {
-      field: "id",
+      field: "workflowId",
       headerName: "ID",
-      width: 100,
+      width: 150,
       editable: false,
       cellClassName: "text-[#42526E]",
     },
     {
-      field: "workflow",
+      field: "workflowName",
       headerName: "Workflow",
-      width: 300,
+      width: 250,
       editable: true,
       cellClassName: "font-semibold text-[#42526E]",
     },
     {
       field: "description",
       headerName: "Description",
-      width: 480,
+      width: 450,
       editable: true,
     },
     {
-      field: "status",
-      headerName: "Status",
+      field: "isActive",
+      headerName: "IsActive",
       width: 100,
       editable: true,
     },
     {
-      field: "lastUpdate",
+      field: "createdAt",
       headerName: "Last Update",
       width: 155,
       valueFormatter: (params) =>
@@ -58,10 +76,9 @@ const ListWorkflow = () => {
       width: 100,
       renderCell: (params) => (
         <div
-          key={params.id}
+          key={params.workflowId}
           className="flex text-[1.25rem] text-[#42526E] font-medium"
         >
-          <AiFillEye className="cursor-pointer mr-[0.5rem]" />
           <CiEdit
             className="cursor-pointer mr-[0.5rem]"
             onClick={() => handleEditWorkflow(params.value)}
@@ -72,26 +89,11 @@ const ListWorkflow = () => {
     },
   ];
 
-  const rows = [
-    {
-      id: "WF0001",
-      workflow: "Quick Service Demo Workflow",
-      description: "This is demo workflow for showing in QuickService",
-      status: "Active",
-      lastUpdate: "2023/07/25",
-    },
-    {
-      id: "WF0002",
-      workflow: "Quick Service Demo Workflow",
-      description: "This is demo workflow for showing in QuickService",
-      status: "Inactive",
-      lastUpdate: "2023/07/25",
-    },
-  ];
+  const rows = listWorkflow;
 
   const rowsWithAction = rows.map((row) => ({
     ...row,
-    action: row.id, // Thêm thuộc tính "action" với giá trị bằng "id"
+    action: row.workflowId, // Thêm thuộc tính "action" với giá trị bằng "id"
   }));
 
   const handleCreateNewWorkflow = () =>{
@@ -99,10 +101,38 @@ const ListWorkflow = () => {
       setRequireMessage(true);
       return;
     }
-    console.log(workflowNameRef.current.value);
-    console.log(descriptionRef.current.value);
     
-    navigate("/admin/setting/workflows/create");
+    const createWorkflow = async () => {
+      try{
+        const response = await axiosInstance.post(`${URL.WORKFLOW_URL}/create`,
+        JSON.stringify(
+          {
+            WorkflowName:workflowNameRef.current.value,
+            CreatedBy: auth.userId,
+            Description: descriptionRef.current.value
+          }
+        ),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (response.status === 200) {
+          navigate(`/admin/setting/workflows/${response.data.workflowDTO.workflowId}`);
+        } else {
+          throw response;
+        }
+      } catch (err) {
+        // Optionally, show an error message to the user
+        if (err.status === 403) {
+          alert("You are not allowed to add Workflow Category");
+        } else {
+          alert(err.message);
+        }
+      }
+    }
+
+    createWorkflow();
   }
   return (
     <div className="w-full">
@@ -145,6 +175,7 @@ const ListWorkflow = () => {
           className="w-[95%] m-auto mt-[2rem]"
           rows={rowsWithAction}
           columns={columns}
+          getRowId={(row)=>row.workflowId}
           initialState={{
             pagination: {
               paginationModel: {
