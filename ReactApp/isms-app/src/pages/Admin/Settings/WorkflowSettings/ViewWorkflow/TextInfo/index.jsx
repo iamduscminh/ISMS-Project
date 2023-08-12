@@ -1,79 +1,73 @@
 import React, { useRef, useState, useEffect } from "react";
 import TicketActivity from "../../../../../../components/Elements/TicketActivity";
 import SearchAgent from "../SearchAgent";
+import useAxiosPrivate from "../../../../../../hooks/useAxiosPrivate";
+import { URL } from "../../../../../../utils/Url";
 
 const statusData = [
   {
     id: 1,
-    text: "New",
+    text: "Open",
   },
   {
     id: 2,
-    text: "Reject",
+    text: "Pending",
   },
   {
     id: 3,
-    text: "Inprogress",
+    text: "InProgress",
   },
   {
     id: 4,
     text: "Resolved",
   },
-  {
-    id: 5,
-    text: "Pending",
-  },
-  {
-    id: 6,
-    text: "Close",
-  },
 ];
 
-const roleData = [
-  {
-    id: -1,
-    text: "None"
-  },
-  {
-    id: 0,
-    text: "All Group",
-  },
-  {
-    id: 1,
-    text: "Service Owner",
-  },
-  {
-    id: 2,
-    text: "Service Member",
-  },
-  {
-    id: 3,
-    text: "Security expert",
-  },
-  {
-    id: 4,
-    text: "Infrastructure engineer",
-  },
-  {
-    id: 5,
-    text: "Network Engineer",
-  },
-];
+// const roleData = [
+//   {
+//     id: -1,
+//     text: "None"
+//   },
+//   {
+//     id: 0,
+//     text: "All Group",
+//   },
+//   {
+//     id: 1,
+//     text: "Service Owner",
+//   },
+//   {
+//     id: 2,
+//     text: "Service Member",
+//   },
+//   {
+//     id: 3,
+//     text: "Security expert",
+//   },
+//   {
+//     id: 4,
+//     text: "Infrastructure engineer",
+//   },
+//   {
+//     id: 5,
+//     text: "Network Engineer",
+//   },
+// ];
 
-const agentData = [
-  {
-    id: 1,
-    name: "Tu Doan",
-  },
-  {
-    id: 2,
-    name: "Calyrex",
-  },
-  {
-    id: 3,
-    name: "Spectrier",
-  },
-];
+// const agentData = [
+//   {
+//     id: 1,
+//     name: "Tu Doan",
+//   },
+//   {
+//     id: 2,
+//     name: "Calyrex",
+//   },
+//   {
+//     id: 3,
+//     name: "Spectrier",
+//   },
+// ];
 const TextInfo = ({
   listActivity,
   handleAddNewActivity,
@@ -81,12 +75,37 @@ const TextInfo = ({
   handleEditActivity,
   handleAddStatusTransition,
   handleDeleteStatusTransition,
+  getTaskNameById
 }) => {
+
   const activityNameInputRef = useRef();
   const statusInputRef = useRef();
   const roleInputRef = useRef();
-  const [roleInputValue, setRoleInputValue] = useState(-1)
+  const [roleInputValue, setRoleInputValue] = useState(-1);
   const [agentValue, setAgentValue] = useState(null);
+  const axiosInstance = useAxiosPrivate();
+  const [groupData, setGroupData] = useState([]);
+  const [agentData, setAgentData] = useState([]);
+
+  useEffect(()=>{
+    const fetchGroupData = async () =>{
+      try{
+        const response = await Promise.all([
+          axiosInstance.get(`${URL.GROUP_URL}/getall`),
+          axiosInstance.get(`${URL.USER_URL}/getall`)
+        ])
+        console.log(response[1].data);
+
+        setGroupData(response[0].data);
+        setAgentData(response[1].data);
+      } catch (err) {
+        alert("System error, sorry, please contact administrator: ", err);
+      }
+    }
+    fetchGroupData();
+  }, [axiosInstance])
+
+  
 
   const handleAddClick = () => {
     if (activityNameInputRef.current.value.trim() === "") {
@@ -101,11 +120,17 @@ const TextInfo = ({
     }else if(agentValue===null && roleInputValue === -1){
       alert("You must choose Group or Agent to handle this activity");
     } else {
+
+      const roleDTO = groupData.find(i=>i.groupId === roleInputValue);
+      const agentDTO = agentData.find(i=>i.userId === agentValue);
+
       handleAddNewActivity(
         activityNameInputRef.current.value.trim(),
         statusInputRef.current.value,
         roleInputValue,
-        agentValue
+        agentValue,
+        roleDTO,
+        agentDTO
       );
     }
   };
@@ -115,7 +140,7 @@ const TextInfo = ({
   };
 
   const getAgentName = (agentId)=>{
-    return agentData.find(item=>item.id === agentId).name;
+    return agentData.find(item=>item.userId === agentId).fullName;
   }
   const getListActivityName = () => {
     return listActivity.map((item) => {
@@ -150,7 +175,7 @@ const TextInfo = ({
 
   return (
     <div className="mt-[2rem] w-[70%]">
-      {listActivity.map((activity) => {
+      {listActivity.map((activity, index) => {
         const hasDestination = listActivity.some((item) => {
           return item.listStatusTrans.some(
             (statusTrans) => statusTrans.destination === activity.id
@@ -158,11 +183,11 @@ const TextInfo = ({
         });
         return (
           <TicketActivity
-            key={activity.id}
+            key={index}
             getActivityName={getActivityName}
             activity={activity}
             statusData={statusData}
-            roleData={roleData}
+            roleData={groupData}
             agentData={agentData}
             listActivityName={getListActivityName()}
             handleDeleteActivity={handleDeleteActivity}
@@ -170,6 +195,7 @@ const TextInfo = ({
             handleAddStatusTransition={handleAddStatusTransition}
             handleDeleteStatusTransition={handleDeleteStatusTransition}
             canDelete={!hasDestination}
+            getTaskNameById={getTaskNameById}
           />
         );
       })}
@@ -196,8 +222,8 @@ const TextInfo = ({
               <option
                 className="bg-white text-[#42526E]"
                 key={item.id}
-                value={item.id}
-              >
+                value={item.text}
+              > 
                 {item.text}
               </option>
             ))}
@@ -211,15 +237,18 @@ const TextInfo = ({
             onChange={handleRoleInputChange}
             value={roleInputValue}
           >
-            {roleData.map((item) => (
+            {groupData?.map((item) => (
               <option
                 className="bg-white text-[#42526E]"
-                key={item.id}
-                value={item.id}
+                key={item.groupId}
+                value={item.groupId}
               >
-                {item.text}
+                {item.groupName}
               </option>
             ))}
+            <option className="bg-white text-[#42526E]"
+                key={-1}
+                value={-1}>None</option>
           </select>
 
           <label className="text-[#42526E] text-[1.1rem] ml-[2rem]">

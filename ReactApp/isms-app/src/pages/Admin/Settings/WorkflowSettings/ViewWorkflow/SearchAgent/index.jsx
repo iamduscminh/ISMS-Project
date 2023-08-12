@@ -4,13 +4,12 @@ import SearchAgentItem from "../../../../../../components/Elements/SearchAgentIt
 
 const SearchAgent = ({ agentData, handleAddAgent }) => {
   const [searchValue, setSearchValue] = useState("");
-  const [searchResult, setSearchResult] = useState([]);
+  const [searchResult, setSearchResult] = useState(agentData);
   const [checkFocus, setCheckFocus] = useState(false);
-  const inputRef= useRef();
 
   useEffect(() => {
 
-    const filteredArray = agentData.filter((item) => item.name.toLowerCase().includes(searchValue.toLowerCase()));
+    const filteredArray = agentData.filter((item) => item.fullName.toLowerCase().includes(searchValue.toLowerCase()));
     setSearchResult(filteredArray);
   }, [searchValue]);
 
@@ -28,9 +27,9 @@ const SearchAgent = ({ agentData, handleAddAgent }) => {
       placement="bottom-end"
       render={(attrs) => (
         <div className="w-[10rem] min-h-[100px] bg-[#fff] border border-[#DFE1E6] shadow-md rounded-md p-[1rem] flex flex-col" tabIndex="-1" {...attrs}>
-          <h3 className="mb-[1.5rem] text-[#8D8888]">List Result (1)</h3>
+          <h3 className="mb-[1.5rem] text-[#8D8888]">List Result ({searchResult?.length || 0})</h3>
           {searchResult.map((result) => (
-            <SearchAgentItem key={result.id} data={result} handleAddAgent={handleAddAgent}/>
+            <SearchAgentItem key={result.userId} data={result} handleAddAgent={handleAddAgent}/>
           ))}
         </div>
       )}

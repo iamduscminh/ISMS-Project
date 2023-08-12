@@ -18,17 +18,11 @@ const TicketActivity = ({
   handleEditActivity,
   handleAddStatusTransition,
   handleDeleteStatusTransition,
-  handleEditStatusTransition
+  handleEditStatusTransition,
+  getTaskNameById
 }) => {
-  const getStatusNameById = (id) => {
-    return statusData.find((item) => item.id === id).text;
-  };
-  const getRolesNameById = (id) => {
-    return roleData.find((item) => item.id === id).text;
-  };
-  const getAgentNameById = (id) => {
-    return agentData.find((item) => item.id === id).name;
-  };
+  console.log(activity);
+
   //Đóng mở Activity
   const [isOpenActivity, setIsOpenActivity] = useState(false);
 
@@ -37,7 +31,7 @@ const TicketActivity = ({
   );
   const [statusInput, setStatusInput] = useState(activity.linkStatus);
   const [roleInput, setRoleInput] = useState(activity.role);
-  const [agentInput, setAgentInput] = useState(activity.agent);
+  const [agentInput, setAgentInput] = useState(activity.agent?.userId);
   const [activityDes, setActivityDes] = useState(activity.description);
 
   const [statusTranInput, setStatusTranInput] = useState("");
@@ -48,25 +42,54 @@ const TicketActivity = ({
     (item) => item.id !== activity.id
   );
 
+  const getAgentName = (agentId) => {
+    return agentData.find((item) => item.userId === agentId)?.fullName;
+  };
+
   const handleCheckConditionInput = (isCheck) => {
     console.log(isCheck);
     setCheckCondition(isCheck);
-  }
+  };
 
   const handleAddAgent = (agent) => {
-    setAgentInput(agent)
-  }
+    setAgentInput(agent);
+  };
 
+  const handleAddGroup = (groupId) => {
+    if(groupId === -1){
+      setRoleInput(null);
+      return;
+    }
+    const group = roleData.find((i) => i.groupId === groupId);
+    setRoleInput(group);
+  };
+
+  const handleEditTask = () =>{
+
+    const agentDTO = agentData.find(e=>e.userId === agentInput);
+
+    handleEditActivity(
+      activity.id,
+      activityNameInput,
+      statusInput,
+      roleInput?.groupId,
+      agentInput,
+      activityDes,
+      roleInput,
+      agentDTO,
+    )
+  }
   useEffect(() => {
     if (agentInput) {
-      setRoleInput(-1);
+      setRoleInput(null);
     }
   }, [agentInput]);
 
   useEffect(() => {
-    if (roleInput !== -1) {
+    if (roleInput) {
       setAgentInput(null);
-  }}, [roleInput]);
+    }
+  }, [roleInput]);
 
   return (
     <div className="border border-slate-200 mb-[0.5rem]">
@@ -77,98 +100,107 @@ const TicketActivity = ({
           {activity.activityName}
         </div>
         <div className="flex items-center">
-          {getStatusNameById(activity.linkStatus) !== "Close" && <ModalDialog
-            title={"Edit New Workflow"}
-            actionText={"Edit"}
-            triggerComponent={<CiEdit className="mr-[0.5rem] cursor-pointer" />}
-            customSize="lg"
-            actionHandler={() =>
-              handleEditActivity(
-                activity.id,
-                activityNameInput,
-                statusInput,
-                roleInput,
-                agentInput,
-                activityDes,
-              )
-            }
-          >
-            <div className="w-[80%] ml-auto">
-              <div>
-                <label className="text-[#42526E] font-medium w-[5rem]">
-                  Activity
-                </label>
-                <input
-                  type="text"
-                  className="border border-[#42526E] rounded-sm w-[20rem] px-[0.5rem]"
-                  value={activityNameInput}
-                  onChange={(e) => setActivityNameInput(e.target.value)}
-                />
-              </div>
-              <div className="mt-[1rem]">
-                <label className="text-[#42526E] font-medium w-[5rem]">
-                  Status
-                </label>
-                <select
-                  className="bg-slate-500 text-center rounded-md font-medium px-[0.5rem] text-[#fff]"
-                  value={statusInput}
-                  onChange={(e) => setStatusInput(e.target.value)}
-                >
-                  {statusData.map((item) => (
+          {activity.linkStatus !== "Resolved" && (
+            <ModalDialog
+              title={"Edit New Workflow"}
+              actionText={"Edit"}
+              triggerComponent={
+                <CiEdit className="mr-[0.5rem] cursor-pointer" />
+              }
+              customSize="lg"
+              actionHandler={() =>
+                handleEditTask()
+              }
+            >
+              <div className="w-[80%] ml-auto">
+                <div>
+                  <label className="text-[#42526E] font-medium w-[5rem]">
+                    Activity
+                  </label>
+                  <input
+                    type="text"
+                    className="border border-[#42526E] rounded-sm w-[20rem] px-[0.5rem]"
+                    value={activityNameInput}
+                    onChange={(e) => setActivityNameInput(e.target.value)}
+                  />
+                </div>
+                <div className="mt-[1rem]">
+                  <label className="text-[#42526E] font-medium w-[5rem]">
+                    Status
+                  </label>
+                  <select
+                    className="bg-slate-500 text-center rounded-md font-medium px-[0.5rem] text-[#fff]"
+                    value={statusInput}
+                    onChange={(e) => setStatusInput(e.target.value)}
+                  >
+                    {statusData.map((item) => (
+                      <option
+                        className="bg-white text-[#42526E]"
+                        key={item.id}
+                        value={item.text}
+                      >
+                        {item.text}
+                      </option>
+                    ))}
+                  </select>
+                  <label className="text-[#42526E] font-medium ml-[3rem]">
+                    Group
+                  </label>
+                  <select
+                    value={roleInput?.groupId || -1}
+                    onChange={(e) => handleAddGroup(e.target.value)}
+                    className="bg-slate-500 text-center rounded-md font-medium px-[0.5rem] text-[#fff] ml-[3rem]"
+                  >
+                    {roleData.map((item) => (
+                      <option
+                        className="bg-white text-[#42526E]"
+                        key={item.id}
+                        value={item.groupId}
+                      >
+                        {item.groupName}
+                      </option>
+                    ))}
                     <option
                       className="bg-white text-[#42526E]"
-                      key={item.id}
-                      value={item.id}
+                      key={-1}
+                      value={-1}
                     >
-                      {item.text}
+                      None
                     </option>
-                  ))}
-                </select>
-                <label className="text-[#42526E] font-medium ml-[3rem]">
-                  Role
-                </label>
-                <select
-                  value={roleInput}
-                  onChange={(e) => setRoleInput(e.target.value)}
-                  className="bg-slate-500 text-center rounded-md font-medium px-[0.5rem] text-[#fff] ml-[3rem]"
-                >
-                  {roleData.map((item) => (
-                    <option
-                      className="bg-white text-[#42526E]"
-                      key={item.id}
-                      value={item.id}
-                    >
-                      {item.text}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="mt-[1rem] flex">
-                <label className="text-[#42526E] font-medium w-[5rem]">
-                  Agent
-                </label>
-                <div className="relative">
-                  <h1
-                    className="bg-slate-500 w-[10rem] text-center rounded-md font-medium px-[0.5rem] py-[0.25rem] text-[#fff]"
-                  >{agentInput ? getAgentNameById(agentInput)  : "None"}</h1>
-                  <div className="absolute left-[120%] top-0">
-                    <SearchAgent agentData={agentData} handleAddAgent={handleAddAgent} />
+                  </select>
+                </div>
+                <div className="mt-[1rem] flex">
+                  <label className="text-[#42526E] font-medium w-[5rem]">
+                    Agent
+                  </label>
+                  <div className="relative">
+                    {console.log(1)}
+                    {console.log(getAgentName(agentInput))}
+                    <h1 className="bg-slate-500 w-[10rem] text-center rounded-md font-medium px-[0.5rem] py-[0.25rem] text-[#fff]">
+                      {agentInput ? getAgentName(agentInput) : "None"}
+                    </h1>
+                    <div className="absolute left-[120%] top-0">
+                      <SearchAgent
+                        agentData={agentData}
+                        handleAddAgent={handleAddAgent}
+                      />
+                    </div>
                   </div>
                 </div>
+                <div className="mt-[1rem] flex items-center">
+                  <label className="text-[#42526E] font-medium w-[5rem]">
+                    Descrip
+                  </label>
+                  <textarea
+                    value={activityDes}
+                    onChange={(e) => setActivityDes(e.target.value)}
+                    className="w-[20rem] h-[5rem] px-[0.5rem] border border-[#42526E] rounded-sm"
+                  ></textarea>
+                </div>
               </div>
-              <div className="mt-[1rem] flex items-center">
-                <label className="text-[#42526E] font-medium w-[5rem]">
-                  Descrip
-                </label>
-                <textarea
-                  value={activityDes}
-                  onChange={(e) => setActivityDes(e.target.value)}
-                  className="w-[20rem] h-[5rem] px-[0.5rem] border border-[#42526E] rounded-sm"
-                ></textarea>
-              </div>
-            </div>
-          </ModalDialog>}
-          {canDelete && getStatusNameById(activity.linkStatus) !== "Close" && (
+            </ModalDialog>
+          )}
+          {canDelete && activity.linkStatus !== "Resolved" && (
             <TiDocumentDelete
               onClick={() => handleDeleteActivity(activity.id)}
               className="cursor-pointer"
@@ -212,7 +244,7 @@ const TicketActivity = ({
                 ))}
               </select> */}
             <div className="bg-slate-500 text-center rounded-md font-medium px-[0.5rem] text-[#fff] mr-[5rem]">
-              {getStatusNameById(activity.linkStatus)}
+              {activity.linkStatus}
             </div>
 
             <div className="mr-[2rem]">
@@ -233,14 +265,13 @@ const TicketActivity = ({
                 ))}
               </select> */}
             <div className="bg-slate-500 text-center rounded-md font-medium px-[0.5rem] text-[#fff] mr-[5rem]">
-              {getRolesNameById(activity.role)}
+              {activity.role?.groupName || "None"}
             </div>
             <div className="mr-[2rem]">
               <h2 className="text-[#42526E] font-medium">Agent</h2>
             </div>
-            {console.log(activity.agent)}
             <div className="bg-slate-500 text-center rounded-md font-medium px-[0.5rem] text-[#fff]">
-              {activity.agent ? getAgentNameById(activity.agent) : "None"}
+              {activity.agent ? activity.agent?.fullName : "None"}
             </div>
           </div>
 
@@ -295,13 +326,13 @@ const TicketActivity = ({
                           {item.activityName}
                         </option>
                       ))}
-                      <option
+                      {/* <option
                         className="bg-white text-[#42526E]"
                         key={listDestination.length + 1}
                         value={0}
                       >
                         None
-                      </option>
+                      </option> */}
                     </select>
                   </div>
                   <div className="mt-[0.5rem]">
@@ -310,7 +341,9 @@ const TicketActivity = ({
                     </label>
                     <input
                       value={checkCondition}
-                      onChange={(e) => { handleCheckConditionInput(e.target.checked) }}
+                      onChange={(e) => {
+                        handleCheckConditionInput(e.target.checked);
+                      }}
                       type="checkbox"
                     />
                   </div>
@@ -326,9 +359,7 @@ const TicketActivity = ({
                     </span>
                     Transition to
                     <span className="text-[#42526E] font-medium ml-[0.5rem]">
-                      {item.destination === 0
-                        ? "None"
-                        : getActivityName(item.destination)}
+                      {!item.destination ? "None" : getTaskNameById(item.destination)}
                     </span>
                   </div>
                   <div className="ml-[3rem] flex items-center">
@@ -346,13 +377,17 @@ const TicketActivity = ({
                     <ModalDialog
                       title={"Delete Status Trans"}
                       actionText={"Delete"}
-                      actionHandler={() => handleDeleteStatusTransition(activity.id, item.id)}
+                      actionHandler={() =>
+                        handleDeleteStatusTransition(activity.id, item.destination)
+                      }
                       triggerComponent={
                         <span className="cursor-pointer">Delete</span>
                       }
                       customSize="md"
                     >
-                      <div className="m-auto text-[1.25rem] w-[80%]">Are you sure to delete this Transition?</div>
+                      <div className="m-auto text-[1.25rem] w-[80%]">
+                        Are you sure to delete this Transition?
+                      </div>
                     </ModalDialog>
                   </div>
                 </div>
