@@ -27,11 +27,75 @@ const AdminReport = () => {
       </div>
       <div className="flex-1 overflow-y-auto">
         <div className="py-[45px] px-10 space-y-8 xl:space-y-[75px]">
-          <ColumnChart />
-          <LineChartNewTicket />
-          <LineChartSatisfaction />
-          <LineChartResponseTime />
-          <LineChartSolvedAndClose />
+          <ColumnChart
+            data={
+              dateRanges?.value === "-30d"
+                ? [200, 50, 24, 13, 65, 100, 120]
+                : [170, 120, 52, 130, 125, 90, 20]
+            }
+          />
+          <LineChartNewTicket
+            data={Array(30)
+              .fill(1)
+              .map((_, index) => ({
+                x: `Aug ${index + 1}`,
+                y: Math.random() * 500 + 10,
+              }))}
+          />
+          <LineChartSatisfaction
+            data={{
+              great: Array(30)
+                .fill(1)
+                .map((_, index) => ({
+                  x: `Aug ${index + 1}`,
+                  y: Math.random() * 300,
+                })),
+              okay: Array(30)
+                .fill(1)
+                .map((_, index) => ({
+                  x: `Aug ${index + 1}`,
+                  y: Math.random() * 200,
+                })),
+              bad: Array(30)
+                .fill(1)
+                .map((_, index) => ({
+                  x: `Aug ${index + 1}`,
+                  y: Math.random() * 50,
+                })),
+            }}
+          />
+          <LineChartResponseTime
+            data={{
+              responseTime: Array(30)
+                .fill(1)
+                .map((_, index) => ({
+                  x: `Aug ${index + 1}`,
+                  y: Math.random() * 300 + 50,
+                })),
+              assignTime: Array(30)
+                .fill(1)
+                .map((_, index) => ({
+                  x: `Aug ${index + 1}`,
+                  y: Math.random() * 50 + 20,
+                })),
+            }}
+          />
+          <LineChartSolvedAndClose
+            data={{
+              solved: Array(30)
+                .fill(1)
+                .map((_, index) => ({
+                  x: `Aug ${index + 1}`,
+                  y: Math.random() * 400 + 50,
+                })),
+              closed: Array(30)
+                .fill(1)
+                .map((_, index) => ({
+                  x: `Aug ${index + 1}`,
+                  y: Math.random() * 300 + 20,
+                })),
+            }}
+          />
         </div>
       </div>
     </>

@@ -106,6 +106,7 @@ const SLA = () => {
           ResponseTime: metric.ResponseTime,
           ResolutionTime: metric.ResolutionTime,
           Priority: metric.condition,
+          SlaId: newData.SLAID,
         })),
       };
       console.log(slaDto);
