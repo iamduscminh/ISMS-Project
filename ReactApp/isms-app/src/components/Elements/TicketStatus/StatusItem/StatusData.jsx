@@ -3,5 +3,4 @@ const StatusData = {
   Handle: ['InProgress','Pending'],
   Close: ['Resolved'],
 }
-
 export default StatusData
