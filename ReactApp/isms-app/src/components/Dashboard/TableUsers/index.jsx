@@ -3,12 +3,37 @@ import clsx from "clsx";
 import React, { useState } from "react";
 import styles from "./styles.module.scss";
 import DropdownRole from "./DropdownRole";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
-const TableItem = ({ item, setCurrentRoles, currentIndex, setOpen }) => {
+const TableItem = ({
+  item,
+  setCurrentRoles,
+  setCurrentUsers,
+  currentIndex,
+  setOpen,
+}) => {
   const [isEdit, setIsEdit] = useState(false);
-  const [user, setUser] = useState(item?.name);
+  const [user, setUser] = useState(item?.fullName);
   const [email, setEmail] = useState(item?.email);
   const [role, setRole] = useState(item?.role);
+  const [avatar, setAvatar] = useState(item?.avatar);
+  const axiosInstance = useAxiosPrivate();
+
+  const deleteRole = () => {
+    // Gọi API để xóa dữ liệu dưới cơ sở dữ liệu
+    axiosInstance
+      .delete(`api/Roles/delete/${item.roleId}`)
+      .then((response) => {
+        // Nếu xóa thành công, cập nhật lại state bằng cách loại bỏ phần tử đã xóa
+        setCurrentRoles((prevListService) => {
+          return prevListService.filter((e) => e.roleId !== item.roleId);
+        });
+        alert(response.data.message);
+      })
+      .catch((error) => {
+        alert("Lỗi khi xóa:", error);
+      });
+  };
 
   return (
     <tr>
@@ -59,7 +84,11 @@ const TableItem = ({ item, setCurrentRoles, currentIndex, setOpen }) => {
         />
       </td>
       <td>
-        <DropdownRole selected={role} setSelected={setRole} />
+        <DropdownRole
+          selected={role}
+          setSelected={setRole}
+          setCurrentRoles={setCurrentRoles}
+        />
       </td>
       <td className="space-x-10 flex">
         <div className="space-x-5 py-2">
@@ -77,10 +106,10 @@ const TableItem = ({ item, setCurrentRoles, currentIndex, setOpen }) => {
   );
 };
 
-const TableUsers = ({ data, setCurrentRoles }) => {
+const TableUsers = ({ data, setCurrentUsers, setCurrentRoles }) => {
   const [open, setOpen] = useState(false);
-  // const [selectedRole, setSelectedRole] = useState();
-
+  //const [selectedRole, setSelectedRole] = useState();
+  console.log("setCurrentRoles" + setCurrentRoles);
   const handleDelete = (e) => {
     e.preventDefault();
     setOpen(false);
@@ -101,6 +130,7 @@ const TableUsers = ({ data, setCurrentRoles }) => {
           <TableItem
             key={index}
             item={item}
+            setCurrentUsers={setCurrentUsers}
             setCurrentRoles={setCurrentRoles}
             currentIndex={index}
             setOpen={setOpen}

@@ -1,53 +1,76 @@
 import React, { useState, useEffect, useRef } from "react";
-import TableRoles from "../../components/Dashboard/TableRoles";
+import TableGroups from "../../components/Dashboard/TableGroups";
 import MessageError from "../../components/Dashboard/MessageError";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import DropdownRoleType from "../../components/Dashboard/TableRoles/DropDownRoleType";
+import DropDownBusinessHour from "../../components/Dashboard/TableGroups/DropDownBusinessHour";
+import DropDownGroupLeader from "../../components/Dashboard/TableGroups/DropDownGroupLeader";
 
-const AdminRole = () => {
+const AdminGroup = () => {
   const axiosInstance = useAxiosPrivate();
   const [newRole, setNewRole] = useState(" ");
   const [desc, setDesc] = useState(" ");
-  const [currentRoles, setCurrentRoles] = useState([]);
-  const [roleType, setRoleType] = useState(roleTypes);
-  const [roleTypeChange, setRoleTypeChange] = useState([]);
+  const [currentGroups, setCurrentGroups] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [listBusinessHour, setListBusinessHour] = useState([]);
+  const [listGroupLeader, setlistGroupLeader] = useState([]);
 
   useEffect(() => {
-    const getAllRoles = async () => {
+    const getAllGroups = async () => {
       try {
-        const response = await axiosInstance.get("api/Roles/getall");
-        setCurrentRoles(response.data);
+        const response = await axiosInstance.get("api/Groups/getall");
+        setCurrentGroups(response.data);
         setIsLoading(false);
       } catch (error) {
-        console.error("Error fetching service categories:", error);
+        console.error("Error get all Groups [AdminGroup]:", error);
         setIsLoading(false);
       }
     };
-
-    getAllRoles();
+    const getListBusinessHour = async () => {
+      try {
+        const response = await axiosInstance.get(`api/BusinessHours/getall`);
+        setListBusinessHour(response.data);
+      } catch (error) {
+        console.error("Error getListBusinessHour [AdminGroup]:", error);
+      }
+    };
+    const getListGroupLeaderName = async () => {
+      try {
+        const response = await axiosInstance.get(`/api/Users/getall`);
+        setlistGroupLeader(response.data);
+      } catch (error) {
+        console.error("Error getListGroupLeaderName [AdminGroup]:", error);
+      }
+    };
+    getListGroupLeaderName();
+    getListBusinessHour();
+    getAllGroups();
   }, [axiosInstance]);
 
-  const roleNameRef = useRef(null);
-  const roleDesRef = useRef(null);
+  const [businessHourSelected, setBusinessHourSelected] =
+    useState(listBusinessHour);
+  const [groupLeaderSelected, setGroupLeaderSelected] =
+    useState(listGroupLeader);
 
-  const handleInsertRole = (e) => {
-    const roleName = roleNameRef.current.value;
-    const roleDes = roleDesRef.current.value;
+  const groupNameDef = useRef(null);
+  const groupDesRef = useRef(null);
 
-    const newRoleGroup = {
-      RoleName: roleName,
-      Description: roleDes,
-      RoleType: roleType.id,
+  const handleInsertGroup = (e) => {
+    const groupName = groupNameDef.current.value;
+    const groupDes = groupDesRef.current.value;
+
+    const newGroup = {
+      groupName: groupName,
+      description: groupDes,
+      groupLeader: groupLeaderSelected.userId,
     };
 
     const controller = new AbortController();
 
-    const createRole = async () => {
+    const createGroup = async () => {
       try {
         const response = await axiosInstance.post(
-          "api/Roles/create",
-          JSON.stringify(newRoleGroup),
+          `api/Groups/create`,
+          JSON.stringify(newGroup),
           {
             signal: controller.signal,
             headers: {
@@ -56,9 +79,11 @@ const AdminRole = () => {
           }
         );
         if (response.status === 200) {
-          const createdRoleGroup = response.data;
-          setCurrentRoles((prev) => [...prev, createdRoleGroup]);
+          const createdGroup = response.data;
+          console.log("createGroup data:  " + response.data);
+          setCurrentGroups((prev) => [...prev, createdGroup]);
           // Clear Input
+          console.log(currentGroups);
           setDesc(" ");
           setNewRole(" ");
         } else {
@@ -72,32 +97,37 @@ const AdminRole = () => {
         }
       }
     };
-    createRole();
+    createGroup();
   };
 
   return (
     <div className="bg-[#F7F7F7] text-[#727272]">
       <div className="mx-auto max-w-7xl px-5 py-[60px]">
         <h6 className="font-semibold text-2xl xl:text-4xl">
-          System Role Management
+          System Group Management
         </h6>
         <p className="mt-4 text-lg xl:text-2xl">
           The system allows you to manage the roles available in your
           organization, you can also view the permissions of those roles
         </p>
-        <TableRoles data={currentRoles} setCurrentRoles={setCurrentRoles} />
+        <TableGroups
+          data={currentGroups}
+          setCurrentRoles={setCurrentGroups}
+          listLeader={listGroupLeader}
+          listBusiness={listBusinessHour}
+        />
 
         <h6 className="text-xl xl:text-3xl font-semibold mt-8 xl:mt-14">
-          New system role
+          New System Group
         </h6>
         <div className="mt-5 xl:mt-10 xl:w-1/2">
           <div className="flex items-start">
             <label className="w-[180px] font-semibold text-lg xl:text-2xl">
-              Role Name
+              Group Name
             </label>
             <div className="flex-1">
               <input
-                ref={roleNameRef}
+                ref={groupNameDef}
                 type="text"
                 value={newRole}
                 onChange={(e) => {
@@ -115,7 +145,7 @@ const AdminRole = () => {
             </label>
             <div className="flex-1">
               <textarea
-                ref={roleDesRef}
+                ref={groupDesRef}
                 value={desc}
                 onChange={(e) => {
                   setDesc(e.target.value);
@@ -128,15 +158,16 @@ const AdminRole = () => {
           </div>
           <div className="flex items-start mt-5 xl:mt-10">
             <label className="w-[180px] font-semibold text-lg xl:text-2xl">
-              Role type
+              Group Leader
             </label>
             <div className="flex-1">
-              <DropdownRoleType
-                selected={roleType}
-                setSelected={setRoleType}
+              <DropDownGroupLeader
+                selected={groupLeaderSelected}
+                setSelected={setGroupLeaderSelected}
                 onChange={(e) => {
-                  setRoleType(e.target.value);
+                  setGroupLeaderSelected(e.target.value);
                 }}
+                listGroupLeader={listGroupLeader}
                 className="w-full px-3 py-1.5 rounded-lg border-[#CCC9C9] border-2"
                 style={{ boxShadow: " 0px 4px 4px 0px rgba(0, 0, 0, 0.25)" }}
               />
@@ -144,10 +175,10 @@ const AdminRole = () => {
           </div>
           <div className="flex justify-center mt-8 xl:mt-16">
             <button
-              onClick={handleInsertRole}
+              onClick={handleInsertGroup}
               className="text-white bg-[#043AC5] py-2 font-semibold w-[200px] text-center text-xl xl:text-3xl"
             >
-              Add role
+              Add group
             </button>
           </div>
         </div>
@@ -155,8 +186,4 @@ const AdminRole = () => {
     </div>
   );
 };
-export const roleTypes = [
-  { id: 0, name: "Admin" },
-  { id: 1, name: "Agent" },
-];
-export default AdminRole;
+export default AdminGroup;

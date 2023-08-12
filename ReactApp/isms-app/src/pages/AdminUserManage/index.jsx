@@ -1,18 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TableUsers from "../../components/Dashboard/TableUsers";
 import { roles } from "../../components/Dashboard/TableRoles";
 import FormAddUser from "../../components/Dashboard/FormAddUser";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const AdminUserManage = () => {
-  const [currentRoles, setCurrentRoles] = useState(
-    Array(3).fill({
-      name: "Tu Doan",
-      email: "tuda@company.com.vn",
-      role: roles[0],
-    })
-  );
-
+  const axiosInstance = useAxiosPrivate();
+  const [isLoading, setIsLoading] = useState(true);
+  const [currentUsers, setCurrentUsers] = useState([]);
+  const [currentRoles, setCurrentRoles] = useState([]);
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const getAllUsers = async () => {
+      try {
+        const response = await axiosInstance.get("/api/Users/getall");
+        setCurrentUsers(response.data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching service categories:", error);
+        setIsLoading(false);
+      }
+    };
+
+    const getAllRoles = async () => {
+      try {
+        const response = await axiosInstance.get("api/Roles/getall");
+        setCurrentRoles(response.data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching service categories:", error);
+        setIsLoading(false);
+      }
+    };
+
+    getAllRoles();
+    getAllUsers();
+  }, [axiosInstance]);
 
   return (
     <div className="bg-[#F7F7F7] text-[#727272] overflow-y-scroll">
@@ -53,7 +77,11 @@ const AdminUserManage = () => {
             Add User
           </button>
         </div>
-        <TableUsers data={currentRoles} setCurrentRoles={setCurrentRoles} />
+        <TableUsers
+          data={currentUsers}
+          setCurrentUsers={setCurrentUsers}
+          setCurrentRoles={currentRoles}
+        />
         <FormAddUser open={open} setOpen={setOpen} />
       </div>
     </div>
