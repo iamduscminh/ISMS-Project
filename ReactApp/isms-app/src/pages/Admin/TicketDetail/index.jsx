@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import image from "../../../assets/images";
@@ -10,6 +10,7 @@ import {
   MdKeyboardArrowDown,
   MdElectricalServices,
   MdDelete,
+  MdSos
 } from "react-icons/md";
 import { RiComputerLine } from "react-icons/ri";
 import { SiMicrosoftword, SiMicrosoftexcel } from "react-icons/si";
@@ -34,8 +35,48 @@ import {
   Typography,
 } from "@mui/material";
 import ModalDialog from "../../../components/Elements/PopupModal";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import { URL } from "../../../utils/Url";
+import IconTag from "../../../components/Elements/IconTag";
+import { parseISO, format } from 'date-fns';
+
 const TicketDetail = () => {
   const { ticketId } = useParams();
+  const axiosInstance = useAxiosPrivate();
+  const [ticketDetail, setTicketDetail] = useState();
+  const [task, setTask] = useState();
+
+  useEffect(() => {
+    const fetchTicketDetail = async () => {
+      try {
+        const response = await axiosInstance.get(
+          `${URL.REQUEST_TICKET_URL}/get/${ticketId}`
+        );
+        console.log(response.data);
+        setTicketDetail(response.data);
+      } catch (err) {
+        alert("System error, sorry, please contact administrator: ", err);
+      }
+    };
+    fetchTicketDetail();
+  }, [axiosInstance]);
+
+  useEffect(() => {
+    const fetchTicketDetail = async () => {
+      try {
+        const response = await axiosInstance.get(
+          `${URL.WORKFLOW_ASSIGNMENT_URL}/get?requestTicketId=${ticketId}`
+        );
+        console.log(1);
+        console.log(response.data);
+        setTask(response.data);
+      } catch (err) {
+        alert("System error, sorry, please contact administrator: ", err);
+      }
+    };
+    fetchTicketDetail();
+  }, [axiosInstance]);
+
   const [commentTab, setCommentTab] = useState(true);
   const showCommentTab = (queryCondition) => {
     setCommentTab(queryCondition);
@@ -89,6 +130,11 @@ const TicketDetail = () => {
       id: 3,
       icon: <FcLowPriority />,
       priority: "Low",
+    },
+    {
+      id: 4,
+      icon: <MdSos />,
+      priority: "Urgent",
     },
   ];
 
@@ -188,6 +234,10 @@ const TicketDetail = () => {
     setSelectedFiles([...event.target.files]);
   };
 
+  const getPriorityObject = (priority) =>{
+    return priorityData.find(e=>e.priority === priority)
+  }
+
   const handleFileUpload = () => {
     // Xử lý upload file ở đây
     if (selectedFiles.length > 0) {
@@ -231,8 +281,8 @@ const TicketDetail = () => {
           <span className="mr-[3rem]">Back</span>
         </div>
         <div>
-          <span className="mr-[0.5rem]">TICKET-1:</span>
-          <span>Demo test Service Ticket</span>
+          <span className="mr-[0.5rem]">{ticketDetail?.requestTicketId}:</span>
+          <span>{ticketDetail?.title}</span>
         </div>
       </div>
       <div className="w-full px-[1rem] py-[1rem] flex">
@@ -242,12 +292,12 @@ const TicketDetail = () => {
               <div className="w-[1.75rem] h-[1.75rem] rounded-full overflow-hidden mr-[1rem]">
                 <img
                   className="w-full h-full object-cover object-center"
-                  src={image.avatar3}
+                  src={ticketDetail?.requesterUserEntity?.avatar}
                   alt=""
                 />
               </div>
               <a className="text-[1.15rem] mr-[0.5rem] cursor-pointer text-[#043ac5]">
-                Calyrex
+                {ticketDetail?.requesterUserEntity?.fullName}
               </a>
               <h3 className="text-[1.15rem]">create this Request</h3>
             </div>
@@ -257,8 +307,7 @@ const TicketDetail = () => {
                 Description
               </h3> */}
               <p className="text-[#747272] text-[1rem]">
-                My computer is broken, I want a new computer with the same
-                configuration as the old one
+                {ticketDetail?.description}
               </p>
             </div>
             <div className="flex items-center mt-[1rem]">
@@ -272,16 +321,41 @@ const TicketDetail = () => {
                   marginLeft: "0.5rem",
                 }}
               >
-                <RiComputerLine className="cursor-pointer" />
+                <IconTag
+                  className="text-[1.25rem]"
+                  name={ticketDetail?.serviceItemEntity?.iconDisplay || "AiFillCustomerService"}
+                />
                 <div className="ml-[0.5rem]">
                   <span className="text-[#747272]">
-                    <a href="#">Laptop Broken Problem</a>
+                    <a href="#">
+                      {ticketDetail ? ticketDetail?.serviceItemEntity?.serviceItemName : " "}
+                    </a>
                   </span>
                 </div>
               </div>
             </div>
 
-            <CustomCombobox
+            <div className="flex items-center mt-[1rem]">
+              <h3 className="text-[#42526E] min-w-[40%] font-medium">
+                Service
+              </h3>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginLeft: "0.5rem",
+                }}
+              >
+                <div className="ml-[0.5rem]">
+                  <span className="text-[#747272]">
+                    <a href="#">
+                      {ticketDetail ? ticketDetail.serviceItemEntity?.serviceCategoryEntity?.serviceCategoryName : " "}
+                    </a>
+                  </span>
+                </div>
+              </div>
+            </div>
+            {/* <CustomCombobox
               component={ServiceTypeItem}
               data={serviceData}
               onSelect={handleServiceTypeSelect}
@@ -290,10 +364,10 @@ const TicketDetail = () => {
               showProp1="icon"
               showProp2="serviceName"
               wrapper="FF7452"
-            />
+            /> */}
             <div className="w-[full] mt-[3rem] mb-[1rem]">
               <TicketStatus
-                currentStatus={status}
+                currentStatus={ticketDetail ? ticketDetail?.status : " "}
                 onSelect={handleStatusSelect}
                 customStyles={{
                   paddingY: "py-[0.5rem]",
@@ -312,7 +386,7 @@ const TicketDetail = () => {
                   component={PriorityItem}
                   data={priorityData}
                   onSelect={handlePrioritySelect}
-                  value={priority}
+                  value={getPriorityObject(ticketDetail?.priority)}
                   overlay={2}
                   showProp1="icon"
                   showProp2="priority"
@@ -326,8 +400,8 @@ const TicketDetail = () => {
                   Time to Resolution SLA
                 </h4>
                 <div className="flex items-center justify-start text-[#747272] mt-[0.5rem]">
-                  <span>July 12 2023 04:20 AM</span>
-                  <span className="ml-[1rem]">4h00 to due</span>
+                  <span>{ticketDetail ? format(parseISO(ticketDetail?.firstResolutionDue), 'MMM-dd-yyyy HH:mm') : " "}</span>
+                  {/* <span className="ml-[1rem]">4h00 to due</span> */}
                 </div>
               </div>
             </div>
@@ -338,8 +412,8 @@ const TicketDetail = () => {
                   Time to first response SLA
                 </h4>
                 <div className="flex items-center justify-start text-[#747272] mt-[0.5rem]">
-                  <span>July 12 2023 02:20 AM</span>
-                  <span className="ml-[1rem]">2h00 to due</span>
+                <span>{ticketDetail ? format(parseISO(ticketDetail?.firstResponseDue), 'MMM-dd-yyyy HH:mm') : " "}</span>
+                  {/* <span className="ml-[1rem]">2h00 to due</span> */}
                 </div>
               </div>
             </div>
@@ -349,12 +423,10 @@ const TicketDetail = () => {
           <div className="w-full bg-[#fff] px-[1.25rem] py-[1rem] flex flex-col rounded-lg shadow-md border-2 border-[#E1DEDE]">
             <div>
               <h1 className="text-[1.25rem] font-semibold text-[#42526E]">
-                Task: Evaluating and Planning
+                {task ? task?.currentTask?.workflowTaskName : " "}
               </h1>
               <p className="text-[#747272]">
-                This step focuses on gathering information from stakeholders,
-                identifying customer requirements, and evaluating available
-                capabilities and resources.{" "}
+                {task ? task?.currentTask?.description : " "}
               </p>
             </div>
             <div>
@@ -362,29 +434,36 @@ const TicketDetail = () => {
                 <h3 className="text-[#42526E] min-w-[40%] font-medium">
                   Assignee
                 </h3>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    marginLeft: "0.5rem",
-                  }}
-                >
-                  <div className="w-[1.5rem] h-[1.5rem] rounded-full overflow-hidden cursor-pointer">
-                    <img
-                      className="w-full h-full object-cover object-center"
-                      src={image.avatar}
-                      alt=""
-                    />
+
+                {ticketDetail?.assignedTo ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      marginLeft: "0.5rem",
+                    }}
+                  >
+                    <div className="w-[1.5rem] h-[1.5rem] rounded-full overflow-hidden cursor-pointer">
+                      <img
+                        className="w-full h-full object-cover object-center"
+                        src={image.avatar}
+                        alt=""
+                      />
+                    </div>
+                    <div className="ml-[0.5rem]">
+                      <span className="text-[#747272]">
+                        <a href="#">Gardevoir</a>
+                      </span>
+                    </div>
                   </div>
-                  <div className="ml-[0.5rem]">
-                    <span className="text-[#747272]">
-                      <a href="#">Gardevoir</a>
-                    </span>
+                ) : (
+                  <div>
+                    <button className="text-[#fff] font-medium px-[0.75rem] bg-[#043AC5]">Assign</button>
                   </div>
-                </div>
+                )}
               </div>
 
-              <div className="flex items-center mt-[1rem]">
+              {/* <div className="flex items-center mt-[1rem]">
                 <h3 className="text-[#42526E] min-w-[40%] font-medium">
                   Reporter
                 </h3>
@@ -408,7 +487,7 @@ const TicketDetail = () => {
                     </span>
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               <div className="flex mt-[1rem]">
                 <h3 className="text-[#42526E] min-w-[40%] font-medium">
@@ -565,7 +644,11 @@ const TicketDetail = () => {
               <ModalDialog
                 title={"Transition Task"}
                 actionText={"Change"}
-                triggerComponent={<button className="px-[0.75rem] bg-[#043AC5] text-[#fff] font-medium">Change</button>}
+                triggerComponent={
+                  <button className="px-[0.75rem] bg-[#043AC5] text-[#fff] font-medium">
+                    Change
+                  </button>
+                }
                 customSize="md"
               ></ModalDialog>
             </div>

@@ -13,5 +13,6 @@ export const URL = {
   SLA_METRIC_URL: 'api/Slametrics',
   WORKFLOW_URL:'api/Workflows',
   WORKFLOW_TASK_URL: 'api/WorkflowTasks',
-  WORKFLOW_TRANSITION_URL: 'api/WorkflowTransitions'
+  WORKFLOW_TRANSITION_URL: 'api/WorkflowTransitions',
+  WORKFLOW_ASSIGNMENT_URL: 'api/WorkflowAssignments'
 };
