@@ -1,14 +1,12 @@
 import React from "react";
 import Swal from "sweetalert2";
 import IconTag from "../../components/Elements/IconTag";
-import {
-  handleShowError,
-  handleAsyncTask,
-} from "../../components/Elements/SwalCustom";
+// import {
+//   handleShowError,
+//   handleAsyncTask,
+// } from "../../components/Elements/SwalCustom";
 const MyComponent = () => {
-  const handleClick = () => {
-    handleAsyncTask();
-  };
+  const handleClick = () => {};
   const taskFunc = () => {
     setTimeout(4000);
     console.log("Minh oi");

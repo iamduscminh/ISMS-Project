@@ -7,7 +7,7 @@ function ModalDialog({
   actionHandler,
   triggerComponent,
   children,
-  customSize = "md"
+  customSize = "md",
 }) {
   const [isShow, invokeModal] = React.useState(false);
   const initModal = () => {
@@ -15,7 +15,7 @@ function ModalDialog({
   };
   const onClickHandle = () => {
     actionHandler();
-    // invokeModal(!isShow);
+    invokeModal(!isShow);
   };
   return (
     <>
