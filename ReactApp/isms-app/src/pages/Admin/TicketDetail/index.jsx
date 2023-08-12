@@ -10,7 +10,7 @@ import {
   MdKeyboardArrowDown,
   MdElectricalServices,
   MdDelete,
-  MdSos,
+  MdSos
 } from "react-icons/md";
 import { RiComputerLine } from "react-icons/ri";
 import { SiMicrosoftword, SiMicrosoftexcel } from "react-icons/si";
@@ -38,7 +38,7 @@ import ModalDialog from "../../../components/Elements/PopupModal";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { URL } from "../../../utils/Url";
 import IconTag from "../../../components/Elements/IconTag";
-import { parseISO, format } from "date-fns";
+import { parseISO, format } from 'date-fns';
 
 const TicketDetail = () => {
   const { ticketId } = useParams();
@@ -234,9 +234,9 @@ const TicketDetail = () => {
     setSelectedFiles([...event.target.files]);
   };
 
-  const getPriorityObject = (priority) => {
-    return priorityData.find((e) => e.priority === priority);
-  };
+  const getPriorityObject = (priority) =>{
+    return priorityData.find(e=>e.priority === priority)
+  }
 
   const handleFileUpload = () => {
     // Xử lý upload file ở đây
@@ -323,17 +323,12 @@ const TicketDetail = () => {
               >
                 <IconTag
                   className="text-[1.25rem]"
-                  name={
-                    ticketDetail?.serviceItemEntity?.iconDisplay ||
-                    "AiFillCustomerService"
-                  }
+                  name={ticketDetail?.serviceItemEntity?.iconDisplay || "AiFillCustomerService"}
                 />
                 <div className="ml-[0.5rem]">
                   <span className="text-[#747272]">
                     <a href="#">
-                      {ticketDetail
-                        ? ticketDetail?.serviceItemEntity?.serviceItemName
-                        : " "}
+                      {ticketDetail ? ticketDetail?.serviceItemEntity?.serviceItemName : " "}
                     </a>
                   </span>
                 </div>
@@ -354,10 +349,7 @@ const TicketDetail = () => {
                 <div className="ml-[0.5rem]">
                   <span className="text-[#747272]">
                     <a href="#">
-                      {ticketDetail
-                        ? ticketDetail.serviceItemEntity?.serviceCategoryEntity
-                            ?.serviceCategoryName
-                        : " "}
+                      {ticketDetail ? ticketDetail.serviceItemEntity?.serviceCategoryEntity?.serviceCategoryName : " "}
                     </a>
                   </span>
                 </div>
@@ -408,14 +400,7 @@ const TicketDetail = () => {
                   Time to Resolution SLA
                 </h4>
                 <div className="flex items-center justify-start text-[#747272] mt-[0.5rem]">
-                  <span>
-                    {ticketDetail
-                      ? format(
-                          parseISO(ticketDetail?.firstResolutionDue),
-                          "MMM-dd-yyyy HH:mm"
-                        )
-                      : " "}
-                  </span>
+                  <span>{ticketDetail ? format(parseISO(ticketDetail?.firstResolutionDue), 'MMM-dd-yyyy HH:mm') : " "}</span>
                   {/* <span className="ml-[1rem]">4h00 to due</span> */}
                 </div>
               </div>
@@ -427,14 +412,7 @@ const TicketDetail = () => {
                   Time to first response SLA
                 </h4>
                 <div className="flex items-center justify-start text-[#747272] mt-[0.5rem]">
-                  <span>
-                    {ticketDetail
-                      ? format(
-                          parseISO(ticketDetail?.firstResponseDue),
-                          "MMM-dd-yyyy HH:mm"
-                        )
-                      : " "}
-                  </span>
+                <span>{ticketDetail ? format(parseISO(ticketDetail?.firstResponseDue), 'MMM-dd-yyyy HH:mm') : " "}</span>
                   {/* <span className="ml-[1rem]">2h00 to due</span> */}
                 </div>
               </div>
@@ -480,9 +458,7 @@ const TicketDetail = () => {
                   </div>
                 ) : (
                   <div>
-                    <button className="text-[#fff] font-medium px-[0.75rem] bg-[#043AC5]">
-                      Assign
-                    </button>
+                    <button className="text-[#fff] font-medium px-[0.75rem] bg-[#043AC5]">Assign</button>
                   </div>
                 )}
               </div>
