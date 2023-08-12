@@ -1,50 +1,80 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./styles.module.scss";
 import clsx from "clsx";
 import MessageError from "../MessageError";
 import * as Dialog from "@radix-ui/react-dialog";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-import DropdownRoleType from "../../../components/Dashboard/TableRoles/DropDownRoleType";
-import { roleTypes } from "../../../pages/AdminRole";
+import DropdownBusinessHour from "../../../components/Dashboard/TableGroups/DropDownBusinessHour";
+import DropdownGroupLeader from "../../../components/Dashboard/TableGroups/DropDownGroupLeader";
 
 const TableItem = ({
   item,
   setCurrentRoles,
   currentIndex,
-  onDeleteRole,
-  onUpdateRole,
+  setOpen,
+  onUpdateGroup,
+  listLeader,
+  listBusiness,
+  data,
 }) => {
   const [isEdit, setIsEdit] = useState(false);
-  const [roleName, setRoleName] = useState(item?.roleName);
-  const [desc, setDesc] = useState(item?.description);
-  const [roleType, setRoleType] = useState(roleTypes);
-  const [open, setOpen] = useState(false);
   const axiosInstance = useAxiosPrivate();
+  const [groupName, setGroupName] = useState(item?.groupName);
+  const [desc, setDesc] = useState(item?.description);
+  // const [businessHourName, setBusinessHourName] = useState(
+  //   item?.businessHourEntity.businessHourName
+  // );
+  const [listBusinessHour, setListBusinessHour] = useState(listBusiness);
+  const [groupLeader, setGroupLeader] = useState(item?.userEntity.fullName);
+  //const [groupLeader, setGroupLeader] = useState("");
+  const [listGroupLeader, setlistGroupLeader] = useState(listLeader);
 
-  const deleteRole = () => {
-    // Gọi API để xóa dữ liệu dưới cơ sở dữ liệu
-    axiosInstance
-      .delete(`api/Roles/delete/${item.roleId}`)
-      .then((response) => {
-        // Nếu xóa thành công, cập nhật lại state bằng cách loại bỏ phần tử đã xóa
-        setCurrentRoles((prevListService) => {
-          return prevListService.filter((e) => e.roleId !== item.roleId);
-        });
-        alert(response.data.message);
-      })
-      .catch((error) => {
-        alert("Lỗi khi xóa:", error);
-      });
-  };
-
+  // useEffect(() => {
+  //   const getListBusinessHour = async () => {
+  //     try {
+  //       const response = await axiosInstance.get(`api/BusinessHours/getall`);
+  //       setListBusinessHour(response.data);
+  //     } catch (error) {
+  //       console.error("Error getListBusinessHour [TableGroups]:", error);
+  //     }
+  //   };
+  //   const getListGroupLeaderName = async () => {
+  //     try {
+  //       const response = await axiosInstance.get(`/api/Users/getall`);
+  //       setlistGroupLeader(response.data);
+  //     } catch (error) {
+  //       console.error("Error getListGroupLeaderName [TableGroups]:", error);
+  //     }
+  //   };
+  //   getListGroupLeaderName();
+  //   getListBusinessHour();
+  // }, [axiosInstance]);
+  const [businessHourSelected, setBusinessHourSelected] =
+    useState(listBusiness);
+  const [groupLeaderSelected, setGroupLeaderSelected] = useState(listLeader);
+  // const deleteGroup = () => {
+  //   // Gọi API để xóa dữ liệu dưới cơ sở dữ liệu
+  //   axiosInstance
+  //     .delete(`api/Roles/delete/${item.roleId}`)
+  //     .then((response) => {
+  //       // Nếu xóa thành công, cập nhật lại state bằng cách loại bỏ phần tử đã xóa
+  //       setCurrentRoles((prevListService) => {
+  //         return prevListService.filter((e) => e.roleId !== item.roleId);
+  //       });
+  //       alert(response.data.message);
+  //     })
+  //     .catch((error) => {
+  //       alert("Lỗi khi xóa:", error);
+  //     });
+  // };
   return (
     <tr>
       <td>
         <input
           type="text"
-          value={roleName}
+          value={groupName}
           onChange={(e) => {
-            setRoleName(e.target.value);
+            setGroupName(e.target.value);
           }}
           className={clsx(
             "px-3 py-1.5 rounded-lg bg-transparent border-2",
@@ -53,7 +83,7 @@ const TableItem = ({
           disabled={!isEdit}
           style={{ boxShadow: isEdit && "0px 4px 4px 0px rgba(0, 0, 0, 0.25)" }}
         />
-        {!roleName && <MessageError error={"Role name is required"} />}
+        {!groupName && <MessageError error={"Group name is required"} />}
       </td>
       <td>
         <input
@@ -71,14 +101,15 @@ const TableItem = ({
         />
         {!desc && <MessageError error={"Description is required"} />}
       </td>
-      {isEdit ? (
+      {/* {isEdit ? (
         <td>
-          <DropdownRoleType
-            selected={roleType}
-            setSelected={setRoleType}
+          <DropdownBusinessHour
+            selected={businessHourSelected}
+            setSelected={setBusinessHourSelected}
             onChange={(e) => {
-              setRoleType(e.target.value);
+              setBusinessHourSelected(e.target.value);
             }}
+            listBusinessHour={listBusiness}
             className={clsx(
               "px-3 py-1.5 rounded-lg bg-transparent border-2",
               isEdit ? "border-[#CCC9C9]" : "border-transparent"
@@ -92,11 +123,46 @@ const TableItem = ({
         <td>
           <input
             type="text"
-            value={roleType.id === 0 ? "Admin" : "Agent"}
+            value={businessHourName}
+            onChange={(e) => {
+              setBusinessHourName(e.target.value);
+            }}
+          />
+        </td>
+      )} */}
+      {isEdit ? (
+        <td>
+          <DropdownGroupLeader
+            selected={groupLeaderSelected}
+            setSelected={setGroupLeaderSelected}
+            onChange={(e) => {
+              setBusinessHourSelected(e.target.value);
+            }}
+            listGroupLeader={listLeader}
+            className={clsx(
+              "px-3 py-1.5 rounded-lg bg-transparent border-2",
+              isEdit ? "border-[#CCC9C9]" : "border-transparent"
+            )}
+            style={{
+              boxShadow: isEdit && "0px 4px 4px 0px rgba(0, 0, 0, 0.25)",
+            }}
+            data={data}
+            index={currentIndex}
+          />
+        </td>
+      ) : (
+        <td>
+          <input
+            type="text"
+            value={groupLeader}
+            onChange={(e) => {
+              setGroupLeader(e.target.value);
+            }}
             disabled={!isEdit}
           />
         </td>
       )}
+
       <td className="space-x-10 flex">
         <div className="space-x-5 py-2">
           <button
@@ -104,31 +170,41 @@ const TableItem = ({
             onClick={() => {
               setIsEdit((prev) => !prev);
               if (isEdit) {
-                onUpdateRole(item.roleId, roleName, desc, roleType);
+                onUpdateGroup(
+                  item.groupId,
+                  groupName,
+                  desc,
+                  groupLeaderSelected.userId
+                );
+                setGroupLeader(groupLeaderSelected.fullName);
+                // setGroupLeaderSelected(data[currentIndex].userEntity);
+                // item.userEntity.forEach()
               }
             }}
           >
             {!isEdit ? "Edit" : "Save"}
           </button>
-          <button
+          {/* <button
             className="text-[#3A7DFF] focus:outline-none border-0"
             onClick={() => {
               setOpen(true);
             }}
           >
             Delete
-          </button>
+          </button> */}
         </div>
         <button className="text-[#3A7DFF] focus:outline-none border-0">
-          View Permission
+          Add group
         </button>
       </td>
-      <Dialog.Root open={open} onOpenChange={setOpen}>
+      {/* <Dialog.Root open={open} onOpenChange={setOpen}>
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 z-50 bg-[#D9D9D950]" />
           <Dialog.Content className="fixed left-[50%] top-[50%] z-50 max-h-[85vh] w-[90vw] max-w-[638px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white focus:outline-none flex flex-col border-2 border-[#BFBFBF]">
             <div className="pt-10 px-10 pb-4">
-              <h6 className="text-xl xl:text-3xl font-semibold">Delete Role</h6>
+              <h6 className="text-xl xl:text-3xl font-semibold">
+                Delete Group
+              </h6>
 
               <div className="flex flex-col items-center mt-3">
                 <svg
@@ -144,13 +220,13 @@ const TableItem = ({
                   />
                 </svg>
                 <p className="mt-2 text-lg xl:text-2xl">
-                  Are you sure to delete this Role?
+                  Are you sure to delete this Group?
                 </p>
                 <div className="flex space-x-5 justify-end w-full mt-3">
                   <button
                     className="text-lg xl:text-2xl w-[100px] py-1.5 bg-[#DE350B] text-white font-normal focus:outline-none border-0"
                     onClick={(e) => {
-                      deleteRole();
+                      deleteGroup();
                       e.preventDefault();
                       setOpen(false);
                     }}
@@ -171,31 +247,29 @@ const TableItem = ({
             </div>
           </Dialog.Content>
         </Dialog.Portal>
-      </Dialog.Root>
+      </Dialog.Root> */}
     </tr>
   );
 };
-export const roles = [
-  { name: "Administrator", desc: "Description for IT Service Administrator" },
-  { name: "Team Member", desc: "Description for IT Service Administrator" },
-  { name: "Service Owner", desc: "Description for IT Service Administrator" },
-  { name: "Customer", desc: "Description for IT Service Administrator" },
-];
-const TableRoles = ({ data, setCurrentRoles }) => {
-  // const [open, setOpen] = useState(false);
+
+const TableGroups = ({ data, setCurrentRoles, listLeader, listBusiness }) => {
+  const [open, setOpen] = useState(false);
   // const [selectedRole, setSelectedRole] = useState();
   const axiosInstance = useAxiosPrivate();
 
-  const updateRole = (roleId, roleName, roleDescription, roleType) => {
-    const updatedRole = {
-      roleId: roleId,
-      roleName: roleName,
-      description: roleDescription,
-      roleType: roleType.id,
+  const handleDelete = (e) => {
+    e.preventDefault();
+    setOpen(false);
+  };
+  const updateGroup = (groupId, groupName, groupDescription, groupLeader) => {
+    const updatedGroup = {
+      groupName: groupName,
+      description: groupDescription,
+      groupLeader: groupLeader,
     };
 
     axiosInstance
-      .put(`/api/Roles/update`, updatedRole, {
+      .put(`/api/Groups/update?groupId=${groupId}`, updatedGroup, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -203,7 +277,7 @@ const TableRoles = ({ data, setCurrentRoles }) => {
       .then((response) => {
         const newData = response.data;
         const updatedData = data.map((item) =>
-          item.roleId === newData.roleId ? newData : item
+          item.groupId === newData.groupId ? newData : item
         );
 
         setCurrentRoles(updatedData);
@@ -212,29 +286,32 @@ const TableRoles = ({ data, setCurrentRoles }) => {
         alert("Có lỗi khi cập nhật: ", error);
       });
   };
+
   return (
     <div className="overflow-auto">
       <table className={clsx(styles.table, "w-full text-left mt-8 xl:mt-16")}>
         <tr>
-          <th>Role Name</th>
+          <th>Group Name</th>
           <th>Description</th>
-          <th>Role Type</th>
+          <th>Group Leader</th>
           <th>&nbsp;</th>
         </tr>
         {data.map((item, index) => (
           <TableItem
-            key={item.roleId}
+            key={index}
             item={item}
             setCurrentRoles={setCurrentRoles}
             currentIndex={index}
-            // setOpen={setOpen}
-            onUpdateRole={updateRole}
+            setOpen={setOpen}
+            onUpdateGroup={updateGroup}
+            listLeader={listLeader}
+            listBusiness={listBusiness}
+            data={data}
           />
         ))}
       </table>
-      {/*  */}
     </div>
   );
 };
 
-export default TableRoles;
+export default TableGroups;

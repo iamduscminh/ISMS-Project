@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import classNames from "classnames/bind";
 import styles from "./TicketStatus.module.scss";
 import StatusItem from "./StatusItem";
@@ -7,27 +7,19 @@ const cx = classNames.bind(styles);
 const statusData = [
   {
     id: 1,
-    text: "New",
+    text: "Open",
   },
   {
     id: 2,
-    text: "Reject",
+    text: "InProgress",
   },
   {
     id: 3,
-    text: "Inprogress",
+    text: "Pending",
   },
   {
     id: 4,
     text: "Resolved",
-  },
-  {
-    id: 5,
-    text: "Pending",
-  },
-  {
-    id: 6,
-    text: "Close",
   },
 ];
 const TicketStatus = ({
@@ -39,6 +31,9 @@ const TicketStatus = ({
 }) => {
   const [showCombobox, setShowCombobox] = useState(false);
   const [selectedOption, setSelectedOption] = useState(currentStatus);
+  useEffect(() => {
+    setSelectedOption(currentStatus);
+  }, [currentStatus]);
   const handleSelect = (selectedStatus) => {
     setSelectedOption(selectedStatus);
     onSelect(selectedStatus);
@@ -49,14 +44,20 @@ const TicketStatus = ({
       <div className="w-[60%] relative">
         <div
           onClick={(e) => setShowCombobox(!showCombobox)}
-          className={cx(`w-full bg-[#42526E] text-center text-[#fff] rounded-[10px] px-[1rem] ${customStyles.paddingY}  font-medium cursor-pointer`)} 
+          className={cx(
+            `w-full bg-[#42526E] text-center text-[#fff] rounded-[10px] px-[1rem] ${customStyles.paddingY}  font-medium cursor-pointer`
+          )}
         >
-          {selectedOption.text}
+          {selectedOption}
         </div>
         {showCombobox && (
-          <div className={cx(`w-full absolute left-0 bottom-0 translate-y-[104%] bg-[#fff] shadow-sm rounded-md overflow-hidden ${customStyles.zIndex}`)}>
-            {statusData.map((item) => (
-              <StatusItem status={item} key={item.id} onSelect={handleSelect} />
+          <div
+            className={cx(
+              `w-full absolute left-0 bottom-0 translate-y-[104%] bg-[#fff] shadow-sm rounded-md overflow-hidden ${customStyles.zIndex}`
+            )}
+          >
+            {statusData.map((item, index) => (
+              <StatusItem status={item} key={index} onSelect={handleSelect} />
             ))}
           </div>
         )}
