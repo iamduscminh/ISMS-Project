@@ -10,5 +10,9 @@ export const URL = {
   REQUEST_TICKET_EXT_URL: "api/RequestTicketExts",
   QUERY_URL: 'api/Queries',
   SLA_URL: 'api/Slas',
-  SLA_METRIC_URL: 'api/Slametrics' 
+  SLA_METRIC_URL: 'api/Slametrics',
+  WORKFLOW_URL:'api/Workflows',
+  WORKFLOW_TASK_URL: 'api/WorkflowTasks',
+  WORKFLOW_TRANSITION_URL: 'api/WorkflowTransitions',
+  WORKFLOW_ASSIGNMENT_URL: 'api/WorkflowAssignments'
 };

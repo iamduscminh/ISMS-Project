@@ -42,7 +42,8 @@ const Dashboard = () => {
         const problemTickets = response.data.problem;
         const changeTickets = response.data.change;
         const incidentTickets = response.data.incident;
-        const serviceRequests = response.data.serviceRequests.length;
+        const serviceRequests = 5;
+
         setTicketByType([
           incidentTickets,
           serviceRequests,
@@ -98,7 +99,8 @@ const Dashboard = () => {
         //Ticket By Priority
         var low = 0,
           medium = 0,
-          high = 0;
+          high = 0,
+          urgency = 0;
         response.data.forEach((ticket) => {
           if (ticket.priority.toUpperCase() === "Low".toUpperCase()) {
             low++;
@@ -109,8 +111,11 @@ const Dashboard = () => {
           if (ticket.priority.toUpperCase() == "High".toUpperCase()) {
             high++;
           }
+          if (ticket.priority.toUpperCase() == "Urgency".toUpperCase()) {
+            urgency++;
+          }
         });
-        setTicketByPriority([low, medium, high]);
+        setTicketByPriority([low, medium, high, urgency]);
       } catch (error) {
         console.error("Error get all Request Tickets [Dashboard]:", error);
         setIsLoading(false);
@@ -213,7 +218,12 @@ const Dashboard = () => {
             />
           )}
           {ticketPrioritiesSelectedNormalized?.includes(
-            ticketPriorities?.[2]?.value
+            ticketPriorities?.[3]?.value
+          ) && (
+            <CardStatistic
+              title="URGENRY PRIORITY TICKET"
+              value={ticketByPriority[3]}
+            />
           )}
           <CardStatistic title="RESOLUTION DURATION DAYS" value={124.84} />
           <CardStatistic title="OPEN TICKET DURATION DAYS" value={124.84} />

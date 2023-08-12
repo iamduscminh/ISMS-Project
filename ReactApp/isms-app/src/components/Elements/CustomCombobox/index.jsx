@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./CustomCombobox.module.scss";
 import classNames from "classnames/bind";
 import {
@@ -25,10 +25,13 @@ const CustomCombobox = ({
     borderRadius: "rounded-md",
   },
 }) => {
+
   const [showCombobox, setShowCombobox] = useState(false);
 
-  const [selectedOption, setSelectedOption] = useState(value);
-
+  const [selectedOption, setSelectedOption] = useState([]);
+  useEffect(() => {
+    setSelectedOption(value);
+  }, [value]);
   const handleSelect = (selectedItem) => {
     setSelectedOption(selectedItem);
     onSelect(selectedItem);
@@ -62,7 +65,7 @@ const CustomCombobox = ({
                     `w-[1.3rem] mr-[0.5rem] aspect-square rounded-md bg-[#${wrapper}] flex items-center justify-center text-[#fff] text-[1.25rem]`
                   )}
                 >
-                  {selectedOption[showProp1]}
+                  {selectedOption}
                 </div>
               ) : (
                 <div className="mr-[1rem] text-[1.25rem]">

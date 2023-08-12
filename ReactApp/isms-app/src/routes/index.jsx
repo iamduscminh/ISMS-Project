@@ -16,12 +16,6 @@ const publicRoutes = [
   },
 
   { path: "/admin/", component: Page.ListTicket, layout: Layout.CustomLayout },
-  
-  {
-    path: "/admin/ticket/:ticketId",
-    component: Page.TicketDetail,
-    layout: Layout.CustomLayout,
-  },
   {
     path: "/viewRequestTypes",
     component: Page.ViewRequestTypes,
@@ -34,11 +28,6 @@ const publicRoutes = [
   },
 
   { path: "/updateCustomField/:id", component: Page.UpdateCustomField },
-  {
-    path: "/admin/setting/workflows/:mode/:flowId?",
-    component: Page.ViewWorkflow,
-    layout: Layout.CustomLayout,
-  },
   {
     path: "/createRequestType",
     component: Page.CreateRequestType,
@@ -147,7 +136,13 @@ const PERM000012Routes = [
 ];
 
 //Route có Permission là PERM000013 Manage workflows
-const PERM000013Routes = [];
+const PERM000013Routes = [
+  {
+    path: "/admin/setting/workflows/:flowId",
+    component: Page.ViewWorkflow,
+    layout: Layout.CustomLayout,
+  },
+];
 
 //Route có Permission là PERM000014 Manage workflow steps
 const PERM000014Routes = [];
@@ -171,6 +166,11 @@ const loginRoutes = [
     path: "/profile/:userId?",
     component: Page.Profile,
     layout: Layout.DefaultLayout,
+  },
+  {
+    path: "/admin/ticket/:ticketId",
+    component: Page.TicketDetail,
+    layout: Layout.CustomLayout,
   },
 ];
 
