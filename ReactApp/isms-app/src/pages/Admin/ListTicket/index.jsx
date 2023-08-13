@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./ListTicket.module.scss";
+import { Link, useNavigate } from "react-router-dom";
 import classNames from "classnames/bind";
 import { DataGrid } from "@mui/x-data-grid";
 import { format } from "date-fns";
@@ -19,6 +20,7 @@ import useAuth from "../../../hooks/useAuth";
 const cx = classNames.bind(styles);
 
 const ListTicket = () => {
+  const navigate = useNavigate();
   const [selectedRow, setSelectedRow] = React.useState();
   const [contextMenu, setContextMenu] = React.useState(null);
   const axiosInstance = useAxiosPrivate();
@@ -218,6 +220,11 @@ const ListTicket = () => {
     };
     fetchData();
   }, []);
+  const handleRowClick = (params) => {
+    const { id } = params.row;
+
+    navigate("/admin/ticket/" + id);
+  };
   return (
     <div>
       <div className="relative w-full h-[22vh] bg-[#42526E] pt-[1.5rem] pl-[4.5rem]">
@@ -264,6 +271,7 @@ const ListTicket = () => {
               pageSizeOptions={[20]}
               checkboxSelection
               disableRowSelectionOnClick
+              onRowClick={handleRowClick}
             />
             <Menu
               open={contextMenu !== null}
