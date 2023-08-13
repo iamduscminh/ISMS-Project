@@ -27,17 +27,12 @@ const publicRoutes = [
     layout: Layout.CustomLayout,
   },
 
-  { path: "/updateCustomField/:id", component: Page.UpdateCustomField },
   {
     path: "/createRequestType",
     component: Page.CreateRequestType,
     layout: Layout.CustomLayout,
   },
-  {
-    path: "/viewCustomFields",
-    component: Page.ViewCustomFields,
-    layout: Layout.CustomLayout,
-  },
+
   {
     path: ROUTES_PATHS.ADMIN,
     component: Page.Dashboard,
@@ -125,7 +120,14 @@ const PERM000003Routes = [];
 const PERM000004Routes = [];
 
 //Route có Permission là PERM000005: Manage custom fields
-const PERM000005Routes = [];
+const PERM000005Routes = [
+  { path: "/updateCustomField/:id", component: Page.UpdateCustomField },
+  {
+    path: "/viewCustomFields",
+    component: Page.ViewCustomFields,
+    layout: Layout.CustomLayout,
+  },
+];
 
 //Route có Permission là PERM000006: Manage attachments
 const PERM000006Routes = [];

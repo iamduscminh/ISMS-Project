@@ -13,7 +13,6 @@ function CreateRequest() {
   const [isIncident, setIsIncident] = useState(false);
   const [requestType, setRequestType] = useState(null);
   const [requestTypeCustomFields, setRequestTypeCustomFields] = useState([]);
-  const [ticketIdResponse, setTicketIdResponse] = useState("1");
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedFileName, setSelectedFileName] = useState();
   //API CONFIG
@@ -177,30 +176,24 @@ function CreateRequest() {
         .post(apiCreateRequestTicketUrl, formData, headers)
         .then((response) => {
           console.log(response.data);
-          setTicketIdResponse(response.data.requestTicketDTO.requestTicketId);
           //CREATE REQUEST TICKET EXT
           if (customFieldsData.some((item) => typeof item === "object")) {
             const customFieldsDataArray = customFieldsData.map((item) => {
-              return { ...item, ticketId: ticketIdResponse };
+              return {
+                ...item,
+                ticketId: response.data.requestTicketDTO.requestTicketId,
+              };
             });
             console.log(customFieldsDataArray);
-            axiosInstance
-              .post(
-                apiCreateRequestTicketExtUrl,
-                JSON.stringify(customFieldsDataArray),
-                { headers }
-              )
-              .then((response) => {
-                console.log(response.data);
-              })
-              .catch((error) => {
-                const result = Swal.fire({
-                  icon: "error",
-                  title: "Oops...",
-                  text: `${error}`,
-                });
-              });
+            return axiosInstance.post(
+              apiCreateRequestTicketExtUrl,
+              JSON.stringify(customFieldsDataArray),
+              { headers }
+            );
           }
+        })
+        .then((response) => {
+          console.log(response.data);
         })
         .catch((error) => {
           const result = Swal.fire({
@@ -376,7 +369,7 @@ function CreateRequest() {
                       fieldCode={item?.fieldCode}
                       fieldName={item?.fieldName}
                       fieldValue={
-                        item?.fieldValue ?? item?.defaultValue ?? null
+                        item?.fieldValue ?? item?.defaultValue ?? undefined
                       }
                       fieldType={item?.fieldType}
                       valType={item?.valType}

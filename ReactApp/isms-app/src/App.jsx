@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Fragment } from "react";
 import * as myRoutes from "./routes";
 import DefaultLayout from "./components/Layout/DefaultLayout";
@@ -38,9 +38,11 @@ function App() {
                 })
               }
 
-              <Route element={<RequiredAuth allowPer={[
-                PERMISSIONS["Manage users"]
-              ]} />}>
+              <Route
+                element={
+                  <RequiredAuth allowPer={[PERMISSIONS["Manage users"]]} />
+                }
+              >
                 {
                   //Định tuyến cho các Route public
                   myRoutes.PERM000000Routes.map((route, index) => {
@@ -68,9 +70,11 @@ function App() {
                 }
               </Route>
 
-              <Route element={<RequiredAuth allowPer={[
-                PERMISSIONS["Manage tickets"]
-              ]} />}>
+              <Route
+                element={
+                  <RequiredAuth allowPer={[PERMISSIONS["Manage tickets"]]} />
+                }
+              >
                 {
                   //Định tuyến cho các Route public
                   myRoutes.PERM000002Routes.map((route, index) => {
@@ -98,9 +102,11 @@ function App() {
                 }
               </Route>
 
-              <Route element={<RequiredAuth allowPer={[
-                PERMISSIONS["Manage slas"]
-              ]} />}>
+              <Route
+                element={
+                  <RequiredAuth allowPer={[PERMISSIONS["Manage slas"]]} />
+                }
+              >
                 {
                   //Định tuyến cho các Route public
                   myRoutes.PERM000012Routes.map((route, index) => {
@@ -128,9 +134,45 @@ function App() {
                 }
               </Route>
 
-              <Route element={<RequiredAuth allowPer={[
-                PERMISSIONS["Manage workflows"]
-              ]} />}>
+              <Route
+                element={
+                  <RequiredAuth
+                    allowPer={[PERMISSIONS["Manage custom fields"]]}
+                  />
+                }
+              >
+                {
+                  //Định tuyến cho các Route public
+                  myRoutes.PERM000005Routes.map((route, index) => {
+                    const Page = route.component;
+                    let Layout = DefaultLayout;
+
+                    if (route.layout) {
+                      Layout = route.layout;
+                    } else if (route.layout === null) {
+                      Layout = Fragment;
+                    }
+
+                    return (
+                      <Route
+                        key={index}
+                        path={route.path}
+                        element={
+                          <Layout>
+                            <Page />
+                          </Layout>
+                        }
+                      />
+                    );
+                  })
+                }
+              </Route>
+
+              <Route
+                element={
+                  <RequiredAuth allowPer={[PERMISSIONS["Manage workflows"]]} />
+                }
+              >
                 {
                   //Định tuyến cho các Route public
                   myRoutes.PERM000013Routes.map((route, index) => {
@@ -158,7 +200,7 @@ function App() {
                 }
               </Route>
 
-              <Route element={<RequiredAuth allowPer="login"/>}>
+              <Route element={<RequiredAuth allowPer="login" />}>
                 {
                   //Định tuyến cho các Route public
                   myRoutes.loginRoutes.map((route, index) => {
@@ -185,7 +227,6 @@ function App() {
                   })
                 }
               </Route>
-
             </Routes>
           </div>
         </Router>
