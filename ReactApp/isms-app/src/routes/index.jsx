@@ -21,17 +21,6 @@ const publicRoutes = [
     component: Page.ViewRequestTypes,
     layout: Layout.CustomLayout,
   },
-  {
-    path: "/createRequestType",
-    component: Page.CreateRequestType,
-    layout: Layout.CustomLayout,
-  },
-
-  {
-    path: "/createRequestType",
-    component: Page.CreateRequestType,
-    layout: Layout.CustomLayout,
-  },
 
   {
     path: ROUTES_PATHS.ADMIN,
@@ -114,7 +103,13 @@ const PERM000002Routes = [
 ];
 
 //Route có Permission là PERM000003: Manage service items
-const PERM000003Routes = [];
+const PERM000003Routes = [
+  {
+    path: "/createRequestType",
+    component: Page.CreateRequestType,
+    layout: Layout.CustomLayout,
+  },
+];
 
 //Route có Permission là PERM000004: Manage service categories
 const PERM000004Routes = [];

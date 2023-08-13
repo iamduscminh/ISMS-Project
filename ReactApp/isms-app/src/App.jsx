@@ -101,7 +101,39 @@ function App() {
                   })
                 }
               </Route>
+              <Route
+                element={
+                  <RequiredAuth
+                    allowPer={[PERMISSIONS["Manage service items"]]}
+                  />
+                }
+              >
+                {
+                  //Định tuyến cho các Route public
+                  myRoutes.PERM000003Routes.map((route, index) => {
+                    const Page = route.component;
+                    let Layout = DefaultLayout;
 
+                    if (route.layout) {
+                      Layout = route.layout;
+                    } else if (route.layout === null) {
+                      Layout = Fragment;
+                    }
+
+                    return (
+                      <Route
+                        key={index}
+                        path={route.path}
+                        element={
+                          <Layout>
+                            <Page />
+                          </Layout>
+                        }
+                      />
+                    );
+                  })
+                }
+              </Route>
               <Route
                 element={
                   <RequiredAuth allowPer={[PERMISSIONS["Manage slas"]]} />

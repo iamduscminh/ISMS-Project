@@ -2,18 +2,21 @@ import { React, useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import Swal from "sweetalert2";
 import * as Icon from "../../components/Elements/Icon";
 import IconTag from "../../components/Elements/IconTag";
-import UnderlineAnimation from "../../components/Animation/UnderlineText";
 import CustomFieldTag from "../../components/Elements/CustomFieldTag";
 import ModalDialog from "../../components/Elements/PopupModal";
 import CustomField from "../../components/Elements/CustomField";
 import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import useAuth from "../../hooks/useAuth";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { URL } from "../../utils/Url";
 function CreateRequestType() {
   const navigate = useNavigate();
   const { auth } = useAuth();
-  console.log(auth);
+  const axiosInstance = useAxiosPrivate();
+  //console.log(auth);
   const iconRequestTypes = [
     "BsFillInfoSquareFill",
     "HiOutlineDesktopComputer",
@@ -53,40 +56,7 @@ function CreateRequestType() {
       tabIndex: 2,
     },
   ];
-  const listFieldsAll = [
-    {
-      fieldId: 1,
-      fieldName: "Reason Change",
-    },
-    {
-      fieldId: 2,
-      fieldName: "Reason Approve",
-    },
-    {
-      fieldId: 3,
-      fieldName: "Computer Affected",
-    },
-    {
-      fieldId: 4,
-      fieldName: "Computer Broken",
-    },
-    {
-      fieldId: 5,
-      fieldName: "Password reset",
-    },
-    {
-      fieldId: 6,
-      fieldName: "Wifi reset",
-    },
-    {
-      fieldId: 7,
-      fieldName: "Configuration Information",
-    },
-    {
-      fieldId: 8,
-      fieldName: "Brand Expect",
-    },
-  ];
+
   const listFieldConfigInit = [
     {
       fieldId: "1",
@@ -104,11 +74,7 @@ function CreateRequestType() {
       mandatory: false,
     },
   ];
-  const [listOfService, setListOfService] = useState([
-    { id: 1, serviceName: "Computers" },
-    { id: 2, serviceName: "Account & Pass" },
-    { id: 3, serviceName: "Wiffi" },
-  ]);
+  const [listOfService, setListOfService] = useState([]);
 
   //Icon
   const [iconRequestType, setIconRequestType] = useState(
@@ -117,10 +83,18 @@ function CreateRequestType() {
   const [iconRequestTypeTemp, setIconRequestTypeTemp] =
     useState(iconRequestType);
   const [selectedService, setSelectedService] = useState(listOfService[0]);
+  const [selectedWorkflow, setSelectedWorkflow] = useState();
   const [activeTabIndex, setActiveTabIndex] = useState(0);
-  const [listFieldConfig, setListFieldConfig] = useState(listFieldConfigInit);
+  const [listFieldsAll, setListFieldAll] = useState([]);
+  const [listFieldConfig, setListFieldConfig] = useState([]);
   const [isCreateNewService, setCreateNewService] = useState(false);
   const [errorService, setErrorService] = useState("");
+  const token = auth?.accessToken;
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+    withCredentials: true,
+  };
   //định nghĩa form
   const {
     register,
@@ -131,10 +105,78 @@ function CreateRequestType() {
     criteriaMode: "all",
   });
   const onSubmit = (data) => {
+    const apiCreateRequestTypeUrl = "api/ServiceItems/create";
     // console.log(data);
     // console.log(iconRequestType);
     // console.log(selectedService);
     // console.log(listFieldConfig);
+    const requestTypeDto = {
+      ServiceItemName: data.rqtName,
+      ShortDescription: data.rqtDescription,
+      Description: data.rqtDescription,
+      EstimatedDelivery: 0,
+      Status: true,
+      ServiceCategoryId: selectedService.id,
+      IconDisplay: iconRequestType,
+    };
+    try {
+      Swal.fire({
+        title: "Loading...",
+        allowOutsideClick: false,
+        onBeforeOpen: () => {
+          Swal.showLoading();
+        },
+      });
+      axiosInstance
+        .post(apiCreateRequestTypeUrl, requestTypeDto, headers)
+        .then((response) => {
+          console.log(response.data);
+          //CREATE REQUEST TICKET EXT
+          // if (customFieldsData.some((item) => typeof item === "object")) {
+          //   const customFieldsDataArray = customFieldsData.map((item) => {
+          //     return {
+          //       ...item,
+          //       ticketId: response.data.requestTicketDTO.requestTicketId,
+          //     };
+          //   });
+          //   //console.log(customFieldsDataArray);
+          //   ticketIdResponse = response.data.requestTicketDTO.requestTicketId;
+          //   return axiosInstance.post(
+          //     apiCreateRequestTicketExtUrl,
+          //     JSON.stringify(customFieldsDataArray),
+          //     { headers }
+          //   );
+          // }
+        })
+        .then((response) => {
+          //console.log(response.data);
+          Swal.fire({
+            icon: "success",
+            title: "Success!",
+            text: "Request Ticket was created successfully.",
+            confirmButtonText: "OK",
+          }).then(() => {
+            navigate("/admin/");
+          });
+        })
+        .catch((error) => {
+          const result = Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: `${error}`,
+          });
+        });
+
+      Swal.close();
+    } catch (error) {
+      // Handle errors if needed
+      Swal.close();
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error,
+      });
+    }
   };
   const handleCreateRequestType = () => {
     if (Object.keys(errors).length !== 0) setActiveTabIndex(0);
@@ -203,16 +245,14 @@ function CreateRequestType() {
     second: "numeric",
     hour12: true,
   };
-  const columns = [
+  const columnWfls = [
     { field: "stt", headerName: "STT", width: 50 },
     { field: "id", headerName: "ID", width: 150 },
-    { field: "wflName", headerName: "Workflow Name", width: 300 },
-    { field: "status", headerName: "Status", width: 100 },
-    { field: "createBy", headerName: "Create By", width: 200 },
-    { field: "createAt", headerName: "Create At", width: 200 },
+    { field: "workflowName", headerName: "Workflow Name", width: 300 },
+    { field: "createdAt", headerName: "Create At", width: 200 },
   ];
   const [workflowData, setworkflowData] = useState([]);
-  const [filteredRows, setFilteredRows] = useState([]);
+  const [filteredWflRows, setFilteredWflRows] = useState([]);
   const handleFilterChange = (e) => {
     const keyword = e.target.value.toLowerCase();
     const filteredData = workflowData.filter((row) =>
@@ -223,13 +263,99 @@ function CreateRequestType() {
           (typeof value === "number" && value.toString().includes(keyword))
       )
     );
-    setFilteredRows(filteredData);
+    setFilteredWflRows(filteredData);
   };
 
-  const handleRowClick = (params) => {
+  const handleRowWorkflowClick = (params) => {
     const { id } = params.row;
-    navigate("/detailRequest/" + id);
+    const workflowSelect = workflowData.find((obj) => obj.id === id);
+    if (workflowSelect) setSelectedWorkflow(workflowSelect);
   };
+  useEffect(() => {
+    const customFieldsGetUrl = `api/CustomFields/getall`;
+    const apiGetSvcCategoryUrl = "api/ServiceCategories/getall";
+    //setListFieldConfig
+    const fetchData = async () => {
+      try {
+        Swal.fire({
+          title: "Loading...",
+          allowOutsideClick: false,
+          onBeforeOpen: () => {
+            Swal.showLoading();
+          },
+        });
+        //--------------Get serrvices
+        axiosInstance
+          .get(apiGetSvcCategoryUrl, { headers })
+          .then((response) => {
+            const data = response.data.map((item, i) => ({
+              id: item.serviceCategoryId,
+              serviceName: item.serviceCategoryName,
+            }));
+            setListOfService(data);
+            setSelectedService(data[0]);
+          })
+          .catch((error) => {
+            const result = Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error}`,
+            });
+          });
+
+        axiosInstance
+          .get(customFieldsGetUrl, { headers })
+          .then((response) => {
+            console.log(response.data);
+            const dataCustomFields = response.data.map((item, i) => ({
+              fieldId: item.customFieldId,
+              fieldName: item.fieldName,
+            }));
+            setListFieldAll(dataCustomFields);
+          })
+          .catch((error) => {
+            const result = Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error}`,
+              showCancelButton: true,
+              confirmButtonText: "Yes",
+              cancelButtonText: "No",
+            });
+
+            if (result.isConfirmed) {
+              console.log("User confirmed!");
+            } else {
+              console.log(error + "User canceled!");
+            }
+          });
+
+        //Workflow
+        const response = await axiosInstance.get(`${URL.WORKFLOW_URL}/getall`);
+        console.log(response.data);
+        const datawfl = response.data.map((item, i) => ({
+          stt: i,
+          id: item.workflowId,
+          workflowName: item.workflowName,
+          createdAt: item.createdAt,
+        }));
+        setworkflowData(datawfl);
+        setFilteredWflRows(datawfl);
+
+        Swal.close();
+      } catch (error) {
+        // Handle errors if needed
+        console.log(error);
+        Swal.close();
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: error,
+        });
+      }
+    };
+    fetchData();
+  }, []);
   return (
     <div className="request-types-container pb-4 w-full h-full bg-[#fff] bg-blend-lighten overflow-y-scroll">
       <div className="request-types-section">
@@ -550,6 +676,9 @@ function CreateRequestType() {
                         <div className="field-item px-2 py-1 mb-2 w-full border">
                           <p>Description</p>
                         </div>
+                        <div className="field-item px-2 py-1 mb-2 w-full border">
+                          <p>File Attachment</p>
+                        </div>
                       </div>
                       <h5 className="text-xl font-bold">Custom Fields</h5>
                       <div className="request-form-custom w-[80%] m-3 p-3 border-dashed border-2 border-gray-500">
@@ -623,11 +752,10 @@ function CreateRequestType() {
                   id="tabRqForm"
                 >
                   <div className="workflow-ctn flex justify-between">
-                    {" "}
-                    <div className="request-tickets-ctn">
-                      <div className="top-menu">
-                        <div className="search-section">
-                          <form className="mb-3 w-1/3">
+                    <div className="request-tickets-ctn w-[60%]">
+                      <div className="top-menu flex items-center">
+                        <div className="search-section mt-3 w-[100%]">
+                          <form className="mb-3 w-[100%]">
                             <label
                               htmlFor="default-search"
                               className="mb-2 text-sm font-medium text-gray-900 sr-only "
@@ -662,30 +790,50 @@ function CreateRequestType() {
                             </div>
                           </form>
                         </div>
+                        <div className="wfl-selected mt-3 ml-7 w-[100%]">
+                          <div className="mb-6">
+                            <div className="flex items-center">
+                              <label
+                                htmlFor="rqtService"
+                                className="block text-sm mr-3 font-medium text-gray-500"
+                              >
+                                Workflow Selected:
+                              </label>
+                              <div className="inline-block cursor-pointer">
+                                <span className="font-bold text-[#42526E] text-xl hover:underline">
+                                  {selectedWorkflow?.workflowName}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-
-                      <DataGrid
-                        rows={filteredRows}
-                        columns={columns}
-                        pageSize={20}
-                        onRowClick={handleRowClick}
-                      />
+                      <div className="mb-3">
+                        <DataGrid
+                          rows={filteredWflRows}
+                          columns={columnWfls}
+                          pageSize={20}
+                          onRowClick={handleRowWorkflowClick}
+                        />
+                      </div>
                     </div>
                   </div>
-                  <button
-                    type="submit"
-                    className="text-white mr-2 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-4 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                    onClick={onBackTab}
-                  >
-                    Back
-                  </button>
-                  <button
-                    type="submit"
-                    className="text-white mr-2 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-4 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                    onClick={handleCreateRequestType}
-                  >
-                    Save
-                  </button>
+                  <div className="">
+                    <button
+                      type="submit"
+                      className="text-white mr-2 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-4 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                      onClick={onBackTab}
+                    >
+                      Back
+                    </button>
+                    <button
+                      type="submit"
+                      className="text-white mr-2 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-4 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                      onClick={handleCreateRequestType}
+                    >
+                      Save
+                    </button>
+                  </div>
                 </div>
               </div>
             </form>
