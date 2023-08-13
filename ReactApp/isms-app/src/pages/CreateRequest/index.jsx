@@ -1,5 +1,5 @@
 import { React, useState, useEffect, useRef } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import CustomField from "../../components/Elements/CustomField";
 import IconTag from "../../components/Elements/IconTag";
@@ -10,6 +10,7 @@ function CreateRequest() {
   const { id } = useParams();
   const { auth } = useAuth();
   const axiosInstance = useAxiosPrivate();
+  const navigate = useNavigate();
   const [isIncident, setIsIncident] = useState(false);
   const [requestType, setRequestType] = useState(null);
   const [requestTypeCustomFields, setRequestTypeCustomFields] = useState([]);
@@ -17,6 +18,7 @@ function CreateRequest() {
   const [selectedFileName, setSelectedFileName] = useState();
   //API CONFIG
   const token = auth?.accessToken;
+
   const headers = {
     Authorization: `Bearer ${token}`,
     "Content-Type": "application/json",
@@ -142,6 +144,7 @@ function CreateRequest() {
     const rqtTitle = getValues("rqtTitle");
     const rqtDesc = getValues("rqtDesc");
     const list = ["rqtTitle", "rqtDesc", "rqtFile"];
+    let ticketIdResponse;
     const customFieldsDataForm = Object.fromEntries(
       Object.entries(data).filter(([key, value]) => !list.includes(key))
     );
@@ -175,7 +178,7 @@ function CreateRequest() {
       axiosInstance
         .post(apiCreateRequestTicketUrl, formData, headers)
         .then((response) => {
-          console.log(response.data);
+          //console.log(response.data);
           //CREATE REQUEST TICKET EXT
           if (customFieldsData.some((item) => typeof item === "object")) {
             const customFieldsDataArray = customFieldsData.map((item) => {
@@ -184,7 +187,8 @@ function CreateRequest() {
                 ticketId: response.data.requestTicketDTO.requestTicketId,
               };
             });
-            console.log(customFieldsDataArray);
+            //console.log(customFieldsDataArray);
+            ticketIdResponse = response.data.requestTicketDTO.requestTicketId;
             return axiosInstance.post(
               apiCreateRequestTicketExtUrl,
               JSON.stringify(customFieldsDataArray),
@@ -193,7 +197,15 @@ function CreateRequest() {
           }
         })
         .then((response) => {
-          console.log(response.data);
+          //console.log(response.data);
+          Swal.fire({
+            icon: "success",
+            title: "Success!",
+            text: "Request Ticket was created successfully.",
+            confirmButtonText: "OK",
+          }).then(() => {
+            navigate("/detailRequest/" + ticketIdResponse);
+          });
         })
         .catch((error) => {
           const result = Swal.fire({
