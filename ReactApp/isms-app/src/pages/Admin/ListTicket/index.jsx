@@ -7,18 +7,22 @@ import { BsSearch } from "react-icons/bs";
 import { FaRegClone, FaEdit } from "react-icons/fa";
 import { MdFavorite, MdDeleteForever } from "react-icons/md";
 import Tippy from "@tippyjs/react/headless";
+import Swal from "sweetalert2";
 import SearchResultItem from "../../../components/Elements/SearchResultItem";
 import Search from "./Search";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import image from "../../../assets/images";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import useAuth from "../../../hooks/useAuth";
 
 const cx = classNames.bind(styles);
 
 const ListTicket = () => {
   const [selectedRow, setSelectedRow] = React.useState();
   const [contextMenu, setContextMenu] = React.useState(null);
-
+  const axiosInstance = useAxiosPrivate();
+  const { auth } = useAuth();
   const handleContextMenu = (event) => {
     event.preventDefault();
     setSelectedRow(Number(event.currentTarget.getAttribute("data-id")));
@@ -33,136 +37,20 @@ const ListTicket = () => {
     setContextMenu(null);
   };
 
-  const [ticketData, setTicketData] = useState([
-    {
-      id: 1,
-      description: "Demo test Service Ticket",
-      service: "Hardware",
-      requestType: "Request new hardware",
-      group:'Group 1',
-      reporter: "Tu Doan",
-      assignee: "Calyrex",
-      status: "WIP",
-      createdDate: "2023/07/04 14:00:00",
-      priority:'High'
-    },
-    {
-      id: 2,
-      description: "Demo test Service Ticket",
-      service: "Hardware",
-      requestType: "Request new hardware",
-      group:'Group 1',
-      reporter: "Tu Doan",
-      assignee: "Calyrex",
-      status: "WIP",
-      createdDate: "2023/07/04 14:00:00",
-      priority:'High'
-    },
-    {
-      id: 3,
-      description: "Demo test Service Ticket",
-      service: "Hardware",
-      requestType: "Request new hardware",
-      group:'Group 1',
-      reporter: "Tu Doan",
-      assignee: "Calyrex",
-      status: "WIP",
-      createdDate: "2023/07/04 14:00:00",
-      priority:'High'
-    },
-    {
-      id: 4,
-      description: "Demo test Service Ticket",
-      service: "Hardware",
-      requestType: "Request new hardware",
-      group:'Group 1',
-      reporter: "Tu Doan",
-      assignee: "Calyrex",
-      status: "WIP",
-      createdDate: "2023/07/04 14:00:00",
-      priority:'High'
-    },
-    {
-      id: 5,
-      description: "Demo test Service Ticket",
-      service: "Hardware",
-      requestType: "Request new hardware",
-      group:'Group 1',
-      reporter: "Tu Doan",
-      assignee: "Calyrex",
-      status: "WIP",
-      createdDate: "2023/07/04 14:00:00",
-      priority:'High'
-    },
-    {
-      id: 6,
-      description: "Demo test Service Ticket",
-      service: "Hardware",
-      requestType: "Request new hardware",
-      group:'Group 1',
-      reporter: "Tu Doan",
-      assignee: "Calyrex",
-      status: "WIP",
-      createdDate: "2023/07/04 14:00:00",
-      priority:'High'
-    },
-    {
-      id: 7,
-      description: "Demo test Service Ticket",
-      service: "Hardware",
-      requestType: "Request new hardware",
-      group:'Group 1',
-      reporter: "Tu Doan",
-      assignee: "Calyrex",
-      status: "WIP",
-      createdDate: "2023/07/04 14:00:00",
-      priority:'High'
-    },
-    {
-      id: 8,
-      description: "Demo test Service Ticket",
-      service: "Hardware",
-      requestType: "Request new hardware",
-      group:'Group 1',
-      reporter: "Tu Doan",
-      assignee: "Calyrex",
-      status: "WIP",
-      createdDate: "2023/07/04 14:00:00",
-      priority:'High'
-    },
-    {
-      id: 9,
-      description: "Demo test Service Ticket",
-      service: "Hardware",
-      requestType: "Request new hardware",
-      group:'Group 1',
-      reporter: "Tu Doan",
-      assignee: "Calyrex",
-      status: "WIP",
-      createdDate: "2023/07/04 14:00:00",
-      priority:'High'
-    },
-  ]);
+  const [ticketData, setTicketData] = useState([]);
 
   const columns = [
-    { field: "id", headerName: "ID", width: 50, editable: false },
-    {
-      field: "description",
-      headerName: "Description",
-      width: 200,
-      editable: true,
-      description: "This column described overview of ticket",
-    },
+    { field: "id", headerName: "ID", width: 150, editable: false },
     {
       field: "service",
       headerName: "Service",
-      width: 120,
+      width: 180,
       editable: true,
     },
     {
       field: "requestType",
       headerName: "RequestType",
-      width: 160,
+      width: 300,
       editable: true,
     },
     {
@@ -174,7 +62,7 @@ const ListTicket = () => {
     {
       field: "reporter",
       headerName: "Reporter",
-      width: 105,
+      width: 150,
       renderCell: (params) => (
         <div style={{ display: "flex", alignItems: "center" }}>
           <div className="w-[1.5rem] h-[1.5rem] rounded-full overflow-hidden">
@@ -222,14 +110,14 @@ const ListTicket = () => {
     {
       field: "createdDate",
       headerName: "Created Date",
-      width: 155,
-      valueFormatter: (params) =>
-        format(new Date(params.value), "yyyy/MM/dd HH:mm:ss"),
+      width: 200,
+      // valueFormatter: (params) =>
+      //   format(new Date(params.value), "yyyy/MM/dd HH:mm:ss"),
     },
     {
       field: "priority",
       headerName: "Priority",
-      width: 60,
+      width: 100,
       editable: true,
     },
   ];
@@ -261,7 +149,75 @@ const ListTicket = () => {
     }
     return ""; // Không có lớp CSS tô màu
   };
-
+  ///Ticket GET DATA
+  const options = {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    hour12: true,
+  };
+  useEffect(() => {
+    const apiGetRequestTicketsUrl = `api/RequestTickets/getticketsadmin/all/none`;
+    const fetchData = async () => {
+      try {
+        Swal.fire({
+          title: "Loading...",
+          allowOutsideClick: false,
+          onBeforeOpen: () => {
+            Swal.showLoading();
+          },
+        });
+        //--------------Get request tickets
+        axiosInstance
+          .get(apiGetRequestTicketsUrl)
+          .then((response) => {
+            const data = response.data.map((item, i) => ({
+              id: item.requestTicketId,
+              service: item.isIncident
+                ? "None"
+                : item.serviceItemEntity?.serviceCategoryEntity
+                    ?.serviceCategoryName,
+              requestType: item.isIncident
+                ? "Issue Abnormal"
+                : item.serviceItemEntity?.serviceItemName,
+              group: "",
+              reporter: item.requesterUserEntity?.fullName,
+              status: item.status,
+              createdDate: new Date(item.createdAt).toLocaleString(
+                "en-US",
+                options
+              ),
+              priority: item.priority,
+            }));
+            setTicketData(data);
+            console.log(response.data);
+          })
+          .catch((error) => {
+            const result = Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error}`,
+              showCancelButton: true,
+              cancelButtonText: "Cancel",
+            });
+          });
+        Swal.close();
+      } catch (error) {
+        // Handle errors if needed
+        console.log(error);
+        Swal.close();
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: error,
+        });
+      }
+    };
+    fetchData();
+  }, []);
   return (
     <div>
       <div className="relative w-full h-[22vh] bg-[#42526E] pt-[1.5rem] pl-[4.5rem]">
@@ -299,13 +255,13 @@ const ListTicket = () => {
               initialState={{
                 pagination: {
                   paginationModel: {
-                    pageSize: 8,
+                    pageSize: 20,
                   },
                 },
               }}
               getRowClassName={getColorClassName}
               rowHeight={48}
-              pageSizeOptions={[8]}
+              pageSizeOptions={[20]}
               checkboxSelection
               disableRowSelectionOnClick
             />

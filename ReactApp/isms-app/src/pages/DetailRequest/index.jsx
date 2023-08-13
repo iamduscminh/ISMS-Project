@@ -244,19 +244,21 @@ function CreateRequest() {
         commentText: commentValue,
         commentBy: auth?.userId,
         requestTicketId: id,
+        isInternal: false,
       };
-      //console.log(commentDto);
+      console.log(commentDto);
       axiosInstance
         .post(apiCreateCommentUrl, JSON.stringify(commentDto), { headers })
         .then((response) => {
-          //console.log(response.data);
+          console.log(response.data.commentText);
           setCommentData((prev) => [
             {
               id: response.data.commentId,
               sender: userName,
               senderId: auth?.userId,
-              time: "Just Now",
-              content: commentValue,
+              isInternal: response.data.isInternal,
+              time: "Just now", //response.data.commentTime,
+              content: commentValue, //response.data.commentText,
             },
             ...prev,
           ]);
