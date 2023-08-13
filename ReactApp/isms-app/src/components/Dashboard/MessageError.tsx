@@ -1,12 +1,17 @@
+import clsx from "clsx";
 import React from "react";
 
-const MessageError = ({ error }) => {
+const MessageError = ({ error, type }) => {
   return (
-    <div className="flex items-center space-x-2 xl:space-x-3">
+    <div
+      className={clsx(
+        "flex items-center space-x-2 xl:space-x-3",
+        type === "small" && "mt-1"
+      )}
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="35"
-        height="35"
+        className={clsx(type === "small" ? "w-[15px]" : "w-[35px]")}
         viewBox="0 0 35 35"
         fill="none"
       >
@@ -15,7 +20,14 @@ const MessageError = ({ error }) => {
           fill="#DE350B"
         />
       </svg>
-      <p className="text-[#DE350B] text-lg xl:text-2xl">{error}</p>
+      <p
+        className={clsx(
+          "text-[#DE350B]",
+          type === "small" ? "text-xs xl:text-sm" : "text-lg xl:text-2xl"
+        )}
+      >
+        {error}
+      </p>
     </div>
   );
 };

@@ -22,7 +22,6 @@ const DropdownRoleType = ({ selected, setSelected, className }) => {
   const ref = useClickAway(() => {
     setOpen(false);
   });
-
   return (
     <div
       ref={ref}
