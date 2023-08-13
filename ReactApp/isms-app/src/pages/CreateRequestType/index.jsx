@@ -1,6 +1,7 @@
 import { React, useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import * as Icon from "../../components/Elements/Icon";
 import IconTag from "../../components/Elements/IconTag";
 import UnderlineAnimation from "../../components/Animation/UnderlineText";
@@ -46,6 +47,10 @@ function CreateRequestType() {
     {
       label: "Request Form",
       tabIndex: 1,
+    },
+    {
+      label: "Workflows",
+      tabIndex: 2,
     },
   ];
   const listFieldsAll = [
@@ -175,7 +180,6 @@ function CreateRequestType() {
     if (isCreateNewService) return;
     setCreateNewService(true);
   };
-
   const handleCreateNewService = (e) => {
     if (!isCreateNewService) return;
     const serviceValue = getValues("svcName");
@@ -189,6 +193,42 @@ function CreateRequestType() {
     } else {
       setErrorService("Service Name is required!");
     }
+  };
+  const options = {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    hour12: true,
+  };
+  const columns = [
+    { field: "stt", headerName: "STT", width: 50 },
+    { field: "id", headerName: "ID", width: 150 },
+    { field: "wflName", headerName: "Workflow Name", width: 300 },
+    { field: "status", headerName: "Status", width: 100 },
+    { field: "createBy", headerName: "Create By", width: 200 },
+    { field: "createAt", headerName: "Create At", width: 200 },
+  ];
+  const [workflowData, setworkflowData] = useState([]);
+  const [filteredRows, setFilteredRows] = useState([]);
+  const handleFilterChange = (e) => {
+    const keyword = e.target.value.toLowerCase();
+    const filteredData = workflowData.filter((row) =>
+      Object.values(row).some(
+        (value) =>
+          (typeof value === "string" &&
+            value.toLowerCase().includes(keyword)) ||
+          (typeof value === "number" && value.toString().includes(keyword))
+      )
+    );
+    setFilteredRows(filteredData);
+  };
+
+  const handleRowClick = (params) => {
+    const { id } = params.row;
+    navigate("/detailRequest/" + id);
   };
   return (
     <div className="request-types-container pb-4 w-full h-full bg-[#fff] bg-blend-lighten overflow-y-scroll">
@@ -560,6 +600,76 @@ function CreateRequestType() {
                           ))}
                         </div>
                       </div>
+                    </div>
+                  </div>
+                  <button
+                    type="submit"
+                    className="text-white mr-2 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-4 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    onClick={onBackTab}
+                  >
+                    Back
+                  </button>
+                  <button
+                    type="button"
+                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-4 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    onClick={onNextTab}
+                  >
+                    Next
+                  </button>
+                </div>
+                {/* Workflow Tag */}
+                <div
+                  className={activeTabIndex === 2 ? "block" : "hidden"}
+                  id="tabRqForm"
+                >
+                  <div className="workflow-ctn flex justify-between">
+                    {" "}
+                    <div className="request-tickets-ctn">
+                      <div className="top-menu">
+                        <div className="search-section">
+                          <form className="mb-3 w-1/3">
+                            <label
+                              htmlFor="default-search"
+                              className="mb-2 text-sm font-medium text-gray-900 sr-only "
+                            >
+                              Search
+                            </label>
+                            <div className="relative">
+                              <div className="absolute inset-y-0 left-0 flex items-center pl-1 pointer-events-none">
+                                <svg
+                                  aria-hidden="true"
+                                  className="w-5 h-5 text-gray-500"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                  ></path>
+                                </svg>
+                              </div>
+                              <input
+                                type="search"
+                                onChange={handleFilterChange}
+                                id="default-search"
+                                className="block w-full px-4 py-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
+                                placeholder="Search..."
+                              />
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+
+                      <DataGrid
+                        rows={filteredRows}
+                        columns={columns}
+                        pageSize={20}
+                        onRowClick={handleRowClick}
+                      />
                     </div>
                   </div>
                   <button
