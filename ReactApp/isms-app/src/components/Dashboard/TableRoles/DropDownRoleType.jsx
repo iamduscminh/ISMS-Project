@@ -1,8 +1,7 @@
 import clsx from "clsx";
 import React, { useState } from "react";
 import { useClickAway } from "@uidotdev/usehooks";
-import { roles } from "../TableRoles";
-
+import { roleTypes } from "../../../pages/AdminRole";
 const IconArrowDown = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -18,14 +17,7 @@ const IconArrowDown = () => (
   </svg>
 );
 
-const DropdownRole = ({
-  selected,
-  setSelected,
-  className,
-  setCurrentRoles,
-  style,
-  inputClassName,
-}) => {
+const DropdownRoleType = ({ selected, setSelected, className }) => {
   const [open, setOpen] = useState(false);
   const ref = useClickAway(() => {
     setOpen(false);
@@ -42,11 +34,10 @@ const DropdownRole = ({
         e.preventDefault();
         setOpen(true);
       }}
-      style={style}
     >
       <div>
         <div className="border-0 hover:border-0 flex justify-between rounded-none items-center w-full text-start focus:outline-none">
-          <span>{selected?.roleName || "Select role"}</span>
+          <span>{selected.name || "Select role type"}</span>
           <IconArrowDown />
         </div>
         <ul
@@ -55,10 +46,10 @@ const DropdownRole = ({
             open ? "block opacity-100" : "max-h-0 hidden opacity-0"
           )}
         >
-          {setCurrentRoles?.map((option) => {
-            const isSelected = selected?.roleName === option.roleName;
+          {roleTypes?.map((option) => {
+            const isSelected = selected?.id === option.id;
             return (
-              <li key={option.roleName} className="flex">
+              <li key={option.id} className="flex">
                 <button
                   className={clsx(
                     "rounded-none pl-5 py-3 xl:py-4 pr-2 w-full border-none focus:outline-none flex justify-between space-x-2  items-center",
@@ -69,9 +60,7 @@ const DropdownRole = ({
                   onClick={(e) => {
                     e.preventDefault();
                     setSelected(
-                      setCurrentRoles.find(
-                        (item) => item?.roleName === option.roleName
-                      )
+                      roleTypes.find((item) => item?.id === option.id)
                     );
                   }}
                 >
@@ -80,7 +69,7 @@ const DropdownRole = ({
                       "text-lg xl:text-2xl text-left hover:text-[#48B8F6]"
                     )}
                   >
-                    {option.roleName}
+                    {option.name}
                   </span>
                 </button>
               </li>
@@ -92,4 +81,4 @@ const DropdownRole = ({
   );
 };
 
-export default DropdownRole;
+export default DropdownRoleType;

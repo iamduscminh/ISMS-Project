@@ -21,23 +21,23 @@ const publicRoutes = [
     component: Page.ViewRequestTypes,
     layout: Layout.CustomLayout,
   },
-  {
-    path: "/createRequestType",
-    component: Page.CreateRequestType,
-    layout: Layout.CustomLayout,
-  },
+];
 
-  { path: "/updateCustomField/:id", component: Page.UpdateCustomField },
+//private route: dành cho những route cần đăng nhập
+
+//Route có Permission là PERM000000: Mange users
+const PERM000000Routes = [
   {
-    path: "/createRequestType",
-    component: Page.CreateRequestType,
+    path: "/admin/setting/services",
+    component: Page.ServiceSettings,
     layout: Layout.CustomLayout,
   },
   {
-    path: "/viewCustomFields",
-    component: Page.ViewCustomFields,
+    path: "/admin/setting/workflows",
+    component: Page.ListWorkflow,
     layout: Layout.CustomLayout,
   },
+  
   {
     path: ROUTES_PATHS.ADMIN,
     component: Page.Dashboard,
@@ -69,24 +69,33 @@ const publicRoutes = [
     layout: Layout.CustomLayout,
   },
   {
+    path: ROUTES_PATHS.ADMIN_GROUP,
+    component: Page.AdminGroup,
+    layout: Layout.CustomLayout,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN_ROLE_EDIT,
+    component: Page.AdminRoleEdit,
+    layout: Layout.AdminLayout,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN_ROLE_PERMISSION_ADD,
+    component: Page.AdminRolePermissionAdd,
+    layout: Layout.AdminLayout,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN_CHANGE,
+    component: Page.AdminChange,
+    layout: Layout.AdminLayout,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN_PROBLEM,
+    component: Page.AdminProblem,
+    layout: Layout.AdminLayout,
+  },
+  {
     path: ROUTES_PATHS.ADMIN_USERS,
     component: Page.AdminUserManage,
-    layout: Layout.CustomLayout,
-  },
-];
-
-//private route: dành cho những route cần đăng nhập
-
-//Route có Permission là PERM000000: Mange users
-const PERM000000Routes = [
-  {
-    path: "/admin/setting/services",
-    component: Page.ServiceSettings,
-    layout: Layout.CustomLayout,
-  },
-  {
-    path: "/admin/setting/workflows",
-    component: Page.ListWorkflow,
     layout: Layout.CustomLayout,
   },
 ];
@@ -104,13 +113,26 @@ const PERM000002Routes = [
 ];
 
 //Route có Permission là PERM000003: Manage service items
-const PERM000003Routes = [];
+const PERM000003Routes = [
+  {
+    path: "/createRequestType",
+    component: Page.CreateRequestType,
+    layout: Layout.CustomLayout,
+  },
+];
 
 //Route có Permission là PERM000004: Manage service categories
 const PERM000004Routes = [];
 
 //Route có Permission là PERM000005: Manage custom fields
-const PERM000005Routes = [];
+const PERM000005Routes = [
+  { path: "/updateCustomField/:id", component: Page.UpdateCustomField },
+  {
+    path: "/viewCustomFields",
+    component: Page.ViewCustomFields,
+    layout: Layout.CustomLayout,
+  },
+];
 
 //Route có Permission là PERM000006: Manage attachments
 const PERM000006Routes = [];
