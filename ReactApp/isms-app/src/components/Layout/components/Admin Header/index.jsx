@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import {Link} from 'react-router-dom'
+import { Link } from "react-router-dom";
 import classNames from "classnames/bind";
 import styles from "./AdminHeader.module.scss";
 import image from "../../../../assets/images";
@@ -8,6 +8,7 @@ import { IoMdNotifications } from "react-icons/io";
 import Tippy from "@tippyjs/react/headless";
 import TippyItem from "../../../Elements/TippyItem";
 import { HiOutlineDesktopComputer } from "react-icons/hi";
+import { ROUTES_PATHS } from "../../../../../constants";
 
 const cx = classNames.bind(styles);
 
@@ -41,11 +42,13 @@ const AdminHeader = () => {
   return (
     <div className={cx("h-[7%] w-full bg-[#7F91B0] flex")}>
       <div className={cx("w-[8%] h-full flex justify-center items-center")}>
-        <Link to={'/admin'}><img
-          src={image.logo}
-          alt=""
-          className={cx("w-[100%] h-[100%] ml-[2rem]")}
-        /></Link>
+        <Link to={"/admin"}>
+          <img
+            src={image.logo}
+            alt=""
+            className={cx("w-[100%] h-[100%] ml-[2rem]")}
+          />
+        </Link>
       </div>
       <div
         className={cx(
@@ -54,16 +57,22 @@ const AdminHeader = () => {
       >
         <div className={cx("selection")}>
           <div className={cx("item")}>
-            <span className={cx("item-top")}>Analysis</span>
-            <span className={cx("item-bot")}>Data and Report</span>
+            <Link to={ROUTES_PATHS.ADMIN}>
+              <span className={cx("item-top")}>Analysis</span>
+              <span className={cx("item-bot")}>Data and Analysis</span>
+            </Link>
           </div>
           <div className={cx("item-border")}>
-            <span className={cx("item-top")}>Groups</span>
-            <span className={cx("item-bot")}>Users and Roles </span>
+            <Link to={ROUTES_PATHS.ADMIN_ROLE}>
+              <span className={cx("item-top")}>Groups</span>
+              <span className={cx("item-bot")}>Users and Roles </span>
+            </Link>
           </div>
           <div className={cx("item-border")}>
-            <span className={cx("item-top")}>Knowledge</span>
-            <span className={cx("item-bot")}>Base and Report</span>
+            <Link to={ROUTES_PATHS.ADMIN_REPORT}>
+              <span className={cx("item-top")}>Report</span>
+              <span className={cx("item-bot")}>Base and Report</span>
+            </Link>
           </div>
         </div>
       </div>
