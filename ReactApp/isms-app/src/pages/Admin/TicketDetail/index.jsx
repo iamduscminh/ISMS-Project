@@ -39,12 +39,17 @@ import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { URL } from "../../../utils/Url";
 import IconTag from "../../../components/Elements/IconTag";
 import { parseISO, format } from 'date-fns';
+import useAuth from "../../../hooks/useAuth";
+import CommentTab from "./CommentTab";
 
 const TicketDetail = () => {
+  const {auth} = useAuth();
   const { ticketId } = useParams();
   const axiosInstance = useAxiosPrivate();
   const [ticketDetail, setTicketDetail] = useState();
+  const [listTask, setListTask] = useState();
   const [task, setTask] = useState();
+  const [transition, setTransition] = useState();
 
   useEffect(() => {
     const fetchTicketDetail = async () => {
@@ -69,14 +74,17 @@ const TicketDetail = () => {
         );
         console.log(1);
         console.log(response.data);
-        setTask(response.data);
+        console.log(2);
+        setListTask(response.data);
+        const thisTask = response.data.find(e=>!e.completedTime)
+        setTask(thisTask);
+        setTransition(thisTask?.currentTask?.workflowTransitionDTOFroms[0]?.toWorkflowTask)
       } catch (err) {
         alert("System error, sorry, please contact administrator: ", err);
       }
     };
     fetchTicketDetail();
   }, [axiosInstance]);
-
   const [commentTab, setCommentTab] = useState(true);
   const showCommentTab = (queryCondition) => {
     setCommentTab(queryCondition);
@@ -139,32 +147,7 @@ const TicketDetail = () => {
   ];
 
   //Data cho comment
-  const [commentData, setCommentData] = useState([
-    {
-      id: 1,
-      username: "Spectrier",
-      time: "10 minute",
-      isPersonal: false,
-      image: image.avatar4,
-      content: "I need you to provide some more information",
-    },
-    {
-      id: 2,
-      username: "Calyrex",
-      time: "25 minute",
-      isPersonal: false,
-      image: image.avatar3,
-      content: "I need you to provide some more information",
-    },
-    {
-      id: 3,
-      username: "Calyrex",
-      time: "30 minute",
-      isPersonal: true,
-      image: image.avatar3,
-      content: "Temporarily not resolved due to insufficient information",
-    },
-  ]);
+  
 
   const [ActivityData, setActivityData] = useState([
     {
@@ -191,27 +174,12 @@ const TicketDetail = () => {
       update: "Work in progress",
     },
   ]);
-  const commentRef = useRef();
-  const [checkPersonal, setCheckPersonal] = useState(false);
+  
+  
 
-  const handleAddComment = (e) => {
-    if (commentRef.current.value === "") return;
-    setCommentData((prev) => [
-      {
-        id: prev.length + 1,
-        username: "Tu Doan",
-        time: "Just Now",
-        isPersonal: checkPersonal,
-        image: image.avatar2,
-        content: commentRef.current.value,
-      },
-      ...prev,
-    ]);
-  };
+  
 
-  const changeCommentType = (check) => {
-    setCheckPersonal(check);
-  };
+ 
 
   const handleServiceTypeSelect = (selectedItem) => {
     console.log("Selected Service Type:", selectedItem);
@@ -236,6 +204,29 @@ const TicketDetail = () => {
 
   const getPriorityObject = (priority) =>{
     return priorityData.find(e=>e.priority === priority)
+  }
+
+  const handleCompleteTask = () =>{
+    const formData = new FormData();
+    formData.append("WorkflowAssignmentId", task.workflowAssignmentId);
+    formData.append("FinisherId", auth.userId);
+    formData.append("Message", 'Test Message');
+    formData.append("File", null);
+    formData.append("ToWorkFlowTask", transition);
+    formData.append("IsCompleted", true);
+    const completeTask = async () => {
+      try{
+        const response = await axiosInstance.post(`${URL.WORKFLOW_ASSIGNMENT_URL}/complete`,formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        alert('Hoàn thành Task')
+      } catch (err) {
+        alert("System error, sorry, please contact administrator: ", err);
+      }
+    }
+    completeTask();
   }
 
   const handleFileUpload = () => {
@@ -631,19 +622,20 @@ const TicketDetail = () => {
                 <h3>Workflow task name</h3>
               </div>
             </div>
-            <div className="mt-[1rem] flex">
+            {task?.currentTask?.status !== "Resolved" ? <div className="mt-[1rem] flex">
               <select
-                name=""
-                id=""
+                value={task?.currentTask?.workflowTransitionDTOFroms[0].toWorkflowTask}
+                onChange={(e)=>setTransition(e.target.value)}
                 className="border-2 border-[#42526E] rounded-md px-[0.75rem] mr-[1rem]"
               >
-                <option value="">Done</option>
-                <option value="">Return</option>
-                <option value="">Pending</option>
+                {task?.currentTask?.workflowTransitionDTOFroms.map((item, index)=>(
+                  <option key={index} value={item.toWorkflowTask}>{item.workflowTransitionName}</option>
+                ))}
               </select>
               <ModalDialog
                 title={"Transition Task"}
                 actionText={"Change"}
+                actionHandler={handleCompleteTask}
                 triggerComponent={
                   <button className="px-[0.75rem] bg-[#043AC5] text-[#fff] font-medium">
                     Change
@@ -651,7 +643,7 @@ const TicketDetail = () => {
                 }
                 customSize="md"
               ></ModalDialog>
-            </div>
+            </div>:<div>This Task does not has any Transition</div>}
           </div>
         </div>
         <div className="w-[37%] ml-[1rem]">
@@ -674,62 +666,7 @@ const TicketDetail = () => {
               <TabSelect />
             </div>
             {commentTab ? (
-              <div>
-                <div>
-                  <div className="w-[full] flex justify-center mt-[1rem]">
-                    <div
-                      onClick={(e) => {
-                        changeCommentType(false);
-                      }}
-                      className="cursor-pointer w-[25%] bg-[#42526E] text-center font-medium text-[#fff] rounded-md"
-                    >
-                      Customer
-                    </div>
-                    <div
-                      onClick={(e) => {
-                        changeCommentType(true);
-                      }}
-                      className="cursor-pointer ml-[3rem] w-[25%] bg-[#D4DAE4] text-center font-medium text-[#000000] rounded-md"
-                    >
-                      Personal
-                    </div>
-                  </div>
-                </div>
-                <div className="w-[full] px-[2rem] py-[0.75rem] ">
-                  <textarea
-                    ref={commentRef}
-                    rows={4}
-                    className="w-full h-full resize-none px-[0.75rem] py-[0.5rem] border-2 border-[#747272] rounded-md"
-                    placeholder="@ to tag someone"
-                  ></textarea>
-                </div>
-
-                <div className="flex justify-end px-[2rem]">
-                  {checkPersonal ? (
-                    <button
-                      onClick={handleAddComment}
-                      className="px-[1rem] py-[0.25rem] bg-[#043AC5] font-medium text-[#fff]"
-                    >
-                      Add Personal
-                    </button>
-                  ) : (
-                    <button
-                      onClick={handleAddComment}
-                      className="px-[1rem] py-[0.25rem] bg-[#043AC5] font-medium text-[#fff]"
-                    >
-                      Add Public
-                    </button>
-                  )}
-                  <button className="px-[1rem] py-[0.25rem] bg-[#fff] font-medium text-[#043AC5]">
-                    Cancel
-                  </button>
-                </div>
-                <div className="w-full mt-[1rem] px-[2rem] max-h-[50vh] overflow-y-scroll">
-                  {commentData.map((item) => (
-                    <CommentComponent key={item.id} comment={item} />
-                  ))}
-                </div>
-              </div>
+              <CommentTab requestTicketId={ticketId}/>
             ) : (
               <div className="px-[2rem] my-[2rem]">
                 {ActivityData.map((item) => (
