@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import image from "../../../assets/images";
 import CustomCombobox from "../../../components/Elements/CustomCombobox";
@@ -10,7 +10,7 @@ import {
   MdKeyboardArrowDown,
   MdElectricalServices,
   MdDelete,
-  MdSos
+  MdSos,
 } from "react-icons/md";
 import { RiComputerLine } from "react-icons/ri";
 import { SiMicrosoftword, SiMicrosoftexcel } from "react-icons/si";
@@ -38,18 +38,32 @@ import ModalDialog from "../../../components/Elements/PopupModal";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { URL } from "../../../utils/Url";
 import IconTag from "../../../components/Elements/IconTag";
-import { parseISO, format } from 'date-fns';
+import { parseISO, format } from "date-fns";
 import useAuth from "../../../hooks/useAuth";
 import CommentTab from "./CommentTab";
+import CustomField from "../../../components/Elements/CustomField";
+import { useForm } from "react-hook-form";
 
 const TicketDetail = () => {
-  const {auth} = useAuth();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    getValues,
+  } = useForm({
+    criteriaMode: "all",
+  });
+  const navigate = useNavigate();
+  const { auth } = useAuth();
   const { ticketId } = useParams();
   const axiosInstance = useAxiosPrivate();
   const [ticketDetail, setTicketDetail] = useState();
   const [listTask, setListTask] = useState();
   const [task, setTask] = useState();
   const [transition, setTransition] = useState();
+  const [requestTicketExts, setRequestTicketExts] = useState([]);
+  const [attachment, setAttachment] = useState();
+  const transitionMessageRef = useRef()
 
   useEffect(() => {
     const fetchTicketDetail = async () => {
@@ -59,6 +73,10 @@ const TicketDetail = () => {
         );
         console.log(response.data);
         setTicketDetail(response.data);
+        setAttachment({
+          fileName: response.data.attachmentEntity?.filename,
+          filePath: response.data.attachmentEntity?.filePath,
+        });
       } catch (err) {
         alert("System error, sorry, please contact administrator: ", err);
       }
@@ -69,16 +87,36 @@ const TicketDetail = () => {
   useEffect(() => {
     const fetchTicketDetail = async () => {
       try {
-        const response = await axiosInstance.get(
-          `${URL.WORKFLOW_ASSIGNMENT_URL}/get?requestTicketId=${ticketId}`
-        );
-        console.log(1);
-        console.log(response.data);
-        console.log(2);
-        setListTask(response.data);
-        const thisTask = response.data.find(e=>!e.completedTime)
+        const response = await Promise.all([
+          axiosInstance.get(
+            `${URL.WORKFLOW_ASSIGNMENT_URL}/get?requestTicketId=${ticketId}`
+          ),
+          axiosInstance.get(
+            `${URL.REQUEST_TICKET_EXT_URL}/getExtForTicket/${ticketId}`
+          ),
+        ]);
+        console.log('list task')
+        console.log(response[0].data);
+        setListTask(response[0].data);
+        const thisTask = response[0].data.find((e) => !e.completedTime);
         setTask(thisTask);
-        setTransition(thisTask?.currentTask?.workflowTransitionDTOFroms[0]?.toWorkflowTask)
+        setTransition(
+          thisTask?.currentTask?.workflowTransitionDTOFroms[0]?.toWorkflowTask
+        );
+        if (response[1].data.length > 0) {
+          const dataExtRp = response[1].data.map((item, i) => ({
+            ticketId: item.ticketId,
+            fieldId: item.fieldId,
+            fieldValue: item.fieldValue,
+            fieldCode: item.fieldEntity.fieldCode,
+            fieldName: item.fieldEntity.fieldName,
+            fieldType: item.fieldEntity.fieldType,
+            valType: item.fieldEntity.valType,
+            listOfValue: item.fieldEntity.listOfValue,
+            listOfValueDisplay: item.fieldEntity.listOfValueDisplay,
+          }));
+          setRequestTicketExts(dataExtRp);
+        }
       } catch (err) {
         alert("System error, sorry, please contact administrator: ", err);
       }
@@ -139,15 +177,9 @@ const TicketDetail = () => {
       icon: <FcLowPriority />,
       priority: "Low",
     },
-    {
-      id: 4,
-      icon: <MdSos />,
-      priority: "Urgent",
-    },
   ];
 
   //Data cho comment
-  
 
   const [ActivityData, setActivityData] = useState([
     {
@@ -174,12 +206,6 @@ const TicketDetail = () => {
       update: "Work in progress",
     },
   ]);
-  
-  
-
-  
-
- 
 
   const handleServiceTypeSelect = (selectedItem) => {
     console.log("Selected Service Type:", selectedItem);
@@ -202,32 +228,37 @@ const TicketDetail = () => {
     setSelectedFiles([...event.target.files]);
   };
 
-  const getPriorityObject = (priority) =>{
-    return priorityData.find(e=>e.priority === priority)
-  }
+  const getPriorityObject = (priority) => {
+    return priorityData.find((e) => e.priority === priority);
+  };
 
-  const handleCompleteTask = () =>{
+  const handleCompleteTask = () => {
     const formData = new FormData();
     formData.append("WorkflowAssignmentId", task.workflowAssignmentId);
     formData.append("FinisherId", auth.userId);
-    formData.append("Message", 'Test Message');
-    formData.append("File", null);
+    formData.append("Message", transitionMessageRef.current.value);
+    formData.append("File", selectedFiles[0]);
     formData.append("ToWorkFlowTask", transition);
     formData.append("IsCompleted", true);
     const completeTask = async () => {
-      try{
-        const response = await axiosInstance.post(`${URL.WORKFLOW_ASSIGNMENT_URL}/complete`,formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        alert('Hoàn thành Task')
+      try {
+        const response = await axiosInstance.post(
+          `${URL.WORKFLOW_ASSIGNMENT_URL}/complete`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        alert("Hoàn thành Task");
+        navigate("/admin")
       } catch (err) {
         alert("System error, sorry, please contact administrator: ", err);
       }
-    }
+    };
     completeTask();
-  }
+  };
 
   const handleFileUpload = () => {
     // Xử lý upload file ở đây
@@ -314,12 +345,17 @@ const TicketDetail = () => {
               >
                 <IconTag
                   className="text-[1.25rem]"
-                  name={ticketDetail?.serviceItemEntity?.iconDisplay || "AiFillCustomerService"}
+                  name={
+                    ticketDetail?.serviceItemEntity?.iconDisplay ||
+                    "AiFillCustomerService"
+                  }
                 />
                 <div className="ml-[0.5rem]">
                   <span className="text-[#747272]">
                     <a href="#">
-                      {ticketDetail ? ticketDetail?.serviceItemEntity?.serviceItemName : " "}
+                      {ticketDetail
+                        ? ticketDetail?.serviceItemEntity?.serviceItemName
+                        : " "}
                     </a>
                   </span>
                 </div>
@@ -328,7 +364,7 @@ const TicketDetail = () => {
 
             <div className="flex items-center mt-[1rem]">
               <h3 className="text-[#42526E] min-w-[40%] font-medium">
-                Service
+                Service Categories
               </h3>
               <div
                 style={{
@@ -340,12 +376,56 @@ const TicketDetail = () => {
                 <div className="ml-[0.5rem]">
                   <span className="text-[#747272]">
                     <a href="#">
-                      {ticketDetail ? ticketDetail.serviceItemEntity?.serviceCategoryEntity?.serviceCategoryName : " "}
+                      {ticketDetail
+                        ? ticketDetail.serviceItemEntity?.serviceCategoryEntity
+                            ?.serviceCategoryName
+                        : " "}
                     </a>
                   </span>
                 </div>
               </div>
             </div>
+            <div className="detail-content-custom mt-[0.5rem]">
+              {requestTicketExts.length > 0 &&
+                requestTicketExts.map((item, i) => (
+                  <CustomField
+                    key={i}
+                    fieldId={item.fieldId}
+                    fieldCode={item.fieldCode}
+                    fieldName={item.fieldName}
+                    fieldType={item.fieldType}
+                    valType={item.valType}
+                    fieldValue={item.fieldValue}
+                    listOfValue={item.listOfValue}
+                    listOfValueDisplay={item.listOfValueDisplay}
+                    register={register}
+                  />
+                ))}
+            </div>
+            {console.log("file")}
+            {console.log(attachment)}
+            {attachment?.fileName && (
+              <div className="mb-6">
+                <label
+                  htmlFor="rqtFile"
+                  className="block mb-2 text-lg font-medium text-[#42526E] "
+                >
+                  File Attachment
+                </label>
+                <div className="file-attachment flex items-center">
+                  <IconTag name={"AiFillFile"} className={"mr-2"} />
+                  <a
+                    href={attachment?.filePath}
+                    className="hover:text-blue-500 text-[#747272]"
+                  >
+                    {attachment?.fileName}
+                  </a>
+                </div>
+                <p className="mt-2 text-sm text-red-600 ">
+                  {errors.rqtFile && errors.rqtFile.message}
+                </p>
+              </div>
+            )}
             {/* <CustomCombobox
               component={ServiceTypeItem}
               data={serviceData}
@@ -356,7 +436,7 @@ const TicketDetail = () => {
               showProp2="serviceName"
               wrapper="FF7452"
             /> */}
-            <div className="w-[full] mt-[3rem] mb-[1rem]">
+            <div className="w-[full] mt-[0rem] mb-[1rem]">
               <TicketStatus
                 currentStatus={ticketDetail ? ticketDetail?.status : " "}
                 onSelect={handleStatusSelect}
@@ -385,13 +465,54 @@ const TicketDetail = () => {
               </div>
             </div>
 
+            <div className="flex justify-between items-center">
+              <h4 className="text-[#42526E] text-[1.25rem] font-medium">
+                Impact
+              </h4>
+              <div className="w-[50%]">
+                <CustomCombobox
+                  component={PriorityItem}
+                  data={priorityData}
+                  onSelect={handlePrioritySelect}
+                  value={getPriorityObject(ticketDetail?.impact)}
+                  overlay={3}
+                  showProp1="icon"
+                  showProp2="priority"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-between items-center">
+              <h4 className="text-[#42526E] text-[1.25rem] font-medium">
+                Impact
+              </h4>
+              <div className="w-[50%]">
+                <CustomCombobox
+                  component={PriorityItem}
+                  data={priorityData}
+                  onSelect={handlePrioritySelect}
+                  value={getPriorityObject(ticketDetail?.urgency)}
+                  overlay={2}
+                  showProp1="icon"
+                  showProp2="priority"
+                />
+              </div>
+            </div>
+
             <div className="mt-[1.5rem] flex flex-col">
               <div>
                 <h4 className="text-[1.1rem] text-[#42526E] font-medium">
                   Time to Resolution SLA
                 </h4>
                 <div className="flex items-center justify-start text-[#747272] mt-[0.5rem]">
-                  <span>{ticketDetail ? format(parseISO(ticketDetail?.firstResolutionDue), 'MMM-dd-yyyy HH:mm') : " "}</span>
+                  <span>
+                    {ticketDetail
+                      ? format(
+                          parseISO(ticketDetail?.firstResolutionDue),
+                          "MMM-dd-yyyy HH:mm"
+                        )
+                      : " "}
+                  </span>
                   {/* <span className="ml-[1rem]">4h00 to due</span> */}
                 </div>
               </div>
@@ -403,7 +524,14 @@ const TicketDetail = () => {
                   Time to first response SLA
                 </h4>
                 <div className="flex items-center justify-start text-[#747272] mt-[0.5rem]">
-                <span>{ticketDetail ? format(parseISO(ticketDetail?.firstResponseDue), 'MMM-dd-yyyy HH:mm') : " "}</span>
+                  <span>
+                    {ticketDetail
+                      ? format(
+                          parseISO(ticketDetail?.firstResponseDue),
+                          "MMM-dd-yyyy HH:mm"
+                        )
+                      : " "}
+                  </span>
                   {/* <span className="ml-[1rem]">2h00 to due</span> */}
                 </div>
               </div>
@@ -425,8 +553,9 @@ const TicketDetail = () => {
                 <h3 className="text-[#42526E] min-w-[40%] font-medium">
                   Assignee
                 </h3>
-
-                {ticketDetail?.assignedTo ? (
+                {console.log("task")}
+                {console.log(task)}
+                {task?.assignee ? (
                   <div
                     style={{
                       display: "flex",
@@ -437,21 +566,23 @@ const TicketDetail = () => {
                     <div className="w-[1.5rem] h-[1.5rem] rounded-full overflow-hidden cursor-pointer">
                       <img
                         className="w-full h-full object-cover object-center"
-                        src={image.avatar}
+                        src={task?.assignee?.avatar}
                         alt=""
                       />
                     </div>
                     <div className="ml-[0.5rem]">
                       <span className="text-[#747272]">
-                        <a href="#">Gardevoir</a>
+                        <Link to={`/profile/${task?.assignee?.userId}`}>{task?.assignee?.fullName}</Link>
                       </span>
                     </div>
                   </div>
-                ) : (
+                ) : (task?.currentTask?.status ==="Resolved" ? " " : (
                   <div>
-                    <button className="text-[#fff] font-medium px-[0.75rem] bg-[#043AC5]">Assign</button>
+                    <button className="text-[#fff] font-medium px-[0.75rem] bg-[#043AC5]">
+                      Assign to me
+                    </button>
                   </div>
-                )}
+                ))}
               </div>
 
               {/* <div className="flex items-center mt-[1rem]">
@@ -531,13 +662,14 @@ const TicketDetail = () => {
                   </div>
                 </div>
               </div>
-              <div>
+              {task?.currentTask?.status !== "Resolved" && <div>
                 <h3 className="text-[#42526E] min-w-[40%] font-medium">
                   Check Transition
                 </h3>
                 <div className="mt-[1rem] translate-x-[-1rem]">
                   <div className="w-[full] mx-[0.25rem] ml-[1rem]">
                     <textarea
+                      ref={transitionMessageRef}
                       rows={2}
                       className="w-full h-full resize-none px-[0.75rem] py-[0.5rem] border-2 border-[#747272] rounded-md"
                       placeholder="@ to tag someone"
@@ -594,56 +726,60 @@ const TicketDetail = () => {
                     </Grid>
                   </div>
                 </div>
-              </div>
+              </div>}
             </div>
             <div className="h-[20vh] overflow-y-scroll cursor-default mt-[1rem]">
-              <div className="flex items-center text-[#42526E] px-[1rem] py-[0.5rem]">
-                <BiTask className="mr-[0.5rem]" />
-                <h3>Workflow task name</h3>
-              </div>
-              <div className="flex items-center font-medium bg-[#043AC5] text-[#fff] px-[1rem] py-[0.5rem]">
-                <BiTask className="mr-[0.5rem]" />
-                <h3>Workflow task name</h3>
-              </div>
-              <div className="flex items-center text-[#42526E] px-[1rem] py-[0.5rem]">
-                <BiTask className="mr-[0.5rem]" />
-                <h3>Workflow task name</h3>
-              </div>
-              <div className="flex items-center text-[#42526E] px-[1rem] py-[0.5rem]">
-                <BiTask className="mr-[0.5rem]" />
-                <h3>Workflow task name</h3>
-              </div>
-              <div className="flex items-center text-[#42526E] px-[1rem] py-[0.5rem]">
-                <BiTask className="mr-[0.5rem]" />
-                <h3>Workflow task name</h3>
-              </div>
-              <div className="flex items-center text-[#42526E] px-[1rem] py-[0.5rem]">
-                <BiTask className="mr-[0.5rem]" />
-                <h3>Workflow task name</h3>
-              </div>
-            </div>
-            {task?.currentTask?.status !== "Resolved" ? <div className="mt-[1rem] flex">
-              <select
-                value={task?.currentTask?.workflowTransitionDTOFroms[0].toWorkflowTask}
-                onChange={(e)=>setTransition(e.target.value)}
-                className="border-2 border-[#42526E] rounded-md px-[0.75rem] mr-[1rem]"
-              >
-                {task?.currentTask?.workflowTransitionDTOFroms.map((item, index)=>(
-                  <option key={index} value={item.toWorkflowTask}>{item.workflowTransitionName}</option>
-                ))}
-              </select>
-              <ModalDialog
-                title={"Transition Task"}
-                actionText={"Change"}
-                actionHandler={handleCompleteTask}
-                triggerComponent={
-                  <button className="px-[0.75rem] bg-[#043AC5] text-[#fff] font-medium">
-                    Change
-                  </button>
+              {listTask?.map((item, index) => {
+                if (item === task) {
+                  return (
+                    <div className="flex items-center font-medium bg-[#043AC5] text-[#fff] px-[1rem] py-[0.5rem]">
+                      <BiTask className="mr-[0.5rem]" />
+                      <h3>{item?.currentTask?.workflowTaskName}</h3>
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div className="flex items-center text-[#42526E] px-[1rem] py-[0.5rem]">
+                      <BiTask className="mr-[0.5rem]" />
+                      <h3>{item?.currentTask?.workflowTaskName}</h3>
+                    </div>
+                  );
                 }
-                customSize="md"
-              ></ModalDialog>
-            </div>:<div>This Task does not has any Transition</div>}
+              })}
+            </div>
+            {task?.currentTask?.status !== "Resolved" ? (
+              <div className="mt-[1rem] flex">
+                <select
+                  value={
+                    task?.currentTask?.workflowTransitionDTOFroms[0]
+                      .toWorkflowTask
+                  }
+                  onChange={(e) => setTransition(e.target.value)}
+                  className="border-2 border-[#42526E] rounded-md px-[0.75rem] mr-[1rem]"
+                >
+                  {task?.currentTask?.workflowTransitionDTOFroms.map(
+                    (item, index) => (
+                      <option key={index} value={item.toWorkflowTask}>
+                        {item.workflowTransitionName}
+                      </option>
+                    )
+                  )}
+                </select>
+                <ModalDialog
+                  title={"Transition Task"}
+                  actionText={"Change"}
+                  actionHandler={handleCompleteTask}
+                  triggerComponent={
+                    <button className="px-[0.75rem] bg-[#043AC5] text-[#fff] font-medium">
+                      Change
+                    </button>
+                  }
+                  customSize="md"
+                ></ModalDialog>
+              </div>
+            ) : (task?.currentTask?.status ==="Resolved"? "This Task had been done" :
+              <div>This Task does not has any Transition</div>
+            )}
           </div>
         </div>
         <div className="w-[37%] ml-[1rem]">
@@ -666,7 +802,7 @@ const TicketDetail = () => {
               <TabSelect />
             </div>
             {commentTab ? (
-              <CommentTab requestTicketId={ticketId}/>
+              <CommentTab requestTicketId={ticketId} />
             ) : (
               <div className="px-[2rem] my-[2rem]">
                 {ActivityData.map((item) => (

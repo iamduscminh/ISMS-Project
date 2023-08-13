@@ -20,7 +20,7 @@ const CustomCombobox = ({
   wrapper,
   customStyle = {
     marginTop: "mt-[1rem]",
-    height: "h-[3rem]",
+    height: "h-[2.5rem]",
     fontSize: "text-[1.25rem]",
     borderRadius: "rounded-md",
   },
@@ -44,7 +44,7 @@ const CustomCombobox = ({
     >
       <div
         className={cx(
-          `shadow-sm cursor-pointer flex ${customStyle.height} bg-[#fff] p-[0.75rem] ${customStyle.fontSize} font-normal, ${customStyle.borderRadius} items-center justify-between`
+          `shadow-sm cursor-pointer flex ${customStyle.height} bg-[#fff] px-[0.75rem] ${customStyle.fontSize} font-normal, ${customStyle.borderRadius} items-center justify-between`
         )}
         onClick={(e) => setShowCombobox(!showCombobox)}
       >
@@ -62,18 +62,18 @@ const CustomCombobox = ({
               ) : wrapper ? (
                 <div
                   className={cx(
-                    `w-[1.3rem] mr-[0.5rem] aspect-square rounded-md bg-[#${wrapper}] flex items-center justify-center text-[#fff] text-[1.25rem]`
+                    `w-[1.3rem] mr-[0.5rem] aspect-square rounded-md bg-[#${wrapper}] flex items-center justify-center text-[#fff] text-[1rem]`
                   )}
                 >
                   {selectedOption}
                 </div>
               ) : (
-                <div className="mr-[1rem] text-[1.25rem]">
+                <div className="mr-[1rem] text-[1rem]">
                   {selectedOption[showProp1]}
                 </div>
               )}
 
-              <span className="ml-[1.5rem] text-[#42526E]">
+              <span className="ml-[1.5rem] text-[#42526E] text-[1rem]">
                 {selectedOption[showProp2]}
               </span>
             </div>

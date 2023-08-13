@@ -132,6 +132,7 @@ const TicketActivity = ({
                     className="bg-slate-500 text-center rounded-md font-medium px-[0.5rem] text-[#fff]"
                     value={statusInput}
                     onChange={(e) => setStatusInput(e.target.value)}
+                    disabled={statusInput === 'Open'}
                   >
                     {statusData.map((item) => (
                       <option
