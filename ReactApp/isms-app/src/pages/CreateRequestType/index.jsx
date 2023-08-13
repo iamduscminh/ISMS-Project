@@ -118,6 +118,7 @@ function CreateRequestType() {
       Status: true,
       ServiceCategoryId: selectedService.id,
       IconDisplay: iconRequestType,
+      WorkflowId: selectedWorkflow.id,
     };
     try {
       Swal.fire({
