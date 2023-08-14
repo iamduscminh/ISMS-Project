@@ -63,7 +63,7 @@ const TicketDetail = () => {
   const [transition, setTransition] = useState();
   const [requestTicketExts, setRequestTicketExts] = useState([]);
   const [attachment, setAttachment] = useState();
-  const transitionMessageRef = useRef()
+  const transitionMessageRef = useRef();
 
   useEffect(() => {
     const fetchTicketDetail = async () => {
@@ -95,7 +95,7 @@ const TicketDetail = () => {
             `${URL.REQUEST_TICKET_EXT_URL}/getExtForTicket/${ticketId}`
           ),
         ]);
-        console.log('list task')
+        console.log("list task");
         console.log(response[0].data);
         setListTask(response[0].data);
         const thisTask = response[0].data.find((e) => !e.completedTime);
@@ -252,7 +252,7 @@ const TicketDetail = () => {
           }
         );
         alert("Hoàn thành Task");
-        navigate("/admin")
+        navigate("/admin");
       } catch (err) {
         alert("System error, sorry, please contact administrator: ", err);
       }
@@ -298,10 +298,14 @@ const TicketDetail = () => {
   return (
     <div className="flex flex-col w-full h-[90vh]">
       <div className="h-[5%] bg-[#42526E] flex text-[#ffF] font-medium text-[1rem] justify-start items-center pl-[3rem]">
-        <IoIosArrowBack className="text-[1.25rem] mr-[0.75rem] cursor-pointer" />
-        <div>
-          <span className="mr-[3rem]">Back</span>
-        </div>
+        <Link to={"/admin"}>
+          <div className="flex items-center">
+            <IoIosArrowBack className="text-[1.25rem] mr-[0.25rem] cursor-pointer" />
+            <div>
+              <span className="mr-[3rem] hover:underline">Back</span>
+            </div>
+          </div>
+        </Link>
         <div>
           <span className="mr-[0.5rem]">{ticketDetail?.requestTicketId}:</span>
           <span>{ticketDetail?.title}</span>
@@ -325,9 +329,9 @@ const TicketDetail = () => {
             </div>
 
             <div className="mt-[1.75rem]">
-              {/* <h3 className="text-[1rem] font-medium text-[#42526E] mb-[0.75rem]">
+              <h3 className="text-[1rem] font-medium text-[#42526E] mb-[0.75rem]">
                 Description
-              </h3> */}
+              </h3>
               <p className="text-[#747272] text-[1rem]">
                 {ticketDetail?.description}
               </p>
@@ -572,17 +576,21 @@ const TicketDetail = () => {
                     </div>
                     <div className="ml-[0.5rem]">
                       <span className="text-[#747272]">
-                        <Link to={`/profile/${task?.assignee?.userId}`}>{task?.assignee?.fullName}</Link>
+                        <Link to={`/profile/${task?.assignee?.userId}`}>
+                          {task?.assignee?.fullName}
+                        </Link>
                       </span>
                     </div>
                   </div>
-                ) : (task?.currentTask?.status ==="Resolved" ? " " : (
+                ) : task?.currentTask?.status === "Resolved" ? (
+                  " "
+                ) : (
                   <div>
                     <button className="text-[#fff] font-medium px-[0.75rem] bg-[#043AC5]">
                       Assign to me
                     </button>
                   </div>
-                ))}
+                )}
               </div>
 
               {/* <div className="flex items-center mt-[1rem]">
@@ -662,71 +670,73 @@ const TicketDetail = () => {
                   </div>
                 </div>
               </div>
-              {task?.currentTask?.status !== "Resolved" && <div>
-                <h3 className="text-[#42526E] min-w-[40%] font-medium">
-                  Check Transition
-                </h3>
-                <div className="mt-[1rem] translate-x-[-1rem]">
-                  <div className="w-[full] mx-[0.25rem] ml-[1rem]">
-                    <textarea
-                      ref={transitionMessageRef}
-                      rows={2}
-                      className="w-full h-full resize-none px-[0.75rem] py-[0.5rem] border-2 border-[#747272] rounded-md"
-                      placeholder="@ to tag someone"
-                    ></textarea>
-                  </div>
-                  <div className="mt-[0.25rem]">
-                    <Grid container spacing={2}>
-                      <Grid item xs={12}>
-                        <Stack
-                          direction="row"
-                          spacing={2}
-                          alignItems="self-start"
-                        >
-                          <Input
-                            type="file"
-                            onChange={handleFileChange}
-                            inputProps={{
-                              accept:
-                                "image/*, .pdf, .doc, .docx, .xls, .xlsx, .txt, .csv",
-                              multiple: true,
-                            }}
-                            style={{ display: "none" }}
-                            id="file-input"
-                          />
-                          <label htmlFor="file-input">
-                            <Button
-                              variant="contained"
-                              component="span"
-                              startIcon={<AiOutlineUpload />}
-                            >
-                              Upload
-                            </Button>
-                          </label>
-                          <div className="flex flex-col items-start">
-                            {selectedFiles.length > 0 &&
-                              selectedFiles.map((file, index) => (
-                                <React.Fragment key={index}>
-                                  <div className="flex ">
-                                    <Typography>
-                                      {formatFileName(file.name, maxLength)}
-                                    </Typography>
-                                    <IconButton
-                                      onClick={() => handleFileClear(index)}
-                                      size="small"
-                                    >
-                                      <MdDelete />
-                                    </IconButton>
-                                  </div>
-                                </React.Fragment>
-                              ))}
-                          </div>
-                        </Stack>
+              {task?.currentTask?.status !== "Resolved" && (
+                <div>
+                  <h3 className="text-[#42526E] min-w-[40%] font-medium">
+                    Check Transition
+                  </h3>
+                  <div className="mt-[1rem] translate-x-[-1rem]">
+                    <div className="w-[full] mx-[0.25rem] ml-[1rem]">
+                      <textarea
+                        ref={transitionMessageRef}
+                        rows={2}
+                        className="w-full h-full resize-none px-[0.75rem] py-[0.5rem] border-2 border-[#747272] rounded-md"
+                        placeholder="@ to tag someone"
+                      ></textarea>
+                    </div>
+                    <div className="mt-[0.25rem]">
+                      <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                          <Stack
+                            direction="row"
+                            spacing={2}
+                            alignItems="self-start"
+                          >
+                            <Input
+                              type="file"
+                              onChange={handleFileChange}
+                              inputProps={{
+                                accept:
+                                  "image/*, .pdf, .doc, .docx, .xls, .xlsx, .txt, .csv",
+                                multiple: true,
+                              }}
+                              style={{ display: "none" }}
+                              id="file-input"
+                            />
+                            <label htmlFor="file-input">
+                              <Button
+                                variant="contained"
+                                component="span"
+                                startIcon={<AiOutlineUpload />}
+                              >
+                                Upload
+                              </Button>
+                            </label>
+                            <div className="flex flex-col items-start">
+                              {selectedFiles.length > 0 &&
+                                selectedFiles.map((file, index) => (
+                                  <React.Fragment key={index}>
+                                    <div className="flex ">
+                                      <Typography>
+                                        {formatFileName(file.name, maxLength)}
+                                      </Typography>
+                                      <IconButton
+                                        onClick={() => handleFileClear(index)}
+                                        size="small"
+                                      >
+                                        <MdDelete />
+                                      </IconButton>
+                                    </div>
+                                  </React.Fragment>
+                                ))}
+                            </div>
+                          </Stack>
+                        </Grid>
                       </Grid>
-                    </Grid>
+                    </div>
                   </div>
                 </div>
-              </div>}
+              )}
             </div>
             <div className="h-[20vh] overflow-y-scroll cursor-default mt-[1rem]">
               {listTask?.map((item, index) => {
@@ -777,7 +787,9 @@ const TicketDetail = () => {
                   customSize="md"
                 ></ModalDialog>
               </div>
-            ) : (task?.currentTask?.status ==="Resolved"? "This Task had been done" :
+            ) : task?.currentTask?.status === "Resolved" ? (
+              "This Task had been done"
+            ) : (
               <div>This Task does not has any Transition</div>
             )}
           </div>

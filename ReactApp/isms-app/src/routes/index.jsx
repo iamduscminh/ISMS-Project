@@ -37,7 +37,7 @@ const PERM000000Routes = [
     component: Page.ListWorkflow,
     layout: Layout.CustomLayout,
   },
-  
+
   {
     path: ROUTES_PATHS.ADMIN,
     component: Page.Dashboard,
@@ -117,6 +117,11 @@ const PERM000003Routes = [
   {
     path: "/createRequestType",
     component: Page.CreateRequestType,
+    layout: Layout.CustomLayout,
+  },
+  {
+    path: "/requestType/:id",
+    component: Page.RequestType,
     layout: Layout.CustomLayout,
   },
 ];

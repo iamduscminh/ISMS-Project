@@ -178,7 +178,8 @@ function CreateRequest() {
       axiosInstance
         .post(apiCreateRequestTicketUrl, formData, headers)
         .then((response) => {
-          //console.log(response.data);
+          console.log(response.data);
+          ticketIdResponse = response.data.requestTicketDTO.requestTicketId;
           //CREATE REQUEST TICKET EXT
           if (customFieldsData.some((item) => typeof item === "object")) {
             const customFieldsDataArray = customFieldsData.map((item) => {
@@ -188,7 +189,7 @@ function CreateRequest() {
               };
             });
             //console.log(customFieldsDataArray);
-            ticketIdResponse = response.data.requestTicketDTO.requestTicketId;
+            //console.log(ticketIdResponse);
             return axiosInstance.post(
               apiCreateRequestTicketExtUrl,
               JSON.stringify(customFieldsDataArray),

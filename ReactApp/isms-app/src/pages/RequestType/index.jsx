@@ -1,5 +1,5 @@
 import { React, useState, useRef, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import Swal from "sweetalert2";
@@ -12,10 +12,17 @@ import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import useAuth from "../../hooks/useAuth";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { URL } from "../../utils/Url";
-function CreateRequestType() {
+function RequestType() {
   const navigate = useNavigate();
+  const { id } = useParams();
   const { auth } = useAuth();
   const axiosInstance = useAxiosPrivate();
+  const token = auth?.accessToken;
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+    withCredentials: true,
+  };
   //console.log(auth);
   const iconRequestTypes = [
     "BsFillInfoSquareFill",
@@ -57,8 +64,8 @@ function CreateRequestType() {
     },
   ];
 
+  const [isUpdateView, setIsUpdateView] = useState(false);
   const [listOfService, setListOfService] = useState([]);
-
   //Icon
   const [iconRequestType, setIconRequestType] = useState(
     "BsFillInfoSquareFill"
@@ -72,12 +79,7 @@ function CreateRequestType() {
   const [listFieldConfig, setListFieldConfig] = useState([]);
   const [isCreateNewService, setCreateNewService] = useState(false);
   const [errorService, setErrorService] = useState("");
-  const token = auth?.accessToken;
-  const headers = {
-    Authorization: `Bearer ${token}`,
-    "Content-Type": "application/json",
-    withCredentials: true,
-  };
+
   //định nghĩa form
   const {
     register,
@@ -257,6 +259,8 @@ function CreateRequestType() {
     if (workflowSelect) setSelectedWorkflow(workflowSelect);
   };
   useEffect(() => {
+    let isUpdateView = id == 0;
+    setIsUpdateView(isUpdateView);
     const customFieldsGetUrl = `${URL.CUSTOM_FIELD_URL}/getall`;
     const apiGetSvcCategoryUrl = `${URL.SERVICE_CATEGORY_URL}/getall`;
     //setListFieldConfig
@@ -832,4 +836,4 @@ function CreateRequestType() {
   );
 }
 
-export default CreateRequestType;
+export default RequestType;
