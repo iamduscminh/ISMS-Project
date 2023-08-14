@@ -1,6 +1,5 @@
 import { React, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import UnderlineAnimation from "../../components/Animation/UnderlineText";
 import CardItem from "../../components/Elements/CardItem";
 import IconTag from "../../components/Elements/IconTag";
 import useAuth from "../../hooks/useAuth";

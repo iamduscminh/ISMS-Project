@@ -3,7 +3,7 @@ import {
   BsThreeDotsVertical,
   BsSearch,
   BsFillArrowLeftCircleFill,
-  BsMicrosoft,
+  BsMicrosoft,BsSlack
 } from "react-icons/bs";
 import {
   AiFillFile,
@@ -63,7 +63,7 @@ export {
   BsFillInfoSquareFill,
   BsSearch,
   BsMicrosoft,
-  BsFillArrowLeftCircleFill,
+  BsFillArrowLeftCircleFill,BsSlack
 };
 export { CiViewList };
 export { GrNotification };

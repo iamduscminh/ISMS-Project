@@ -31,7 +31,6 @@ function CreateRequest() {
   const ticketExtUrl = `${URL.REQUEST_TICKET_EXT_URL}`;
   const [requestTicket, setRequestTicket] = useState();
   const [requestTicketExts, setRequestTicketExts] = useState([]);
-  const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [userName, setUserName] = useState("");
   const options = {
     year: "numeric",

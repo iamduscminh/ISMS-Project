@@ -1,21 +1,47 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import UnderlineAnimation from "../../components/Animation/UnderlineText";
-import * as Icon from "../../components/Elements/Icon";
+import Swal from "sweetalert2";
+import useAuth from "../../hooks/useAuth";
+import IconTag from "../../components/Elements/IconTag";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+
 function ViewRequestTypes() {
+  const { auth } = useAuth();
+  const axiosInstance = useAxiosPrivate();
   const navigate = useNavigate();
+  const options = {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    hour12: true,
+  };
+  const token = auth?.accessToken;
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+    withCredentials: true,
+  };
+
+  const [services, setServices] = useState([]);
+  const [requestTypes, setRequestTypes] = useState([]);
+  const [filteredRows, setFilteredRows] = useState([]);
   const columns = [
-    { field: "id", headerName: "ID", width: 100 },
-    { field: "requestType", headerName: "Request Type", width: 200 },
-    { field: "description", headerName: "Description", width: 600 },
-    { field: "service", headerName: "Service", width: 200 },
+    { field: "id", headerName: "ID", width: 150 },
+    { field: "requestType", headerName: "Request Type", width: 350 },
+    { field: "description", headerName: "Description", width: 400 },
+    { field: "serviceName", headerName: "Service", width: 200 },
+    { field: "status", headerName: "Status", width: 200 },
+    //{ field: "createAt", headerName: "Create At", width: 200 },
   ];
 
   const rows = [
     {
       id: 1,
-      requestType: "Fix an account problem",
+      requestType: "Fix a account problem",
       description:
         "Having trouble accessing certain websites or systems? We'll help you out",
       service: "Logins and Accounts",
@@ -33,16 +59,11 @@ function ViewRequestTypes() {
       service: "Computers",
     },
   ];
-  const requestTypes = [
-    { id: 1, name: "Computer Broken" },
-    { id: 2, name: "New Account" },
-    { id: 3, name: "New Password" },
-  ];
 
   //Handle search request type
   const handleFilterChange = (e) => {
     const keyword = e.target.value;
-    const filteredData = rows.filter((row) =>
+    const filteredData = requestTypes.filter((row) =>
       Object.values(row).some(
         (value) =>
           (typeof value === "string" &&
@@ -54,20 +75,94 @@ function ViewRequestTypes() {
   };
   //Handle combobox request type
   const handleFilterRequestTypeChange = (e) => {
-    const keyword = e.target.value.toLowerCase();
-
-    const filteredData = rows.filter(
-      (row) => !keyword || row.requestTypeId == keyword
+    const keyword = e.target.value;
+    const filteredData = requestTypes.filter(
+      (row) => !keyword || row.serviceId == keyword
     );
 
     setFilteredRows(filteredData);
   };
   const handleRowClick = (params) => {
     const { id } = params.row;
-
     navigate("/viewDetails/" + id);
   };
-  const [filteredRows, setFilteredRows] = useState(rows);
+
+  useEffect(() => {
+    const apiGetSvcCategoryUrl = "api/ServiceCategories/getall";
+    const apiGetRequestTypesUrl = "api/ServiceItems/getall";
+    const fetchData = async () => {
+      try {
+        Swal.fire({
+          title: "Loading...",
+          allowOutsideClick: false,
+          onBeforeOpen: () => {
+            Swal.showLoading();
+          },
+        });
+        //--------------Get serrvices
+        axiosInstance
+          .get(apiGetSvcCategoryUrl, { headers })
+          .then((response) => {
+            const data = response.data.map((item, i) => ({
+              id: item.serviceCategoryId,
+              name: item.serviceCategoryName,
+            }));
+            setServices(data);
+          })
+          .catch((error) => {
+            const result = Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error}`,
+            });
+          });
+        Swal.close();
+
+        //-------------Get request type
+        axiosInstance
+          .get(apiGetRequestTypesUrl, { headers })
+          .then((response) => {
+            console.log(response.data);
+            const data = response.data.map((item, i) => ({
+              id: item.serviceItemId,
+              requestType: item.serviceItemName,
+              description: item.description,
+              serviceId: item?.serviceCategoryEntity?.serviceCategoryId,
+              serviceName: item?.serviceCategoryEntity?.serviceCategoryName,
+              iconDisplay: item?.iconDisplay,
+              createAt: item.createAt,
+              status: item.status,
+            }));
+            // id: 1,
+            // requestType: "Fix a account problem",
+            // description:
+            //   "Having trouble accessing certain websites or systems? We'll help you out",
+            // service: "Logins and Accounts",
+            setRequestTypes(data);
+            setFilteredRows(data);
+            //console.log(requestTypesBySvc);
+          })
+          .catch((error) => {
+            const result = Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error}`,
+            });
+          });
+        Swal.close();
+      } catch (error) {
+        // Handle errors if needed
+        console.log(error);
+        Swal.close();
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: error,
+        });
+      }
+    };
+    fetchData();
+  }, []);
   return (
     <div className="request-types-container pb-4 w-full h-full bg-[#fff] bg-blend-lighten overflow-y-scroll">
       <div className="request-types-section">
@@ -86,7 +181,7 @@ function ViewRequestTypes() {
 
               <li className="header-nav-item ml-1">
                 <div className="header-nav-arrow">
-                  <Icon.AiOutlineRight />
+                  <IconTag name={"AiOutlineRight"} />
                 </div>
               </li>
               <li className="header-nav-item ml-1">
@@ -96,7 +191,10 @@ function ViewRequestTypes() {
           </nav>
           <div className="request-types-header-content pb-2 flex items-center ml-[1.25rem]">
             <div className="request-types-header-icon">
-              <Icon.BsFillInfoSquareFill className="h-[50px] w-[50px]" />
+              <IconTag
+                name={"BsFillInfoSquareFill"}
+                className="h-[50px] w-[50px]"
+              />
             </div>
             <div className="request-types-header-description ml-5 w-1/2">
               <h4 className="text-2xl font-bold">Service Requests</h4>
@@ -156,8 +254,8 @@ function ViewRequestTypes() {
                     onChange={handleFilterRequestTypeChange}
                     className="bg-gray-50 px-[1rem] py-[0.5rem] border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   >
-                    <option value="">Choose Request Type</option>
-                    {requestTypes.map((item, i) => {
+                    <option value="">Choose Service</option>
+                    {services.map((item, i) => {
                       return (
                         <option key={i} value={item.id}>
                           {item.name}
@@ -167,7 +265,7 @@ function ViewRequestTypes() {
                   </select>
                 </div>
                 <div className="request-type-add w-1/3 self-center">
-                  <Link to={"/createRequestType"}>
+                  <Link to={"/requestType/0"}>
                     <button
                       type="button"
                       className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-[1rem] py-[0.5rem] mr-2 mb-2"
@@ -182,12 +280,12 @@ function ViewRequestTypes() {
             <DataGrid
               rows={filteredRows}
               columns={columns}
-              pageSizeOptions={[5]}
+              pageSizeOptions={[20]}
               onRowClick={handleRowClick}
               initialState={{
                 pagination: {
                   paginationModel: {
-                    pageSize: 5,
+                    pageSize: 10,
                   },
                 },
               }}

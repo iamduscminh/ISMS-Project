@@ -109,7 +109,7 @@ const SLA = () => {
           SlaId: newData.SLAID,
         })),
       };
-      console.log(slaDto);
+      //console.log(slaDto);
       axiosInstance
         .put(apiUpdateSlaUrl, JSON.stringify(slaDto), { headers })
         .then((response) => {
@@ -227,19 +227,13 @@ const SLA = () => {
           <div className="detail-request-header-content px-6 pb-3 flex items-center justify-between">
             <div className="detail-request-header-left  flex items-center">
               <div className="detail-request-header-icon">
-                <IconTag
-                  name={"BsFillInfoSquareFill"}
-                  className="h-[50px] w-[50px]"
-                />
+                <IconTag name={"BsSlack"} className="h-[50px] w-[50px]" />
               </div>
               <div className="detail-request-header-description ml-5">
-                <h4 className="text-2xl font-bold">
-                  Service Level Agreements Metric
-                </h4>
+                <h4 className="text-2xl font-bold">Service Level Agreements</h4>
                 <span className="">
-                  Customize the types of service requests in the system. Make
-                  these request types available in your system portal by editing
-                  your request type group.
+                  The measurable parameters that define the quality and
+                  performance of the service.
                 </span>
               </div>
             </div>
