@@ -21,52 +21,13 @@ const TableItem = ({
   const axiosInstance = useAxiosPrivate();
   const [groupName, setGroupName] = useState(item?.groupName);
   const [desc, setDesc] = useState(item?.description);
-  // const [businessHourName, setBusinessHourName] = useState(
-  //   item?.businessHourEntity.businessHourName
-  // );
   const [listBusinessHour, setListBusinessHour] = useState(listBusiness);
   const [groupLeader, setGroupLeader] = useState(item?.userEntity.fullName);
-  //const [groupLeader, setGroupLeader] = useState("");
   const [listGroupLeader, setlistGroupLeader] = useState(listLeader);
 
-  // useEffect(() => {
-  //   const getListBusinessHour = async () => {
-  //     try {
-  //       const response = await axiosInstance.get(`api/BusinessHours/getall`);
-  //       setListBusinessHour(response.data);
-  //     } catch (error) {
-  //       console.error("Error getListBusinessHour [TableGroups]:", error);
-  //     }
-  //   };
-  //   const getListGroupLeaderName = async () => {
-  //     try {
-  //       const response = await axiosInstance.get(`/api/Users/getall`);
-  //       setlistGroupLeader(response.data);
-  //     } catch (error) {
-  //       console.error("Error getListGroupLeaderName [TableGroups]:", error);
-  //     }
-  //   };
-  //   getListGroupLeaderName();
-  //   getListBusinessHour();
-  // }, [axiosInstance]);
   const [businessHourSelected, setBusinessHourSelected] =
     useState(listBusiness);
   const [groupLeaderSelected, setGroupLeaderSelected] = useState(listLeader);
-  // const deleteGroup = () => {
-  //   // Gọi API để xóa dữ liệu dưới cơ sở dữ liệu
-  //   axiosInstance
-  //     .delete(`api/Roles/delete/${item.roleId}`)
-  //     .then((response) => {
-  //       // Nếu xóa thành công, cập nhật lại state bằng cách loại bỏ phần tử đã xóa
-  //       setCurrentRoles((prevListService) => {
-  //         return prevListService.filter((e) => e.roleId !== item.roleId);
-  //       });
-  //       alert(response.data.message);
-  //     })
-  //     .catch((error) => {
-  //       alert("Lỗi khi xóa:", error);
-  //     });
-  // };
   return (
     <tr>
       <td>
@@ -101,35 +62,6 @@ const TableItem = ({
         />
         {!desc && <MessageError error={"Description is required"} />}
       </td>
-      {/* {isEdit ? (
-        <td>
-          <DropdownBusinessHour
-            selected={businessHourSelected}
-            setSelected={setBusinessHourSelected}
-            onChange={(e) => {
-              setBusinessHourSelected(e.target.value);
-            }}
-            listBusinessHour={listBusiness}
-            className={clsx(
-              "px-3 py-1.5 rounded-lg bg-transparent border-2",
-              isEdit ? "border-[#CCC9C9]" : "border-transparent"
-            )}
-            style={{
-              boxShadow: isEdit && "0px 4px 4px 0px rgba(0, 0, 0, 0.25)",
-            }}
-          />
-        </td>
-      ) : (
-        <td>
-          <input
-            type="text"
-            value={businessHourName}
-            onChange={(e) => {
-              setBusinessHourName(e.target.value);
-            }}
-          />
-        </td>
-      )} */}
       {isEdit ? (
         <td>
           <DropdownGroupLeader
@@ -177,8 +109,6 @@ const TableItem = ({
                   groupLeaderSelected.userId
                 );
                 setGroupLeader(groupLeaderSelected.fullName);
-                // setGroupLeaderSelected(data[currentIndex].userEntity);
-                // item.userEntity.forEach()
               }
             }}
           >

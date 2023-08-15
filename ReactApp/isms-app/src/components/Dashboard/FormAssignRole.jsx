@@ -1,15 +1,12 @@
 import React, { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import DropdownRole from "./TableUsers/DropdownRole";
-import { roles } from "./TableRoles";
-import { data } from "autoprefixer";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const FormAssignRole = ({ open, setOpen, roleData, selectedUser }) => {
   const [role, setRole] = useState(roleData);
   const axiosInstance = useAxiosPrivate();
 
-  console.log("==============>selectedUser", selectedUser);
   const handleAssign = (e) => {
     const dataAssign = {
       userId: selectedUser.userId,

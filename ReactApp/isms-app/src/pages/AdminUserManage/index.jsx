@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import TableUsers from "../../components/Dashboard/TableUsers";
-import { roles } from "../../components/Dashboard/TableRoles";
 import FormAddUser from "../../components/Dashboard/FormAddUser";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
@@ -78,7 +77,12 @@ const AdminUserManage = () => {
             <span>Create new user</span>
           </button>
 
-          <FormAddUser open={open} setOpen={setOpen} data={currentUsers} />
+          <FormAddUser
+            open={open}
+            setOpen={setOpen}
+            data={currentUsers}
+            setCurrentUsers={setCurrentUsers}
+          />
         </div>
       </div>
     </div>
