@@ -21,6 +21,7 @@ const DropDownGroupLeader = ({
   setSelected,
   className,
   listGroupLeader,
+  groupLeaderName,
   data,
   index,
 }) => {
@@ -43,7 +44,7 @@ const DropDownGroupLeader = ({
     >
       <div>
         <div className="border-0 hover:border-0 flex justify-between rounded-none items-center w-full text-start focus:outline-none">
-          <span>{selected.fullName}</span>
+          <span>{selected === [] ? groupLeaderName : selected.fullName}</span>
           <IconArrowDown />
         </div>
         <ul

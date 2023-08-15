@@ -25,7 +25,8 @@ export { default as AdminTicket } from "./AdminTicket";
 export { default as AdminChange } from "./AdminChange";
 export { default as AdminProblem } from "./AdminProblem";
 export { default as AdminReport } from "./AdminReport";
-export { default as AdminGroup } from "./AdminGroup";
+export { default as AdminGroups } from "./AdminGroups";
+export { default as AdminGroupEdit } from "./AdminGroupEdit";
 export { default as AdminRoleEdit } from "./AdminRoleEdit";
 export { default as AdminRolePermissionAdd } from "./AdminRolePermissionAdd";
 

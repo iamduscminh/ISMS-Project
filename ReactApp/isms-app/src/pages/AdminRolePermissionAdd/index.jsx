@@ -1,13 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ROUTES_PATHS } from "../../../constants";
 import MessageError from "../../components/Dashboard/MessageError";
 import TogglePermission from "../../components/Dashboard/TogglePermission";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
-const options = Array(10).fill({ name: "Manage user", value: true });
 const AdminRolePermissionAdd = () => {
-  const [roleName, setRoleName] = useState("");
-  const [permissions, setPermissions] = useState(options);
+  const axiosInstance = useAxiosPrivate();
+  const [roleName, setRoleName] = useState(" ");
+  const [permissions, setPermissions] = useState();
+
+  useEffect(() => {
+    const getAllPermissions = async () => {
+      try {
+        const response = await axiosInstance.get("api/Permissions");
+        setPermissions(response.data);
+      } catch (error) {
+        console.error(
+          "Error getAllPermissions [AdminRolePermissionAdd]:",
+          error
+        );
+      }
+    };
+
+    getAllPermissions();
+  }, [axiosInstance]);
+
+  const hanldeAddPermissions = (e) => {};
 
   return (
     <div className="bg-[#F7F7F7] text-[#727272]">
@@ -55,7 +74,7 @@ const AdminRolePermissionAdd = () => {
                 {permissions?.map((permission, curIndex) => (
                   <tr key={curIndex}>
                     <td className="py-4 text-lg text-center xl:text-2xl">
-                      Manage user
+                      {permission.permissionName}
                     </td>
                     <td>
                       <TogglePermission
@@ -80,7 +99,10 @@ const AdminRolePermissionAdd = () => {
 
         <div className="mt-8 xl:mt-[54px] flex space-x-3 justify-end">
           <Link to={ROUTES_PATHS.ADMIN_ROLE} className="flex justify-end">
-            <button className="text-white gap-4 px-4 py-2 bg-[#4AA976] rounded-lg font-semibold w-[150px] text-center">
+            <button
+              onClick={hanldeAddPermissions}
+              className="text-white gap-4 px-4 py-2 bg-[#4AA976] rounded-lg font-semibold w-[150px] text-center"
+            >
               Save
             </button>
           </Link>

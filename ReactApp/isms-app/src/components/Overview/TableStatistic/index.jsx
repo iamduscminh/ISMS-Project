@@ -40,7 +40,7 @@ const TableStatistic = () => {
           <th>Status</th>
           <th>Priority</th>
           <th>Create Date</th>
-          <th>SLA</th>
+          <th>Last Update</th>
         </tr>
         {createTicket.map((ticket, index) => {
           return (
@@ -50,7 +50,7 @@ const TableStatistic = () => {
               <td>{ticket.status}</td>
               <td>{ticket.priority}</td>
               <td>{formatDate(ticket.createdAt)}</td>
-              <td>{ticket.sla.slaname}</td>
+              <td>{formatDate(ticket.lastUpdateAt)}</td>
             </tr>
           );
         })}

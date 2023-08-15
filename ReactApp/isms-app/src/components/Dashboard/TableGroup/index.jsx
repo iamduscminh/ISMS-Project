@@ -4,8 +4,10 @@ import clsx from "clsx";
 import MessageError from "../MessageError";
 import * as Dialog from "@radix-ui/react-dialog";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import { roleTypes } from "../../../pages/AdminRole";
 import { Link, Routes, Route } from "react-router-dom";
-import AdminRoleEdit from "../../../pages/AdminRoleEdit";
+import AdminGroupEdit from "../../../pages/AdminGroupEdit";
+
 const IconEdit = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -35,42 +37,60 @@ const IconEdit = () => (
   </svg>
 );
 
-const IconDelete = () => (
+const IconView = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="40"
-    height="40"
-    viewBox="0 0 40 40"
+    height="41"
+    viewBox="0 0 40 41"
     fill="none"
   >
     <path
-      d="M11.667 35C10.7503 35 9.96533 34.6733 9.31199 34.02C8.65866 33.3667 8.33255 32.5822 8.33366 31.6667V10H6.66699V6.66667H15.0003V5H25.0003V6.66667H33.3337V10H31.667V31.6667C31.667 32.5833 31.3403 33.3683 30.687 34.0217C30.0337 34.675 29.2492 35.0011 28.3337 35H11.667ZM15.0003 28.3333H18.3337V13.3333H15.0003V28.3333ZM21.667 28.3333H25.0003V13.3333H21.667V28.3333Z"
-      fill="#FB4242"
+      d="M38.6754 19.5848C37.2052 15.7818 34.6529 12.493 31.3339 10.1249C28.015 7.75671 24.0748 6.41298 20.0004 6.25977C15.9261 6.41298 11.9859 7.75671 8.66695 10.1249C5.34796 12.493 2.79565 15.7818 1.32544 19.5848C1.22615 19.8594 1.22615 20.1601 1.32544 20.4348C2.79565 24.2377 5.34796 27.5265 8.66695 29.8947C11.9859 32.2628 15.9261 33.6066 20.0004 33.7598C24.0748 33.6066 28.015 32.2628 31.3339 29.8947C34.6529 27.5265 37.2052 24.2377 38.6754 20.4348C38.7747 20.1601 38.7747 19.8594 38.6754 19.5848ZM20.0004 31.2598C13.3754 31.2598 6.37544 26.3473 3.83794 20.0098C6.37544 13.6723 13.3754 8.75977 20.0004 8.75977C26.6254 8.75977 33.6254 13.6723 36.1629 20.0098C33.6254 26.3473 26.6254 31.2598 20.0004 31.2598Z"
+      fill="#186540"
+    />
+    <path
+      d="M20 12.5098C18.5166 12.5098 17.0666 12.9496 15.8332 13.7737C14.5999 14.5979 13.6386 15.7692 13.0709 17.1396C12.5032 18.5101 12.3547 20.0181 12.6441 21.4729C12.9335 22.9278 13.6478 24.2642 14.6967 25.3131C15.7456 26.362 17.082 27.0763 18.5368 27.3657C19.9917 27.655 21.4997 27.5065 22.8701 26.9389C24.2406 26.3712 25.4119 25.4099 26.236 24.1765C27.0601 22.9432 27.5 21.4931 27.5 20.0098C27.5 18.0206 26.7098 16.113 25.3033 14.7065C23.8968 13.2999 21.9891 12.5098 20 12.5098ZM20 25.0098C19.0111 25.0098 18.0444 24.7165 17.2222 24.1671C16.3999 23.6177 15.759 22.8368 15.3806 21.9232C15.0022 21.0096 14.9032 20.0042 15.0961 19.0343C15.289 18.0644 15.7652 17.1735 16.4645 16.4742C17.1637 15.775 18.0546 15.2988 19.0246 15.1058C19.9945 14.9129 20.9998 15.0119 21.9134 15.3904C22.8271 15.7688 23.6079 16.4097 24.1574 17.2319C24.7068 18.0542 25 19.0209 25 20.0098C25 21.3358 24.4732 22.6076 23.5355 23.5453C22.5979 24.483 21.3261 25.0098 20 25.0098Z"
+      fill="#186540"
     />
   </svg>
 );
-
 const TableItem = ({
   item,
   setCurrentRoles,
   currentIndex,
   onDeleteRole,
   onUpdateRole,
-  data,
 }) => {
   const [isEdit, setIsEdit] = useState(false);
-  const [roleName, setRoleName] = useState(item?.roleName);
+  const [groupName, setGroupName] = useState(item?.groupName);
   const [desc, setDesc] = useState(item?.description);
+  const [groupLeader, setGroupLeader] = useState(item?.groupLeader);
+  const [groupLeaderName, setGroupLeaderName] = useState("");
+  const [roleType, setRoleType] = useState(roleTypes);
   const [open, setOpen] = useState(false);
   const axiosInstance = useAxiosPrivate();
 
   useEffect(() => {
-    // setCurrentRoles();
+    const getGroupLeaderName = async () => {
+      try {
+        const response = await axiosInstance.post(
+          `api/Users/get/${groupLeader}`
+        );
+        setGroupLeaderName(response.data.fullName);
+      } catch (error) {
+        console.error("Error getGroupLeaderName [TableGroup]:", error);
+      }
+    };
+    getGroupLeaderName();
   }, [axiosInstance]);
+
   const deleteRole = () => {
+    // Gọi API để xóa dữ liệu dưới cơ sở dữ liệu
     axiosInstance
       .delete(`api/Roles/delete/${item.roleId}`)
       .then((response) => {
+        // Nếu xóa thành công, cập nhật lại state bằng cách loại bỏ phần tử đã xóa
         setCurrentRoles((prevListService) => {
           return prevListService.filter((e) => e.roleId !== item.roleId);
         });
@@ -83,21 +103,29 @@ const TableItem = ({
 
   return (
     <tr>
-      <td className="px-3 py-1.5 rounded-lg bg-transparent font-poppins">
-        {roleName}
-      </td>
-      <td className="px-3 py-1.5 rounded-lg bg-transparent font-poppins">
-        {desc}
+      <td className="px-3 py-1.5 rounded-lg bg-transparent">{groupName}</td>
+      <td className="px-3 py-1.5 rounded-lg bg-transparent">{desc}</td>
+      <td className="px-3 py-1.5 rounded-lg bg-transparent">
+        {groupLeaderName}
       </td>
 
       <td className="space-x-10 flex items-center">
         <div className="space-x-5 py-2">
-          <Link to={`/admin/manage/role/edit/${item.roleId}`}>
+          {/* <Link to={ROUTES_PATHS.ADMIN_ROLE_EDIT + `${item.roleId}`}>
             <button
               className="text-[#3A7DFF] w-14 focus:outline-none border-0"
               onClick={() => {
                 setIsEdit((prev) => !prev);
-                <AdminRoleEdit setCurrentRoles={setCurrentRoles} />;
+              }}
+            >
+              {!isEdit ? <IconEdit /> : "Save"}
+            </button>
+          </Link> */}
+          <Link to={`/admin/manage/groups/edit/${item.groupId}`}>
+            <button
+              className="text-[#3A7DFF] w-14 focus:outline-none border-0"
+              onClick={() => {
+                setIsEdit((prev) => !prev);
               }}
             >
               {!isEdit ? <IconEdit /> : "Save"}
@@ -106,13 +134,8 @@ const TableItem = ({
           <Routes>
             <Route>
               <Route
-                path="/admin/manage/role/edit/:id"
-                element={
-                  <AdminRoleEdit
-                    data={data}
-                    setCurrentRoles={setCurrentRoles}
-                  />
-                }
+                path="/admin/manage/groups/edit/:id"
+                element={<AdminGroupEdit />}
               />
             </Route>
           </Routes>
@@ -121,10 +144,11 @@ const TableItem = ({
             onClick={() => {
               setOpen(true);
             }}
-          >
-            <IconDelete />
-          </button>
+          ></button>
         </div>
+        {/* <button className="text-[#3A7DFF] focus:outline-none border-0">
+          <IconView />
+        </button> */}
       </td>
       <Dialog.Root open={open} onOpenChange={setOpen}>
         <Dialog.Portal>
@@ -178,16 +202,45 @@ const TableItem = ({
     </tr>
   );
 };
+
 const TableRoles = ({ data, setCurrentRoles }) => {
   // const [open, setOpen] = useState(false);
   // const [selectedRole, setSelectedRole] = useState();
   const axiosInstance = useAxiosPrivate();
+
+  // const updateRole = (roleId, roleName, roleDescription, roleType) => {
+  //   const updatedRole = {
+  //     roleId: roleId,
+  //     roleName: roleName,
+  //     description: roleDescription,
+  //     roleType: roleType.id,
+  //   };
+
+  //   axiosInstance
+  //     .put(`/api/Roles/update`, updatedRole, {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     })
+  //     .then((response) => {
+  //       const newData = response.data;
+  //       const updatedData = data.map((item) =>
+  //         item.roleId === newData.roleId ? newData : item
+  //       );
+
+  //       setCurrentRoles(updatedData);
+  //     })
+  //     .catch((error) => {
+  //       alert("Có lỗi khi cập nhật: ", error);
+  //     });
+  // };
   return (
     <div className="mt-10 overflow-auto bg-[#E5F3F3] border border-black px-8 xl:px-[54px]">
-      <table className={clsx(styles.table, "w-full mt-8 xl:mt-16")}>
+      <table className={clsx(styles.table, "w-full text-left mt-8 xl:mt-16")}>
         <tr>
-          <th>Role Name</th>
+          <th>Group Name</th>
           <th>Description</th>
+          <th>Group Leader</th>
           <th>Action</th>
         </tr>
         {data.map((item, index) => (
@@ -196,6 +249,8 @@ const TableRoles = ({ data, setCurrentRoles }) => {
             item={item}
             setCurrentRoles={setCurrentRoles}
             currentIndex={index}
+            // setOpen={setOpen}
+            // onUpdateRole={updateRole}
           />
         ))}
       </table>

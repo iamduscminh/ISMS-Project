@@ -8,7 +8,8 @@ export const ROUTES_PATHS = {
   ADMIN_CONTACT: "/admin/manage/contact",
   ADMIN_ROLE: "/admin/manage/role",
   ADMIN_USERS: "/admin/manage/users",
-  ADMIN_GROUP: "/admin/manage/group",
+  ADMIN_GROUPS: "/admin/manage/groups",
+  ADMIN_GROUPS_EDIT: "/admin/manage/groups/edit/:id",
   ADMIN_ROLE_EDIT: "/admin/manage/role/edit/:id",
   ADMIN_ROLE_PERMISSION_ADD: "/admin/manage/role/permission",
 };
