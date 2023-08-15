@@ -72,6 +72,7 @@ function RequestType() {
   );
   const [iconRequestTypeTemp, setIconRequestTypeTemp] =
     useState(iconRequestType);
+  const [selectedRequestType, setSelectedRequestType] = useState();
   const [selectedService, setSelectedService] = useState(listOfService[0]);
   const [selectedWorkflow, setSelectedWorkflow] = useState();
   const [activeTabIndex, setActiveTabIndex] = useState(0);
@@ -90,12 +91,18 @@ function RequestType() {
     criteriaMode: "all",
   });
   const onSubmit = (data) => {
-    const apiCreateRequestTypeUrl = `${URL.SERVICE_ITEM_URL}/create`;
-    const apiCreateRequestTypeExtUrl = `${URL.SERVICE_ITEM_EXT_URL}/assign`;
     // console.log(data);
     // console.log(iconRequestType);
     // console.log(selectedService);
-    //console.log(listFieldConfig);
+    console.log(listFieldConfig);
+    // console.log(isUpdateView);
+    const apiRequestTypeUrl = isUpdateView
+      ? `${URL.SERVICE_ITEM_URL}/update/${id}`
+      : `${URL.SERVICE_ITEM_URL}/create`;
+    const apiRequestTypeExtUrl = isUpdateView
+      ? `${URL.SERVICE_ITEM_EXT_URL}/update`
+      : `${URL.SERVICE_ITEM_EXT_URL}/assign`;
+
     const requestTypeDto = {
       ServiceItemName: data.rqtName,
       ShortDescription: data.rqtDescription,
@@ -114,46 +121,86 @@ function RequestType() {
           Swal.showLoading();
         },
       });
-      axiosInstance
-        .post(apiCreateRequestTypeUrl, requestTypeDto, headers)
-        .then((response) => {
-          //console.log(response.data);
-          //CREATE REQUEST TICKET EXT
-          if (listFieldConfig.some((item) => typeof item === "object")) {
-            const customFieldsDataArray = listFieldConfig.map((item) => {
-              return {
-                CustomFieldId: item.fieldId,
-                Mandatory: item.mandatory,
-                ServiceItemId: response.data.serviceItemDTO.serviceItemId,
-              };
+      if (!isUpdateView)
+        axiosInstance
+          .post(apiRequestTypeUrl, requestTypeDto, headers)
+          .then((response) => {
+            //console.log(response.data);
+            //CREATE REQUEST TICKET EXT
+            if (listFieldConfig.some((item) => typeof item === "object")) {
+              const customFieldsDataArray = listFieldConfig.map((item) => {
+                return {
+                  CustomFieldId: item.fieldId,
+                  Mandatory: item.mandatory,
+                  ServiceItemId: response.data.serviceItemDTO.serviceItemId,
+                };
+              });
+              //console.log(customFieldsDataArray);
+              return axiosInstance.post(
+                apiRequestTypeExtUrl,
+                JSON.stringify(customFieldsDataArray),
+                { headers }
+              );
+            }
+          })
+          .then((response) => {
+            //console.log(response.data);
+            Swal.fire({
+              icon: "success",
+              title: "Success!",
+              text: "Request Ticket was created successfully.",
+              confirmButtonText: "OK",
+            }).then(() => {
+              navigate("/admin/");
             });
-            //console.log(customFieldsDataArray);
-            return axiosInstance.post(
-              apiCreateRequestTypeExtUrl,
-              JSON.stringify(customFieldsDataArray),
-              { headers }
-            );
-          }
-        })
-        .then((response) => {
-          //console.log(response.data);
-          Swal.fire({
-            icon: "success",
-            title: "Success!",
-            text: "Request Ticket was created successfully.",
-            confirmButtonText: "OK",
-          }).then(() => {
-            navigate("/admin/");
+          })
+          .catch((error) => {
+            const result = Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error}`,
+            });
           });
-        })
-        .catch((error) => {
-          const result = Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: `${error}`,
+      else
+        axiosInstance
+          .put(apiRequestTypeUrl, requestTypeDto, headers)
+          .then((response) => {
+            //console.log(response.data);
+            //CREATE REQUEST TICKET EXT
+            if (listFieldConfig.some((item) => typeof item === "object")) {
+              const customFieldsDataArray = listFieldConfig.map((item) => {
+                return {
+                  CustomFieldId: item.fieldId,
+                  Mandatory: item.mandatory,
+                  ServiceItemId: response.data.serviceItemDTO.serviceItemId,
+                };
+              });
+              //console.log(customFieldsDataArray);
+              return axiosInstance.put(
+                apiRequestTypeExtUrl,
+                JSON.stringify(customFieldsDataArray),
+                { headers }
+              );
+            }
+          })
+          .then((response) => {
+            //console.log(response.data);
+            Swal.fire({
+              icon: "success",
+              title: "Success!",
+              text: "Request Ticket was created successfully.",
+              confirmButtonText: "OK",
+            }).then(() => {
+              navigate("/admin/");
+            });
+          })
+          .catch((error) => {
+            const result = Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error}`,
+            });
           });
-        });
-
       Swal.close();
     } catch (error) {
       // Handle errors if needed
@@ -259,11 +306,10 @@ function RequestType() {
     if (workflowSelect) setSelectedWorkflow(workflowSelect);
   };
   useEffect(() => {
-    let isUpdateView = id == 0;
+    let isUpdateView = id != 0;
     setIsUpdateView(isUpdateView);
     const customFieldsGetUrl = `${URL.CUSTOM_FIELD_URL}/getall`;
     const apiGetSvcCategoryUrl = `${URL.SERVICE_CATEGORY_URL}/getall`;
-    //setListFieldConfig
     const fetchData = async () => {
       try {
         Swal.fire({
@@ -273,8 +319,8 @@ function RequestType() {
             Swal.showLoading();
           },
         });
-        //--------------Get serrvices
-        axiosInstance
+        //--------------Get all serrvices
+        await axiosInstance
           .get(apiGetSvcCategoryUrl, { headers })
           .then((response) => {
             const data = response.data.map((item, i) => ({
@@ -291,11 +337,11 @@ function RequestType() {
               text: `${error}`,
             });
           });
-
-        axiosInstance
+        //--------------Get all customfield
+        await axiosInstance
           .get(customFieldsGetUrl, { headers })
           .then((response) => {
-            console.log(response.data);
+            //console.log(response.data);
             const dataCustomFields = response.data.map((item, i) => ({
               fieldId: item.customFieldId,
               fieldName: item.fieldName,
@@ -319,9 +365,9 @@ function RequestType() {
             }
           });
 
-        //Workflow
+        //--------------Get all workflow
         const response = await axiosInstance.get(`${URL.WORKFLOW_URL}/getall`);
-        console.log(response.data);
+        //console.log(response.data);
         const datawfl = response.data.map((item, i) => ({
           stt: i,
           id: item.workflowId,
@@ -330,6 +376,64 @@ function RequestType() {
         }));
         setworkflowData(datawfl);
         setFilteredWflRows(datawfl);
+
+        //Get Detail if id not null
+        if (isUpdateView) {
+          const customFieldsGetByRequestTypeUrl = `${URL.SERVICE_ITEM_EXT_URL}/getbyserviceitem/${id}`;
+          const requestTypeDetailUrl = `${URL.SERVICE_ITEM_URL}/${id}`;
+          //--------------Get detail request type
+          await axiosInstance
+            .get(requestTypeDetailUrl, { headers })
+            .then((response) => {
+              const data = response.data;
+              //console.log(data);
+              setSelectedRequestType(data);
+              setIconRequestType(data.iconDisplay);
+              setSelectedService({
+                id: data.serviceCategoryEntity.serviceCategoryId,
+                serviceName: data.serviceCategoryEntity.serviceCategoryName,
+              });
+              setSelectedWorkflow({
+                id: data.workflowEntity.workflowId,
+                workflowName: data.workflowEntity.workflowName,
+              });
+            })
+            .catch((error) => {
+              const result = Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: `${error}`,
+              });
+            });
+          //--------------Get detail request type custom field
+          await axiosInstance
+            .get(customFieldsGetByRequestTypeUrl, { headers })
+            .then((response) => {
+              //console.log(response.data);
+              const dataCustomFields = response.data.map((item, i) => ({
+                fieldId: item.customFieldId,
+                fieldName: item.customField.fieldName,
+                mandatory: item.mandatory,
+              }));
+              setListFieldConfig(dataCustomFields);
+            })
+            .catch((error) => {
+              const result = Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: `${error}`,
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+              });
+
+              if (result.isConfirmed) {
+                console.log("User confirmed!");
+              } else {
+                console.log(error + "User canceled!");
+              }
+            });
+        }
 
         Swal.close();
       } catch (error) {
@@ -443,6 +547,7 @@ function RequestType() {
                         id="rqtName"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         placeholder=""
+                        defaultValue={selectedRequestType?.serviceItemName}
                         {...register("rqtName", {
                           required: "This field is required.",
                           maxLength: {
@@ -468,6 +573,7 @@ function RequestType() {
                         rows="4"
                         className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 "
                         placeholder="Write description content of request type"
+                        defaultValue={selectedRequestType?.description}
                         {...register("rqtDescription", {
                           required: "This field is required.",
                           maxLength: {
@@ -493,7 +599,9 @@ function RequestType() {
                         {/* Icon Default */}
                         <IconTag
                           className="h-[30px] w-[30px] mr-7"
-                          name={iconRequestType}
+                          name={
+                            iconRequestType ?? selectedRequestType?.iconDisplay
+                          }
                         />
 
                         <ModalDialog
@@ -629,7 +737,7 @@ function RequestType() {
                               </div>
                             )}
 
-                            <div
+                            {/* <div
                               className={`${
                                 isCreateNewService
                                   ? "text-gray-600"
@@ -639,7 +747,7 @@ function RequestType() {
                             >
                               <IconTag name={"AiOutlinePlus"}></IconTag>
                               <span className="ml-1">Create</span>
-                            </div>
+                            </div> */}
                           </div>
                         </ModalDialog>
                       </div>
@@ -823,7 +931,7 @@ function RequestType() {
                       className="text-white mr-2 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-4 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                       onClick={handleCreateRequestType}
                     >
-                      Save
+                      {isUpdateView ? "Update" : "Create" ?? ""}
                     </button>
                   </div>
                 </div>
