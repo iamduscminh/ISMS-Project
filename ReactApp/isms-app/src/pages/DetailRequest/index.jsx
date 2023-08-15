@@ -17,6 +17,40 @@ function CreateRequest() {
   const axiosInstance = useAxiosPrivate();
   const { id } = useParams();
   const { auth } = useAuth();
+
+  //Comment
+  const commentRef = useRef();
+  const [commentValue, setCommentValue] = useState();
+  const [isValidComment, setIsValidComment] = useState(true);
+  const [errorComment, setErrorComment] = useState();
+  const [commentData, setCommentData] = useState([]);
+  const [activityData, setActivityData] = useState([
+    {
+      id: 1,
+      type: "UserChange",
+      //image:image.avatar3,
+      sender: "Calyrex",
+      action: "Change assigned user",
+      time: "06:06 PM July 13, 2023",
+      previous: "",
+      update: {
+        updateUser: "Gardevoir",
+        //image: image.avatar
+      },
+    },
+    {
+      id: 2,
+      type: "a",
+      sender: "Calyrex",
+      action: "Changed status",
+      time: "05:06 PM July 13, 2023",
+      previous: "Open",
+      update: "Work in progress",
+    },
+  ]);
+
+  const [commentTab, setCommentTab] = useState(true);
+
   const {
     register,
     handleSubmit,
@@ -85,7 +119,7 @@ function CreateRequest() {
               fileName: dataRp.attachmentEntity?.filename,
               filePath: dataRp.attachmentEntity?.filePath,
             };
-            console.log(response.data);
+            //console.log(response.data);
             setRequestTicket(rqTicket);
           })
           .catch((error) => {
@@ -173,38 +207,6 @@ function CreateRequest() {
     //console.log(reasonCancelRef.current.value);
   };
 
-  //Comment
-  const commentRef = useRef();
-  const [commentValue, setCommentValue] = useState();
-  const [isValidComment, setIsValidComment] = useState(true);
-  const [errorComment, setErrorComment] = useState();
-  const [commentData, setCommentData] = useState([]);
-  const [activityData, setActivityData] = useState([
-    {
-      id: 1,
-      type: "UserChange",
-      //image:image.avatar3,
-      sender: "Calyrex",
-      action: "Change assigned user",
-      time: "06:06 PM July 13, 2023",
-      previous: "",
-      update: {
-        updateUser: "Gardevoir",
-        //image: image.avatar
-      },
-    },
-    {
-      id: 2,
-      type: "a",
-      sender: "Calyrex",
-      action: "Changed status",
-      time: "05:06 PM July 13, 2023",
-      previous: "Open",
-      update: "Work in progress",
-    },
-  ]);
-
-  const [commentTab, setCommentTab] = useState(true);
   const showCommentTab = (queryCondition) => {
     setCommentTab(queryCondition);
   };
@@ -249,18 +251,16 @@ function CreateRequest() {
       axiosInstance
         .post(apiCreateCommentUrl, JSON.stringify(commentDto), { headers })
         .then((response) => {
-          console.log(response.data.commentText);
-          setCommentData((prev) => [
-            {
-              id: response.data.commentId,
-              sender: userName,
-              senderId: auth?.userId,
-              isInternal: response.data.isInternal,
-              time: "Just now", //response.data.commentTime,
-              content: commentValue, //response.data.commentText,
-            },
-            ...prev,
-          ]);
+          const dataNewComment = {
+            id: response.data.commentId,
+            sender: userName,
+            senderId: auth?.userId,
+            isInternal: response.data.isInternal,
+            time: "Just now", //response.data.commentTime,
+            content: response.data.commentText,
+          };
+          setCommentData((prev) => [...prev, dataNewComment]);
+          console.log(commentData);
           commentRef.current.value = "";
         })
         .catch((error) => {

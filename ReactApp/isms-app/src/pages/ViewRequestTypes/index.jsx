@@ -38,28 +38,6 @@ function ViewRequestTypes() {
     //{ field: "createAt", headerName: "Create At", width: 200 },
   ];
 
-  const rows = [
-    {
-      id: 1,
-      requestType: "Fix a account problem",
-      description:
-        "Having trouble accessing certain websites or systems? We'll help you out",
-      service: "Logins and Accounts",
-    },
-    {
-      id: 2,
-      requestType: "Get a guest wifi account",
-      description: "Raise a request to ask for temp wifi access for guests.",
-      service: "Logins and Accounts",
-    },
-    {
-      id: 3,
-      requestType: "New mobile device",
-      description: "Need a mobile phone or time for replacement? Let us know.",
-      service: "Computers",
-    },
-  ];
-
   //Handle search request type
   const handleFilterChange = (e) => {
     const keyword = e.target.value;
@@ -84,7 +62,7 @@ function ViewRequestTypes() {
   };
   const handleRowClick = (params) => {
     const { id } = params.row;
-    navigate("/viewDetails/" + id);
+    navigate("/requestType/" + id);
   };
 
   useEffect(() => {
