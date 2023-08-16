@@ -1,20 +1,20 @@
 import React, { useState } from "react";
 
 const PrioritySelection = ({ priorityData, data, onSelect }) => {
-  console.log(data.priority);
+  //console.log(data.priority);
   const [openCombobox, setOpenCombobox] = useState(false);
   const [priorityValue, setPriorityValue] = useState(data.priority);
 
-  console.log(priorityValue);
+  //console.log(priorityValue);
   const handleUpdate = (checkItem, e) => {
     const isChecked = e.target.checked;
 
     if (isChecked) {
-      const newValue = [...priorityValue, checkItem.priority]
+      const newValue = [...priorityValue, checkItem.priority];
       setPriorityValue(newValue);
       onSelect(newValue);
     } else {
-      const newValue = priorityValue.filter((i) => i !== checkItem.priority)
+      const newValue = priorityValue.filter((i) => i !== checkItem.priority);
       setPriorityValue(newValue);
       onSelect(newValue);
     }

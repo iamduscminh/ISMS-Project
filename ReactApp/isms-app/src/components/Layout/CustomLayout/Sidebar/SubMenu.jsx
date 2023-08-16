@@ -13,7 +13,7 @@ const SidebarLink = styled.div`
   text-decoration: none;
   font-size: 14px;
   &:hover {
-    background: #F2F2F2;
+    background: #f2f2f2;
     border-left: 4px solid #632ce4;
     cursor: pointer;
   }
@@ -23,38 +23,40 @@ const SidebarLabel = styled.span`
 `;
 
 const DropdownLink = styled(Link)`
-  background: #F4F7FF;
-  height:45px;
+  background: #f4f7ff;
+  height: 45px;
   padding-left: 3rem;
-  display:flex;
-  align-items:center;
-  text-decoration:none;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
   color: #686868;
   font-size: 0.85rem;
 
-  &:hover{
-    background: #F2F2F2;
-    cursor:pointer;
+  &:hover {
+    background: #f2f2f2;
+    cursor: pointer;
     color: #686868;
   }
 
   > div {
     margin-left: auto;
-    margin-right:0.25rem;
+    margin-right: 0.25rem;
   }
-`
+`;
 
 const SubMenu = ({ item, listNumberTicket, changeSidebar, setQueryType }) => {
-
   let numberTicket;
-  if (item.title === 'All Tickets') {
-    numberTicket = listNumberTicket.requestTicket + listNumberTicket.change + listNumberTicket.problem
-  } else if (item.title === 'Changes') {
+  if (item.title === "All Tickets") {
+    numberTicket =
+      listNumberTicket.requestTicket +
+      listNumberTicket.change +
+      listNumberTicket.problem;
+  } else if (item.title === "Changes") {
     numberTicket = listNumberTicket.change;
-  } else if (item.title === 'Incidents') {
-    numberTicket = listNumberTicket.incident
-  } else if (item.title === 'Problems') {
-    numberTicket = listNumberTicket.problem
+  } else if (item.title === "Incidents") {
+    numberTicket = listNumberTicket.incident;
+  } else if (item.title === "Problems") {
+    numberTicket = listNumberTicket.problem;
   }
 
   const [subnav, setSubnav] = useState(false);
@@ -65,38 +67,48 @@ const SubMenu = ({ item, listNumberTicket, changeSidebar, setQueryType }) => {
     if (item.subNav) {
       showSubnav();
     } else {
-      setQueryType(item.title);
+      setQueryType(item.type);
       changeSidebar(2);
     }
-  }
+  };
 
   const handleChangeTabSubMenu = (data) => {
     setQueryType(data);
     changeSidebar(2);
-  }
+  };
   return (
     <>
-      <SidebarLink onClick={handleChangeTab} >
+      <SidebarLink onClick={handleChangeTab}>
         <div className="flex items-center text-[#686868] text-[0.85rem]">
           {item.icon}
           <SidebarLabel>{item.title}</SidebarLabel>
         </div>
         <div>
-          {item.subNav && subnav
-            ? item.openedIcon
-            : item.subNav
-              ? item.closedIcon
-              : <div className="rounded-full bg-[#42526E] w-[1.25rem] aspect-square] text-[#fff] text-center text-[0.75rem]">{"" + numberTicket}</div>}
+          {item.subNav && subnav ? (
+            item.openedIcon
+          ) : item.subNav ? (
+            item.closedIcon
+          ) : (
+            <div className="rounded-full bg-[#42526E] w-[1.25rem] aspect-square] text-[#fff] text-center text-[0.75rem]">
+              {"" + numberTicket}
+            </div>
+          )}
         </div>
       </SidebarLink>
       {subnav && (
         <div className="overflow-y-auto max-h-52">
           {item.subNav.map((item, index) => {
             return (
-              <DropdownLink to={item.path} key={index} onClick={() => handleChangeTabSubMenu(item.title)}>
+              <DropdownLink
+                to={item.path}
+                key={index}
+                onClick={() => handleChangeTabSubMenu(item.type)}
+              >
                 {item.icon}
                 <SidebarLabel>{item.title}</SidebarLabel>
-                <div className="rounded-full bg-[#42526E] w-[1.25rem] aspect-square] text-[#fff] text-center text-[0.75rem]">{listNumberTicket.serviceRequests[item.cateId]}</div>
+                <div className="rounded-full bg-[#42526E] w-[1.25rem] aspect-square] text-[#fff] text-center text-[0.75rem]">
+                  {listNumberTicket.serviceRequests[item.cateId]}
+                </div>
               </DropdownLink>
             );
           })}

@@ -95,7 +95,7 @@ function CreateRequest() {
           },
         });
         //--------------Get request tickets
-        axiosInstance
+        await axiosInstance
           .get(apiGetRequestTicketsUrl)
           .then((response) => {
             const dataRp = response.data;
@@ -119,7 +119,7 @@ function CreateRequest() {
               fileName: dataRp.attachmentEntity?.filename,
               filePath: dataRp.attachmentEntity?.filePath,
             };
-            //console.log(response.data);
+            console.log(response.data);
             setRequestTicket(rqTicket);
           })
           .catch((error) => {
@@ -131,7 +131,7 @@ function CreateRequest() {
           });
 
         //--------------Get request tickets Ext
-        axiosInstance
+        await axiosInstance
           .get(apiGetRequestTicketExtUrl)
           .then((response) => {
             if (response.data.length > 0) {
@@ -159,7 +159,7 @@ function CreateRequest() {
           });
 
         //get data comment
-        axiosInstance
+        await axiosInstance
           .get(apiGetCommentsUrl, { headers })
           .then((response) => {
             const dataRp = response.data;
@@ -204,7 +204,36 @@ function CreateRequest() {
 
   const reasonCancelRef = useRef(null);
   const cancelRequestDetail = () => {
+    const apiCancelTicketUrl = `${ticketUrl}/cancel/${id}`;
     //console.log(reasonCancelRef.current.value);
+    try {
+      Swal.fire({
+        title: "Loading...",
+        allowOutsideClick: false,
+        onBeforeOpen: () => {
+          Swal.showLoading();
+        },
+      });
+      axiosInstance.put(apiCancelTicketUrl, headers).then((response) => {
+        console.log(response.data);
+        setRequestTicket((prevItem) => ({ ...prevItem, status: "Canceled" }));
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "Request Ticket was canceled successfully.",
+          confirmButtonText: "OK",
+        });
+      });
+      Swal.close();
+    } catch (error) {
+      // Handle errors if needed
+      Swal.close();
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error,
+      });
+    }
   };
 
   const showCommentTab = (queryCondition) => {
@@ -240,14 +269,14 @@ function CreateRequest() {
           Swal.showLoading();
         },
       });
-      const apiCreateCommentUrl = "api/Comments/create";
+      const apiCreateCommentUrl = `${commentUrl}/create`;
       const commentDto = {
         commentText: commentValue,
         commentBy: auth?.userId,
         requestTicketId: id,
         isInternal: false,
       };
-      console.log(commentDto);
+      //console.log(commentDto);
       axiosInstance
         .post(apiCreateCommentUrl, JSON.stringify(commentDto), { headers })
         .then((response) => {
@@ -259,7 +288,7 @@ function CreateRequest() {
             time: "Just now", //response.data.commentTime,
             content: response.data.commentText,
           };
-          setCommentData((prev) => [...prev, dataNewComment]);
+          setCommentData((prev) => [dataNewComment, ...prev]);
           console.log(commentData);
           commentRef.current.value = "";
         })
@@ -469,7 +498,7 @@ function CreateRequest() {
                     <div className="w-full mt-[1rem] mb-8 px-[2rem] max-h-[80vh] overflow-y-scroll">
                       {commentData.map((item, i) => (
                         <RequestComment
-                          key={i}
+                          key={item.id}
                           isAutoCmt={false}
                           id={item.id}
                           name={item.sender}
@@ -507,35 +536,37 @@ function CreateRequest() {
               <h3 className="text-3xl font-extrabold uppercase">
                 {requestTicket?.status}
               </h3>
-              <ModalDialog
-                title={"Cancel Request"}
-                actionText={"Cancel Request"}
-                actionHandler={cancelRequestDetail}
-                triggerComponent={
-                  <div className="inline-block cursor-pointer">
-                    <div className="flex items-center hover:underline">
-                      <IconTag name={"FaExchangeAlt"} />
-                      <p className="text-lg font-bold ml-3">Cancel Request</p>
+              {requestTicket?.status && requestTicket?.status != "Canceled" && (
+                <ModalDialog
+                  title={"Cancel Request"}
+                  actionText={"Cancel Request"}
+                  actionHandler={cancelRequestDetail}
+                  triggerComponent={
+                    <div className="inline-block cursor-pointer">
+                      <div className="flex items-center hover:underline">
+                        <IconTag name={"FaExchangeAlt"} />
+                        <p className="text-lg font-bold ml-3">Cancel Request</p>
+                      </div>
                     </div>
+                  }
+                >
+                  <div className="mb-1">
+                    <label
+                      htmlFor="reason_cancel"
+                      className="block mb-2 text-sm font-medium text-gray-500 "
+                    >
+                      Reason Cancel
+                    </label>
+                    <textarea
+                      id="reason_cancel"
+                      ref={reasonCancelRef}
+                      rows="5"
+                      className="block p-2.5 w-full text-sm text-gray-900 bg-gray-40 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 "
+                      placeholder="Write the reason you want cancel this request"
+                    ></textarea>
                   </div>
-                }
-              >
-                <div className="mb-1">
-                  <label
-                    htmlFor="reason_cancel"
-                    className="block mb-2 text-sm font-medium text-gray-500 "
-                  >
-                    Reason Cancel
-                  </label>
-                  <textarea
-                    id="reason_cancel"
-                    ref={reasonCancelRef}
-                    rows="5"
-                    className="block p-2.5 w-full text-sm text-gray-900 bg-gray-40 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 "
-                    placeholder="Write the reason you want cancel this request"
-                  ></textarea>
-                </div>
-              </ModalDialog>
+                </ModalDialog>
+              )}
             </div>
           </div>
         </div>

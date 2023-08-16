@@ -7,12 +7,13 @@ import {
   MdOutlineDifference,
   MdOutlineDesignServices,
   MdElectricalServices,
-  MdFilterListAlt
+  MdFilterListAlt,
 } from "react-icons/md";
 
 export const SidebarData = [
   {
     title: "All Tickets",
+    type: "all",
     path: "",
     icon: <MdFilterListAlt />,
     closedIcon: <IoMdArrowDropdown />,
@@ -20,6 +21,7 @@ export const SidebarData = [
   },
   {
     title: "Incidents",
+    type: "incident",
     path: "",
     icon: <BiErrorAlt />,
     closedIcon: <IoMdArrowDropdown />,
@@ -27,6 +29,7 @@ export const SidebarData = [
   },
   {
     title: "Changes",
+    type: "change",
     path: "",
     icon: <MdPublishedWithChanges />,
     closedIcon: <IoMdArrowDropdown />,
@@ -34,6 +37,7 @@ export const SidebarData = [
   },
   {
     title: "Problems",
+    type: "problem",
     path: "",
     icon: <MdOutlineDangerous />,
     closedIcon: <IoMdArrowDropdown />,

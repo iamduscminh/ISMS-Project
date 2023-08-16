@@ -62,6 +62,10 @@ const statusData = [
     id: 5,
     status: "Closed",
   },
+  {
+    id: 6,
+    status: "Canceled",
+  },
 ];
 const customStylePriority = {
   marginTop: "mt-[0rem]",
@@ -73,7 +77,7 @@ const customStylesStatus = {
   paddingX: "py-[0rem]",
 };
 const cx = classNames.bind(styles);
-const FilterCondition = ({queryCondition, setQueryCondition}) => {
+const FilterCondition = ({ queryCondition, setQueryCondition }) => {
   const [orderValue, setOrderValue] = useState({
     isAsc: true,
     orderBy: "none",
@@ -115,74 +119,56 @@ const FilterCondition = ({queryCondition, setQueryCondition}) => {
 
   const [summary, setSummary] = useState("");
 
-  const handleChangeOrder = (orderBy, isAsc ) => {
-    console.log(orderBy);
-    if(orderBy === 'None') orderBy = null
-    setQueryCondition(prev=>(
-      {...prev, orderBy: orderBy, orderASC: isAsc}
-    ));
+  const handleChangeOrder = (orderBy, isAsc) => {
+    //console.log(orderBy);
+    if (orderBy === "None") orderBy = null;
+    setQueryCondition((prev) => ({
+      ...prev,
+      orderBy: orderBy,
+      orderASC: isAsc,
+    }));
   };
 
   const handleFromDateChange = (event) => {
     const newFromDate = event.target.value;
-    setQueryCondition(prev=>(
-      {...prev, createdFrom: newFromDate}
-    ));
+    setQueryCondition((prev) => ({ ...prev, createdFrom: newFromDate }));
   };
 
   const handleToDateChange = (event) => {
     const newToDate = event.target.value;
-    setQueryCondition(prev=>(
-      {...prev, createdTo: newToDate}
-    ));
+    setQueryCondition((prev) => ({ ...prev, createdTo: newToDate }));
   };
 
   const handlePrioritySelect = (selectedItem) => {
-    setQueryCondition(prev=>(
-      {...prev, priority: selectedItem}
-    ));
+    setQueryCondition((prev) => ({ ...prev, priority: selectedItem }));
   };
 
   const handleStatusSelect = (selectedItem) => {
-    setQueryCondition(prev => (
-      {...prev, status: selectedItem}
-    ));
+    setQueryCondition((prev) => ({ ...prev, status: selectedItem }));
   };
 
   const handleRequestTypeSelect = (selectedItem) => {
-    setQueryCondition(prev => (
-      {...prev, requestType: selectedItem}
-    ));
+    setQueryCondition((prev) => ({ ...prev, requestType: selectedItem }));
   };
 
   const handleServiceSelect = (selectedItem) => {
-    setQueryCondition(prev => (
-      {...prev, service: selectedItem}
-    ));
+    setQueryCondition((prev) => ({ ...prev, service: selectedItem }));
   };
 
   const handleAssigneeSelect = (selectedItem) => {
-    setQueryCondition(prev => (
-      {...prev, assignee: selectedItem}
-    ));
+    setQueryCondition((prev) => ({ ...prev, assignee: selectedItem }));
   };
 
   const handleReporterSelect = (selectedItem) => {
-    setQueryCondition(prev => (
-      {...prev, reporter: selectedItem}
-    ));
+    setQueryCondition((prev) => ({ ...prev, reporter: selectedItem }));
   };
 
   const handleGroupSelect = (selectedItem) => {
-    setQueryCondition(prev => (
-      {...prev, group: selectedItem}
-    ));
+    setQueryCondition((prev) => ({ ...prev, group: selectedItem }));
   };
 
   const handleChangeSummary = (e) => {
-    setQueryCondition(prev => (
-      {...prev, description: e.target.value}
-    ));
+    setQueryCondition((prev) => ({ ...prev, titleSearch: e.target.value }));
   };
   const renderQueryStatement = () => {
     return `pri = (${priority.priority}) AND sts = (${status.text}) AND sv = (${ticketService.serviceName}) AND sum = ${summary} AND rp = ${reporter.id} AND as = ${assignee.id} from ${createdDate.from} to ${createdDate.to} ${orderValue.orderBy} ${orderValue.isAsc}`;
@@ -191,9 +177,11 @@ const FilterCondition = ({queryCondition, setQueryCondition}) => {
   function getCurrentDate(subtractMonth) {
     const today = new Date();
     const year = today.getFullYear();
-    const month = (today.getMonth() + 1 - subtractMonth).toString().padStart(2, '0'); // Tháng bắt đầu từ 0
-    const day = today.getDate().toString().padStart(2, '0');
-  
+    const month = (today.getMonth() + 1 - subtractMonth)
+      .toString()
+      .padStart(2, "0"); // Tháng bắt đầu từ 0
+    const day = today.getDate().toString().padStart(2, "0");
+
     return `${year}-${month}-${day}`;
   }
 
@@ -212,7 +200,11 @@ const FilterCondition = ({queryCondition, setQueryCondition}) => {
             Priority
           </div>
           <div className="m-auto w-[70%] ">
-            <PrioritySelection priorityData={priorityData} data={queryCondition} onSelect={handlePrioritySelect}/>
+            <PrioritySelection
+              priorityData={priorityData}
+              data={queryCondition}
+              onSelect={handlePrioritySelect}
+            />
           </div>
         </div>
 
@@ -222,7 +214,11 @@ const FilterCondition = ({queryCondition, setQueryCondition}) => {
             Status
           </div>
           <div className="m-auto w-[70%] ">
-            <StatusSelection statusData={statusData} data={queryCondition} onSelect={handleStatusSelect}/>
+            <StatusSelection
+              statusData={statusData}
+              data={queryCondition}
+              onSelect={handleStatusSelect}
+            />
           </div>
         </div>
 
@@ -232,7 +228,10 @@ const FilterCondition = ({queryCondition, setQueryCondition}) => {
             Request Type
           </div>
           <div className="m-auto w-[70%] ">
-            <RequestTypeSelection data={queryCondition} onSelect={handleRequestTypeSelect} />
+            <RequestTypeSelection
+              data={queryCondition}
+              onSelect={handleRequestTypeSelect}
+            />
           </div>
         </div>
 
@@ -242,7 +241,10 @@ const FilterCondition = ({queryCondition, setQueryCondition}) => {
             Service
           </div>
           <div className="m-auto w-[70%] ">
-            <ServiceSelection data={queryCondition} onSelect={handleServiceSelect}/>
+            <ServiceSelection
+              data={queryCondition}
+              onSelect={handleServiceSelect}
+            />
           </div>
         </div>
 
@@ -251,7 +253,10 @@ const FilterCondition = ({queryCondition, setQueryCondition}) => {
             Assignee
           </div>
           <div className="m-auto w-[70%] ">
-            <UserSelection data={queryCondition.assignee} onSelect={handleAssigneeSelect}/>
+            <UserSelection
+              data={queryCondition.assignee}
+              onSelect={handleAssigneeSelect}
+            />
           </div>
         </div>
 
@@ -260,7 +265,10 @@ const FilterCondition = ({queryCondition, setQueryCondition}) => {
             Reporter
           </div>
           <div className="m-auto w-[70%] ">
-            <UserSelection data={queryCondition.reporter} onSelect={handleReporterSelect} />
+            <UserSelection
+              data={queryCondition.reporter}
+              onSelect={handleReporterSelect}
+            />
           </div>
         </div>
 
@@ -269,7 +277,10 @@ const FilterCondition = ({queryCondition, setQueryCondition}) => {
             Group
           </div>
           <div className="m-auto w-[70%] ">
-            <GroupSelection data={queryCondition} onSelect={handleGroupSelect}/>
+            <GroupSelection
+              data={queryCondition}
+              onSelect={handleGroupSelect}
+            />
           </div>
         </div>
 
@@ -280,7 +291,7 @@ const FilterCondition = ({queryCondition, setQueryCondition}) => {
           <div className="m-auto w-[70%] flex items-center justify-center">
             <span className="font-medium mr-[1rem]">Contain</span>
             <input
-              value={queryCondition.description}
+              value={queryCondition.titleSearch}
               className="rounded-md border-2 border-[#D9D9D9] px-[1rem] text-[0.7rem] py-[0.1rem]"
               type="text"
               onChange={handleChangeSummary}
@@ -295,6 +306,7 @@ const FilterCondition = ({queryCondition, setQueryCondition}) => {
           <div className="m-auto w-[70%] items-center pl-[1rem]">
             <input
               onChange={handleFromDateChange}
+              defaultValue={getCurrentDate(1)}
               value={queryCondition.createdFrom || getCurrentDate(1)}
               className="w-[40%] rounded-md border-2 border-[#D9D9D9] px-[1rem] text-[0.7rem] py-[0.1rem]"
               type="date"
@@ -302,6 +314,7 @@ const FilterCondition = ({queryCondition, setQueryCondition}) => {
             <span>-</span>
             <input
               onChange={handleToDateChange}
+              defaultValue={getCurrentDate(0)}
               value={queryCondition.createdTo || getCurrentDate(0)}
               className="w-[40%] rounded-md border-2 border-[#D9D9D9] px-[1rem] text-[0.7rem] py-[0.1rem]"
               type="date"
