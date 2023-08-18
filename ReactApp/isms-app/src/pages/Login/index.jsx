@@ -3,20 +3,18 @@ import styles from "./Login.module.scss";
 import React, { useRef, useEffect, useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import image from "../../assets/images";
-import UnderlineAnimation from '../../components/Animation/UnderlineText';
-import ChangeBgButton from '../../components/Animation/ChangeBgButton';
-import useAuth from '../../hooks/useAuth';
+import UnderlineAnimation from "../../components/Animation/UnderlineText";
+import ChangeBgButton from "../../components/Animation/ChangeBgButton";
+import useAuth from "../../hooks/useAuth";
 import jwtDecode from "jwt-decode";
 import { TypeAnimation } from "react-type-animation";
 import request from "../../utils/axiosConfig";
 import { PERMISSIONS } from "../../routes/Permissions";
 
-
 const cx = classNames.bind(styles);
 
-const LOGIN_URL = 'api/Users/login';
-const SECRET_KEY = '98d52c42-28ef-4e8c-baeb-30cacbc39327';
-
+const LOGIN_URL = "api/Users/login";
+const SECRET_KEY = "98d52c42-28ef-4e8c-baeb-30cacbc39327";
 
 const Login = () => {
   //Lấy lại Context
@@ -26,16 +24,12 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  
-  
-
   // useEffect(() => {
   //   // Nếu có accessToken, chuyển hướng về trang chính
   //   if (auth.accessToken) {
   //     navigate('/');
   //   }
   // }, [auth.accessToken, navigate]);
-
 
   //Khai báo các hook
   const [email, setEmail] = useState("");
@@ -119,17 +113,27 @@ const Login = () => {
         }
       );
 
-
       const accessToken = response?.data?.token;
       const decodedToken = jwtDecode(accessToken);
       console.log(decodedToken);
-      const from = location.state?.from?.pathname || (decodedToken.roletype === "Admin" ? '/admin' : '/')
+      const from =
+        location.state?.from?.pathname ||
+        (decodedToken.roletype === "Admin" ? "/admin" : "/");
 
-      const permissions = decodedToken.permissions ? decodedToken.permissions : Object.keys(PERMISSIONS);
+      const permissions = decodedToken.permissions
+        ? decodedToken.permissions
+        : Object.keys(PERMISSIONS);
 
-      setAuth({ email, password, userId: decodedToken.sub, permissions: permissions, roletype: decodedToken.roletype, roleName: decodedToken.role, accessToken });
-      navigate(from, {replace: true});
-
+      setAuth({
+        email,
+        password,
+        userId: decodedToken.sub,
+        permissions: permissions,
+        roletype: decodedToken.roletype,
+        roleName: decodedToken.role,
+        accessToken,
+      });
+      navigate(from, { replace: true });
     } catch (err) {
       console.log(err.response?.data);
       if (!err?.response) {
@@ -258,8 +262,14 @@ const Login = () => {
                 <span>Remember Account</span>
               </div>
 
-              <div className={cx("h-[17%] w-[20%] self-end relative")}>
-                <ChangeBgButton type="submit">Continue</ChangeBgButton>
+              <div className={cx("h-[15%] w-[100%] mt-2 flex  items-center")}>
+                {/* <ChangeBgButton type="submit">Continue</ChangeBgButton> */}
+                <button
+                  type="submit"
+                  className="w-[30%] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2 mb-2  focus:outline-none "
+                >
+                  Login
+                </button>
               </div>
             </div>
           </form>

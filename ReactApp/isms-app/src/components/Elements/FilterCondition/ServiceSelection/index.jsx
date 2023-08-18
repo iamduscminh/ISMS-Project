@@ -14,7 +14,7 @@ const ServiceSelection = ({ data, onSelect }) => {
         const response = await axiosInstance.get(
           `${URL.SERVICE_CATEGORY_URL}/getall`
         );
-        console.log(response.data);
+        //console.log(response.data);
         setServiceItemData(response.data);
       } catch (error) {
         console.error("Error Get Data", error);

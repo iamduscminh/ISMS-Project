@@ -1,8 +1,8 @@
-import React, {useState, useEffect} from 'react'
-import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
-import { URL } from '../../../../utils/Url';
+import React, { useState, useEffect } from "react";
+import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
+import { URL } from "../../../../utils/Url";
 
-const UserSelection = ({data, onSelect}) => {
+const UserSelection = ({ data, onSelect }) => {
   const axiosInstance = useAxiosPrivate();
   const [userData, setUserData] = useState();
   const [openCombobox, setOpenCombobox] = useState(false);
@@ -11,10 +11,8 @@ const UserSelection = ({data, onSelect}) => {
   useEffect(() => {
     const fetchAllUser = async () => {
       try {
-        const response = await axiosInstance.get(
-          `${URL.USER_URL}/getall`
-        );
-        console.log(response.data);
+        const response = await axiosInstance.get(`${URL.USER_URL}/getall`);
+        //console.log(response.data);
         setUserData(response.data);
       } catch (error) {
         console.error("Error Get Data", error);
@@ -27,14 +25,13 @@ const UserSelection = ({data, onSelect}) => {
     const isChecked = e.target.checked;
 
     if (isChecked) {
-        const newValue = [...userValue, checkItem.fullName]
-        setUserValue(newValue);
-        onSelect(newValue);
+      const newValue = [...userValue, checkItem.fullName];
+      setUserValue(newValue);
+      onSelect(newValue);
     } else {
-        const newValue = userValue.filter((i) => i !== checkItem.fullName)
-        setUserValue(newValue
-        );
-        onSelect(newValue);
+      const newValue = userValue.filter((i) => i !== checkItem.fullName);
+      setUserValue(newValue);
+      onSelect(newValue);
     }
   };
 
@@ -42,7 +39,7 @@ const UserSelection = ({data, onSelect}) => {
     if (text.length <= maxLength) {
       return text;
     }
-    
+
     return text.substring(0, maxLength - 3) + "...";
   }
 
@@ -88,6 +85,6 @@ const UserSelection = ({data, onSelect}) => {
       )}
     </div>
   );
-}
+};
 
-export default UserSelection
+export default UserSelection;

@@ -195,7 +195,7 @@ const ListTicket = () => {
               priority: item.priority,
             }));
             setTicketData(data);
-            console.log(response.data);
+            //console.log(response.data);
           })
           .catch((error) => {
             const result = Swal.fire({
@@ -225,6 +225,13 @@ const ListTicket = () => {
 
     navigate("/admin/ticket/" + id);
   };
+
+  const handleDeleteQuery = () => {
+    console.log("delete");
+  };
+  const handleEditQuery = () => {
+    navigate(`/admin/query/all/update/QUER000001`);
+  };
   return (
     <div>
       <div className="relative w-full h-[22vh] bg-[#42526E] pt-[1.5rem] pl-[4.5rem]">
@@ -239,8 +246,11 @@ const ListTicket = () => {
         <div className="w-[98%] pl-[4.5rem] relative translate-y-[-56px] z-10">
           <div className={cx("action-wrapper")}>
             <FaRegClone className={cx("action-icon")} />
-            <MdDeleteForever className={cx("action-icon")} />
-            <FaEdit className={cx("action-icon")} />
+            <MdDeleteForever
+              onClick={handleDeleteQuery}
+              className={cx("action-icon")}
+            />
+            <FaEdit onClick={handleEditQuery} className={cx("action-icon")} />
             <MdFavorite className={cx("action-icon")} />
           </div>
 

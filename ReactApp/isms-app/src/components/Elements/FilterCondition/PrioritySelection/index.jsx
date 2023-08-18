@@ -1,11 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const PrioritySelection = ({ priorityData, data, onSelect }) => {
-  //console.log(data.priority);
   const [openCombobox, setOpenCombobox] = useState(false);
   const [priorityValue, setPriorityValue] = useState(data.priority);
 
-  //console.log(priorityValue);
   const handleUpdate = (checkItem, e) => {
     const isChecked = e.target.checked;
 
@@ -19,7 +17,11 @@ const PrioritySelection = ({ priorityData, data, onSelect }) => {
       onSelect(newValue);
     }
   };
-
+  console.log(data.priority);
+  useEffect(() => {
+    // console.log(data.priority);
+    setPriorityValue(data.priority);
+  }, []);
   return (
     <div className="bg-[#fff] rounded-tr-md rounded-br-md border relative px-[1rem]">
       <div
@@ -32,7 +34,7 @@ const PrioritySelection = ({ priorityData, data, onSelect }) => {
         <div className="w-full absolute top-[120%] border z-[10] bg-[#fff] left-[0] rounded-sm px-[1rem] py-[0.5rem]">
           {priorityData.map((item) => (
             <div key={item.id} className="flex mt-[0.75rem]">
-              {priorityValue.includes(item.priority) ? (
+              {data.priority.includes(item.priority) ? (
                 <input
                   checked
                   onChange={(e) => handleUpdate(item, e)}

@@ -11,12 +11,13 @@ const RequestTypeSelection = ({ data, onSelect }) => {
   );
 
   useEffect(() => {
+    console.log(`checkkkk ${serviceRequestValue}`);
     const fetchServiceItem = async () => {
       try {
         const response = await axiosInstance.get(
           `${URL.SERVICE_ITEM_URL}/getall`
         );
-        console.log(response.data);
+        //console.log(response.data);
         setServiceItemData(response.data);
       } catch (error) {
         console.error("Error Get Data", error);

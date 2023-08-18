@@ -14,7 +14,7 @@ const TicketQuery = () => {
   const axiosInstance = useAxiosPrivate();
   const { auth } = useAuth();
   if (!type) navigate("/admin");
-  console.log(type);
+  //console.log(type);
   //API CONFIG
   const token = auth?.accessToken;
   const headers = {
@@ -143,18 +143,62 @@ const TicketQuery = () => {
       });
     }
   };
-
+  useEffect(() => {
+    const apiGetQueryUrl = `${URL.QUERY_URL}/getdetail/${queryId}`;
+    const fetchData = async () => {
+      try {
+        Swal.fire({
+          title: "Loading...",
+          allowOutsideClick: false,
+          onBeforeOpen: () => {
+            Swal.showLoading();
+          },
+        });
+        if (mode.toLowerCase() == "create") return;
+        //get data query
+        await axiosInstance
+          .get(apiGetQueryUrl, { headers })
+          .then((response) => {
+            const dataRp = response.data;
+            //console.log(dataRp);
+            setTitleQuery(dataRp.queryName);
+            const dataCondition = JSON.parse(dataRp.queryStatement);
+            setQueryCondition(dataCondition);
+            //console.log(queryCondition);
+          })
+          .catch((error) => {
+            const result = Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error}`,
+            });
+          });
+        Swal.close();
+      } catch (error) {
+        // Handle errors if needed
+        console.log(error);
+        Swal.close();
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: error,
+        });
+      }
+    };
+    fetchData();
+  }, []);
   return (
     <div>
       <div className="w-full h-[18vh] bg-[#42526E]">
         <div className="ml-[8rem] pt-[0.8rem]">
           <div className="text-[1rem] text-[#fff] font-medium">
-            {type} Query
+            Query Type: {type.toLocaleUpperCase()}
           </div>
           <div>
             <input
               type="text"
               placeholder="Query Title"
+              defaultValue={titleQuery}
               className={cx("query-input")}
               onChange={handleTitleQueryChange}
             />
@@ -163,6 +207,7 @@ const TicketQuery = () => {
             <input
               type="checkbox"
               className="w-[1rem] aspect-square"
+              defaultValue={isCheckedTeamQuery}
               onChange={handleCheckboxQueryChange}
             />
             <span className="text-[1rem] text-[#fff] ml-[1rem]">
@@ -183,13 +228,13 @@ const TicketQuery = () => {
                 onClick={handleTestQuery}
                 className="text-[#fff] font-medium border-2 bg-[#043AC5] px-[1rem]"
               >
-                Test
+                TEST
               </button>
               <button
                 onClick={handleUpdateQuery}
                 className="ml-[1rem] text-[#fff] font-medium border-2 bg-[#42526E] px-[1rem]"
               >
-                {mode}
+                {mode.toUpperCase()}
               </button>
               <button
                 onClick={() => {
@@ -197,7 +242,7 @@ const TicketQuery = () => {
                 }}
                 className="ml-[1rem] text-[#42526E] font-medium border-2 border-[#42526E] px-[1rem]"
               >
-                Cancel
+                CANCEL
               </button>
             </div>
           </div>

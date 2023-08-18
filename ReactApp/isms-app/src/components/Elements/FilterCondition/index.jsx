@@ -22,7 +22,7 @@ import ServiceSelection from "./ServiceSelection";
 import StatusSelection from "./StatusSelection";
 import UserSelection from "./UserSelection";
 import GroupSelection from "./GroupSelection";
-
+import Swal from "sweetalert2";
 const priorityData = [
   {
     id: 1,
@@ -78,6 +78,7 @@ const customStylesStatus = {
 };
 const cx = classNames.bind(styles);
 const FilterCondition = ({ queryCondition, setQueryCondition }) => {
+  console.log(queryCondition);
   const [orderValue, setOrderValue] = useState({
     isAsc: true,
     orderBy: "none",
@@ -291,7 +292,7 @@ const FilterCondition = ({ queryCondition, setQueryCondition }) => {
           <div className="m-auto w-[70%] flex items-center justify-center">
             <span className="font-medium mr-[1rem]">Contain</span>
             <input
-              value={queryCondition.titleSearch}
+              defaultValue={queryCondition.titleSearch}
               className="rounded-md border-2 border-[#D9D9D9] px-[1rem] text-[0.7rem] py-[0.1rem]"
               type="text"
               onChange={handleChangeSummary}
@@ -306,7 +307,6 @@ const FilterCondition = ({ queryCondition, setQueryCondition }) => {
           <div className="m-auto w-[70%] items-center pl-[1rem]">
             <input
               onChange={handleFromDateChange}
-              defaultValue={getCurrentDate(1)}
               value={queryCondition.createdFrom || getCurrentDate(1)}
               className="w-[40%] rounded-md border-2 border-[#D9D9D9] px-[1rem] text-[0.7rem] py-[0.1rem]"
               type="date"
@@ -314,7 +314,6 @@ const FilterCondition = ({ queryCondition, setQueryCondition }) => {
             <span>-</span>
             <input
               onChange={handleToDateChange}
-              defaultValue={getCurrentDate(0)}
               value={queryCondition.createdTo || getCurrentDate(0)}
               className="w-[40%] rounded-md border-2 border-[#D9D9D9] px-[1rem] text-[0.7rem] py-[0.1rem]"
               type="date"
