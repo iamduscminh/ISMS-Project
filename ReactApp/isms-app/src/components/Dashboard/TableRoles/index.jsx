@@ -97,25 +97,25 @@ const TableItem = ({
               className="text-[#3A7DFF] w-14 focus:outline-none border-0"
               onClick={() => {
                 setIsEdit((prev) => !prev);
+                console.log(
+                  "==========>setCurrentRoles onclick",
+                  setCurrentRoles
+                );
                 <AdminRoleEdit setCurrentRoles={setCurrentRoles} />;
               }}
             >
               {!isEdit ? <IconEdit /> : "Save"}
             </button>
           </Link>
-          <Routes>
+          {/* <Routes>
             <Route>
               <Route
                 path="/admin/manage/role/edit/:id"
-                element={
-                  <AdminRoleEdit
-                    data={data}
-                    setCurrentRoles={setCurrentRoles}
-                  />
-                }
+                element={<AdminRoleEdit setCurrentRoles={setCurrentRoles} />}
               />
             </Route>
-          </Routes>
+          </Routes> */}
+
           <button
             className="text-[#3A7DFF] focus:outline-none border-0"
             onClick={() => {
@@ -181,7 +181,11 @@ const TableItem = ({
 const TableRoles = ({ data, setCurrentRoles }) => {
   // const [open, setOpen] = useState(false);
   // const [selectedRole, setSelectedRole] = useState();
-  const axiosInstance = useAxiosPrivate();
+  const [dataTable, setDataTable] = useState([]);
+  const handleSetData = () => {
+    setDataTable(data);
+  };
+
   return (
     <div className="mt-10 overflow-auto bg-[#E5F3F3] border border-black px-8 xl:px-[54px]">
       <table className={clsx(styles.table, "w-full mt-8 xl:mt-16")}>
@@ -194,6 +198,7 @@ const TableRoles = ({ data, setCurrentRoles }) => {
           <TableItem
             key={item.roleId}
             item={item}
+            setDataTable={handleSetData}
             setCurrentRoles={setCurrentRoles}
             currentIndex={index}
           />

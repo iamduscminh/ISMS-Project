@@ -16,13 +16,10 @@ const FormAddRole = ({ open, setOpen, data, setCurrentRoles }) => {
   const roleDesRef = useRef(null);
 
   const handleInsertRole = (e) => {
-    const roleName = roleNameRef.current.value;
-    const roleDes = roleDesRef.current.value;
-
     const newRoleGroup = {
-      RoleName: roleName,
-      Description: roleDes,
-      RoleType: role.id,
+      roleName: newRole,
+      description: desc,
+      roleType: role.id,
     };
     const controller = new AbortController();
 
@@ -39,7 +36,7 @@ const FormAddRole = ({ open, setOpen, data, setCurrentRoles }) => {
           }
         );
         if (response.status === 200) {
-          const createdRoleGroup = response.data;
+          const createdRoleGroup = newRoleGroup;
           setCurrentRoles((prev) => [...prev, createdRoleGroup]);
           // Clear Input
           setDesc(" ");

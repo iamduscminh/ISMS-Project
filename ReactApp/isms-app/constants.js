@@ -4,6 +4,7 @@ export const ROUTES_PATHS = {
   ADMIN_CHANGE: "/admin/manage/change",
   ADMIN_PROBLEM: "/admin/manage/problem",
   ADMIN_REPORT: "/admin/manage/report",
+  ADMIN_REPORT_PREVIEW: "/admin/manage/report/preview",
   ADMIN_SETTING: "/admin/manage/setting",
   ADMIN_CONTACT: "/admin/manage/contact",
   ADMIN_ROLE: "/admin/manage/role",

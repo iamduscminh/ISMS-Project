@@ -29,6 +29,7 @@ const FormAddUser = ({ open, setOpen, data, setCurrentUsers }) => {
       firstName: userFirstName,
       middleName: userMidName,
       lastName: userLastName,
+      fullName: userFirstName + " " + userLastName,
       isActive: true,
     };
     const controller = new AbortController();
@@ -46,7 +47,7 @@ const FormAddUser = ({ open, setOpen, data, setCurrentUsers }) => {
           }
         );
         if (response.status === 200) {
-          const createdUser = response.data;
+          const createdUser = newUser;
           setCurrentUsers((prev) => [...prev, createdUser]);
           // Clear Input
           setUserEmail(" ");

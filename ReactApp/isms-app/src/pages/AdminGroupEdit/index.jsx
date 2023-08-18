@@ -68,6 +68,9 @@ const AdminGroupEdit = () => {
       description: desc,
       groupLeader: groupLeaderSelected.userId,
     };
+    console.log("====================>updatedGroup", updatedGroup);
+    console.log("====================>currentGroups", currentGroups);
+    console.log("====================>id", id);
     axiosInstance
       .put(`/api/Groups/update?groupId=${id}`, updatedGroup, {
         headers: {
@@ -75,11 +78,12 @@ const AdminGroupEdit = () => {
         },
       })
       .then((response) => {
-        const newData = response.data;
+        const newData = updatedGroup;
+        console.log("====================>newData", newData);
+        console.log("====================>id", id);
         const updatedData = currentGroups.map((item) =>
-          item.groupId === newData.groupId ? newData : item
+          item.groupId === id ? newData : item
         );
-
         setCurrentGroups(updatedData);
       })
       .catch((error) => {

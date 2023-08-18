@@ -1,6 +1,11 @@
 export const exportOptions = [
   { value: "csv", label: "CSV" },
-  { value: "excel", label: "Excel" },
+  { value: "xlsx", label: "Excel" },
+];
+export const exportTableOptions = [
+  { value: "request", label: "Request Tickets" },
+  { value: "change", label: "Changes" },
+  { value: "problem", label: "Problems" },
 ];
 
 export const columnsOptions = [

@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams, Routes, Route } from "react-router-dom";
+import { Link, useParams, useLocation, Route } from "react-router-dom";
 import { ROUTES_PATHS } from "../../../constants";
 import MessageError from "../../components/Dashboard/MessageError";
 import TogglePermission from "../../components/Dashboard/TogglePermission";
-import AdminRole from "../AdminRole";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import TableRoles from "../../components/Dashboard/TableRoles";
 
-const AdminRoleEdit = (setCurrentRoles) => {
+const AdminRoleEdit = ({ setCurrentRoles }) => {
   const [roleName, setRoleName] = useState(" ");
   const [desc, setDesc] = useState(" ");
   const [permissions, setPermissions] = useState([]);
@@ -15,6 +13,8 @@ const AdminRoleEdit = (setCurrentRoles) => {
   const [getRole, setRole] = useState([]);
   const { id } = useParams();
   const axiosInstance = useAxiosPrivate();
+  console.log("===============>setCurrentRoles AdminRoleEdit", setCurrentRoles);
+
   useEffect(() => {
     const getRoleById = async () => {
       try {
@@ -56,14 +56,15 @@ const AdminRoleEdit = (setCurrentRoles) => {
         description: desc,
         roleType: roleType,
       };
+
       axiosInstance
-        .put(`api/Roles/update`, updatedRole, {
+        .put(`/api/Roles/update`, updatedRole, {
           headers: {
             "Content-Type": "application/json",
           },
         })
         .then((response) => {
-          const newData = response.data;
+          const newData = updatedRole;
           const updatedDataRole = getRole.map((item) =>
             item.roleId === newData.roleId ? newData : item
           );
@@ -87,7 +88,7 @@ const AdminRoleEdit = (setCurrentRoles) => {
           },
         })
         .then((response) => {
-          const newData = response.data;
+          const newData = updatedPermission;
           const updatedDataPermission = getRole.map((item) =>
             item.roleId === newData.roleId ? newData : item
           );
@@ -195,7 +196,10 @@ const AdminRoleEdit = (setCurrentRoles) => {
         <div className="mt-8 xl:mt-[54px] flex space-x-3 justify-end">
           <Link to={ROUTES_PATHS.ADMIN_ROLE} className="flex justify-end">
             <button
-              onClick={(handleEditRole, handleEditPermission)}
+              onClick={(e) => {
+                handleEditPermission(e);
+                handleEditRole(e);
+              }}
               className="text-white gap-4 px-4 py-2 bg-[#4AA976] rounded-lg font-semibold w-[150px] text-center"
             >
               Save
