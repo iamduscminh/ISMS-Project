@@ -64,7 +64,19 @@ const AdminHeader = () => {
           </div>
           <div className={cx("item-border")}>
             <Link to={ROUTES_PATHS.ADMIN_ROLE}>
+              <span className={cx("item-top")}>Roles</span>
+              <span className={cx("item-bot")}>Users and Roles </span>
+            </Link>
+          </div>
+          <div className={cx("item-border")}>
+            <Link to={ROUTES_PATHS.ADMIN_GROUPS}>
               <span className={cx("item-top")}>Groups</span>
+              <span className={cx("item-bot")}>Users and Roles </span>
+            </Link>
+          </div>
+          <div className={cx("item-border")}>
+            <Link to={ROUTES_PATHS.ADMIN_USERS}>
+              <span className={cx("item-top")}>Users</span>
               <span className={cx("item-bot")}>Users and Roles </span>
             </Link>
           </div>

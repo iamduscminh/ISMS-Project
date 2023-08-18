@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ChartLayout from "./ChartLayout";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 import {
   BarElement,
@@ -38,9 +39,26 @@ export const options = {
   },
 };
 
-const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+function getDayOfWeek(date, number) {
+  const day = date.getDay();
+  if (day + number >= 0) {
+    return day + number;
+  }
+  return day - number - 7;
+}
+const today = new Date();
+const dayOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const labels = [
+  `${dayOfWeek[getDayOfWeek(today, -6)]}`,
+  `${dayOfWeek[getDayOfWeek(today, -5)]}`,
+  `${dayOfWeek[getDayOfWeek(today, -4)]}`,
+  `${dayOfWeek[getDayOfWeek(today, -3)]}`,
+  `${dayOfWeek[getDayOfWeek(today, -2)]}`,
+  `${dayOfWeek[getDayOfWeek(today, -1)]}`,
+  `${dayOfWeek[getDayOfWeek(today, 0)]}`,
+];
 
-const ColumnChart = ({ data }) => {
+const ColumnChart = ({ total, data }) => {
   const dataConfig = {
     labels,
     datasets: [
@@ -51,15 +69,20 @@ const ColumnChart = ({ data }) => {
       },
     ],
   };
+  const axiosInstance = useAxiosPrivate();
+  const [totalOpens, setTotalOpens] = useState();
+  const [totalClose, setTotalClosed] = useState();
+  const [totalTickets, setTotalTickets] = useState();
 
+  useEffect(() => {}, [axiosInstance]);
   return (
     <ChartLayout
       title="Last 7 days"
       subTitle={
         <div>
-          <div>New tickets</div>
+          <div>Tickets</div>
           <div className="flex space-x-0.5">
-            <span>1,814</span>
+            <span>{total}</span>
             <div className="flex items-center text-10px text-[#2C834E]">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -84,7 +107,7 @@ const ColumnChart = ({ data }) => {
       </div>
       <ul className="flex flex-wrap justify-center gap-x-[60px]">
         <li className="text-center flex flex-col">
-          <span className="text-sm">Solved tickets</span>
+          <span className="text-sm">Open tickets</span>
           <span className="font-bold">22</span>
         </li>
         <li className="text-center flex flex-col">
