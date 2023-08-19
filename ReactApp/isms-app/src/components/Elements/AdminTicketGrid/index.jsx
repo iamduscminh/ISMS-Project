@@ -2,26 +2,32 @@ import React, { useState } from "react";
 import image from "../../../assets/images";
 import { DataGrid } from "@mui/x-data-grid";
 import { format } from "date-fns";
-const AdminTicketGrid = () => {
+const AdminTicketGrid = ({ ticketData }) => {
   const columns = [
-    { field: "id", headerName: "ID", width: 50, editable: false },
     {
-      field: "description",
-      headerName: "Description",
-      width: 200,
+      field: "id",
+      headerName: "ID",
+      width: 150,
+      editable: false,
+      hide: true,
+    },
+    {
+      field: "title",
+      headerName: "Title",
+      width: 300,
       editable: true,
       description: "This column described overview of ticket",
     },
     {
       field: "service",
       headerName: "Service",
-      width: 120,
+      width: 200,
       editable: true,
     },
     {
       field: "requestType",
       headerName: "RequestType",
-      width: 160,
+      width: 250,
       editable: true,
     },
     {
@@ -31,8 +37,8 @@ const AdminTicketGrid = () => {
       editable: true,
     },
     {
-      field: "reporter",
-      headerName: "Reporter",
+      field: "requester",
+      headerName: "Requester",
       width: 105,
       renderCell: (params) => (
         <div style={{ display: "flex", alignItems: "center" }}>
@@ -88,72 +94,73 @@ const AdminTicketGrid = () => {
     {
       field: "priority",
       headerName: "Priority",
-      width: 60,
+      width: 100,
       editable: true,
     },
   ];
-  const [ticketData, setTicketData] = useState([
-    {
-      id: 1,
-      description: "Demo test Service Ticket",
-      service: "Hardware",
-      requestType: "Request new hardware",
-      group:'Group 1',
-      reporter: "Tu Doan",
-      assignee: "Calyrex",
-      status: "WIP",
-      createdDate: "2023/07/04 14:00:00",
-      priority:'High'
-    },
-    {
-      id: 2,
-      description: "Demo test Service Ticket",
-      service: "Hardware",
-      requestType: "Request new hardware",
-      group:'Group 1',
-      reporter: "Tu Doan",
-      assignee: "Calyrex",
-      status: "WIP",
-      createdDate: "2023/07/04 14:00:00",
-      priority:'High'
-    },
-    {
-      id: 3,
-      description: "Demo test Service Ticket",
-      service: "Hardware",
-      requestType: "Request new hardware",
-      group:'Group 1',
-      reporter: "Tu Doan",
-      assignee: "Calyrex",
-      status: "WIP",
-      createdDate: "2023/07/04 14:00:00",
-      priority:'High'
-    },
-    {
-      id: 4,
-      description: "Demo test Service Ticket",
-      service: "Hardware",
-      requestType: "Request new hardware",
-      group:'Group 1',
-      reporter: "Tu Doan",
-      assignee: "Calyrex",
-      status: "WIP",
-      createdDate: "2023/07/04 14:00:00",
-      priority:'High'
-    },
-    {
-      id: 5,
-      description: "Demo test Service Ticket",
-      service: "Hardware",
-      requestType: "Request new hardware",
-      group:'Group 1',
-      reporter: "Tu Doan",
-      assignee: "Calyrex",
-      status: "WIP",
-      createdDate: "2023/07/04 14:00:00",
-      priority:'High'
-    },
-  ]);
+  // const [ticketData, setTicketData] = useState([
+  //   {
+  //     id: 1,
+  //     description: "Demo test Service Ticket",
+  //     service: "Hardware",
+  //     requestType: "Request new hardware",
+  //     group:'Group 1',
+  //     reporter: "Tu Doan",
+  //     assignee: "Calyrex",
+  //     status: "WIP",
+  //     createdDate: "2023/07/04 14:00:00",
+  //     priority:'High'
+  //   },
+  //   {
+  //     id: 2,
+  //     description: "Demo test Service Ticket",
+  //     service: "Hardware",
+  //     requestType: "Request new hardware",
+  //     group:'Group 1',
+  //     reporter: "Tu Doan",
+  //     assignee: "Calyrex",
+  //     status: "WIP",
+  //     createdDate: "2023/07/04 14:00:00",
+  //     priority:'High'
+  //   },
+  //   {
+  //     id: 3,
+  //     description: "Demo test Service Ticket",
+  //     service: "Hardware",
+  //     requestType: "Request new hardware",
+  //     group:'Group 1',
+  //     reporter: "Tu Doan",
+  //     assignee: "Calyrex",
+  //     status: "WIP",
+  //     createdDate: "2023/07/04 14:00:00",
+  //     priority:'High'
+  //   },
+  //   {
+  //     id: 4,
+  //     description: "Demo test Service Ticket",
+  //     service: "Hardware",
+  //     requestType: "Request new hardware",
+  //     group:'Group 1',
+  //     reporter: "Tu Doan",
+  //     assignee: "Calyrex",
+  //     status: "WIP",
+  //     createdDate: "2023/07/04 14:00:00",
+  //     priority:'High'
+  //   },
+  //   {
+  //     id: 5,
+  //     description: "Demo test Service Ticket",
+  //     service: "Hardware",
+  //     requestType: "Request new hardware",
+  //     group:'Group 1',
+  //     reporter: "Tu Doan",
+  //     assignee: "Calyrex",
+  //     status: "WIP",
+  //     createdDate: "2023/07/04 14:00:00",
+  //     priority:'High'
+  //   },
+  // ]);
+
   return (
     <div className="w-[97%] h-[50vh]">
       <DataGrid
@@ -171,7 +178,6 @@ const AdminTicketGrid = () => {
         }}
         rowHeight={40}
         pageSizeOptions={[8]}
-        checkboxSelection
         disableRowSelectionOnClick
       />
     </div>

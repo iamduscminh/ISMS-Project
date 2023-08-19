@@ -28,6 +28,6 @@ export { default as AdminReport } from "./AdminReport";
 export { default as AdminGroup } from "./AdminGroup";
 export { default as AdminRoleEdit } from "./AdminRoleEdit";
 export { default as AdminRolePermissionAdd } from "./AdminRolePermissionAdd";
-
+export { default as FilterTicket } from "./FilterTicket";
 export { default as AdminRole } from "./AdminRole";
 export { default as AdminUserManage } from "./AdminUserManage";

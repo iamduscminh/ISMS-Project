@@ -141,6 +141,7 @@ function Sidebar() {
   }, [axiosInstance]);
   const queryData = (type, id) => {
     console.log(`query${type} - ${id}`);
+    navigate(`/admin/${type}/${id}`);
   };
   const sideBar = [
     <QueryCategory changeSidebar={changeSidebar} setQueryType={setQueryType} />,

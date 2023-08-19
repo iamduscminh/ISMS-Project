@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useLayoutEffect } from "react";
 import classNames from "classnames/bind";
 import styles from "./FilterCondition.module.scss";
 import OrderCombobox from "./OrderCombobox";
@@ -14,7 +14,6 @@ import TicketStatus from "../TicketStatus";
 import ServiceTypeItem from "../CustomCombobox/ServiceTypeItem";
 import { MdElectricalServices } from "react-icons/md";
 import image from "../../../assets/images";
-import AdminTicketGrid from "../AdminTicketGrid";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import PrioritySelection from "./PrioritySelection";
 import RequestTypeSelection from "./RequestTypeSelection";
@@ -78,7 +77,7 @@ const customStylesStatus = {
 };
 const cx = classNames.bind(styles);
 const FilterCondition = ({ queryCondition, setQueryCondition }) => {
-  console.log(queryCondition);
+  //console.log(queryCondition);
   const [orderValue, setOrderValue] = useState({
     isAsc: true,
     orderBy: "none",
@@ -332,9 +331,6 @@ const FilterCondition = ({ queryCondition, setQueryCondition }) => {
           readOnly
         />
       </div> */}
-      <div className="mt-[0.75rem]">
-        <AdminTicketGrid />
-      </div>
     </div>
   );
 };

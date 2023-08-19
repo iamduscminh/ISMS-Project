@@ -182,7 +182,9 @@ const Login = () => {
           )}
         >
           <div className={cx("h-[32%] flex flex-col mb-2")}>
-            <h2>Log in QuickService with your account</h2>
+            <h2 className="text-3xl font-bold">
+              Log in QuickService with your account
+            </h2>
             <p>
               Don’t have account yet?{" "}
               <UnderlineAnimation>

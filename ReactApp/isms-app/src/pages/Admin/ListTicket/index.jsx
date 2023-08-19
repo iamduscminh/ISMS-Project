@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./ListTicket.module.scss";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import classNames from "classnames/bind";
 import { DataGrid } from "@mui/x-data-grid";
 import { format } from "date-fns";
@@ -21,6 +21,7 @@ const cx = classNames.bind(styles);
 
 const ListTicket = () => {
   const navigate = useNavigate();
+  const { typeTicket, queryId } = useParams();
   const [selectedRow, setSelectedRow] = React.useState();
   const [contextMenu, setContextMenu] = React.useState(null);
   const axiosInstance = useAxiosPrivate();
@@ -162,7 +163,9 @@ const ListTicket = () => {
     hour12: true,
   };
   useEffect(() => {
-    const apiGetRequestTicketsUrl = `api/RequestTickets/getticketsadmin/all/none`;
+    const apiGetRequestTicketsUrl = `api/RequestTickets/getticketsadmin/${
+      typeTicket ?? "all"
+    }/${queryId}`;
     const fetchData = async () => {
       try {
         Swal.fire({
@@ -177,16 +180,13 @@ const ListTicket = () => {
           .get(apiGetRequestTicketsUrl)
           .then((response) => {
             const data = response.data.map((item, i) => ({
-              id: item.requestTicketId,
-              service: item.isIncident
-                ? "None"
-                : item.serviceItemEntity?.serviceCategoryEntity
-                    ?.serviceCategoryName,
+              id: item.ticketId,
+              service: item.isIncident ? "None" : item.serviceCategoryName,
               requestType: item.isIncident
                 ? "Issue Abnormal"
-                : item.serviceItemEntity?.serviceItemName,
-              group: "",
-              reporter: item.requesterUserEntity?.fullName,
+                : item.serviceItemName,
+              group: item.groupName,
+              reporter: item.requesterFullName,
               status: item.status,
               createdDate: new Date(item.createdAt).toLocaleString(
                 "en-US",

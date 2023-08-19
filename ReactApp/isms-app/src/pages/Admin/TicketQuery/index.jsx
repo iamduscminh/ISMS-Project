@@ -7,6 +7,8 @@ import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { URL } from "../../../utils/Url";
 import Swal from "sweetalert2";
 import useAuth from "../../../hooks/useAuth";
+import AdminTicketGrid from "../../../components/Elements/AdminTicketGrid";
+
 const cx = classNames.bind(styles);
 const TicketQuery = () => {
   const navigate = useNavigate();
@@ -33,11 +35,11 @@ const TicketQuery = () => {
 
     return `${year}-${month}-${day}`;
   }
-  if (mode === "edit") {
+  if (mode === "update") {
     queryData = {
       orderBy: null,
       orderASC: true,
-      priority: ["High", "Medium"],
+      priority: [],
       status: [],
       requestType: [],
       service: [],
@@ -67,7 +69,7 @@ const TicketQuery = () => {
   const [queryCondition, setQueryCondition] = useState(queryData);
   const [isCheckedTeamQuery, setIsCheckedTeamQuery] = useState(false);
   const [titleQuery, setTitleQuery] = useState("");
-
+  const [ticketQueryResults, setTicketQueryResults] = useState([]);
   const handleTitleQueryChange = (event) => {
     setTitleQuery(event.target.value);
   };
@@ -75,34 +77,66 @@ const TicketQuery = () => {
     setIsCheckedTeamQuery(event.target.checked);
   };
   const handleTestQuery = () => {
+    const apiQueryTicketUrl = `${URL.REQUEST_TICKET_URL}/querytickets`;
     console.log(JSON.stringify(queryCondition));
-    // const testParam = async () => {
-    //   try {
-    //     const response = await axiosInstance.get(`${URL.QUERY_URL}/getall`, {
-    //       OrderyBy: queryData.orderBy,
-    //       OrderASC: queryData.orderASC,
-    //       Priority: queryData.priority,
-    //       Status: queryData.status,
-    //       RequestType: queryData.requestType,
-    //       Service: queryData.service,
-    //       Assignee: queryData.assignee,
-    //       Reporter: queryData.reporter,
-    //       Group: queryData.group,
-    //       Description: queryData.description,
-    //       CreateTo: queryData.createdTo,
-    //       CreateFrom: queryData.createdFrom,
-    //     });
-    //     console.log(response.data);
-    //   } catch (error) {
-    //     alert("Error for get Data: ", error);
-    //   }
-    // };
-    // testParam();
+    console.log(type);
+    const queryDto = {
+      QueryStatement: JSON.stringify(queryCondition),
+      QueryType: type,
+    };
+    try {
+      Swal.fire({
+        title: "Loading...",
+        allowOutsideClick: false,
+        onBeforeOpen: () => {
+          Swal.showLoading();
+        },
+      });
+
+      axiosInstance
+        .post(apiQueryTicketUrl, queryDto, { headers })
+        .then((response) => {
+          console.log(response.data);
+          const dataTickets = response.data.map((item, i) => ({
+            id: item.ticketId,
+            title: item.title,
+            service: item.serviceCategoryName,
+            requestType: item.serviceItemName,
+            group: item.groupName,
+            requester: item.requesterFullName,
+            assignee: item.assigneeFullName,
+            status: item.status,
+            createdDate: item.createdAt,
+            priority: item.priority,
+          }));
+          setTicketQueryResults(dataTickets);
+        })
+        .catch((error) => {
+          const result = Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: `${error}`,
+          });
+        });
+
+      Swal.close();
+    } catch (error) {
+      // Handle errors if needed
+      console.log(error);
+      Swal.close();
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error,
+      });
+    }
   };
   const handleUpdateQuery = () => {
-    console.log(JSON.stringify(queryCondition));
-    const apiUpdateQueryUrl =
-      mode === "edit" ? `${URL.QUERY_URL}/update` : `${URL.QUERY_URL}/create`;
+    let isUpdate = mode === "update";
+    //console.log(isUpdate);
+    const apiUpdateQueryUrl = isUpdate
+      ? `${URL.QUERY_URL}/update`
+      : `${URL.QUERY_URL}/create`;
     //console.log(reasonCancelRef.current.value);
     try {
       Swal.fire({
@@ -113,25 +147,41 @@ const TicketQuery = () => {
         },
       });
       const queryDto = {
+        queryId: queryId,
         queryName: titleQuery,
         queryStatement: JSON.stringify(queryCondition),
         isTeamQuery: isCheckedTeamQuery,
         userId: auth?.userId,
         queryType: type,
       };
+      if (isUpdate) {
+        axiosInstance
+          .put(apiUpdateQueryUrl, queryDto, headers)
+          .then((response) => {
+            console.log(response.data);
 
-      axiosInstance
-        .post(apiUpdateQueryUrl, queryDto, headers)
-        .then((response) => {
-          console.log(response.data);
-
-          Swal.fire({
-            icon: "success",
-            title: "Success!",
-            text: "Request Ticket was canceled successfully.",
-            confirmButtonText: "OK",
+            Swal.fire({
+              icon: "success",
+              title: "Success!",
+              text: "Query was updated successfully",
+              confirmButtonText: "OK",
+            });
           });
-        });
+      } else {
+        axiosInstance
+          .post(apiUpdateQueryUrl, queryDto, headers)
+          .then((response) => {
+            console.log(response.data);
+
+            Swal.fire({
+              icon: "success",
+              title: "Success!",
+              text: "Query was created successfully",
+              confirmButtonText: "OK",
+            });
+          });
+      }
+
       Swal.close();
     } catch (error) {
       // Handle errors if needed
@@ -145,6 +195,10 @@ const TicketQuery = () => {
   };
   useEffect(() => {
     const apiGetQueryUrl = `${URL.QUERY_URL}/getdetail/${queryId}`;
+    if (mode.toLowerCase() == "create") {
+      setQueryCondition(queryData);
+      return;
+    }
     const fetchData = async () => {
       try {
         Swal.fire({
@@ -154,7 +208,7 @@ const TicketQuery = () => {
             Swal.showLoading();
           },
         });
-        if (mode.toLowerCase() == "create") return;
+
         //get data query
         await axiosInstance
           .get(apiGetQueryUrl, { headers })
@@ -186,7 +240,7 @@ const TicketQuery = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [mode]);
   return (
     <div>
       <div className="w-full h-[18vh] bg-[#42526E]">
@@ -228,7 +282,7 @@ const TicketQuery = () => {
                 onClick={handleTestQuery}
                 className="text-[#fff] font-medium border-2 bg-[#043AC5] px-[1rem]"
               >
-                TEST
+                RUN QUERY
               </button>
               <button
                 onClick={handleUpdateQuery}
@@ -250,6 +304,9 @@ const TicketQuery = () => {
             queryCondition={queryCondition}
             setQueryCondition={setQueryCondition}
           />
+          <div className="mt-[0.75rem]">
+            <AdminTicketGrid ticketData={ticketQueryResults} />
+          </div>
         </div>
       </div>
     </div>

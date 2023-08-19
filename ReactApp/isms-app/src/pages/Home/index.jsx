@@ -120,7 +120,7 @@ function Home() {
             iconName={"CiViewList"}
           />
           <CardItem
-            url="#"
+            url="/filterTicket"
             title="Request Ticker Filter"
             description="Filter, search your list request ticket"
             iconName={"BiFilterAlt"}
