@@ -1,20 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 
 const PrioritySelection = ({ priorityData, data, onSelect }) => {
-  console.log(data.priority);
   const [openCombobox, setOpenCombobox] = useState(false);
   const [priorityValue, setPriorityValue] = useState(data.priority);
 
-  console.log(priorityValue);
   const handleUpdate = (checkItem, e) => {
     const isChecked = e.target.checked;
 
     if (isChecked) {
-      const newValue = [...priorityValue, checkItem.priority]
+      const newValue = [...priorityValue, checkItem.priority];
       setPriorityValue(newValue);
       onSelect(newValue);
     } else {
-      const newValue = priorityValue.filter((i) => i !== checkItem.priority)
+      const newValue = priorityValue.filter((i) => i !== checkItem.priority);
       setPriorityValue(newValue);
       onSelect(newValue);
     }
@@ -26,7 +24,7 @@ const PrioritySelection = ({ priorityData, data, onSelect }) => {
         className="w-full text-[#42526E]"
         onClick={() => setOpenCombobox((prev) => !prev)}
       >
-        {": " + priorityValue.join(",")}
+        {`: ${priorityValue.join(",")}`}
       </div>
       {openCombobox && (
         <div className="w-full absolute top-[120%] border z-[10] bg-[#fff] left-[0] rounded-sm px-[1rem] py-[0.5rem]">

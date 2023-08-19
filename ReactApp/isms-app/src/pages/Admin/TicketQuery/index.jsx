@@ -5,31 +5,50 @@ import FilterCondition from "../../../components/Elements/FilterCondition";
 import { useParams, useNavigate } from "react-router-dom";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { URL } from "../../../utils/Url";
+import Swal from "sweetalert2";
+import useAuth from "../../../hooks/useAuth";
+import AdminTicketGrid from "../../../components/Elements/AdminTicketGrid";
 
 const cx = classNames.bind(styles);
 const TicketQuery = () => {
   const navigate = useNavigate();
   const { type, mode, queryId } = useParams();
   const axiosInstance = useAxiosPrivate();
-
+  const { auth } = useAuth();
   if (!type) navigate("/admin");
-
+  //console.log(type);
+  //API CONFIG
+  const token = auth?.accessToken;
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+    withCredentials: true,
+  };
   let queryData;
+  function getCurrentDate(subtractMonth) {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1 - subtractMonth)
+      .toString()
+      .padStart(2, "0"); // Tháng bắt đầu từ 0
+    const day = today.getDate().toString().padStart(2, "0");
 
-  if (mode === "edit") {
+    return `${year}-${month}-${day}`;
+  }
+  if (mode === "update") {
     queryData = {
       orderBy: null,
       orderASC: true,
-      priority: ["High", "Medium"],
+      priority: [],
       status: [],
       requestType: [],
       service: [],
       assignee: [],
       reporter: [],
       group: [],
-      description: null,
-      createdFrom: null,
-      createdTo: null,
+      titleSearch: null,
+      createdFrom: getCurrentDate(1),
+      createdTo: getCurrentDate(0),
     };
   } else {
     queryData = {
@@ -42,54 +61,209 @@ const TicketQuery = () => {
       assignee: [],
       reporter: [],
       group: [],
-      description: null,
-      createdFrom: null,
-      createdTo: null,
+      titleSearch: null,
+      createdFrom: getCurrentDate(1),
+      createdTo: getCurrentDate(0),
     };
   }
   const [queryCondition, setQueryCondition] = useState(queryData);
-
+  const [isCheckedTeamQuery, setIsCheckedTeamQuery] = useState(false);
+  const [titleQuery, setTitleQuery] = useState("");
+  const [ticketQueryResults, setTicketQueryResults] = useState([]);
+  const handleTitleQueryChange = (event) => {
+    setTitleQuery(event.target.value);
+  };
+  const handleCheckboxQueryChange = (event) => {
+    setIsCheckedTeamQuery(event.target.checked);
+  };
   const handleTestQuery = () => {
-    const testParam = async () => {
-      try {
-        const response = await axiosInstance.get(`${URL.QUERY_URL}/getall`, {
-            OrderyBy: queryData.orderBy,
-            OrderASC: queryData.orderASC,
-            Priority: queryData.priority,
-            Status: queryData.status,
-            RequestType: queryData.requestType,
-            Service: queryData.service,
-            Assignee: queryData.assignee,
-            Reporter: queryData.reporter,
-            Group: queryData.group,
-            Description: queryData.description,
-            CreateTo: queryData.createdTo,
-            CreateFrom: queryData.createdFrom,
+    const apiQueryTicketUrl = `${URL.REQUEST_TICKET_URL}/querytickets`;
+    console.log(JSON.stringify(queryCondition));
+    console.log(type);
+    const queryDto = {
+      QueryStatement: JSON.stringify(queryCondition),
+      QueryType: type,
+    };
+    try {
+      Swal.fire({
+        title: "Loading...",
+        allowOutsideClick: false,
+        onBeforeOpen: () => {
+          Swal.showLoading();
+        },
+      });
+
+      axiosInstance
+        .post(apiQueryTicketUrl, queryDto, { headers })
+        .then((response) => {
+          console.log(response.data);
+          const dataTickets = response.data.map((item, i) => ({
+            id: item.ticketId,
+            title: item.title,
+            service: item.serviceCategoryName,
+            requestType: item.serviceItemName,
+            group: item.groupName,
+            requester: item.requesterFullName,
+            assignee: item.assigneeFullName,
+            status: item.status,
+            createdDate: item.createdAt,
+            priority: item.priority,
+          }));
+          setTicketQueryResults(dataTickets);
+        })
+        .catch((error) => {
+          const result = Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: `${error}`,
           });
-        console.log(response.data);
+        });
+
+      Swal.close();
+    } catch (error) {
+      // Handle errors if needed
+      console.log(error);
+      Swal.close();
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error,
+      });
+    }
+  };
+  const handleUpdateQuery = () => {
+    let isUpdate = mode === "update";
+    //console.log(isUpdate);
+    const apiUpdateQueryUrl = isUpdate
+      ? `${URL.QUERY_URL}/update`
+      : `${URL.QUERY_URL}/create`;
+    //console.log(reasonCancelRef.current.value);
+    try {
+      Swal.fire({
+        title: "Loading...",
+        allowOutsideClick: false,
+        onBeforeOpen: () => {
+          Swal.showLoading();
+        },
+      });
+      const queryDto = {
+        queryId: queryId,
+        queryName: titleQuery,
+        queryStatement: JSON.stringify(queryCondition),
+        isTeamQuery: isCheckedTeamQuery,
+        userId: auth?.userId,
+        queryType: type,
+      };
+      if (isUpdate) {
+        axiosInstance
+          .put(apiUpdateQueryUrl, queryDto, headers)
+          .then((response) => {
+            console.log(response.data);
+
+            Swal.fire({
+              icon: "success",
+              title: "Success!",
+              text: "Query was updated successfully",
+              confirmButtonText: "OK",
+            });
+          });
+      } else {
+        axiosInstance
+          .post(apiUpdateQueryUrl, queryDto, headers)
+          .then((response) => {
+            console.log(response.data);
+
+            Swal.fire({
+              icon: "success",
+              title: "Success!",
+              text: "Query was created successfully",
+              confirmButtonText: "OK",
+            });
+          });
+      }
+
+      Swal.close();
+    } catch (error) {
+      // Handle errors if needed
+      Swal.close();
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error,
+      });
+    }
+  };
+  useEffect(() => {
+    const apiGetQueryUrl = `${URL.QUERY_URL}/getdetail/${queryId}`;
+    if (mode.toLowerCase() == "create") {
+      setQueryCondition(queryData);
+      return;
+    }
+    const fetchData = async () => {
+      try {
+        Swal.fire({
+          title: "Loading...",
+          allowOutsideClick: false,
+          onBeforeOpen: () => {
+            Swal.showLoading();
+          },
+        });
+
+        //get data query
+        await axiosInstance
+          .get(apiGetQueryUrl, { headers })
+          .then((response) => {
+            const dataRp = response.data;
+            //console.log(dataRp);
+            setTitleQuery(dataRp.queryName);
+            const dataCondition = JSON.parse(dataRp.queryStatement);
+            setQueryCondition(dataCondition);
+            //console.log(queryCondition);
+          })
+          .catch((error) => {
+            const result = Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error}`,
+            });
+          });
+        Swal.close();
       } catch (error) {
-        alert("Error for get Data: ", error);
+        // Handle errors if needed
+        console.log(error);
+        Swal.close();
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: error,
+        });
       }
     };
-    testParam();
-  };
-
+    fetchData();
+  }, [mode]);
   return (
     <div>
       <div className="w-full h-[18vh] bg-[#42526E]">
         <div className="ml-[8rem] pt-[0.8rem]">
           <div className="text-[1rem] text-[#fff] font-medium">
-            {type} Query
+            Query Type: {type.toLocaleUpperCase()}
           </div>
           <div>
             <input
               type="text"
               placeholder="Query Title"
+              defaultValue={titleQuery}
               className={cx("query-input")}
+              onChange={handleTitleQueryChange}
             />
           </div>
           <div className="mt-[0.75rem]">
-            <input type="checkbox" className="w-[1rem] aspect-square" />
+            <input
+              type="checkbox"
+              className="w-[1rem] aspect-square"
+              defaultValue={isCheckedTeamQuery}
+              onChange={handleCheckboxQueryChange}
+            />
             <span className="text-[1rem] text-[#fff] ml-[1rem]">
               Add this queue to Team Important Query
             </span>
@@ -104,11 +278,17 @@ const TicketQuery = () => {
               Filter Conditions
             </h2>
             <div className="mr-[10rem]">
-              <button onClick={handleTestQuery} className="text-[#fff] font-medium border-2 bg-[#043AC5] px-[1rem]">
-                Test{" "}
+              <button
+                onClick={handleTestQuery}
+                className="text-[#fff] font-medium border-2 bg-[#043AC5] px-[1rem]"
+              >
+                RUN QUERY
               </button>
-              <button className="ml-[1rem] text-[#fff] font-medium border-2 bg-[#42526E] px-[1rem]">
-                {mode}
+              <button
+                onClick={handleUpdateQuery}
+                className="ml-[1rem] text-[#fff] font-medium border-2 bg-[#42526E] px-[1rem]"
+              >
+                {mode.toUpperCase()}
               </button>
               <button
                 onClick={() => {
@@ -116,7 +296,7 @@ const TicketQuery = () => {
                 }}
                 className="ml-[1rem] text-[#42526E] font-medium border-2 border-[#42526E] px-[1rem]"
               >
-                Cancel
+                CANCEL
               </button>
             </div>
           </div>
@@ -124,6 +304,9 @@ const TicketQuery = () => {
             queryCondition={queryCondition}
             setQueryCondition={setQueryCondition}
           />
+          <div className="mt-[0.75rem]">
+            <AdminTicketGrid ticketData={ticketQueryResults} />
+          </div>
         </div>
       </div>
     </div>

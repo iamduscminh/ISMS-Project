@@ -15,7 +15,11 @@ const publicRoutes = [
     layout: Layout.FooterOnly,
   },
 
-  { path: "/admin/", component: Page.ListTicket, layout: Layout.CustomLayout },
+  {
+    path: "/admin/:typeTicket?/:queryId?",
+    component: Page.ListTicket,
+    layout: Layout.CustomLayout,
+  },
   {
     path: "/viewRequestTypes",
     component: Page.ViewRequestTypes,
@@ -209,6 +213,7 @@ const loginRoutes = [
     component: Page.TicketDetail,
     layout: Layout.CustomLayout,
   },
+  { path: "/filterTicket", component: Page.FilterTicket },
 ];
 
 export {

@@ -37,7 +37,7 @@ const QueryCategory = ({ changeSidebar, setQueryType }) => {
         const response = await axiosInstance.get(
           `${URL.SERVICE_CATEGORY_URL}/getall`
         );
-        console.log(response.data);
+        //console.log(response.data);
         setServiceCategories({
           title: "Service Ticket",
           path: "",
@@ -48,7 +48,7 @@ const QueryCategory = ({ changeSidebar, setQueryType }) => {
             title: category.serviceCategoryName,
             path: "",
             icon: <MdElectricalServices />,
-            cateId: category.serviceCategoryId
+            cateId: category.serviceCategoryId,
           })),
         });
       } catch (error) {
@@ -69,7 +69,7 @@ const QueryCategory = ({ changeSidebar, setQueryType }) => {
           const response = await axiosInstance.get(
             `${URL.DASHBOARD_URL}/countRequestTicket`
           );
-          console.log(response.data);
+          //console.log(response.data);
           setListNumberOfTicket(response.data);
         } catch (error) {
           console.error("Error Get Data", error);
@@ -86,7 +86,15 @@ const QueryCategory = ({ changeSidebar, setQueryType }) => {
         <SidebarNav>
           <SidebarWrap>
             {sideBar.map((item, index) => {
-              return <SubMenu item={item} key={index} listNumberTicket={listNumberOfTicket} changeSidebar={changeSidebar} setQueryType={setQueryType} />;
+              return (
+                <SubMenu
+                  item={item}
+                  key={index}
+                  listNumberTicket={listNumberOfTicket}
+                  changeSidebar={changeSidebar}
+                  setQueryType={setQueryType}
+                />
+              );
             })}
           </SidebarWrap>
         </SidebarNav>

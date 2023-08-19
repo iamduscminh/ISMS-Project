@@ -30,6 +30,6 @@ export { default as AdminGroups } from "./AdminGroups";
 export { default as AdminGroupEdit } from "./AdminGroupEdit";
 export { default as AdminRoleEdit } from "./AdminRoleEdit";
 export { default as AdminRolePermissionAdd } from "./AdminRolePermissionAdd";
-
+export { default as FilterTicket } from "./FilterTicket";
 export { default as AdminRole } from "./AdminRole";
 export { default as AdminUserManage } from "./AdminUserManage";

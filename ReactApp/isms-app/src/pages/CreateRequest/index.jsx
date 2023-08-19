@@ -52,7 +52,7 @@ function CreateRequest() {
           },
         });
         //--------------Get request type
-        axiosInstance
+        await axiosInstance
           .get(apiGetRequestTypeUrl)
           .then((response) => {
             const data = {
@@ -78,7 +78,7 @@ function CreateRequest() {
         //CALL API GET REQUEST TYPE
         const apiGetCustomFieldsUrl = `api/ServiceItemCustomFields/getbyserviceitem/${id}`;
 
-        axiosInstance
+        await axiosInstance
           .get(apiGetCustomFieldsUrl, { headers })
           .then((response) => {
             const data = response.data.map((item, i) => ({

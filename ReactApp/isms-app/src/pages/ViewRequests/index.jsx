@@ -184,7 +184,7 @@ function ViewRequests() {
             <DataGrid
               rows={filteredRows}
               columns={columns}
-              pageSize={20}
+              pageSize={50}
               onRowClick={handleRowClick}
             />
           </div>
