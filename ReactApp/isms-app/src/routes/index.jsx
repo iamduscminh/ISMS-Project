@@ -145,7 +145,11 @@ const PERM000004Routes = [];
 
 //Route có Permission là PERM000005: Manage custom fields
 const PERM000005Routes = [
-  { path: "/updateCustomField/:id", component: Page.UpdateCustomField },
+  {
+    path: "/updateCustomField/:id",
+    component: Page.UpdateCustomField,
+    layout: Layout.CustomLayout,
+  },
   {
     path: "/viewCustomFields",
     component: Page.ViewCustomFields,

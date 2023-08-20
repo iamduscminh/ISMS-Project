@@ -201,7 +201,7 @@ function FilterRequest() {
                 <span>Filter, search your list request ticket</span>
               </div>
             </div>
-            <div className="detail-request-header-right">
+            {/* <div className="detail-request-header-right">
               <Link to={"/catalog"}>
                 <button
                   type="button"
@@ -210,42 +210,140 @@ function FilterRequest() {
                   Create Request Ticket
                 </button>
               </Link>
-            </div>
+            </div> */}
           </div>
         </div>
         <div className="p-5 w-full h-full flex">
-          <div className="form-search">
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="mb-6">
-                <label
-                  htmlFor="rqtTitle"
-                  className="block mb-2 text-sm font-medium text-gray-500 "
-                >
-                  Request Title
-                </label>
-                <input
-                  type="text"
-                  id="rqtTitle"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                  placeholder=""
-                  {...register("rqtTitle", {
-                    required: "This field is required.",
-                    maxLength: {
-                      value: 500,
-                      message: "This field must less than 500 characters",
-                    },
-                  })}
-                />
-                <p className="mt-2 text-sm text-red-600 ">
-                  {errors.rqtTitle && errors.rqtTitle.message}
-                </p>
+          <div className="form-search flex items-center justify-center">
+            <form className="w-[60%]" onSubmit={handleSubmit(onSubmit)}>
+              <div className=" flex items-center justify-between">
+                <div className="mb-2 w-[40%]">
+                  <label
+                    htmlFor="rqtTitle"
+                    className="block mb-2 text-sm font-medium text-gray-500 "
+                  >
+                    Request Title
+                  </label>
+                  <input
+                    type="text"
+                    id="rqtTitle"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                    placeholder=""
+                    {...register("rqtTitle", {
+                      required: "This field is required.",
+                      maxLength: {
+                        value: 500,
+                        message: "This field must less than 500 characters",
+                      },
+                    })}
+                  />
+                </div>
+                <div className="mb-2 w-[40%]">
+                  <label
+                    htmlFor="rqtTitle"
+                    className="block mb-2 text-sm font-medium text-gray-500 "
+                  >
+                    Status
+                  </label>
+                  <select
+                    id={`searchbox`}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    {...register("statusTicket")}
+                  >
+                    <option></option>
+                    <option value="option1">Option 1</option>
+                    <option value="option2">Option 2</option>
+                    <option value="option3">Option 3</option>
+                  </select>
+                </div>
               </div>
-
+              <div className=" flex items-center justify-between">
+                <div className="mb-2 w-[40%]">
+                  <label
+                    htmlFor="rqtTitle"
+                    className="block mb-2 text-sm font-medium text-gray-500 "
+                  >
+                    Request Type
+                  </label>
+                  <select
+                    id={`searchbox`}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    {...register("statusTicket")}
+                  >
+                    <option></option>
+                    <option value="option1">Option 1</option>
+                    <option value="option2">Option 2</option>
+                    <option value="option3">Option 3</option>
+                  </select>
+                </div>
+                <div className="mb-2 w-[40%]">
+                  <label
+                    htmlFor="rqtTitle"
+                    className="block mb-2 text-sm font-medium text-gray-500 "
+                  >
+                    Services
+                  </label>
+                  <select
+                    id={`searchbox`}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    {...register("statusTicket")}
+                  >
+                    <option></option>
+                    <option value="option1">Option 1</option>
+                    <option value="option2">Option 2</option>
+                    <option value="option3">Option 3</option>
+                  </select>
+                </div>
+              </div>
+              <div className=" flex items-center justify-between">
+                <div className="mb-2 w-[40%]">
+                  <label
+                    htmlFor="rqtTitle"
+                    className="block mb-2 text-sm font-medium text-gray-500 "
+                  >
+                    Create From
+                  </label>
+                  <input
+                    type="date"
+                    id="rqtTitle"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                    placeholder=""
+                    {...register("rqtTitle", {
+                      required: "This field is required.",
+                      maxLength: {
+                        value: 500,
+                        message: "This field must less than 500 characters",
+                      },
+                    })}
+                  />
+                </div>
+                <div className="mb-2 w-[40%]">
+                  <label
+                    htmlFor="rqtTitle"
+                    className="block mb-2 text-sm font-medium text-gray-500 "
+                  >
+                    Create To
+                  </label>
+                  <input
+                    type="date"
+                    id="rqtTitle"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                    placeholder=""
+                    {...register("rqtTitle", {
+                      required: "This field is required.",
+                      maxLength: {
+                        value: 500,
+                        message: "This field must less than 500 characters",
+                      },
+                    })}
+                  />
+                </div>
+              </div>
               <button
                 type="submit"
-                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center "
               >
-                Send
+                Search
               </button>
             </form>
           </div>

@@ -450,16 +450,16 @@ function RequestType() {
     fetchData();
   }, []);
   return (
-    <div className="request-types-container pb-4 w-full h-full bg-[#fff] bg-blend-lighten overflow-y-scroll">
+    <div className="request-types-container pb-4 w-full h-full bg-[#fff] bg-blend-lighten">
       <div className="request-types-section">
         {/* HEADER SECTION*/}
-        <div className="request-types-header w-full text-white bg-[#294a8d] ">
+        <div className="request-types-header w-full text-white bg-[#42526E] ">
           <nav className="request-types-header-nav pt-3 pb-1 ">
             <ul className="header-nav-content flex items-center text-[0.75rem] pl-[1.25rem]">
               <li className="header-nav-item ml-1">
                 <Link
                   className="header-nav-url hover:underline hover:text-white"
-                  to="/"
+                  to="/admin"
                 >
                   Home
                 </Link>
@@ -474,7 +474,7 @@ function RequestType() {
                   to={"/viewRequestTypes"}
                   className="header-nav-url hover:underline hover:text-white"
                 >
-                  Service Requests
+                  Request Types
                 </Link>
               </li>
               <li className="header-nav-item ml-1">
@@ -494,7 +494,7 @@ function RequestType() {
               <Icon.BsFillInfoSquareFill className="h-[50px] w-[50px]" />
             </div>
             <div className="request-types-header-description ml-5 w-1/2">
-              <h4 className="text-2xl font-bold">Service Requests</h4>
+              <h4 className="text-2xl font-bold">Request Types</h4>
               <span className="">
                 Customize the types of service requests in the system. Make
                 these request types available in your system portal by editing
