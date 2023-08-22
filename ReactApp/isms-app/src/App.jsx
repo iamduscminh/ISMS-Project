@@ -1,9 +1,9 @@
-/* eslint-disable no-unused-vars */
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Fragment } from "react";
 import * as myRoutes from "./routes";
 import DefaultLayout from "./components/Layout/DefaultLayout";
-import { ProtectedRoute } from "./components/HOC";
+import RequiredAuth from "./components/HOC/RequiredAuth";
+import { PERMISSIONS } from "./routes/Permissions";
 
 function App() {
   return (
@@ -13,46 +13,252 @@ function App() {
           <div className="App">
             <Routes>
               {
-              //Định tuyến cho các Route public
-               myRoutes.publicRoutes.map((route, index) => {
-                const Page = route.component;
-                let Layout = DefaultLayout;
+                //Định tuyến cho các Route public
+                myRoutes.publicRoutes.map((route, index) => {
+                  const Page = route.component;
+                  let Layout = DefaultLayout;
 
-                if (route.layout) {
-                  Layout = route.layout;
-                } else if (route.layout === null) {
-                  Layout = Fragment;
+                  if (route.layout) {
+                    Layout = route.layout;
+                  } else if (route.layout === null) {
+                    Layout = Fragment;
+                  }
+
+                  return (
+                    <Route
+                      key={index}
+                      path={route.path}
+                      element={
+                        <Layout>
+                          <Page />
+                        </Layout>
+                      }
+                    />
+                  );
+                })
+              }
+
+              <Route
+                element={
+                  <RequiredAuth allowPer={[PERMISSIONS["Manage users"]]} />
                 }
-                
-                return (
-                  <Route key={index} path={route.path} element={
-                      <Layout>
-                        <Page />
-                      </Layout>
+              >
+                {
+                  //Định tuyến cho các Route public
+                  myRoutes.PERM000000Routes.map((route, index) => {
+                    const Page = route.component;
+                    let Layout = DefaultLayout;
+
+                    if (route.layout) {
+                      Layout = route.layout;
+                    } else if (route.layout === null) {
+                      Layout = Fragment;
                     }
-                  />
-                );
-              })      
-              }
 
-              {
-              //Định tuyến cho các Route public
-              myRoutes.privateRoutes.map((route, index) => {
-                const Page = route.component;
-                let Layout = DefaultLayout;
-
-                if (route.layout) {
-                  Layout = route.layout;
-                } else if (route.layout === null) {
-                  Layout = Fragment;
+                    return (
+                      <Route
+                        key={index}
+                        path={route.path}
+                        element={
+                          <Layout>
+                            <Page />
+                          </Layout>
+                        }
+                      />
+                    );
+                  })
                 }
-                
-                return (
-                  <ProtectedRoute key={index} path={route.path} component={Page} layout={Layout} />
-                );
-              })      
-              }
+              </Route>
 
+              <Route
+                element={
+                  <RequiredAuth allowPer={[PERMISSIONS["Manage tickets"]]} />
+                }
+              >
+                {
+                  //Định tuyến cho các Route public
+                  myRoutes.PERM000002Routes.map((route, index) => {
+                    const Page = route.component;
+                    let Layout = DefaultLayout;
+
+                    if (route.layout) {
+                      Layout = route.layout;
+                    } else if (route.layout === null) {
+                      Layout = Fragment;
+                    }
+
+                    return (
+                      <Route
+                        key={index}
+                        path={route.path}
+                        element={
+                          <Layout>
+                            <Page />
+                          </Layout>
+                        }
+                      />
+                    );
+                  })
+                }
+              </Route>
+              <Route
+                element={
+                  <RequiredAuth
+                    allowPer={[PERMISSIONS["Manage service items"]]}
+                  />
+                }
+              >
+                {
+                  //Định tuyến cho các Route public
+                  myRoutes.PERM000003Routes.map((route, index) => {
+                    const Page = route.component;
+                    let Layout = DefaultLayout;
+
+                    if (route.layout) {
+                      Layout = route.layout;
+                    } else if (route.layout === null) {
+                      Layout = Fragment;
+                    }
+
+                    return (
+                      <Route
+                        key={index}
+                        path={route.path}
+                        element={
+                          <Layout>
+                            <Page />
+                          </Layout>
+                        }
+                      />
+                    );
+                  })
+                }
+              </Route>
+              <Route
+                element={
+                  <RequiredAuth allowPer={[PERMISSIONS["Manage slas"]]} />
+                }
+              >
+                {
+                  //Định tuyến cho các Route public
+                  myRoutes.PERM000012Routes.map((route, index) => {
+                    const Page = route.component;
+                    let Layout = DefaultLayout;
+
+                    if (route.layout) {
+                      Layout = route.layout;
+                    } else if (route.layout === null) {
+                      Layout = Fragment;
+                    }
+
+                    return (
+                      <Route
+                        key={index}
+                        path={route.path}
+                        element={
+                          <Layout>
+                            <Page />
+                          </Layout>
+                        }
+                      />
+                    );
+                  })
+                }
+              </Route>
+
+              <Route
+                element={
+                  <RequiredAuth
+                    allowPer={[PERMISSIONS["Manage custom fields"]]}
+                  />
+                }
+              >
+                {
+                  //Định tuyến cho các Route public
+                  myRoutes.PERM000005Routes.map((route, index) => {
+                    const Page = route.component;
+                    let Layout = DefaultLayout;
+
+                    if (route.layout) {
+                      Layout = route.layout;
+                    } else if (route.layout === null) {
+                      Layout = Fragment;
+                    }
+
+                    return (
+                      <Route
+                        key={index}
+                        path={route.path}
+                        element={
+                          <Layout>
+                            <Page />
+                          </Layout>
+                        }
+                      />
+                    );
+                  })
+                }
+              </Route>
+
+              <Route
+                element={
+                  <RequiredAuth allowPer={[PERMISSIONS["Manage workflows"]]} />
+                }
+              >
+                {
+                  //Định tuyến cho các Route public
+                  myRoutes.PERM000013Routes.map((route, index) => {
+                    const Page = route.component;
+                    let Layout = DefaultLayout;
+
+                    if (route.layout) {
+                      Layout = route.layout;
+                    } else if (route.layout === null) {
+                      Layout = Fragment;
+                    }
+
+                    return (
+                      <Route
+                        key={index}
+                        path={route.path}
+                        element={
+                          <Layout>
+                            <Page />
+                          </Layout>
+                        }
+                      />
+                    );
+                  })
+                }
+              </Route>
+
+              <Route element={<RequiredAuth allowPer="login" />}>
+                {
+                  //Định tuyến cho các Route public
+                  myRoutes.loginRoutes.map((route, index) => {
+                    const Page = route.component;
+                    let Layout = DefaultLayout;
+
+                    if (route.layout) {
+                      Layout = route.layout;
+                    } else if (route.layout === null) {
+                      Layout = Fragment;
+                    }
+
+                    return (
+                      <Route
+                        key={index}
+                        path={route.path}
+                        element={
+                          <Layout>
+                            <Page />
+                          </Layout>
+                        }
+                      />
+                    );
+                  })
+                }
+              </Route>
             </Routes>
           </div>
         </Router>

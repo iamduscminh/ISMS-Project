@@ -1,15 +1,15 @@
-/* eslint-disable no-unused-vars */
-import Header from "../components/Header";
+import AdminHeader from "../components/Admin Header";
 import Footer from "../components/Footer";
 import Sidebar from "./Sidebar";
 
-// eslint-disable-next-line react/prop-types
 function CustomLayout({ children }) {
   return (
-    <div>
-      <Header />
-      <Sidebar />
-      <div>{children}</div>
+    <div className="h-screen">
+      <AdminHeader />
+      <div className="flex h-[90vh] relative">
+        <Sidebar />
+        <div className="shrink grow overflow-y-scroll">{children}</div>
+      </div>
       <Footer />
     </div>
   );
