@@ -48,7 +48,11 @@ function FilterRequest() {
     { field: "status", headerName: "Status", width: 100 },
     { field: "createAt", headerName: "Create At", width: 200 },
   ];
-  const handleRowClick = (e) => {};
+  const handleRowClick = (params) => {
+    const { id } = params.row;
+
+    navigate("/detailRequest/" + id);
+  };
   const resetConditionfilter = () => {
     setValue("rqtTitle", "");
     setValue("rqtStatus", "");
@@ -127,6 +131,7 @@ function FilterRequest() {
       status: data.rqtStatus == "" ? null : [data.rqtStatus],
       requestType: data.rqtType == "" ? null : [data.rqtType],
       service: data.rqtService == "" ? null : [data.rqtService],
+      reporter: [auth?.userId],
       createdFrom: data.rqtCreateFr,
       createdTo: data.rqtCreateTo,
       isIncident: data.rqtIsIncident,
