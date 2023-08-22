@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams, Routes, Route } from "react-router-dom";
+import { Link, useParams, useLocation, Route } from "react-router-dom";
 import { ROUTES_PATHS } from "../../../constants";
 import MessageError from "../../components/Dashboard/MessageError";
 import TogglePermission from "../../components/Dashboard/TogglePermission";
-import AdminRole from "../AdminRole";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
-const options = Array(10).fill({ name: "Manage user", value: true });
-const AdminRoleEdit = () => {
-  const [roleName, setRoleName] = useState("");
-  const [desc, setDesc] = useState("");
+const AdminRoleEdit = ({ setCurrentRoles }) => {
+  const [roleName, setRoleName] = useState(" ");
+  const [desc, setDesc] = useState(" ");
   const [permissions, setPermissions] = useState([]);
-  const [listPermissions, setListPermissions] = useState([]);
+  const [roleType, setRoleType] = useState([]);
+  const [getRole, setRole] = useState([]);
   const { id } = useParams();
   const axiosInstance = useAxiosPrivate();
+  console.log("===============>setCurrentRoles AdminRoleEdit", setCurrentRoles);
 
   useEffect(() => {
     const getRoleById = async () => {
@@ -21,6 +21,7 @@ const AdminRoleEdit = () => {
         const response = await axiosInstance.get(`api/Roles/get/${id}`);
         setRoleName(response.data.roleName);
         setDesc(response.data.description);
+        setRoleType(response.data.roleType);
       } catch (error) {
         console.error("Error getRoleById [AdminRoleEdit]:", error);
       }
@@ -28,19 +29,76 @@ const AdminRoleEdit = () => {
     const getPermissionByRoleId = async () => {
       try {
         const response = await axiosInstance.get(`api/Permissions/get/${id}`);
-        // setPermissions(response.data.permissions);
-        console.log("reponse.dataaaaaaaaaa", response.data.permissions);
-        console.log("reponse.dataaaaaaaaaa", options);
+        setPermissions(response.data.permissions);
       } catch (error) {
         console.error("Error getPermissionByRoleId [AdminRoleEdit]:", error);
       }
     };
+    const getAllRoles = async () => {
+      try {
+        const response = await axiosInstance.get("api/Roles/getall");
+        setRole(response.data);
+      } catch (error) {
+        console.error("Error fetching service categories:", error);
+      }
+    };
+
+    getAllRoles();
     getPermissionByRoleId();
     getRoleById();
   }, [axiosInstance]);
-  permissions.forEach((permission) => {
-    setListPermissions((pre) => [...pre, permission]);
-  });
+
+  const handleEditRole = (e) => {
+    try {
+      const updatedRole = {
+        roleId: id,
+        roleName: roleName,
+        description: desc,
+        roleType: roleType,
+      };
+
+      axiosInstance
+        .put(`/api/Roles/update`, updatedRole, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          const newData = updatedRole;
+          const updatedDataRole = getRole.map((item) =>
+            item.roleId === newData.roleId ? newData : item
+          );
+          setCurrentRoles(updatedDataRole);
+        });
+    } catch (error) {
+      alert("Có lỗi khi cập nhật: ", error);
+    }
+  };
+  const handleEditPermission = (e) => {
+    try {
+      const updatedPermission = {
+        roleId: id,
+        permissions: permissions,
+      };
+
+      axiosInstance
+        .put(`/api/Permissions/update`, updatedPermission, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          const newData = updatedPermission;
+          const updatedDataPermission = getRole.map((item) =>
+            item.roleId === newData.roleId ? newData : item
+          );
+          setCurrentRoles(updatedDataPermission);
+        });
+    } catch (error) {
+      alert("Có lỗi khi cập nhật: ", error);
+    }
+  };
+
   return (
     <div className="bg-[#F7F7F7] text-[#727272]">
       <div className="mx-auto max-w-7xl px-5 py-[60px]">
@@ -112,16 +170,16 @@ const AdminRoleEdit = () => {
                 {permissions?.map((permission, curIndex) => (
                   <tr key={curIndex}>
                     <td className="py-4 text-lg text-center xl:text-2xl">
-                      {permission.name}
+                      {permission.permissionName}
                     </td>
                     <td>
                       <TogglePermission
-                        value={permission.value}
+                        value={permission.isGranted}
                         togglePermission={() =>
                           setPermissions((prev) =>
                             prev?.map((item, index) =>
                               index === curIndex
-                                ? { ...item, value: !item.value }
+                                ? { ...item, isGranted: !item.isGranted }
                                 : item
                             )
                           )
@@ -137,7 +195,13 @@ const AdminRoleEdit = () => {
 
         <div className="mt-8 xl:mt-[54px] flex space-x-3 justify-end">
           <Link to={ROUTES_PATHS.ADMIN_ROLE} className="flex justify-end">
-            <button className="text-white gap-4 px-4 py-2 bg-[#4AA976] rounded-lg font-semibold w-[150px] text-center">
+            <button
+              onClick={(e) => {
+                handleEditPermission(e);
+                handleEditRole(e);
+              }}
+              className="text-white gap-4 px-4 py-2 bg-[#4AA976] rounded-lg font-semibold w-[150px] text-center"
+            >
               Save
             </button>
           </Link>

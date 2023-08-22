@@ -8,7 +8,12 @@ import FilterDropdownSelect from "../../components/Filter/DropdownSelect";
 import { useState, useEffect } from "react";
 import CardStatistic from "../../components/Overview/CardStatistic";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-
+function sum(obj) {
+  return Object.keys(obj).reduce(
+    (sum, key) => sum + parseFloat(obj[key] || 0),
+    0
+  );
+}
 const Dashboard = () => {
   const axiosInstance = useAxiosPrivate();
   const [isLoading, setIsLoading] = useState(true);
@@ -22,6 +27,7 @@ const Dashboard = () => {
   const [ticketByPriority, setTicketByPriority] = useState([]);
   const [ticketByStatus, setTicketByStatus] = useState([]);
   const [ticketByType, setTicketByType] = useState([]);
+  const [ticketServiceRequest, setTicketServiceRequest] = useState([]);
 
   const ticketTypesSelectedNormalized = ticketTypesSelected?.map(
     (item) => item?.value
@@ -42,11 +48,10 @@ const Dashboard = () => {
         const problemTickets = response.data.problem;
         const changeTickets = response.data.change;
         const incidentTickets = response.data.incident;
-        const serviceRequests = 5;
-
+        const serviceRequest = sum(response.data.serviceRequests);
         setTicketByType([
           incidentTickets,
-          serviceRequests,
+          serviceRequest,
           changeTickets,
           problemTickets,
         ]);
@@ -60,67 +65,41 @@ const Dashboard = () => {
     };
     const getRequestTickets = async () => {
       try {
-        const response = await axiosInstance.get("api/RequestTickets");
+        const response = await axiosInstance.get(
+          "api/Dashboards/countRequestTicketByStatus"
+        );
         //Ticket By Status
-        var open = 0,
-          inProgress = 0,
-          pending = 0,
-          closed = 0,
-          canceled = 0,
-          resolve = 0;
-        response.data.forEach((ticket) => {
-          if (ticket.status.toUpperCase() === "Open".toUpperCase()) {
-            open++;
-          }
-          if (ticket.status.toUpperCase() == "Pending".toUpperCase()) {
-            pending++;
-          }
-          if (ticket.status.toUpperCase() == "InProgress".toUpperCase()) {
-            inProgress++;
-          }
-          if (ticket.status.toUpperCase() == "Closed".toUpperCase()) {
-            closed++;
-          }
-          if (ticket.status.toUpperCase() == "Canceled".toUpperCase()) {
-            canceled++;
-          }
-          if (ticket.status.toUpperCase() == "Resolve".toUpperCase()) {
-            resolve++;
-          }
-        });
         setTicketByStatus([
-          open,
-          pending,
-          inProgress,
-          closed,
-          canceled,
-          resolve,
+          response.data.requestTicket.Open,
+          response.data.requestTicket.Pending,
+          response.data.requestTicket.InProgress,
+          response.data.requestTicket.Closed,
+          response.data.requestTicket.Canceled,
+          response.data.requestTicket.Resolved,
         ]);
-        //Ticket By Priority
-        var low = 0,
-          medium = 0,
-          high = 0,
-          urgency = 0;
-        response.data.forEach((ticket) => {
-          if (ticket.priority.toUpperCase() === "Low".toUpperCase()) {
-            low++;
-          }
-          if (ticket.priority.toUpperCase() == "Medium".toUpperCase()) {
-            medium++;
-          }
-          if (ticket.priority.toUpperCase() == "High".toUpperCase()) {
-            high++;
-          }
-          if (ticket.priority.toUpperCase() == "Urgency".toUpperCase()) {
-            urgency++;
-          }
-        });
-        setTicketByPriority([low, medium, high, urgency]);
       } catch (error) {
         console.error("Error get all Request Tickets [Dashboard]:", error);
         setIsLoading(false);
       }
     };
+    const getRequestTicketByPrioritys = async () => {
+      try {
+        const response = await axiosInstance.get(
+          "api/Dashboards/countRequestTicketByPriority"
+        );
+        //Ticket By Status
+        setTicketByPriority([
+          response.data.requestTicket.Low,
+          response.data.requestTicket.Medium,
+          response.data.requestTicket.High,
+          response.data.requestTicket.Urgency,
+        ]);
+      } catch (error) {
+        console.error("Error get all Request Tickets [Dashboard]:", error);
+        setIsLoading(false);
+      }
+    };
+    getRequestTicketByPrioritys();
     getProblemAndChangeTickets();
     getRequestTickets();
   }, [axiosInstance]);

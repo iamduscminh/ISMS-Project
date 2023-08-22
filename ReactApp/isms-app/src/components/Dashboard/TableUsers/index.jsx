@@ -70,6 +70,16 @@ const IconAssign = () => (
     </defs>
   </svg>
 );
+function formatDate(date) {
+  const options = { day: "2-digit", month: "short", year: "numeric" };
+  const formattedDate = new Date(date).toLocaleDateString("en-US", options);
+
+  const [month, day, year] = formattedDate.split(" ");
+
+  const capitalizedMonth = month.toUpperCase();
+
+  return `${day} ${capitalizedMonth} ${year}`;
+}
 const TableItem = ({
   item,
   setCurrentRoles,
@@ -83,9 +93,9 @@ const TableItem = ({
   const [user, setUser] = useState(item?.fullName);
   const [email, setEmail] = useState(item?.email);
   const [phoneNumber, setPhoneNumber] = useState(item?.phoneNumber);
+  const [birthDate, setBirthDate] = useState(item?.birthDate);
   const [role, setRole] = useState(item?.role);
   const axiosInstance = useAxiosPrivate();
-  const [isActive, setIsActive] = useState(true);
   const deleteRole = () => {
     // Gọi API để xóa dữ liệu dưới cơ sở dữ liệu
     axiosInstance
@@ -106,16 +116,12 @@ const TableItem = ({
     <tr>
       <td className="px-3 py-1.5 rounded-lg bg-transparent">{user}</td>
       <td className={clsx("px-3 py-1.5 rounded-lg bg-transparent")}>{email}</td>
-      {/* <td>
-        <DropdownRole
-          selected={role}
-          setSelected={setRole}
-          setCurrentRoles={setCurrentRoles}
-        />
-      </td> */}
-      <div onClick={setOpenDeactive} className="cursor-pointer">
-        {isActive ? <IconActive /> : <IconDeactive />}
-      </div>
+      <td className={clsx("px-3 py-1.5 rounded-lg bg-transparent")}>
+        {phoneNumber}
+      </td>
+      <td className={clsx("px-3 py-1.5 rounded-lg bg-transparent")}>
+        {formatDate(birthDate)}
+      </td>
       <td>
         <div
           onClick={() => {
@@ -137,7 +143,6 @@ const TableUsers = ({ data, setCurrentUsers, setCurrentRoles }) => {
   const [openDeactive, setOpenDeactive] = useState(false);
   const [openAssign, setOpenAssign] = useState(false);
   const [userSelected, setUserSelected] = useState([]);
-
   const handleDelete = (e) => {
     e.preventDefault();
     setOpenDeactive(false);
@@ -149,7 +154,8 @@ const TableUsers = ({ data, setCurrentUsers, setCurrentRoles }) => {
         <tr>
           <th>User</th>
           <th>Work Email</th>
-          <th>Active</th>
+          <th>Phone Number</th>
+          <th>Birth Date</th>
           <th>Assign</th>
         </tr>
         {data.map((item, index) => (

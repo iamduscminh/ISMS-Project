@@ -1,25 +1,33 @@
 .table {
-    color: #727272;
+  color: #102c57;
+  border: 1px solid;
 
-    & tr:first-child {
-        border-bottom: 1px solid #CFCACA;
-        font-size: 26px;
-        font-weight: 600;
-
-        & th {
-            padding-bottom: 15px;
-        }
+  & tr:first-child {
+    font-size: 20px;
+    font-weight: 500;
+    & th {
+      padding-bottom: 15px;
+      padding-top: 15px;
+      color: #102c57;
+      margin: auto;
+      background-color: #a1ccd1;
     }
+    text-align: center;
+  }
 
-    & td {
-        font-size: 24px;
-        padding-right: 20px;
-        padding-bottom: 15px;
-        padding-top: 15px;
-        vertical-align: baseline;
-    }
+  & td {
+    font-size: 16x;
+    border: 1px solid;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    vertical-align: baseline;
+    text-align: center;
+    margin: 0 auto;
+    padding-left: 30px;
+  }
 
-    & tr:nth-child(2) td {
-        padding-top: 50px;
-    }
+  & tr:nth-child(2) td {
+    padding-top: 5px;
+    margin: 0 auto;
+  }
 }

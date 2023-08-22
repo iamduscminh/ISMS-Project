@@ -6,95 +6,72 @@ const PieChart = ({ data, title, index }) => {
   const axiosInstance = useAxiosPrivate();
   const [isLoading, setIsLoading] = useState(true);
 
-  const [ticketByPriority, setTicketByPriority] = useState([]);
-  const [ticketByStatus, setTicketByStatus] = useState([]);
-  const [ticketByType, setTicketByType] = useState([]);
+  const [ticketByPriority, setTicketByPriority] = useState([1, 1, 1, 1]);
+  const [ticketByStatus, setTicketByStatus] = useState([1, 1, 1, 1, 1, 1]);
+  const [ticketByType, setTicketByType] = useState([1, 1, 1]);
 
   useEffect(() => {
-    const getChangeTickets = async () => {
+    const getProblemTicketByStatus = async () => {
       try {
-        const response = await axiosInstance.get("api/Problems/getall");
+        const response = await axiosInstance.get(
+          "api/Dashboards/countRequestTicketByProblemStatus"
+        );
         //Ticket By Status
-        var open = 0,
-          inProgress = 0,
-          pending = 0,
-          closed = 0,
-          canceled = 0,
-          resolve = 0;
-        response.data.forEach((ticket) => {
-          if (ticket.status.toUpperCase() === "Open".toUpperCase()) {
-            open++;
-          }
-          if (ticket.status.toUpperCase() == "Pending".toUpperCase()) {
-            pending++;
-          }
-          if (ticket.status.toUpperCase() == "InProgress".toUpperCase()) {
-            inProgress++;
-          }
-          if (ticket.status.toUpperCase() == "Closed".toUpperCase()) {
-            closed++;
-          }
-          if (ticket.status.toUpperCase() == "Canceled".toUpperCase()) {
-            canceled++;
-          }
-          if (ticket.status.toUpperCase() == "Resolve".toUpperCase()) {
-            resolve++;
-          }
-        });
         setTicketByStatus([
-          open,
-          pending,
-          inProgress,
-          closed,
-          canceled,
-          resolve,
+          response.data.requestTicket.Open,
+          response.data.requestTicket.InProgress,
+          response.data.requestTicket.Pending,
+          response.data.requestTicket.Resolved,
+          response.data.requestTicket.Closed,
+          response.data.requestTicket.Canceled,
         ]);
-        //Ticket By Priority
-        var low = 0,
-          medium = 0,
-          high = 0,
-          urgenry = 0;
-        response.data.forEach((ticket) => {
-          if (ticket.priority.toUpperCase() === "Low".toUpperCase()) {
-            low++;
-          }
-          if (ticket.priority.toUpperCase() == "Medium".toUpperCase()) {
-            medium++;
-          }
-          if (ticket.priority.toUpperCase() == "High".toUpperCase()) {
-            high++;
-          }
-          if (ticket.priority.toUpperCase() == "Urgenry".toUpperCase()) {
-            urgenry++;
-          }
-        });
-        setTicketByPriority([low, medium, high, urgenry]);
-        //Ticket By impact
-        var lowImpact = 0,
-          mediumImpact = 0,
-          highImpact = 0;
-        response.data.forEach((ticket) => {
-          if (ticket.impact.toUpperCase() === "Low".toUpperCase()) {
-            lowImpact++;
-          }
-          if (ticket.impact.toUpperCase() == "Medium".toUpperCase()) {
-            mediumImpact++;
-          }
-          if (ticket.impact.toUpperCase() == "High".toUpperCase()) {
-            highImpact++;
-          }
-        });
-        setTicketByType([lowImpact, mediumImpact, highImpact]);
+      } catch (error) {
+        console.error("Error getProblemByStatus [PieChartProblem]:", error);
         setIsLoading(false);
+      }
+    };
+    const getProblemTicketByPriority = async () => {
+      try {
+        const response = await axiosInstance.get(
+          "api/Dashboards/countRequestTicketByProblemPriority"
+        );
+        //Ticket By Status
+        setTicketByPriority([
+          response.data.requestTicket.Low,
+          response.data.requestTicket.Medium,
+          response.data.requestTicket.High,
+          response.data.requestTicket.Urgency,
+        ]);
       } catch (error) {
         console.error(
-          "Error get all Request Tickets [PieChartProblem]:",
+          "Error getProblemTicketByPriority [PieChartProblem]:",
           error
         );
         setIsLoading(false);
       }
     };
-    getChangeTickets();
+    const getProblemTicketByImpact = async () => {
+      try {
+        const response = await axiosInstance.get(
+          "api/Dashboards/countRequestTicketByProblemImpact"
+        );
+        //Ticket By Impact
+        setTicketByType([
+          response.data.requestTicket.Low,
+          response.data.requestTicket.Medium,
+          response.data.requestTicket.High,
+        ]);
+      } catch (error) {
+        console.error(
+          "Error getProblemTicketByPriority [PieChartProblem]:",
+          error
+        );
+        setIsLoading(false);
+      }
+    };
+    getProblemTicketByPriority();
+    getProblemTicketByStatus();
+    getProblemTicketByImpact();
   }, [axiosInstance]);
 
   return (

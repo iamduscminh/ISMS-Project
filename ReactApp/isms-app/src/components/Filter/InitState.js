@@ -1,3 +1,40 @@
+function formatDate(date) {
+  const options = { day: "2-digit", month: "short", year: "numeric" };
+  const formattedDate = new Date(date).toLocaleDateString("en-US", options);
+
+  const [month, day, year] = formattedDate.split(" ");
+
+  const capitalizedMonth = month.toUpperCase();
+
+  return `${day} ${capitalizedMonth} ${year}`;
+}
+function getPreviousDay(date, number) {
+  const previous = new Date(date.getTime());
+  previous.setDate(date.getDate() + number);
+
+  return previous;
+}
+const monthOfYear = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+const today = new Date();
+const yesterday = getPreviousDay(today, -1);
+const lastWeek = getPreviousDay(today, -7);
+const lastMonthDay = getPreviousDay(today, -30);
+const currentMonth = monthOfYear[today.getMonth()];
+const lastMonth = monthOfYear[today.getMonth() - 1];
 export const ticketTypes = [
   { value: "incident", label: "Incident" },
   { value: "request", label: "Service Request" },
@@ -59,21 +96,25 @@ export const RANGE_VALUES = {
 };
 
 export const dateRangesOptions = [
-  { value: RANGE_VALUES.YESTERDAY, label: "Yesterday" },
+  {
+    value: RANGE_VALUES.YESTERDAY,
+    label: `Yesterday`,
+    subLabel: `Yesterday (${formatDate(yesterday)})`,
+  },
   {
     value: RANGE_VALUES.LAST_WEEK,
     label: "Last 7 days",
-    subLabel: "Mon, 1 May 2023 - Sun, 7 May 2023",
+    subLabel: `${formatDate(lastWeek)} - ${formatDate(today)}`,
   },
   {
     value: RANGE_VALUES.LAST_MONTH,
     label: "Last month",
-    subLabel: "April 2023",
+    subLabel: `${lastMonth}`,
   },
   {
     value: RANGE_VALUES.CURRENT_MONTH,
     label: "Current month",
-    subLabel: "May 2023",
+    subLabel: `${currentMonth}`,
   },
   { value: RANGE_VALUES.CUSTOM, label: "Custom period" },
 ];

@@ -102,16 +102,16 @@ function ViewRequestTypes() {
     navigate("/updateCustomField/" + id);
   };
   return (
-    <div className="request-types-container pb-4 w-full h-full bg-[#3E5481] bg-blend-lighten">
-      <div className="request-types-section mx-auto max-w-7xl ">
+    <div className="request-types-container pb-4 w-full h-full bg-[#fff] bg-blend-lighten">
+      <div className="request-types-section">
         {/* HEADER SECTION*/}
-        <div className="request-types-header w-full text-white ">
+        <div className="request-types-header w-full text-white bg-[#42526E]">
           <nav className="request-types-header-nav pt-3 pb-1 ">
-            <ul className="header-nav-content flex items-center text-[18px]">
+            <ul className="header-nav-content flex items-center text-[1rem] ml-[1.25rem]">
               <li className="header-nav-item ml-1">
                 <Link
                   className="header-nav-url hover:underline hover:text-white"
-                  to="/"
+                  to="/admin"
                 >
                   Home
                 </Link>
@@ -127,14 +127,14 @@ function ViewRequestTypes() {
               </li>
             </ul>
           </nav>
-          <div className="request-types-header-content pb-2 flex items-center">
+          <div className="request-types-header-content pb-2 flex items-center ml-[1.25rem]">
             <div className="request-types-header-icon">
               <IconTag
                 name={"BsFillInfoSquareFill"}
                 className={"h-[50px] w-[50px]"}
               />
             </div>
-            <div className="request-types-header-description ml-5 w-1/2">
+            <div className="request-types-header-description  ml-5 w-1/2">
               <h4 className="text-2xl font-bold">Custom Fields</h4>
               <span className="">
                 Customize the form of each Request Ticket in the system, Custom

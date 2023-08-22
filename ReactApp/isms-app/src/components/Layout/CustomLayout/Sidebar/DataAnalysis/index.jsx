@@ -36,7 +36,7 @@ export const sidebarMenus = {
 
 const MenuList = ({ menus, currentPath, onNavigate }) => {
   return (
-    <ul className="space-y-4 xl:space-y-[35px]">
+    <ul className="space-y-2.5 xl:space-y-[5px]">
       {menus.map((item) => {
         const isActive = item.href === currentPath;
         return (
@@ -46,7 +46,7 @@ const MenuList = ({ menus, currentPath, onNavigate }) => {
               if (item?.href) onNavigate?.(item?.href);
             }}
             className={clsx(
-              "flex space-x-4 items-center pr-2 xl:pr-5 rounded-l-[20px] py-2.5 xl:py-4 text-lg xl:text-2xl cursor-pointer transition-all",
+              "flex space-x-4 items-center pr-2 xl:pr-5 rounded-l-[20px] py-2.5 xl:py-2.5 text-lg xl:text-base cursor-pointer transition-all",
               isActive
                 ? "bg-[#B9D9EB] font-bold pl-2.5"
                 : "pl-5 hover:bg-[#B9D9EB] hover:font-bold hover:pl-2.5"

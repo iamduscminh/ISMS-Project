@@ -58,6 +58,11 @@ const PERM000000Routes = [
     layout: Layout.AdminLayout,
   },
   {
+    path: ROUTES_PATHS.ADMIN_REPORT_PREVIEW,
+    component: Page.AdminReportPreview,
+    layout: Layout.AdminLayout,
+  },
+  {
     path: ROUTES_PATHS.ADMIN_SETTING,
     component: Page.Dashboard,
     layout: Layout.AdminLayout,
@@ -73,8 +78,13 @@ const PERM000000Routes = [
     layout: Layout.CustomLayout,
   },
   {
-    path: ROUTES_PATHS.ADMIN_GROUP,
-    component: Page.AdminGroup,
+    path: ROUTES_PATHS.ADMIN_GROUPS,
+    component: Page.AdminGroups,
+    layout: Layout.CustomLayout,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN_GROUPS_EDIT,
+    component: Page.AdminGroupEdit,
     layout: Layout.CustomLayout,
   },
   {
@@ -135,7 +145,11 @@ const PERM000004Routes = [];
 
 //Route có Permission là PERM000005: Manage custom fields
 const PERM000005Routes = [
-  { path: "/updateCustomField/:id", component: Page.UpdateCustomField },
+  {
+    path: "/updateCustomField/:id",
+    component: Page.UpdateCustomField,
+    layout: Layout.CustomLayout,
+  },
   {
     path: "/viewCustomFields",
     component: Page.ViewCustomFields,

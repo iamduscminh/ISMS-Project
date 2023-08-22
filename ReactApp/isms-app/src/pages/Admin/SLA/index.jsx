@@ -200,10 +200,10 @@ const SLA = () => {
       });
   };
   return (
-    <div className="request-types-container pb-4 w-full h-full bg-[#fff] bg-blend-lighten overflow-y-scroll">
+    <div className="request-types-container pb-4 w-full h-full bg-[#fff] bg-blend-lighten">
       <div className="request-types-section">
         {/* HEADER SECTION*/}
-        <div className="request-types-header w-full text-white bg-[#294a8d] ">
+        <div className="request-types-header w-full text-white bg-[#42526E] ">
           <nav className="request-types-header-nav pt-3 pb-1 ">
             <ul className="header-nav-content flex items-center text-[0.75rem] pl-[1.25rem]">
               <li className="header-nav-item ml-1">
@@ -282,7 +282,7 @@ const SLA = () => {
         </div>
         <div className=" w-full min-h-screen p-6 bg-white rounded shadow ">
           <div className="request-tickets-ctn ">
-            <div className="flex flex-col w-full h-[90vh] overflow-y-scroll">
+            <div className="flex flex-col w-full h-[90vh]">
               <div className="w-full flex flex-col justify-center mt-[1rem] items-center">
                 {SLAs?.map((item) => (
                   <SLAComponent

@@ -151,7 +151,7 @@ function ViewRequestTypes() {
               <li className="header-nav-item ml-1">
                 <Link
                   className="header-nav-url hover:underline hover:text-white"
-                  to="/"
+                  to="/admin"
                 >
                   Home
                 </Link>

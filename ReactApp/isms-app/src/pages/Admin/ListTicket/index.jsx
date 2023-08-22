@@ -235,8 +235,8 @@ const ListTicket = () => {
   return (
     <div>
       <div className="relative w-full h-[22vh] bg-[#42526E] pt-[1.5rem] pl-[4.5rem]">
-        <h3 className="text-[0.9rem] text-[#fff] font-medium mb-[0.5rem]">
-          ServiceTicket/allTicket
+        <h3 className="text-[1rem] text-[#fff] font-medium mb-[0.5rem]">
+          ServiceTicket/ allTicket
         </h3>
         <h2 className="text-[1.2rem] text-[#fff] font-medium">
           Query All Service Ticket

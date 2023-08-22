@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import classNames from "classnames/bind";
 import styles from "./AdminHeader.module.scss";
 import image from "../../../../assets/images";
-import { AiFillSetting } from "react-icons/ai";
+import { HiOutlineDocumentReport } from "react-icons/hi";
 import { IoMdNotifications } from "react-icons/io";
 import Tippy from "@tippyjs/react/headless";
 import TippyItem from "../../../Elements/TippyItem";
@@ -40,7 +40,7 @@ const AdminHeader = () => {
   };
 
   return (
-    <div className={cx("h-[7%] w-full bg-[#7F91B0] flex")}>
+    <div className={cx("h-[7%] w-full bg-[#294a8d] flex")}>
       <div className={cx("w-[8%] h-full flex justify-center items-center")}>
         <Link to={"/admin"}>
           <img
@@ -52,10 +52,10 @@ const AdminHeader = () => {
       </div>
       <div
         className={cx(
-          "w-[40%] flex justify-center items-center bg-[#7F91B0] ml-[3rem]"
+          "w-[40%] flex justify-center items-center bg-[#294a8d] ml-[3rem]"
         )}
       >
-        <div className={cx("selection")}>
+        {/* <div className={cx("selection")}>
           <div className={cx("item")}>
             <Link to={ROUTES_PATHS.ADMIN}>
               <span className={cx("item-top")}>Analysis</span>
@@ -64,7 +64,19 @@ const AdminHeader = () => {
           </div>
           <div className={cx("item-border")}>
             <Link to={ROUTES_PATHS.ADMIN_ROLE}>
+              <span className={cx("item-top")}>Roles</span>
+              <span className={cx("item-bot")}>Users and Roles </span>
+            </Link>
+          </div>
+          <div className={cx("item-border")}>
+            <Link to={ROUTES_PATHS.ADMIN_GROUPS}>
               <span className={cx("item-top")}>Groups</span>
+              <span className={cx("item-bot")}>Users and Roles </span>
+            </Link>
+          </div>
+          <div className={cx("item-border")}>
+            <Link to={ROUTES_PATHS.ADMIN_USERS}>
+              <span className={cx("item-top")}>Users</span>
               <span className={cx("item-bot")}>Users and Roles </span>
             </Link>
           </div>
@@ -74,10 +86,10 @@ const AdminHeader = () => {
               <span className={cx("item-bot")}>Base and Report</span>
             </Link>
           </div>
-        </div>
+        </div> */}
       </div>
       <div className={cx("ml-auto flex justify-center items-center mr-4")}>
-        <Tippy
+        {/* <Tippy
           interactive
           visible={toggle}
           placement="bottom-end"
@@ -149,8 +161,12 @@ const AdminHeader = () => {
               onClick={handleToggle}
             />
           </div>
-        </Tippy>
-
+        </Tippy> */}
+        <div className="h-[50%] aspect-square m-[0.5rem] cursor-pointer">
+          <Link to={ROUTES_PATHS.ADMIN}>
+            <HiOutlineDocumentReport className="w-full h-full text-[#fff]" />
+          </Link>
+        </div>
         <div className="h-[50%] aspect-square m-[0.5rem] cursor-pointer">
           <IoMdNotifications className="w-full h-full text-[#fff]" />
         </div>

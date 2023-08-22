@@ -1,18 +1,16 @@
 import React, { useState, useRef } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { roles } from "./TableRoles";
 import MessageError from "./MessageError";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
-const FormAddUser = ({ open, setOpen, data }) => {
+const FormAddUser = ({ open, setOpen, data, setCurrentUsers }) => {
   const axiosInstance = useAxiosPrivate();
-  const [role, setRole] = useState(roles[0]);
+  const [role, setRole] = useState();
   const [userEmail, setUserEmail] = useState(" ");
   const [userPassWord, setUserPassWord] = useState(" ");
   const [userFirstName, setUserFirstName] = useState(" ");
   const [userMidName, setUserMidName] = useState(" ");
   const [userLastName, setUserLastName] = useState(" ");
-  const [currentUser, setCurrentUsers] = useState(data);
 
   const handleAdd = (e) => {
     e.preventDefault();
@@ -31,6 +29,7 @@ const FormAddUser = ({ open, setOpen, data }) => {
       firstName: userFirstName,
       middleName: userMidName,
       lastName: userLastName,
+      fullName: userFirstName + " " + userLastName,
       isActive: true,
     };
     const controller = new AbortController();
@@ -48,7 +47,7 @@ const FormAddUser = ({ open, setOpen, data }) => {
           }
         );
         if (response.status === 200) {
-          const createdUser = response.data;
+          const createdUser = newUser;
           setCurrentUsers((prev) => [...prev, createdUser]);
           // Clear Input
           setUserEmail(" ");
@@ -63,6 +62,9 @@ const FormAddUser = ({ open, setOpen, data }) => {
       } catch (err) {
         if (err.status === 403) {
           alert("You are not allowed to add User");
+        }
+        if (err.status === 400) {
+          alert(`Email ${userEmail} is already taken`);
         } else {
           alert(err.message);
         }
