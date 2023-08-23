@@ -122,7 +122,7 @@ const Login = () => {
 
       const permissions = decodedToken.permissions
         ? decodedToken.permissions
-        : Object.keys(PERMISSIONS);
+        : decodedToken.roletype ? Object.keys(PERMISSIONS) : []
 
       setAuth({
         email,
@@ -185,12 +185,12 @@ const Login = () => {
             <h2 className="text-3xl font-bold">
               Log in QuickService with your account
             </h2>
-            <p>
+            {/* <p>
               Don’t have account yet?{" "}
               <UnderlineAnimation>
                 <a href="#">Create your account</a>
               </UnderlineAnimation>
-            </p>
+            </p> */}
             <img src={image.IllusForm} alt="" className={cx("illusForm")} />
           </div>
           <form className={cx("h-[63%]")} onSubmit={handleSubmit}>
@@ -268,7 +268,7 @@ const Login = () => {
                 {/* <ChangeBgButton type="submit">Continue</ChangeBgButton> */}
                 <button
                   type="submit"
-                  className="w-[30%] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2 mb-2  focus:outline-none "
+                  className="mt-[0.75rem] ml-auto w-[25%] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2 mb-2  focus:outline-none "
                 >
                   Login
                 </button>
