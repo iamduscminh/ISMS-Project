@@ -7,23 +7,11 @@ import { ROUTES_PATHS } from "../../constants";
    nếu ko sẽ mặc định dùng layout default */
 //public route
 const publicRoutes = [
-  { path: "/following", component: Page.Following, layout: null },
   { path: "/login", component: Page.Login, layout: Layout.FooterOnly },
   {
     path: "/unauthorized",
     component: Page.Unauthorized,
     layout: Layout.FooterOnly,
-  },
-
-  {
-    path: "/admin/:typeTicket?/:queryId?",
-    component: Page.ListTicket,
-    layout: Layout.CustomLayout,
-  },
-  {
-    path: "/viewRequestTypes",
-    component: Page.ViewRequestTypes,
-    layout: Layout.CustomLayout,
   },
 ];
 
@@ -32,82 +20,6 @@ const publicRoutes = [
 //Route có Permission là PERM000000: Mange users
 const PERM000000Routes = [
   {
-    path: "/admin/setting/services",
-    component: Page.ServiceSettings,
-    layout: Layout.CustomLayout,
-  },
-  {
-    path: "/admin/setting/workflows",
-    component: Page.ListWorkflow,
-    layout: Layout.CustomLayout,
-  },
-
-  {
-    path: ROUTES_PATHS.ADMIN,
-    component: Page.Dashboard,
-    layout: Layout.AdminLayout,
-  },
-  {
-    path: ROUTES_PATHS.ADMIN_TICKET,
-    component: Page.AdminTicket,
-    layout: Layout.AdminLayout,
-  },
-  {
-    path: ROUTES_PATHS.ADMIN_REPORT,
-    component: Page.AdminReport,
-    layout: Layout.AdminLayout,
-  },
-  {
-    path: ROUTES_PATHS.ADMIN_REPORT_PREVIEW,
-    component: Page.AdminReportPreview,
-    layout: Layout.AdminLayout,
-  },
-  {
-    path: ROUTES_PATHS.ADMIN_SETTING,
-    component: Page.Dashboard,
-    layout: Layout.AdminLayout,
-  },
-  {
-    path: ROUTES_PATHS.ADMIN_CONTACT,
-    component: Page.Dashboard,
-    layout: Layout.AdminLayout,
-  },
-  {
-    path: ROUTES_PATHS.ADMIN_ROLE,
-    component: Page.AdminRole,
-    layout: Layout.CustomLayout,
-  },
-  {
-    path: ROUTES_PATHS.ADMIN_GROUPS,
-    component: Page.AdminGroups,
-    layout: Layout.CustomLayout,
-  },
-  {
-    path: ROUTES_PATHS.ADMIN_GROUPS_EDIT,
-    component: Page.AdminGroupEdit,
-    layout: Layout.CustomLayout,
-  },
-  {
-    path: ROUTES_PATHS.ADMIN_ROLE_EDIT,
-    component: Page.AdminRoleEdit,
-    layout: Layout.AdminLayout,
-  },
-  {
-    path: ROUTES_PATHS.ADMIN_ROLE_PERMISSION_ADD,
-    component: Page.AdminRolePermissionAdd,
-    layout: Layout.AdminLayout,
-  },
-  {
-    path: ROUTES_PATHS.ADMIN_CHANGE,
-    component: Page.AdminChange,
-    layout: Layout.AdminLayout,
-  },
-  {
-    path: ROUTES_PATHS.ADMIN_PROBLEM,
-    component: Page.AdminProblem,
-    layout: Layout.AdminLayout,
-  },
-  {
     path: ROUTES_PATHS.ADMIN_USERS,
     component: Page.AdminUserManage,
     layout: Layout.CustomLayout,
@@ -115,7 +27,23 @@ const PERM000000Routes = [
 ];
 
 //Route có Permission là PERM000001: Mange roles
-const PERM000001Routes = [];
+const PERM000001Routes = [
+  {
+    path: ROUTES_PATHS.ADMIN_ROLE,
+    component: Page.AdminRole,
+    layout: Layout.CustomLayout,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN_ROLE_PERMISSION_ADD,
+    component: Page.AdminRolePermissionAdd,
+    layout: Layout.AdminLayout,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN_ROLE_EDIT,
+    component: Page.AdminRoleEdit,
+    layout: Layout.AdminLayout,
+  },
+];
 
 //Route có Permission là PERM000002: Manage tickets
 const PERM000002Routes = [
@@ -141,7 +69,13 @@ const PERM000003Routes = [
 ];
 
 //Route có Permission là PERM000004: Manage service categories
-const PERM000004Routes = [];
+const PERM000004Routes = [
+  {
+    path: "/admin/setting/serviceCategories",
+    component: Page.ServiceSettings,
+    layout: Layout.CustomLayout,
+  },
+];
 
 //Route có Permission là PERM000005: Manage custom fields
 const PERM000005Routes = [
@@ -161,7 +95,18 @@ const PERM000005Routes = [
 const PERM000006Routes = [];
 
 //Route có Permission là PERM000007: Manage groups
-const PERM000007Routes = [];
+const PERM000007Routes = [
+  {
+    path: ROUTES_PATHS.ADMIN_GROUPS,
+    component: Page.AdminGroups,
+    layout: Layout.CustomLayout,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN_GROUPS_EDIT,
+    component: Page.AdminGroupEdit,
+    layout: Layout.CustomLayout,
+  },
+];
 
 //Route có Permission là PERM000008: Manage service desk hours
 const PERM000008Routes = [];
@@ -198,8 +143,66 @@ const PERM000015Routes = [];
 //Route có Permission là PERM000016 Manage business hours
 const PERM000016Routes = [];
 
-//Route có Permission là PERM000017 Manage business hours
+//Route có Permission là PERM000017 Manage comments
 const PERM000017Routes = [];
+
+//Route có Permission là PERM000018 Only Need Login
+const PERM000018Routes = [
+  {
+    path: "/admin/ticket/:ticketId",
+    component: Page.TicketDetail,
+    layout: Layout.CustomLayout,
+  },
+  {
+    path: "/admin/:typeTicket?/:queryId?",
+    component: Page.ListTicket,
+    layout: Layout.CustomLayout,
+  },
+  {
+    path: "/viewRequestTypes",
+    component: Page.ViewRequestTypes,
+    layout: Layout.CustomLayout,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN,
+    component: Page.Dashboard,
+    layout: Layout.AdminLayout,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN_TICKET,
+    component: Page.AdminTicket,
+    layout: Layout.AdminLayout,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN_REPORT,
+    component: Page.AdminReport,
+    layout: Layout.AdminLayout,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN_REPORT_PREVIEW,
+    component: Page.AdminReportPreview,
+    layout: Layout.AdminLayout,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN_CHANGE,
+    component: Page.AdminChange,
+    layout: Layout.AdminLayout,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN_PROBLEM,
+    component: Page.AdminProblem,
+    layout: Layout.AdminLayout,
+  },
+];
+
+//Route có Permission là PERM000019 Manage dashboard
+const PERM000019Routes = [];
+
+//Route có Permission là PERM000021 Manage changes
+const PERM000020Routes = [];
+
+//Route có Permission là PERM000022 Manage problems
+const PERM000021Routes = [];
 //
 const loginRoutes = [
   { path: "/", component: Page.Home },
@@ -211,11 +214,6 @@ const loginRoutes = [
     path: "/profile/:userId?",
     component: Page.Profile,
     layout: Layout.DefaultLayout,
-  },
-  {
-    path: "/admin/ticket/:ticketId",
-    component: Page.TicketDetail,
-    layout: Layout.CustomLayout,
   },
   { path: "/filterTicket", component: Page.FilterTicket },
 ];
@@ -241,4 +239,8 @@ export {
   PERM000015Routes,
   PERM000016Routes,
   PERM000017Routes,
+  PERM000018Routes,
+  PERM000019Routes,
+  PERM000020Routes,
+  PERM000021Routes
 };

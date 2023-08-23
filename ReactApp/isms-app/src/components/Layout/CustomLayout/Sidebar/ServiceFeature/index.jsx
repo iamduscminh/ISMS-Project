@@ -11,7 +11,7 @@ const ServiceFeature = ({ changeSidebar }) => {
   const handleActive = (index) => {
     setActiveService(index);
     if (index === 0)
-      navigate("/admin/setting/services", { state: { from: location } });
+      navigate("/admin/setting/serviceCategories", { state: { from: location } });
     else if (index === 1)
       navigate("/viewRequestTypes", { state: { from: location } });
     else if (index === 2)
