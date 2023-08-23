@@ -24,30 +24,7 @@ function CreateRequest() {
   const [isValidComment, setIsValidComment] = useState(true);
   const [errorComment, setErrorComment] = useState();
   const [commentData, setCommentData] = useState([]);
-  const [activityData, setActivityData] = useState([
-    {
-      id: 1,
-      type: "UserChange",
-      //image:image.avatar3,
-      sender: "Calyrex",
-      action: "Change assigned user",
-      time: "06:06 PM July 13, 2023",
-      previous: "",
-      update: {
-        updateUser: "Gardevoir",
-        //image: image.avatar
-      },
-    },
-    {
-      id: 2,
-      type: "a",
-      sender: "Calyrex",
-      action: "Changed status",
-      time: "05:06 PM July 13, 2023",
-      previous: "Open",
-      update: "Work in progress",
-    },
-  ]);
+  const [activityData, setActivityData] = useState([]);
 
   const [commentTab, setCommentTab] = useState(true);
 
@@ -63,6 +40,7 @@ function CreateRequest() {
   const commentUrl = `${URL.COMMENT_URL}`;
   const ticketUrl = `${URL.REQUEST_TICKET_URL}`;
   const ticketExtUrl = `${URL.REQUEST_TICKET_EXT_URL}`;
+  const ticketHistoryUrl = `${URL.REQUEST_TICKET_HIS_URL}/${id}`;
   const [requestTicket, setRequestTicket] = useState();
   const [requestTicketExts, setRequestTicketExts] = useState([]);
   const [userName, setUserName] = useState("");
@@ -182,6 +160,27 @@ function CreateRequest() {
             });
           });
 
+        //get data activity
+        await axiosInstance
+          .get(ticketHistoryUrl, { headers })
+          .then((response) => {
+            const dataRp = response.data;
+            console.log(dataRp);
+            const dataActs = response.data.map((item, i) => ({
+              user: item.userEntity.fullName,
+              content: item.content,
+              time: new Date(item.lastUpdate).toLocaleString("en-US", options),
+            }));
+            setActivityData(dataActs);
+            //console.log(dataCmts);
+          })
+          .catch((error) => {
+            const result = Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error}`,
+            });
+          });
         //get data user
         const responseUser = await axiosInstance.post(
           `${getUserURL}/get/${auth?.userId}`
@@ -517,11 +516,8 @@ function CreateRequest() {
                       <RequestComment
                         key={i}
                         isAutoCmt={true}
-                        name={"Duc Minh"}
-                        comment={
-                          "Your request status has changed to In Progress."
-                        }
-                        time={"at 26/May/23 12:34 PM"}
+                        comment={item.content}
+                        time={item.time}
                       />
                     ))}
                   </div>
