@@ -20,7 +20,8 @@ const ServiceFeature = ({ changeSidebar }) => {
       navigate("/admin/manage/users", { state: { from: location } });
     else if (index === 4)
       navigate("/admin/manage/role", { state: { from: location } });
-    else if (index === 5) navigate("/admin/sla", { state: { from: location } });
+    else if (index === 5) 
+      navigate("/admin/sla", { state: { from: location } });
     else if (index === 6)
       navigate("/viewCustomFields", { state: { from: location } });
   };
