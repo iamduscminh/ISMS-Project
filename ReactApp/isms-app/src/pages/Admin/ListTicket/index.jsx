@@ -45,6 +45,13 @@ const ListTicket = () => {
   const columns = [
     { field: "id", headerName: "ID", width: 150, editable: false },
     {
+      field: "title",
+      headerName: "Title",
+      width: 300,
+      editable: true,
+      description: "This column described overview of ticket",
+    },
+    {
       field: "service",
       headerName: "Service",
       width: 180,
@@ -181,6 +188,7 @@ const ListTicket = () => {
           .then((response) => {
             const data = response.data.map((item, i) => ({
               id: item.ticketId,
+              title: item.title,
               service: item.isIncident ? "None" : item.serviceCategoryName,
               requestType: item.isIncident
                 ? "Issue Abnormal"
@@ -219,7 +227,7 @@ const ListTicket = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [typeTicket, queryId]);
   const handleRowClick = (params) => {
     const { id } = params.row;
 
