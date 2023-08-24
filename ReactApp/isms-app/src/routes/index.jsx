@@ -13,6 +13,14 @@ const publicRoutes = [
     component: Page.Unauthorized,
     layout: Layout.FooterOnly,
   },
+
+
+  {
+    path: "/admin/:typeTicket?/:queryId?",
+    component: Page.ListTicket,
+    layout: Layout.CustomLayout,
+  },
+
 ];
 
 //private route: dành cho những route cần đăng nhập
@@ -64,6 +72,11 @@ const PERM000003Routes = [
   {
     path: "/requestType/:id",
     component: Page.RequestType,
+    layout: Layout.CustomLayout,
+  },
+  {
+    path: "/viewRequestTypes",
+    component: Page.ViewRequestTypes,
     layout: Layout.CustomLayout,
   },
 ];
@@ -221,6 +234,7 @@ const loginRoutes = [
     layout: Layout.DefaultLayout,
   },
   { path: "/filterTicket", component: Page.FilterTicket },
+  { path: "/notification", component: Page.Notification },
 ];
 
 export {

@@ -179,19 +179,12 @@ function Header() {
                 />
               </div>
               <div>
-                <h2 className="text-[0.85rem] text-[#172b4d] ">From Admin</h2>
-                <TippyItem
-                  name="Setting Name"
-                  description="This is Description for setting"
-                  icon="HiOutlineDesktopComputer"
-                  color="personal"
-                />
-                <TippyItem
-                  name="Setting Name"
-                  description="This is Description for setting"
-                  icon="HiOutlineDesktopComputer"
-                  color="personal"
-                />
+                <hr />
+                <Link to={"/notification"}>
+                  <h2 className="flex justify-center my-2 text-[0.85rem] text-blue-500 hover:underline hover:text-blue-800">
+                    View All Notification
+                  </h2>
+                </Link>
               </div>
             </div>
           )}

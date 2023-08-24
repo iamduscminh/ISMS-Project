@@ -33,3 +33,4 @@ export { default as AdminRolePermissionAdd } from "./AdminRolePermissionAdd";
 export { default as FilterTicket } from "./FilterTicket";
 export { default as AdminRole } from "./AdminRole";
 export { default as AdminUserManage } from "./AdminUserManage";
+export { default as Notification } from "./Notification";
