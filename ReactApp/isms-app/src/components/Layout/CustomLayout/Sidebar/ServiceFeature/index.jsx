@@ -11,7 +11,7 @@ const ServiceFeature = ({ changeSidebar }) => {
   const handleActive = (index) => {
     setActiveService(index);
     if (index === 0)
-      navigate("/admin/setting/services", { state: { from: location } });
+      navigate("/admin/setting/serviceCategories", { state: { from: location } });
     else if (index === 1)
       navigate("/viewRequestTypes", { state: { from: location } });
     else if (index === 2)
@@ -20,7 +20,8 @@ const ServiceFeature = ({ changeSidebar }) => {
       navigate("/admin/manage/users", { state: { from: location } });
     else if (index === 4)
       navigate("/admin/manage/role", { state: { from: location } });
-    else if (index === 5) navigate("/admin/sla", { state: { from: location } });
+    else if (index === 5) 
+      navigate("/admin/sla", { state: { from: location } });
     else if (index === 6)
       navigate("/viewCustomFields", { state: { from: location } });
   };

@@ -16,5 +16,9 @@ export const PERMISSIONS = {
     'Manage workflow steps': 'Manage workflow steps',
     'Manage yearly holiday list': 'Manage yearly holiday list',
     'Manage business hours': 'Manage business hours',
-    'Manage comments': 'Manage comments'
+    'Manage comments': 'Manage comments',
+    'Only need login': 'Only need login',
+    'Manage dashboard': 'Manage dashboard',
+    'Manage change': 'Manage change',
+    'Manage problems': 'Manage problems'
 }

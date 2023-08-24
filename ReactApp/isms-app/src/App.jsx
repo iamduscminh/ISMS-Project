@@ -69,7 +69,37 @@ function App() {
                   })
                 }
               </Route>
+              <Route
+                element={
+                  <RequiredAuth allowPer={[PERMISSIONS["Manage roles"]]} />
+                }
+              >
+                {
+                  //Định tuyến cho các Route public
+                  myRoutes.PERM000001Routes.map((route, index) => {
+                    const Page = route.component;
+                    let Layout = DefaultLayout;
 
+                    if (route.layout) {
+                      Layout = route.layout;
+                    } else if (route.layout === null) {
+                      Layout = Fragment;
+                    }
+
+                    return (
+                      <Route
+                        key={index}
+                        path={route.path}
+                        element={
+                          <Layout>
+                            <Page />
+                          </Layout>
+                        }
+                      />
+                    );
+                  })
+                }
+              </Route>
               <Route
                 element={
                   <RequiredAuth allowPer={[PERMISSIONS["Manage tickets"]]} />
@@ -134,14 +164,15 @@ function App() {
                   })
                 }
               </Route>
+
               <Route
                 element={
-                  <RequiredAuth allowPer={[PERMISSIONS["Manage slas"]]} />
+                  <RequiredAuth allowPer={[PERMISSIONS["Manage service categories"]]} />
                 }
               >
                 {
                   //Định tuyến cho các Route public
-                  myRoutes.PERM000012Routes.map((route, index) => {
+                  myRoutes.PERM000004Routes.map((route, index) => {
                     const Page = route.component;
                     let Layout = DefaultLayout;
 
@@ -165,7 +196,7 @@ function App() {
                   })
                 }
               </Route>
-
+              
               <Route
                 element={
                   <RequiredAuth
@@ -202,12 +233,110 @@ function App() {
 
               <Route
                 element={
+                  <RequiredAuth
+                    allowPer={[PERMISSIONS["Manage groups"]]}
+                  />
+                }
+              >
+                {
+                  //Định tuyến cho các Route public
+                  myRoutes.PERM000007Routes.map((route, index) => {
+                    const Page = route.component;
+                    let Layout = DefaultLayout;
+
+                    if (route.layout) {
+                      Layout = route.layout;
+                    } else if (route.layout === null) {
+                      Layout = Fragment;
+                    }
+
+                    return (
+                      <Route
+                        key={index}
+                        path={route.path}
+                        element={
+                          <Layout>
+                            <Page />
+                          </Layout>
+                        }
+                      />
+                    );
+                  })
+                }
+              </Route>
+
+              <Route
+                element={
+                  <RequiredAuth allowPer={[PERMISSIONS["Manage slas"]]} />
+                }
+              >
+                {
+                  //Định tuyến cho các Route public
+                  myRoutes.PERM000012Routes.map((route, index) => {
+                    const Page = route.component;
+                    let Layout = DefaultLayout;
+
+                    if (route.layout) {
+                      Layout = route.layout;
+                    } else if (route.layout === null) {
+                      Layout = Fragment;
+                    }
+
+                    return (
+                      <Route
+                        key={index}
+                        path={route.path}
+                        element={
+                          <Layout>
+                            <Page />
+                          </Layout>
+                        }
+                      />
+                    );
+                  })
+                }
+              </Route>
+
+              <Route
+                element={
                   <RequiredAuth allowPer={[PERMISSIONS["Manage workflows"]]} />
                 }
               >
                 {
                   //Định tuyến cho các Route public
                   myRoutes.PERM000013Routes.map((route, index) => {
+                    const Page = route.component;
+                    let Layout = DefaultLayout;
+
+                    if (route.layout) {
+                      Layout = route.layout;
+                    } else if (route.layout === null) {
+                      Layout = Fragment;
+                    }
+
+                    return (
+                      <Route
+                        key={index}
+                        path={route.path}
+                        element={
+                          <Layout>
+                            <Page />
+                          </Layout>
+                        }
+                      />
+                    );
+                  })
+                }
+              </Route>
+
+              <Route
+                element={
+                  <RequiredAuth allowPer={[PERMISSIONS["Only need login"]]} />
+                }
+              >
+                {
+                  //Định tuyến cho các Route public
+                  myRoutes.PERM000018Routes.map((route, index) => {
                     const Page = route.component;
                     let Layout = DefaultLayout;
 
