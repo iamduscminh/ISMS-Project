@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import Tippy from "@tippyjs/react/headless";
 import { useNavigate } from "react-router-dom";
 import image from "../../../../assets/images";
-import Dropdown from "../../../Elements/Dropdown";
+import NotificationBell from "../../../Elements/Notification/NotificationBell";
+import NotificationItem from "../../../Elements/Notification/NotificationItem";
 import TippyItem from "../../../Elements/TippyItem";
 import IconTag from "../../../Elements/IconTag";
 import useAuth from "../../../../hooks/useAuth";
@@ -134,73 +135,60 @@ function Header() {
           </div>
         </Link>
       </div>
-      <div className="header-right-side flex mr-8 ">
-        <Tippy
-          interactive
-          visible={toggleNoti}
-          placement="bottom-end"
-          render={(attrs) => (
-            <div
-              className="tippy-wrapper bg-white w-[20vw] p-3 rounded shadow"
-              tabIndex="-1"
-              ref={tippyWrapperRefNoti}
-              {...attrs}
-            >
-              <h1 className="w-full h-[10%] text-[1.25rem] text-[#172b4d] font-medium ">
-                Notification
-              </h1>
-              <div className="my-[0.75rem]">
-                <h2 className="text-[0.85rem] text-[#172b4d]">
-                  Request Ticket
-                </h2>
-                <TippyItem
-                  name="Setting Name"
-                  description="This is Description for setting"
-                  icon="HiOutlineDesktopComputer"
-                  color="default"
-                />
-                <TippyItem
-                  name="Setting Name"
-                  description="This is Description for setting"
-                  icon="HiOutlineDesktopComputer"
-                  color="default"
-                />
-                <TippyItem
-                  name="Setting Name"
-                  description="This is Description for setting"
-                  icon="HiOutlineDesktopComputer"
-                  color="default"
-                />
-                <TippyItem
-                  name="Setting Name"
-                  description="This is Description for setting"
-                  icon="HiOutlineDesktopComputer"
-                  color="default"
-                />
+      <div className="header-right-side flex mr-8 items-center">
+        <div className="header-noti">
+          <Tippy
+            interactive
+            visible={toggleNoti}
+            placement="bottom-end"
+            render={(attrs) => (
+              <div
+                className="tippy-wrapper bg-white w-[20vw] p-3 rounded shadow"
+                tabIndex="-1"
+                ref={tippyWrapperRefNoti}
+                {...attrs}
+              >
+                <h1 className="w-full h-[10%] text-[1.25rem] text-[#172b4d] font-medium ">
+                  Notification
+                </h1>
+                <div className="my-[0.75rem]">
+                  <NotificationItem
+                    title={"Hồ sơ DIS.21082023.00064599 - FULL_NAME_330003063"}
+                    sender={"minhmomang@gmail.com"}
+                    time={"25/3/2022"}
+                  />
+                  <NotificationItem
+                    title={"Hồ sơ DIS.21082023.00064599 - FULL_NAME_330003063"}
+                    sender={"minhmomang@gmail.com"}
+                    time={"25/3/2022"}
+                  />
+                  <NotificationItem
+                    title={"Hồ sơ DIS.21082023.00064599 - FULL_NAME_330003063"}
+                    sender={"minhmomang@gmail.com"}
+                    time={"25/3/2022"}
+                  />
+                </div>
+                <div>
+                  <hr />
+                  <Link to={"/notification"}>
+                    <h2 className="flex justify-center my-2 text-[0.85rem] text-blue-500 hover:underline hover:text-blue-800">
+                      View All Notification
+                    </h2>
+                  </Link>
+                </div>
               </div>
-              <div>
-                <hr />
-                <Link to={"/notification"}>
-                  <h2 className="flex justify-center my-2 text-[0.85rem] text-blue-500 hover:underline hover:text-blue-800">
-                    View All Notification
-                  </h2>
-                </Link>
-              </div>
-            </div>
-          )}
-        >
-          <div
-            className="aspect-square mr-2 cursor-pointer"
-            ref={settingRefNoti}
+            )}
           >
-            <button className="header-noti-button" onClick={handleToggleNoti}>
-              <IconTag
-                name={"IoMdNotifications"}
-                className={"text-white text-2xl"}
-              />
-            </button>
-          </div>
-        </Tippy>
+            <div
+              className=" mr-4 cursor-pointer flex items-center"
+              ref={settingRefNoti}
+            >
+              <button className="header-noti-button" onClick={handleToggleNoti}>
+                <NotificationBell notificationCount={3} />
+              </button>
+            </div>
+          </Tippy>
+        </div>
         <div className="header-profile">
           <Tippy
             interactive
@@ -244,7 +232,10 @@ function Header() {
               className="aspect-square mr-2 cursor-pointer"
               ref={settingRefUser}
             >
-              <button className="header-User-button" onClick={handleToggleUser}>
+              <button
+                className="header-User-button flex items-center"
+                onClick={handleToggleUser}
+              >
                 <IconTag
                   name={"BiUserCircle"}
                   className={"text-white text-2xl"}

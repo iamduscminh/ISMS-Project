@@ -13,13 +13,8 @@ function Notification() {
   const { id } = useParams();
   const { auth } = useAuth();
 
-  const getUserURL = `${URL.USER_URL}`;
-  const commentUrl = `${URL.COMMENT_URL}`;
-  const ticketUrl = `${URL.REQUEST_TICKET_URL}`;
-  const ticketExtUrl = `${URL.REQUEST_TICKET_EXT_URL}`;
-  const ticketHistoryUrl = `${URL.REQUEST_TICKET_HIS_URL}/${id}`;
-  const [requestTicket, setRequestTicket] = useState();
-  const [requestTicketExts, setRequestTicketExts] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const [notificationsFilter, setNotificationsFilter] = useState([]);
   const [userName, setUserName] = useState("");
   const options = {
     year: "numeric",
@@ -35,74 +30,122 @@ function Notification() {
     "Content-Type": "application/json",
     withCredentials: true,
   };
+  const listNoti = [
+    {
+      id: 1,
+      title: "title1",
+      sender: "Minh",
+      time: "12/3/2022",
+      isReaded: true,
+    },
+    {
+      id: 2,
+      title: "title2",
+      sender: "Nam",
+      time: "12/3/2022",
+      isReaded: true,
+    },
+    {
+      id: 3,
+      title: "title3",
+      sender: "Long",
+      time: "12/3/2022",
+      isReaded: true,
+    },
+    {
+      id: 4,
+      title: "title4",
+      sender: "Linh",
+      time: "12/3/2022",
+      isReaded: true,
+    },
+  ];
+  const handleFilterChange = (e) => {
+    const keyword = e.target.value.toLowerCase();
+    const filteredData = notifications.filter((row) =>
+      Object.values(row).some(
+        (value) =>
+          (typeof value === "string" &&
+            value.toLowerCase().includes(keyword)) ||
+          (typeof value === "number" && value.toString().includes(keyword))
+      )
+    );
+    setNotificationsFilter(filteredData);
+  };
 
+  const handleRowClick = (params) => {
+    const { id } = params.row;
+
+    navigate("/detailRequest/" + id);
+  };
   useEffect(() => {
-    const apiGetRequestTicketsUrl = `${ticketUrl}/gettickets/${auth?.email}/${id}`;
+    const apiGetNotificationsUrl = `${URL.COMMENT_URL}/gettickets/${auth?.email}/${id}`;
 
     const fetchData = async () => {
-      // try {
-      //   Swal.fire({
-      //     title: "Loading...",
-      //     allowOutsideClick: false,
-      //     onBeforeOpen: () => {
-      //       Swal.showLoading();
-      //     },
-      //   });
-      //   //--------------Get request tickets
-      //   await axiosInstance
-      //     .get(apiGetRequestTicketsUrl)
-      //     .then((response) => {
-      //       const dataRp = response.data;
-      //       const rqTicket = {
-      //         requestType: {
-      //           requestTypeId: dataRp?.serviceItemEntity?.serviceItemId ?? 0,
-      //           requestTypeName:
-      //             dataRp?.serviceItemEntity?.serviceItemName ??
-      //             "Report an issue",
-      //           requestTypeDesc:
-      //             dataRp?.serviceItemEntity?.description ??
-      //             "Report an issue when you have abnormal problem",
-      //           requestTypeIcon:
-      //             dataRp?.serviceItemEntity?.iconDisplay ?? "GoReport",
-      //         },
-      //         isIncident: dataRp.isIncident,
-      //         title: dataRp.title,
-      //         description: dataRp.description,
-      //         createAt: dataRp.createdAt,
-      //         status: dataRp.status,
-      //         fileName: dataRp.attachmentEntity?.filename,
-      //         filePath: dataRp.attachmentEntity?.filePath,
-      //       };
-      //       console.log(response.data);
-      //       setRequestTicket(rqTicket);
-      //     })
-      //     .catch((error) => {
-      //       const result = Swal.fire({
-      //         icon: "error",
-      //         title: "Oops...",
-      //         text: `${error}`,
-      //       });
-      //     });
-      //   //get data user
-      //   const responseUser = await axiosInstance.post(
-      //     `${getUserURL}/get/${auth?.userId}`
-      //   );
-      //   setUserName(responseUser.data.fullName);
-      //   Swal.close();
-      // } catch (error) {
-      //   // Handle errors if needed
-      //   console.log(error);
-      //   Swal.close();
-      //   Swal.fire({
-      //     icon: "error",
-      //     title: "Error",
-      //     text: error,
-      //   });
-      // }
+      try {
+        Swal.fire({
+          title: "Loading...",
+          allowOutsideClick: false,
+          onBeforeOpen: () => {
+            Swal.showLoading();
+          },
+        });
+        setNotifications(listNoti);
+        setNotificationsFilter(listNoti);
+        //--------------Get notifications
+        // await axiosInstance
+        //   .get(apiGetNotificationsUrl)
+        //   .then((response) => {
+        //     const dataRp = response.data;
+        //     const rqTicket = {
+        //       requestType: {
+        //         requestTypeId: dataRp?.serviceItemEntity?.serviceItemId ?? 0,
+        //         requestTypeName:
+        //           dataRp?.serviceItemEntity?.serviceItemName ??
+        //           "Report an issue",
+        //         requestTypeDesc:
+        //           dataRp?.serviceItemEntity?.description ??
+        //           "Report an issue when you have abnormal problem",
+        //         requestTypeIcon:
+        //           dataRp?.serviceItemEntity?.iconDisplay ?? "GoReport",
+        //       },
+        //       isIncident: dataRp.isIncident,
+        //       title: dataRp.title,
+        //       description: dataRp.description,
+        //       createAt: dataRp.createdAt,
+        //       status: dataRp.status,
+        //       fileName: dataRp.attachmentEntity?.filename,
+        //       filePath: dataRp.attachmentEntity?.filePath,
+        //     };
+        //     console.log(response.data);
+        //     setNotifications(rqTicket);
+        //   })
+        //   .catch((error) => {
+        //     const result = Swal.fire({
+        //       icon: "error",
+        //       title: "Oops...",
+        //       text: `${error}`,
+        //     });
+        //   });
+        //get data user
+        // const responseUser = await axiosInstance.post(
+        //   `${getUserURL}/get/${auth?.userId}`
+        // );
+        // setUserName(responseUser.data.fullName);
+        Swal.close();
+      } catch (error) {
+        // Handle errors if needed
+        console.log(error);
+        Swal.close();
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: error,
+        });
+      }
     };
     fetchData();
   }, []);
-
   return (
     <div className="detail-request-container w-full h-full py-5 bg-[#294a8d] mt-3">
       <div className="detail-request-section mt-4 mx-auto max-w-7xl min-h-screen bg-white rounded shadow">
@@ -144,8 +187,8 @@ function Notification() {
             </div>
           </div>
         </div>
-        <div className="p-5 w-full h-full flex border-t border-gray-400">
-          <div className="detail-request-content w-[35%] flex flex-col border-l border-r border-gray-400">
+        <div className="p-5 w-full h-full flex border-t justify-center border-gray-400">
+          <div className="detail-request-content w-[80%] flex flex-col  border-l border-r border-gray-400">
             <div className="search-section">
               <form className="">
                 <label
@@ -174,7 +217,7 @@ function Notification() {
                   </div>
                   <input
                     type="search"
-                    //onChange={handleFilterChange}
+                    onChange={handleFilterChange}
                     id="default-search"
                     className="block w-full px-4 py-2 text-sm text-gray-900 border border-gray-300  focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Search..."
@@ -183,54 +226,22 @@ function Notification() {
               </form>
             </div>
             <div className="noti-list">
-              <NotificationItem
-                title={"Hồ sơ DIS.21082023.00064599 - FULL_NAME_330003063"}
-                sender={"minhmomang@gmail.com"}
-                time={"25/3/2022"}
-              />
-              <NotificationItem
-                title={"Hồ sơ DIS.21082023.00064599 - FULL_NAME_330003063"}
-                sender={"minhmomang@gmail.com"}
-                time={"25/3/2022"}
-              />
-              <NotificationItem
-                title={"Hồ sơ DIS.21082023.00064599 - FULL_NAME_330003063"}
-                sender={"minhmomang@gmail.com"}
-                time={"25/3/2022"}
-              />
-              <NotificationItem
-                title={"title"}
-                sender={"minhmomang@gmail.com"}
-                time={"25/3/2022"}
-              />
-              <NotificationItem
-                title={"title"}
-                sender={"minhmomang@gmail.com"}
-                time={"25/3/2022"}
-              />
-              <NotificationItem
-                title={"title"}
-                sender={"minhmomang@gmail.com"}
-                time={"25/3/2022"}
-              />
-              <NotificationItem
-                title={"title"}
-                sender={"minhmomang@gmail.com"}
-                time={"25/3/2022"}
-              />
-              <NotificationItem
-                title={"title"}
-                sender={"minhmomang@gmail.com"}
-                time={"25/3/2022"}
-              />
-              <NotificationItem
-                title={"title"}
-                sender={"minhmomang@gmail.com"}
-                time={"25/3/2022"}
-              />
+              {notificationsFilter &&
+                notificationsFilter.map((item, i) => {
+                  return (
+                    <NotificationItem
+                      key={item.id}
+                      title={item.title}
+                      sender={item.sender}
+                      time={item.time}
+                    />
+                  );
+                })}
+              {!notificationsFilter && (
+                <p className="flex justify-center">Empty</p>
+              )}
             </div>
           </div>
-          <div className="w-[65%] p-5 ml-4 mt-10"></div>
         </div>
       </div>
     </div>
