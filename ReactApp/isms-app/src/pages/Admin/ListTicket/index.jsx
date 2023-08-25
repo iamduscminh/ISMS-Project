@@ -283,7 +283,7 @@ const ListTicket = () => {
             <MdFavorite className={cx("action-icon")} />
           </div>
 
-          <Search />
+          <Search data={ticketData} />
 
           <div className="w-[100%] ">
             <DataGrid
