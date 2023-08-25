@@ -34,8 +34,7 @@ const CustomCombobox = ({
     setSelectedOption(value);
   }, [value]);
   const handleSelect = (selectedItem) => {
-    setSelectedOption(selectedItem);
-    onSelect(selectedItem);
+    onSelect(selectedItem.priority);
     setShowCombobox(false);
   };
   const text = "icon";
