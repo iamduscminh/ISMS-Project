@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useNavigate, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import IconTag from "../../IconTag";
 function NotificationItem({ url, title, body, time, displayContent, isRead }) {
   const navigate = useNavigate();
