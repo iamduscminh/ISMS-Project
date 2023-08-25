@@ -7,11 +7,11 @@ import DefaultChange from './DefaultChange';
 const ActivityComponent = ({ activity }) => {
     if (activity.type == 'UserChange') {
         return (
-            <UserChange activity={activity} />
+            <DefaultChange activity={activity} />
         )
     } else {
         return (
-            <DefaultChange activity={activity} />
+            <UserChange activity={activity} />  
         )
     }
 
