@@ -40,8 +40,7 @@ const TicketStatus = ({
     setSelectedOption(currentStatus);
   }, [currentStatus]);
   const handleSelect = (selectedStatus) => {
-    setSelectedOption(selectedStatus);
-    onSelect(selectedStatus);
+    onSelect(selectedStatus.text);
     setShowCombobox(false);
   };
   if (isServiceRequest) {
