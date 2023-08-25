@@ -10,6 +10,7 @@ import IconTag from "../../../Elements/IconTag";
 import useAuth from "../../../../hooks/useAuth";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import { URL } from "../../../../utils/Url";
+import * as signalR from "@microsoft/signalr";
 function Header() {
   const [toggleNoti, setToggleNoti] = useState(false);
   const tippyWrapperRefNoti = useRef(null);
@@ -20,11 +21,35 @@ function Header() {
   const { auth, setAuth } = useAuth();
   const [avatar, setAvatar] = useState(null);
   const [userName, setUserName] = useState("");
+  const [notifications, setNotifications] = useState([]);
   const navigate = useNavigate();
   const axiosInstance = useAxiosPrivate();
   const getUserURL = `${URL.USER_URL}`;
 
   useEffect(() => {
+    //Connect Signal R
+    const token = auth?.accessToken;
+    console.log(token);
+    const connection = new signalR.HubConnectionBuilder()
+      .withUrl("https://localhost:7134/notify", {
+        accessTokenFactory: () => token, // Pass the token in the query string
+      })
+      .withAutomaticReconnect()
+      .build();
+
+    // connection.on("ReceiveNotification", (message) => {
+    //   setNotifications((prevNotifications) => [...prevNotifications, message]);
+    // });
+
+    connection
+      .start()
+      .then(() => {
+        console.log("Connected to SignalR hub");
+      })
+      .catch((error) => {
+        console.error("Error connecting to SignalR hub:", error);
+      });
+
     // Gọi API để lấy Thông tin Users từ DB
     const fetchUserById = async () => {
       try {
@@ -37,7 +62,6 @@ function Header() {
         console.error("Error Get User Information:", error);
       }
     };
-
     fetchUserById();
 
     const handleClickOutside = (event) => {
@@ -52,6 +76,7 @@ function Header() {
     document.addEventListener("click", handleClickOutside);
 
     return () => {
+      connection.stop();
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
