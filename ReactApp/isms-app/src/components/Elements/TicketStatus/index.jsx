@@ -21,8 +21,13 @@ const statusData = [
     id: 4,
     text: "Resolved",
   },
+  {
+    id: 5,
+    text: "Closed",
+  },
 ];
 const TicketStatus = ({
+  isServiceRequest,
   currentStatus,
   onSelect,
   customStyles = {
@@ -39,6 +44,20 @@ const TicketStatus = ({
     onSelect(selectedStatus);
     setShowCombobox(false);
   };
+  if (isServiceRequest) {
+    return (
+      <div className="w-[full] flex items-center justify-center">
+        <div className="w-[60%] relative">
+          <div
+            className={cx(`w-full bg-[#42526E] text-center text-[#fff] rounded-[10px] px-[1rem] ${customStyles.paddingY}  font-medium`)} 
+          >
+            {selectedOption}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-[full] flex items-center justify-center">
       <div className="w-[60%] relative">
