@@ -25,6 +25,8 @@ function Header() {
   const getUserURL = `${URL.USER_URL}`;
 
   useEffect(() => {
+    //Connect Signal R
+    const token = auth?.accessToken;
     // Gọi API để lấy Thông tin Users từ DB
     const fetchUserById = async () => {
       try {
