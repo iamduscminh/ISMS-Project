@@ -16,7 +16,7 @@ import MenuItem from "@mui/material/MenuItem";
 import image from "../../../assets/images";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import useAuth from "../../../hooks/useAuth";
-
+import { URL } from "../../../utils/Url";
 const cx = classNames.bind(styles);
 
 const ListTicket = () => {
@@ -169,10 +169,22 @@ const ListTicket = () => {
     second: "numeric",
     hour12: true,
   };
+  const token = auth?.accessToken;
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+    withCredentials: true,
+  };
   useEffect(() => {
     const apiGetRequestTicketsUrl = `api/RequestTickets/getticketsadmin/${
       typeTicket ?? "all"
     }/${queryId}`;
+    const apiQueryTicketUrl = `${URL.REQUEST_TICKET_URL}/querytickets`;
+    const queryDto = {
+      QueryId: queryId,
+      QueryType: typeTicket ?? "all",
+    };
+    console.log(queryDto);
     const fetchData = async () => {
       try {
         Swal.fire({
@@ -184,7 +196,7 @@ const ListTicket = () => {
         });
         //--------------Get request tickets
         axiosInstance
-          .get(apiGetRequestTicketsUrl)
+          .post(apiQueryTicketUrl, queryDto, { headers })
           .then((response) => {
             const data = response.data.map((item, i) => ({
               id: item.ticketId,

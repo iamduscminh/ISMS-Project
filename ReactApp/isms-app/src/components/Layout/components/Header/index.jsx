@@ -41,6 +41,7 @@ function Header() {
       setNotifications((prevNotifications) => [...prevNotifications, message]);
     });
 
+
     connection
       .start()
       .then(() => {
