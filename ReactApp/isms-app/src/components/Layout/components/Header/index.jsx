@@ -30,25 +30,25 @@ function Header() {
     //Connect Signal R
     const token = auth?.accessToken;
     //console.log(token);
-    // const connection = new signalR.HubConnectionBuilder()
-    //   .withUrl("https://localhost:7134/notify", {
-    //     accessTokenFactory: () => token, // Pass the token in the query string
-    //   })
-    //   .withAutomaticReconnect()
-    //   .build();
+    const connection = new signalR.HubConnectionBuilder()
+      .withUrl("https://localhost:7134/hub/notify", {
+        accessTokenFactory: () => token, // Pass the token in the query string
+      })
+      .withAutomaticReconnect()
+      .build();
 
-    // // connection.on("ReceiveNotification", (message) => {
-    // //   setNotifications((prevNotifications) => [...prevNotifications, message]);
-    // // });
+    connection.on("ReceiveNotification", (message) => {
+      setNotifications((prevNotifications) => [...prevNotifications, message]);
+    });
 
-    // connection
-    //   .start()
-    //   .then(() => {
-    //     console.log("Connected to SignalR hub");
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error connecting to SignalR hub:", error);
-    //   });
+    connection
+      .start()
+      .then(() => {
+        console.log("Connected to SignalR hub");
+      })
+      .catch((error) => {
+        console.error("Error connecting to SignalR hub:", error);
+      });
 
     // Gọi API để lấy Thông tin Users từ DB
     const fetchUserById = async () => {
@@ -76,7 +76,7 @@ function Header() {
     document.addEventListener("click", handleClickOutside);
 
     return () => {
-      //connection.stop();
+      connection.stop();
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
