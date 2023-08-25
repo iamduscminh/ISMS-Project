@@ -344,7 +344,7 @@ const TicketDetail = () => {
 
   // Đoạn Code dưới đây dành riêng cho phần Incidents
   const handleChangeStatusIncident = (selectedStatus) => {
-    if(!ticketDetail.assignedTo){
+    if (!ticketDetail.assignedTo) {
       alert("The current task has not been assigned")
       return;
     }
@@ -373,7 +373,7 @@ const TicketDetail = () => {
   }
 
   const handleChangeImpactIncident = (selectedImpact) => {
-    if(!ticketDetail.assignedTo){
+    if (!ticketDetail.assignedTo) {
       alert("The current task has not been assigned")
       return;
     }
@@ -404,7 +404,7 @@ const TicketDetail = () => {
   }
 
   const handleChangeUrgencyIncident = (selectedUrgency) => {
-    if(!ticketDetail.assignedTo){
+    if (!ticketDetail.assignedTo) {
       alert("The current task has not been assigned")
       return;
     }
@@ -486,6 +486,52 @@ const TicketDetail = () => {
           <span className="mr-[0.5rem]">{ticketDetail?.requestTicketId}:</span>
           <span>{ticketDetail?.title}</span>
         </div>
+        {ticketDetail?.isIncident &&
+          <ModalDialog
+            title={"Create Problem/Change"}
+            actionText={"Create"}
+            triggerComponent={
+              <button className="px-[1rem] ml-[1rem] bg-[#043ac5]">Link Issues</button>
+            }
+            customSize="md"
+          >
+            <div>
+              <div class="mb-4">
+                <label for="selectChoice" class="block text-gray-700 font-bold mb-2">Select Choice</label>
+                <select id="selectChoice" name="selectChoice" class="w-full px-4 py-2 border rounded-md">
+                  <option value="problem">Problem</option>
+                  <option value="change">Change</option>
+                </select>
+              </div>
+              <div class="mb-4">
+                <label for="title" class="block text-gray-700 font-bold mb-2">Title</label>
+                <input type="text" id="title" name="title" class="w-full px-4 py-2 border rounded-md"/>
+              </div>
+              <div class="mb-4">
+                <label for="description" class="block text-gray-700 font-bold mb-2">Description</label>
+                <textarea id="description" name="description" class="w-full px-4 py-2 border rounded-md"></textarea>
+              </div>
+              <div class="mb-4">
+                <label for="incidents" class="block text-gray-700 font-bold mb-2">Incidents</label>
+                <select id="incidents" name="incidents" class="w-full px-4 py-2 border rounded-md" multiple>
+                  <option value="incident1">Incident 1</option>
+                  <option value="incident2">Incident 2</option>
+                  <option value="incident1">Incident 3</option>
+                  <option value="incident2">Incident 4</option>
+                  <option value="incident1">Incident 5</option>
+                  <option value="incident2">Incident 6</option>
+                </select>
+              </div>
+              <div class="mb-4">
+                <label for="assignee" class="block text-gray-700 font-bold mb-2">Assignee</label>
+                <select id="assignee" name="assignee" class="w-full px-4 py-2 border rounded-md">
+                  <option value="assignee1">Assignee 1</option>
+                  <option value="assignee2">Assignee 2</option>
+                </select>
+              </div>
+            </div>
+          </ModalDialog>
+        }
       </div>
       <div className="w-full px-[1rem] py-[1rem] flex">
         <div className="w-[30%]">
