@@ -3,12 +3,17 @@ import { useNavigate } from "react-router-dom"
 import classNames from 'classnames/bind';
 import styles from './Unauthorized.module.scss';
 import { BsFillSignStopFill } from 'react-icons/bs';
+import useAuth from '../../hooks/useAuth';
 
 const cx = classNames.bind(styles);
 
 const Unauthorized = () => {
+  const {auth} = useAuth();
   const navigate = useNavigate();
-  const goBack = () => navigate('/');
+  const goBack = () => {
+    if(auth.roletype === "Admin" || auth.roletype === "Agent") navigate('/admin/all/null');
+    else navigate('/')
+  }
 
   return (
     <div className='w-full'>

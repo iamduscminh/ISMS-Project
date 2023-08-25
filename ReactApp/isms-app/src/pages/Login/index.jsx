@@ -118,7 +118,7 @@ const Login = () => {
       console.log(decodedToken);
       const from =
         location.state?.from?.pathname ||
-        (decodedToken.roletype === "Admin" ? "/admin" : "/");
+        (decodedToken.roletype === "Admin" || decodedToken.roletype === "Agent"  ? "/admin" : "/");
 
       const permissions = decodedToken.permissions
         ? decodedToken.permissions
