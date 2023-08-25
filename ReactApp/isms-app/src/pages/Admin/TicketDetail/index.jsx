@@ -344,7 +344,7 @@ const TicketDetail = () => {
 
   // Đoạn Code dưới đây dành riêng cho phần Incidents
   const handleChangeStatusIncident = (selectedStatus) => {
-    if(!ticketDetail.assignedTo){
+    if (!ticketDetail.assignedTo) {
       alert("The current task has not been assigned")
       return;
     }
@@ -373,7 +373,7 @@ const TicketDetail = () => {
   }
 
   const handleChangeImpactIncident = (selectedImpact) => {
-    if(!ticketDetail.assignedTo){
+    if (!ticketDetail.assignedTo) {
       alert("The current task has not been assigned")
       return;
     }
@@ -404,7 +404,7 @@ const TicketDetail = () => {
   }
 
   const handleChangeUrgencyIncident = (selectedUrgency) => {
-    if(!ticketDetail.assignedTo){
+    if (!ticketDetail.assignedTo) {
       alert("The current task has not been assigned")
       return;
     }
@@ -486,6 +486,52 @@ const TicketDetail = () => {
           <span className="mr-[0.5rem]">{ticketDetail?.requestTicketId}:</span>
           <span>{ticketDetail?.title}</span>
         </div>
+        {ticketDetail?.isIncident &&
+          <ModalDialog
+            title={"Create Problem/Change"}
+            actionText={"Create"}
+            triggerComponent={
+              <button className="px-[1rem] ml-[1rem] bg-[#043ac5]">Link Issues</button>
+            }
+            customSize="md"
+          >
+            <div>
+              <div class="mb-4">
+                <label for="selectChoice" class="block text-gray-700 font-bold mb-2">Select Choice</label>
+                <select id="selectChoice" name="selectChoice" class="w-full px-4 py-2 border rounded-md">
+                  <option value="problem">Problem</option>
+                  <option value="change">Change</option>
+                </select>
+              </div>
+              <div class="mb-4">
+                <label for="title" class="block text-gray-700 font-bold mb-2">Title</label>
+                <input type="text" id="title" name="title" class="w-full px-4 py-2 border rounded-md"/>
+              </div>
+              <div class="mb-4">
+                <label for="description" class="block text-gray-700 font-bold mb-2">Description</label>
+                <textarea id="description" name="description" class="w-full px-4 py-2 border rounded-md"></textarea>
+              </div>
+              <div class="mb-4">
+                <label for="incidents" class="block text-gray-700 font-bold mb-2">Incidents</label>
+                <select id="incidents" name="incidents" class="w-full px-4 py-2 border rounded-md" multiple>
+                  <option value="incident1">Incident 1</option>
+                  <option value="incident2">Incident 2</option>
+                  <option value="incident1">Incident 3</option>
+                  <option value="incident2">Incident 4</option>
+                  <option value="incident1">Incident 5</option>
+                  <option value="incident2">Incident 6</option>
+                </select>
+              </div>
+              <div class="mb-4">
+                <label for="assignee" class="block text-gray-700 font-bold mb-2">Assignee</label>
+                <select id="assignee" name="assignee" class="w-full px-4 py-2 border rounded-md">
+                  <option value="assignee1">Assignee 1</option>
+                  <option value="assignee2">Assignee 2</option>
+                </select>
+              </div>
+            </div>
+          </ModalDialog>
+        }
       </div>
       <div className="w-full px-[1rem] py-[1rem] flex">
         <div className="w-[30%]">
@@ -989,8 +1035,14 @@ const TicketDetail = () => {
                   customSize="md"
                 ></ModalDialog>
               </div>
-            ) : task?.currentTask?.status === "Resolved" ? (
-              "This Task had been done"
+            ) : task?.currentTask?.status === "Resolved" || task?.currentTask?.status === "Closed" || task?.currentTask?.status === "Cancelled" ? (
+              task?.currentTask?.status === "Resolved" ? (
+                <div className="flex">
+                  <div>This Ticket has been Resolved</div>
+                  {/* {auth.roletype === "Admin" && <button className="ml-[1rem] px-[1rem] bg-[#043AC5] text-[#fff] font-medium">Closed</button>} */}
+                </div>
+              ) : 
+              "This Ticket has been closed"
             ) : (
               <div>This Task does not has any Transition</div>
             )}
@@ -1073,78 +1125,79 @@ const TicketDetail = () => {
 
                 </div>
                 {(task?.currentTask?.status !== "Resolved" && oldTask === null) && (
-                  <div>
-                    <h3 className="text-[#42526E] min-w-[40%] font-medium">
-                      Check Transition
-                    </h3>
-                    <div className="mt-[1rem] translate-x-[-1rem]">
-                      <div className="w-[full] mx-[0.25rem] ml-[1rem]">
-                        <textarea
-                          ref={transitionMessageRef}
-                          rows={2}
-                          className="w-full h-full resize-none px-[0.75rem] py-[0.5rem] border-2 border-[#747272] rounded-md"
-                          placeholder="@ to tag someone"
-                        ></textarea>
-                      </div>
-                      <div className="mt-[0.25rem]">
-                        <Grid container spacing={2}>
-                          <Grid item xs={12}>
-                            <Stack
-                              direction="row"
-                              spacing={2}
-                              alignItems="self-start"
-                            >
-                              <Input
-                                type="file"
-                                onChange={handleFileChange}
-                                inputProps={{
-                                  accept:
-                                    "image/*, .pdf, .doc, .docx, .xls, .xlsx, .txt, .csv",
-                                  multiple: true,
-                                }}
-                                style={{ display: "none" }}
-                                id="file-input"
-                              />
-                              <label htmlFor="file-input">
-                                <Button
-                                  variant="contained"
-                                  component="span"
-                                  startIcon={<AiOutlineUpload />}
-                                >
-                                  Upload
-                                </Button>
-                              </label>
-                              <div className="flex flex-col items-start">
-                                {selectedFiles.length > 0 &&
-                                  selectedFiles.map((file, index) => (
-                                    <React.Fragment key={index}>
-                                      <div className="flex ">
-                                        <Typography>
-                                          {formatFileName(file.name, maxLength)}
-                                        </Typography>
-                                        <IconButton
-                                          onClick={() => handleFileClear(index)}
-                                          size="small"
-                                        >
-                                          <MdDelete />
-                                        </IconButton>
-                                      </div>
-                                    </React.Fragment>
-                                  ))}
-                              </div>
-                            </Stack>
-                          </Grid>
-                        </Grid>
-                      </div>
-                    </div>
-                  </div>
+                  // <div>
+                  //   <h3 className="text-[#42526E] min-w-[40%] font-medium">
+                  //     Check Transition
+                  //   </h3>
+                  //   <div className="mt-[1rem] translate-x-[-1rem]">
+                  //     <div className="w-[full] mx-[0.25rem] ml-[1rem]">
+                  //       <textarea
+                  //         ref={transitionMessageRef}
+                  //         rows={2}
+                  //         className="w-full h-full resize-none px-[0.75rem] py-[0.5rem] border-2 border-[#747272] rounded-md"
+                  //         placeholder="@ to tag someone"
+                  //       ></textarea>
+                  //     </div>
+                  //     <div className="mt-[0.25rem]">
+                  //       <Grid container spacing={2}>
+                  //         <Grid item xs={12}>
+                  //           <Stack
+                  //             direction="row"
+                  //             spacing={2}
+                  //             alignItems="self-start"
+                  //           >
+                  //             <Input
+                  //               type="file"
+                  //               onChange={handleFileChange}
+                  //               inputProps={{
+                  //                 accept:
+                  //                   "image/*, .pdf, .doc, .docx, .xls, .xlsx, .txt, .csv",
+                  //                 multiple: true,
+                  //               }}
+                  //               style={{ display: "none" }}
+                  //               id="file-input"
+                  //             />
+                  //             <label htmlFor="file-input">
+                  //               <Button
+                  //                 variant="contained"
+                  //                 component="span"
+                  //                 startIcon={<AiOutlineUpload />}
+                  //               >
+                  //                 Upload
+                  //               </Button>
+                  //             </label>
+                  //             <div className="flex flex-col items-start">
+                  //               {selectedFiles.length > 0 &&
+                  //                 selectedFiles.map((file, index) => (
+                  //                   <React.Fragment key={index}>
+                  //                     <div className="flex ">
+                  //                       <Typography>
+                  //                         {formatFileName(file.name, maxLength)}
+                  //                       </Typography>
+                  //                       <IconButton
+                  //                         onClick={() => handleFileClear(index)}
+                  //                         size="small"
+                  //                       >
+                  //                         <MdDelete />
+                  //                       </IconButton>
+                  //                     </div>
+                  //                   </React.Fragment>
+                  //                 ))}
+                  //             </div>
+                  //           </Stack>
+                  //         </Grid>
+                  //       </Grid>
+                  //     </div>
+                  //   </div>
+                  // </div>
+                  <div></div>
                 )}
               </div>
 
               <div className="mt-[1rem]">
                 <div className="text-[#42526E] font-medium">Related Ticket</div>
                 <div className="h-[20vh] overflow-y-scroll cursor-default mt-[1rem]">
-                  <div onClick={() => handleSetOldTask(item)} className="flex items-center text-[#42526E] px-[1rem] py-[0.5rem] cursor-pointer">
+                  <div onClick={() => handleSetOldTask()} className="flex items-center text-[#42526E] px-[1rem] py-[0.5rem] cursor-pointer">
                     <BiTask className="mr-[0.5rem]" />
                     <h3>RETK000120: Mất điện thoại rồi</h3>
                   </div>
