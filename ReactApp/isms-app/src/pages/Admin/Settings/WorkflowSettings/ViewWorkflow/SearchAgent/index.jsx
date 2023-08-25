@@ -26,7 +26,7 @@ const SearchAgent = ({ agentData, handleAddAgent }) => {
       visible={searchResult.length > 0 && checkFocus}
       placement="bottom-end"
       render={(attrs) => (
-        <div className="w-[10rem] min-h-[100px] bg-[#fff] border border-[#DFE1E6] shadow-md rounded-md p-[1rem] flex flex-col" tabIndex="-1" {...attrs}>
+        <div className="w-[10rem] min-h-[100px] max-h-[300px] overflow-y-scroll bg-[#fff] border border-[#DFE1E6] shadow-md rounded-md p-[1rem] flex flex-col" tabIndex="-1" {...attrs}>
           <h3 className="mb-[1.5rem] text-[#8D8888]">List Result ({searchResult?.length || 0})</h3>
           {searchResult.map((result) => (
             <SearchAgentItem key={result.userId} data={result} handleAddAgent={handleAddAgent}/>

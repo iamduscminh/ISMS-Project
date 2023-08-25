@@ -13,7 +13,7 @@ const RequireAuth = ({ allowPer }) => {
       <Navigate to="/login" state={{ from: location }} replace />
     );
   } else {
-    return (
+    return (  
       // eslint-disable-next-line react/prop-types
       auth?.permissions?.find((per) => allowPer?.includes(per)) ? (
         <Outlet />
