@@ -19,7 +19,7 @@ import {
   FcMediumPriority,
   FcLowPriority,
 } from "react-icons/fc";
-import { AiOutlineCloudUpload, AiOutlineUpload } from "react-icons/ai";
+import { AiOutlineCloudUpload, AiOutlineUpload, AiOutlineFileDone } from "react-icons/ai";
 import CommentComponent from "../../../components/Elements/CommentComponent";
 import DefaultChange from "../../../components/Elements/ActivityComponent/DefaultChange";
 import UserChange from "../../../components/Elements/ActivityComponent/UserChange";
@@ -63,6 +63,9 @@ const TicketDetail = () => {
   const [transition, setTransition] = useState();
   const [requestTicketExts, setRequestTicketExts] = useState([]);
   const [attachment, setAttachment] = useState();
+  const [activity, setActivity] = useState();
+  const [oldTask, setOldTask] = useState(null);
+
   const transitionMessageRef = useRef();
 
   useEffect(() => {
@@ -94,9 +97,13 @@ const TicketDetail = () => {
           axiosInstance.get(
             `${URL.REQUEST_TICKET_EXT_URL}/getExtForTicket/${ticketId}`
           ),
+          axiosInstance.get(
+            `${URL.REQUEST_TICKET_HIS_URL}/${ticketId}`
+          )
         ]);
         console.log("list task");
         console.log(response[0].data);
+
         setListTask(response[0].data);
         const thisTask = response[0].data.find((e) => !e.completedTime);
         setTask(thisTask);
@@ -117,6 +124,9 @@ const TicketDetail = () => {
           }));
           setRequestTicketExts(dataExtRp);
         }
+        console.log('activity');
+        console.log(response[2].data)
+        setActivity(response[2].data);
       } catch (err) {
         alert("System error, sorry, please contact administrator: ", err);
       }
@@ -127,26 +137,7 @@ const TicketDetail = () => {
   const showCommentTab = (queryCondition) => {
     setCommentTab(queryCondition);
   };
-  //Value cho Service của Ticket
-  const [ticketService, setTicketService] = useState({
-    id: 1,
-    icon: <MdElectricalServices />,
-    serviceName: "Hardware Service",
-  });
 
-  //Value cho Service của Ticket
-  const [priority, setPriority] = useState({
-    id: 1,
-    icon: <FcHighPriority />,
-    priority: "High",
-  });
-
-  //Value cho Status
-  const [status, setStatus] = useState({
-    id: 1,
-    text: "Inprogress",
-  });
-  //Data cho Service Combobox
   const serviceData = [
     {
       id: 1,
@@ -233,6 +224,14 @@ const TicketDetail = () => {
   };
 
   const handleCompleteTask = () => {
+    if(transitionMessageRef.current.value === ""){
+      alert('Need to confirm task completed');
+      return;
+    }
+    if(task.assignee === null){
+      alert('The current task has not been assigned');
+      return;
+    }
     const formData = new FormData();
     formData.append("WorkflowAssignmentId", task.workflowAssignmentId);
     formData.append("FinisherId", auth.userId);
@@ -251,8 +250,8 @@ const TicketDetail = () => {
             },
           }
         );
-        alert("Hoàn thành Task");
-        navigate("/admin");
+        alert("Task has been sent successfully");
+        navigate("/admin/all/null");
       } catch (err) {
         alert("System error, sorry, please contact administrator: ", err);
       }
@@ -283,6 +282,37 @@ const TicketDetail = () => {
       return fileName.substr(0, maxLength - 3) + "...";
     }
   };
+
+  const handleAssignToMe = () => {
+    const assign = async () => {
+      try {
+        const response = await axiosInstance.post(`${URL.WORKFLOW_ASSIGNMENT_URL}/assign`, {
+          WorkflowAssignmentId: task.workflowAssignmentId,
+          AssigneeId: auth.userId
+        })
+        console.log(response);
+        setTask(task => ({
+          ...task,
+          assignee: response.data.userDTO
+        }));
+      } catch (err) {
+        if (err.response.status === 400) {
+          alert(err.response.data.message)
+        } else {
+          alert("System error, sorry, please contact administrator: ", err);
+        }
+      }
+    }
+    assign();
+  }
+
+  const handleSetOldTask = (selectTask) => {
+    if (task === selectTask) {
+      setOldTask(null);
+    } else {
+      setOldTask(selectTask);
+    }
+  }
 
   const maxLength = 20; // Độ dài tối đa của tên file
 
@@ -336,7 +366,8 @@ const TicketDetail = () => {
                 {ticketDetail?.description}
               </p>
             </div>
-            <div className="flex items-center mt-[1rem]">
+
+            {!ticketDetail?.isIncident ? <div className="flex items-center mt-[1rem]">
               <h3 className="text-[#42526E] min-w-[40%] font-medium">
                 Request Type
               </h3>
@@ -364,9 +395,9 @@ const TicketDetail = () => {
                   </span>
                 </div>
               </div>
-            </div>
+            </div>: ""}
 
-            <div className="flex items-center mt-[1rem]">
+            {!ticketDetail?.isIncident ? <div className="flex items-center mt-[1rem]">
               <h3 className="text-[#42526E] min-w-[40%] font-medium">
                 Service Categories
               </h3>
@@ -382,13 +413,14 @@ const TicketDetail = () => {
                     <a href="#">
                       {ticketDetail
                         ? ticketDetail.serviceItemEntity?.serviceCategoryEntity
-                            ?.serviceCategoryName
+                          ?.serviceCategoryName
                         : " "}
                     </a>
                   </span>
                 </div>
               </div>
-            </div>
+            </div> : ""}
+
             <div className="detail-content-custom mt-[0.5rem]">
               {requestTicketExts.length > 0 &&
                 requestTicketExts.map((item, i) => (
@@ -442,6 +474,7 @@ const TicketDetail = () => {
             /> */}
             <div className="w-[full] mt-[0rem] mb-[1rem]">
               <TicketStatus
+                isServiceRequest={!ticketDetail?.isIncident}
                 currentStatus={ticketDetail ? ticketDetail?.status : " "}
                 onSelect={handleStatusSelect}
                 customStyles={{
@@ -458,6 +491,7 @@ const TicketDetail = () => {
               </h4>
               <div className="w-[50%]">
                 <CustomCombobox
+                  isServiceRequest={true}
                   component={PriorityItem}
                   data={priorityData}
                   onSelect={handlePrioritySelect}
@@ -475,6 +509,7 @@ const TicketDetail = () => {
               </h4>
               <div className="w-[50%]">
                 <CustomCombobox
+                  isServiceRequest={!ticketDetail?.isIncident}
                   component={PriorityItem}
                   data={priorityData}
                   onSelect={handlePrioritySelect}
@@ -488,10 +523,11 @@ const TicketDetail = () => {
 
             <div className="flex justify-between items-center">
               <h4 className="text-[#42526E] text-[1.25rem] font-medium">
-                Impact
+                Urgency
               </h4>
               <div className="w-[50%]">
                 <CustomCombobox
+                  isServiceRequest={!ticketDetail?.isIncident}
                   component={PriorityItem}
                   data={priorityData}
                   onSelect={handlePrioritySelect}
@@ -512,9 +548,9 @@ const TicketDetail = () => {
                   <span>
                     {ticketDetail
                       ? format(
-                          parseISO(ticketDetail?.firstResolutionDue),
-                          "MMM-dd-yyyy HH:mm"
-                        )
+                        parseISO(ticketDetail?.firstResolutionDue),
+                        "MMM-dd-yyyy HH:mm"
+                      )
                       : " "}
                   </span>
                   {/* <span className="ml-[1rem]">4h00 to due</span> */}
@@ -531,9 +567,9 @@ const TicketDetail = () => {
                   <span>
                     {ticketDetail
                       ? format(
-                          parseISO(ticketDetail?.firstResponseDue),
-                          "MMM-dd-yyyy HH:mm"
-                        )
+                        parseISO(ticketDetail?.firstResponseDue),
+                        "MMM-dd-yyyy HH:mm"
+                      )
                       : " "}
                   </span>
                   {/* <span className="ml-[1rem]">2h00 to due</span> */}
@@ -544,7 +580,15 @@ const TicketDetail = () => {
         </div>
         <div className="w-[33%] ml-[1rem]">
           <div className="w-full bg-[#fff] px-[1.25rem] py-[1rem] flex flex-col rounded-lg shadow-md border-2 border-[#E1DEDE]">
-            <div>
+
+            {oldTask ? <div>
+              <h1 className="text-[1.25rem] font-semibold text-[#42526E]">
+                {oldTask?.currentTask?.workflowTaskName}
+              </h1>
+              <p className="text-[#747272]">
+                {oldTask?.currentTask?.description}
+              </p>
+            </div> : <div>
               <h1 className="text-[1.25rem] font-semibold text-[#42526E]">
                 {task ? task?.currentTask?.workflowTaskName : " "}
               </h1>
@@ -552,45 +596,70 @@ const TicketDetail = () => {
                 {task ? task?.currentTask?.description : " "}
               </p>
             </div>
+            }
+
             <div>
               <div className="flex items-center mt-[1rem]">
                 <h3 className="text-[#42526E] min-w-[40%] font-medium">
                   Assignee
                 </h3>
-                {console.log("task")}
-                {console.log(task)}
-                {task?.assignee ? (
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      marginLeft: "0.5rem",
-                    }}
-                  >
-                    <div className="w-[1.5rem] h-[1.5rem] rounded-full overflow-hidden cursor-pointer">
-                      <img
-                        className="w-full h-full object-cover object-center"
-                        src={task?.assignee?.avatar}
-                        alt=""
-                      />
+                {
+                  oldTask ? (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        marginLeft: "0.5rem",
+                      }}
+                    >
+                      <div className="w-[1.5rem] h-[1.5rem] rounded-full overflow-hidden cursor-pointer">
+                        <img
+                          className="w-full h-full object-cover object-center"
+                          src={oldTask?.assignee?.avatar}
+                          alt=""
+                        />
+                      </div>
+                      <div className="ml-[0.5rem]">
+                        <span className="text-[#747272]">
+                          <Link to={`/profile/${oldTask?.assignee?.userId}`}>
+                            {oldTask?.assignee?.fullName}
+                          </Link>
+                        </span>
+                      </div>
                     </div>
-                    <div className="ml-[0.5rem]">
-                      <span className="text-[#747272]">
-                        <Link to={`/profile/${task?.assignee?.userId}`}>
-                          {task?.assignee?.fullName}
-                        </Link>
-                      </span>
+                  ) : task?.assignee ? (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        marginLeft: "0.5rem",
+                      }}
+                    >
+                      <div className="w-[1.5rem] h-[1.5rem] rounded-full overflow-hidden cursor-pointer">
+                        <img
+                          className="w-full h-full object-cover object-center"
+                          src={task?.assignee?.avatar}
+                          alt=""
+                        />
+                      </div>
+                      <div className="ml-[0.5rem]">
+                        <span className="text-[#747272]">
+                          <Link to={`/profile/${task?.assignee?.userId}`}>
+                            {task?.assignee?.fullName}
+                          </Link>
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                ) : task?.currentTask?.status === "Resolved" ? (
-                  " "
-                ) : (
-                  <div>
-                    <button className="text-[#fff] font-medium px-[0.75rem] bg-[#043AC5]">
-                      Assign to me
-                    </button>
-                  </div>
-                )}
+                  ) : task?.currentTask?.status === "Resolved" ? (
+                    <></>
+                  ) : (
+                    <div>
+                      <button onClick={handleAssignToMe} className="text-[#fff] font-medium px-[0.75rem] bg-[#043AC5]">
+                        Assign to me
+                      </button>
+                    </div>
+                  )
+                }
               </div>
 
               {/* <div className="flex items-center mt-[1rem]">
@@ -618,59 +687,44 @@ const TicketDetail = () => {
                   </div>
                 </div>
               </div> */}
-
+              {oldTask && <div>
+                  <h3 className="text-[#42526E] min-w-[40%] font-medium">
+                    Complete confirmation
+                  </h3>
+                  <div className="w-[full] mx-[0.25rem]">
+                      <p
+                        className="w-full h-full resize-none py-[0.5rem] italic"
+                      >{oldTask?.message}</p>
+                  </div>
+              </div>}
               <div className="flex mt-[1rem]">
+                {oldTask ? <>
                 <h3 className="text-[#42526E] min-w-[40%] font-medium">
-                  Related Docs
-                </h3>
-                <div className="flex flex-col">
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      marginLeft: "0.5rem",
-                    }}
-                  >
-                    <SiMicrosoftword className="cursor-pointer text-[#295296]" />
-                    <div className="ml-[0.5rem]">
-                      <span className="text-[#747272]">
-                        <a href="#">document1.docx</a>
-                      </span>
-                    </div>
+                Related Docs
+              </h3>
+              <div className="flex flex-col">
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginLeft: "0.5rem",
+                  }}
+                >
+                  <AiOutlineFileDone className="cursor-pointer text-[#295296]" />
+                  <div className="ml-[0.5rem]">
+                    <span className="text-[#747272]">
+                      {oldTask.attachment ? <a href={oldTask.attachment.filePath}>{oldTask.attachment.filename}</a> : ""}               
+                    </span>
                   </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      marginLeft: "0.5rem",
-                      marginTop: "0.5rem",
-                    }}
-                  >
-                    <SiMicrosoftword className="cursor-pointer text-[#295296]" />
-                    <div className="ml-[0.5rem]">
-                      <span className="text-[#747272]">
-                        <a href="#">document2.docx</a>
-                      </span>
-                    </div>
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      marginLeft: "0.5rem",
-                      marginTop: "0.5rem",
-                    }}
-                  >
-                    <SiMicrosoftexcel className="cursor-pointer text-[#005b38]" />
-                    <div className="ml-[0.5rem]">
-                      <span className="text-[#747272]">
-                        <a href="#">document3.xlsx</a>
-                      </span>
-                    </div>
-                  </div>
+                
                 </div>
+              </div></>
+                : ""}
+                
+
               </div>
-              {task?.currentTask?.status !== "Resolved" && (
+              {(task?.currentTask?.status !== "Resolved" && oldTask === null) && (
                 <div>
                   <h3 className="text-[#42526E] min-w-[40%] font-medium">
                     Check Transition
@@ -738,18 +792,19 @@ const TicketDetail = () => {
                 </div>
               )}
             </div>
+
             <div className="h-[20vh] overflow-y-scroll cursor-default mt-[1rem]">
               {listTask?.map((item, index) => {
-                if (item === task) {
+                if (item.currentTask.workflowTaskId === task.currentTask.workflowTaskId) {
                   return (
-                    <div className="flex items-center font-medium bg-[#043AC5] text-[#fff] px-[1rem] py-[0.5rem]">
+                    <div onClick={() => handleSetOldTask(item)} className="flex items-center font-medium bg-[#043AC5] text-[#fff] px-[1rem] py-[0.5rem] cursor-pointer">
                       <BiTask className="mr-[0.5rem]" />
                       <h3>{item?.currentTask?.workflowTaskName}</h3>
                     </div>
                   );
                 } else {
                   return (
-                    <div className="flex items-center text-[#42526E] px-[1rem] py-[0.5rem]">
+                    <div onClick={() => handleSetOldTask(item)} className="flex items-center text-[#42526E] px-[1rem] py-[0.5rem] cursor-pointer">
                       <BiTask className="mr-[0.5rem]" />
                       <h3>{item?.currentTask?.workflowTaskName}</h3>
                     </div>
@@ -757,6 +812,7 @@ const TicketDetail = () => {
                 }
               })}
             </div>
+
             {task?.currentTask?.status !== "Resolved" ? (
               <div className="mt-[1rem] flex">
                 <select
@@ -817,7 +873,7 @@ const TicketDetail = () => {
               <CommentTab requestTicketId={ticketId} />
             ) : (
               <div className="px-[2rem] my-[2rem]">
-                {ActivityData.map((item) => (
+                {activity.map((item) => (
                   <ActivityComponent key={item.id} activity={item} />
                 ))}
               </div>

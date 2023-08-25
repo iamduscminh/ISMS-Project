@@ -10,6 +10,7 @@ import IconTag from "../../../Elements/IconTag";
 import useAuth from "../../../../hooks/useAuth";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import { URL } from "../../../../utils/Url";
+import * as signalR from "@microsoft/signalr";
 function Header() {
   const [toggleNoti, setToggleNoti] = useState(false);
   const tippyWrapperRefNoti = useRef(null);
@@ -20,6 +21,7 @@ function Header() {
   const { auth, setAuth } = useAuth();
   const [avatar, setAvatar] = useState(null);
   const [userName, setUserName] = useState("");
+  const [notifications, setNotifications] = useState([]);
   const navigate = useNavigate();
   const axiosInstance = useAxiosPrivate();
   const getUserURL = `${URL.USER_URL}`;
@@ -35,9 +37,10 @@ function Header() {
       .withAutomaticReconnect()
       .build();
 
-    // connection.on("ReceiveNotification", (message) => {
-    //   setNotifications((prevNotifications) => [...prevNotifications, message]);
-    // });
+    connection.on("ReceiveNotification", (message) => {
+      setNotifications((prevNotifications) => [...prevNotifications, message]);
+    });
+
 
     connection
       .start()
@@ -60,7 +63,6 @@ function Header() {
         console.error("Error Get User Information:", error);
       }
     };
-
     fetchUserById();
 
     const handleClickOutside = (event) => {
@@ -75,6 +77,7 @@ function Header() {
     document.addEventListener("click", handleClickOutside);
 
     return () => {
+      connection.stop();
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);

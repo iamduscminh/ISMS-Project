@@ -25,10 +25,14 @@ const ListWorkflow = () => {
     const fetchWorkflow = async () => {
       try {
         const response = await axiosInstance.get(`${URL.WORKFLOW_URL}/getall`);
-        console.log(response.data);
         setListWorkflow(response.data);
       } catch (err) {
-        alert("System error, sorry, please contact administrator: ", err);
+        console.log(err);
+        if (err.status === 403) {
+          navigate('/unauthorized');
+        } else {
+          alert("System error, sorry, please contact administrator: " + err);
+        }
       }
     };
     fetchWorkflow();

@@ -12,7 +12,7 @@ const Unauthorized = () => {
 
   return (
     <div className='w-full'>
-      <div class={cx('error-page')}>
+      <div className={cx('error-page')}>
         <div className='mb-[2rem]'>
           <BsFillSignStopFill class={cx('material-icons')} />
         </div>
@@ -20,7 +20,7 @@ const Unauthorized = () => {
         <p>Sorry, you are not authorized to view this page.</p>
       </div>
       <div className='w-[100%] mt-[10rem]  flex items-center justify-center '>
-        <div onClick={goBack} class={cx('w-[15%] px-[1rem] py-[0.5rem] bg-[#2093d6] text-[#fff] text-center font-medium cursor-pointer')}>Back To Home Page</div>
+        <div onClick={goBack} className={cx('w-[15%] px-[1rem] py-[0.5rem] bg-[#2093d6] text-[#fff] text-center font-medium cursor-pointer')}>Back To Home Page</div>
       </div>
       
     </div>
