@@ -126,8 +126,8 @@ const ListTicket = () => {
       field: "createdDate",
       headerName: "Created Date",
       width: 200,
-      // valueFormatter: (params) =>
-      //   format(new Date(params.value), "yyyy/MM/dd HH:mm:ss"),
+      valueFormatter: (params) =>
+        format(new Date(params.value), "yyyy/MM/dd HH:mm:ss"),
     },
     {
       field: "priority",

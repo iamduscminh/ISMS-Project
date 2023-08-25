@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate, useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
 import NotificationItem from "../../components/Elements/Notification/NotificationItem";
 import IconTag from "../../components/Elements/IconTag";
@@ -12,10 +12,12 @@ function Notification() {
   const axiosInstance = useAxiosPrivate();
   const { id } = useParams();
   const { auth } = useAuth();
-
+  const location = useLocation();
+  const from = location.state?.from?.pathname;
   const [notifications, setNotifications] = useState([]);
   const [notificationsFilter, setNotificationsFilter] = useState([]);
   const [userName, setUserName] = useState("");
+  const [notificationUnread, setNotificationsUnread] = useState(0);
   const options = {
     year: "numeric",
     month: "numeric",
@@ -79,8 +81,10 @@ function Notification() {
     navigate("/detailRequest/" + id);
   };
   useEffect(() => {
-    const apiGetNotificationsUrl = `${URL.COMMENT_URL}/gettickets/${auth?.email}/${id}`;
-
+    console.log(location.pathname);
+    const apiGetNotificationsUrl = `api/Notifications/noti/${
+      "USER000001" //auth?.userId
+    }/${false}`;
     const fetchData = async () => {
       try {
         Swal.fire({
@@ -90,48 +94,34 @@ function Notification() {
             Swal.showLoading();
           },
         });
-        setNotifications(listNoti);
-        setNotificationsFilter(listNoti);
-        //--------------Get notifications
-        // await axiosInstance
-        //   .get(apiGetNotificationsUrl)
-        //   .then((response) => {
-        //     const dataRp = response.data;
-        //     const rqTicket = {
-        //       requestType: {
-        //         requestTypeId: dataRp?.serviceItemEntity?.serviceItemId ?? 0,
-        //         requestTypeName:
-        //           dataRp?.serviceItemEntity?.serviceItemName ??
-        //           "Report an issue",
-        //         requestTypeDesc:
-        //           dataRp?.serviceItemEntity?.description ??
-        //           "Report an issue when you have abnormal problem",
-        //         requestTypeIcon:
-        //           dataRp?.serviceItemEntity?.iconDisplay ?? "GoReport",
-        //       },
-        //       isIncident: dataRp.isIncident,
-        //       title: dataRp.title,
-        //       description: dataRp.description,
-        //       createAt: dataRp.createdAt,
-        //       status: dataRp.status,
-        //       fileName: dataRp.attachmentEntity?.filename,
-        //       filePath: dataRp.attachmentEntity?.filePath,
-        //     };
-        //     console.log(response.data);
-        //     setNotifications(rqTicket);
-        //   })
-        //   .catch((error) => {
-        //     const result = Swal.fire({
-        //       icon: "error",
-        //       title: "Oops...",
-        //       text: `${error}`,
-        //     });
-        //   });
-        //get data user
-        // const responseUser = await axiosInstance.post(
-        //   `${getUserURL}/get/${auth?.userId}`
-        // );
-        // setUserName(responseUser.data.fullName);
+        //--------------Get request tickets
+        await axiosInstance
+          .get(apiGetNotificationsUrl)
+          .then((response) => {
+            const data = response.data.map((item, i) => ({
+              id: item.notificationId,
+              title: item.notificationHeader,
+              sender: item.status,
+              time: new Date(item.createdAt).toLocaleString("en-US", options),
+              isRead: item.isRead,
+              body: item.notificationBody,
+              url: item.targetUrl,
+            }));
+            setNotifications(data);
+            setNotificationsFilter(data);
+            setNotificationsUnread(
+              data.filter((x) => x.isRead == false).length
+            );
+          })
+          .catch((error) => {
+            const result = Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error}`,
+              showCancelButton: true,
+              cancelButtonText: "Cancel",
+            });
+          });
         Swal.close();
       } catch (error) {
         // Handle errors if needed
@@ -232,8 +222,12 @@ function Notification() {
                     <NotificationItem
                       key={item.id}
                       title={item.title}
+                      body={item.body}
+                      isRead={item.isRead}
+                      displayContent={true}
                       sender={item.sender}
                       time={item.time}
+                      url={item.url}
                     />
                   );
                 })}

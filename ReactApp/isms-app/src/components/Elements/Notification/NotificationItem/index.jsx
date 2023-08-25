@@ -1,20 +1,33 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useHistory } from "react-router-dom";
 import IconTag from "../../IconTag";
-function NotificationItem({ url, title, sender, time }) {
+function NotificationItem({ url, title, body, time, displayContent, isRead }) {
+  const navigate = useNavigate();
+  // const history = useHistory();
+  const handleNavigateNoti = () => {
+    console.log("check");
+    // history.push("/");
+  };
   return (
-    <Link to={url} className="">
-      <div className="p-1 flex items-end border-t">
+    <div
+      className="p-1 flex items-end border-t hover:bg-slate-300"
+      onClick={handleNavigateNoti}
+    >
+      {!isRead && (
         <IconTag name={"BsDot"} className={"text-blue-600  text-3xl "} />
-        <div className="noti-content w-[90%]">
-          <div className="top-section flex justify-between">
-            <p className="text-sm text-gray-500">{sender}</p>
-            <span className="text-sm text-gray-500">{time}</span>
-          </div>
-          <h3 className="truncate">{title}</h3>
+      )}
+      <div className="noti-content w-[90%]">
+        {displayContent ? (
+          <h3 className="p-1">{body}</h3>
+        ) : (
+          <h3 className="p-1 truncate">{title}</h3>
+        )}
+
+        <div className="top-section flex justify-between">
+          <span className="text-sm text-gray-500">{time}</span>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
 
