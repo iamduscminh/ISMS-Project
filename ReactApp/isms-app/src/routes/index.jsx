@@ -75,6 +75,11 @@ const PERM000004Routes = [
     component: Page.ServiceSettings,
     layout: Layout.CustomLayout,
   },
+  {
+    path: "/admin/setting/workflows",
+    component: Page.ListWorkflow,
+    layout: Layout.CustomLayout,
+  },
 ];
 
 //Route có Permission là PERM000005: Manage custom fields
@@ -127,11 +132,6 @@ const PERM000012Routes = [
 
 //Route có Permission là PERM000013 Manage workflows
 const PERM000013Routes = [
-  {
-    path: "/admin/setting/workflows",
-    component: Page.ListWorkflow,
-    layout: Layout.CustomLayout,
-  },
   {
     path: "/admin/setting/workflows/:flowId",
     component: Page.ViewWorkflow,

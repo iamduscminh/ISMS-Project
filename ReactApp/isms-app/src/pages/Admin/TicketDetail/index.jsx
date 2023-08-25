@@ -284,6 +284,29 @@ const TicketDetail = () => {
     }
   };
 
+  const handleAssignToMe = () => {
+    const assign = async () => {
+      try{
+        const response = await axiosInstance.post(`${URL.WORKFLOW_ASSIGNMENT_URL}/assign`,{
+          WorkflowAssignmentId: task.workflowAssignmentId,
+          AssigneeId: auth.userId
+        })
+        console.log(response);
+        setTask(task=>({
+          ...task,
+          assignee: response.data.userDTO
+        }));
+      }catch(err){
+        if(err.response.status === 400){
+          alert(err.response.data.message)
+        }else{
+          alert("System error, sorry, please contact administrator: ", err);
+        }
+      }
+    }
+    assign();
+  }
+
   const maxLength = 20; // Độ dài tối đa của tên file
 
   const TabSelect = styled.div`
@@ -557,8 +580,6 @@ const TicketDetail = () => {
                 <h3 className="text-[#42526E] min-w-[40%] font-medium">
                   Assignee
                 </h3>
-                {console.log("task")}
-                {console.log(task)}
                 {task?.assignee ? (
                   <div
                     style={{
@@ -586,7 +607,7 @@ const TicketDetail = () => {
                   " "
                 ) : (
                   <div>
-                    <button className="text-[#fff] font-medium px-[0.75rem] bg-[#043AC5]">
+                    <button onClick={handleAssignToMe}  className="text-[#fff] font-medium px-[0.75rem] bg-[#043AC5]">
                       Assign to me
                     </button>
                   </div>
