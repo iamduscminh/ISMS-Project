@@ -63,12 +63,7 @@ const ListTicket = () => {
       width: 300,
       editable: true,
     },
-    {
-      field: "group",
-      headerName: "Group",
-      width: 100,
-      editable: true,
-    },
+
     {
       field: "reporter",
       headerName: "Reporter",
@@ -76,11 +71,13 @@ const ListTicket = () => {
       renderCell: (params) => (
         <div style={{ display: "flex", alignItems: "center" }}>
           <div className="w-[1.5rem] h-[1.5rem] rounded-full overflow-hidden">
-            <img
-              className="w-full h-full object-cover object-center"
-              src={image.avatar3}
-              alt=""
-            />
+            {params.row.requesterAvatar && (
+              <img
+                className="w-full h-full object-cover object-center"
+                src={params.row.requesterAvatar}
+                alt=""
+              />
+            )}
           </div>
           <div className="ml-[0.5rem]">
             <span>{params.value}</span>
@@ -91,21 +88,29 @@ const ListTicket = () => {
     {
       field: "assignee",
       headerName: "Assignee",
-      width: 105,
+      width: 150,
       renderCell: (params) => (
         <div style={{ display: "flex", alignItems: "center" }}>
           <div className="w-[1.5rem] h-[1.5rem] rounded-full overflow-hidden">
-            <img
-              className="w-full h-full object-cover object-center"
-              src={image.avatar2}
-              alt=""
-            />
+            {params.row.assigneeAvatar && (
+              <img
+                className="w-full h-full object-cover object-center"
+                src={params.row.assigneeAvatar}
+                alt=""
+              />
+            )}
           </div>
           <div className="ml-[0.5rem]">
             <span>{params.value}</span>
           </div>
         </div>
       ),
+    },
+    {
+      field: "group",
+      headerName: "Group",
+      width: 100,
+      editable: true,
     },
     {
       field: "status",
@@ -198,6 +203,7 @@ const ListTicket = () => {
         axiosInstance
           .post(apiQueryTicketUrl, queryDto, { headers })
           .then((response) => {
+            console.log(response.data);
             const data = response.data.map((item, i) => ({
               id: item.ticketId,
               title: item.title,
@@ -206,7 +212,10 @@ const ListTicket = () => {
                 ? "Issue Abnormal"
                 : item.serviceItemName,
               group: item.groupName,
+              requesterAvatar: item.requesterAvatar,
+              assigneeAvatar: item.assigneeAvatar,
               reporter: item.requesterFullName,
+              assignee: item.assigneeFullName,
               status: item.status,
               createdDate: new Date(item.createdAt).toLocaleString(
                 "en-US",

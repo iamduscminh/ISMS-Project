@@ -9,7 +9,7 @@ const UserChange = ({activity}) => {
     return (
         <div>
             <div className='flex items-center mb-[1rem]'>
-                {activity.content === "Create request" && <div className="w-[2.25rem] h-[2.25rem] rounded-full overflow-hidden mr-[0.5rem]">
+                {activity.content !== "By" && <div className="w-[2.25rem] h-[2.25rem] rounded-full overflow-hidden mr-[0.5rem]">
                     <img
                         className="w-full h-full object-cover object-center"
                         src={activity.userEntity.avatar}
@@ -19,20 +19,21 @@ const UserChange = ({activity}) => {
 
                 <div className="flex">
                     <div className="flex justify-start">
-                        {activity.content === "Create request" && <span className="font-medium text-[#42526E] mr-[1rem]">
+                        {activity.content !== "By" && <span className="font-medium text-[#42526E] mr-[0.5rem]">
                             <Link to={`/profile/${activity.userEntity.userId}`}>{activity.userEntity.fullName}</Link>
-                        </span>}
-                        <span className="text-[#747272] ">{activity.content} at {format(parseISO(activity?.lastUpdate),"MMM-dd-yyyy HH:mm")}</span>
+                        </span>
+                        }
+                        <span className="text-[#747272] text-[0.85rem]">{activity.content} at {format(parseISO(activity?.lastUpdate),"MMM-dd-yyyy HH:mm")}</span>
                     </div>
                     <div className='flex items-center ml-[2rem]'>
-                        {activity.content !== "Create request" && <div className="w-[2.25rem] h-[2.25rem] rounded-full overflow-hidden mr-[0.5rem]">
+                        {activity.content === "By" && <div className="w-[3rem] h-[2.25rem] rounded-full overflow-hidden mr-[0.5rem]">
                             <img
                                 className="w-full h-full object-cover object-center"
                                 src={activity.userEntity.avatar}
                                 alt=""
                             />
                         </div>}
-                        {activity.content !== "Create request" && <span className="font-medium text-[#42526E] mr-[1rem]">
+                        {activity.content === "By" && <span className="font-medium text-[#42526E] mr-[1rem]">
                             <Link to={`/profile/${activity.userEntity.userId}`}>{activity.userEntity.fullName}</Link>
                         </span>}
                     </div>
