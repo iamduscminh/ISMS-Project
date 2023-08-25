@@ -32,7 +32,9 @@ function Header() {
     //console.log(token);
     const connection = new signalR.HubConnectionBuilder()
       .withUrl("https://localhost:7134/hub/notify", {
-        accessTokenFactory: () => token, // Pass the token in the query string
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
       .withAutomaticReconnect()
       .build();
@@ -40,7 +42,6 @@ function Header() {
     connection.on("ReceiveNotification", (message) => {
       setNotifications((prevNotifications) => [...prevNotifications, message]);
     });
-
 
     connection
       .start()
