@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import TableGroup from "../../components/Dashboard/TableGroup";
+import TableGroups from "../../components/Dashboard/TableGroup";
 import MessageError from "../../components/Dashboard/MessageError";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import DropDownBusinessHour from "../../components/Dashboard/TableGroups/DropDownBusinessHour";
-import DropDownGroupLeader from "../../components/Dashboard/TableGroups/DropDownGroupLeader";
 import FormAddRole from "../../components/Dashboard/FormAddRole";
 import { ROUTES_PATHS } from "../../../constants";
 import { Link, useParams, Routes, Route } from "react-router-dom";
@@ -16,19 +14,21 @@ const AdminGroups = () => {
   const [listBusinessHour, setListBusinessHour] = useState([]);
   const [listGroupLeader, setlistGroupLeader] = useState([]);
   const [open, setOpen] = useState(false);
+  const handleInsertGroup = (item) => setCurrentGroups(item);
+
+  const getAllGroups = async () => {
+    try {
+      const response = await axiosInstance.get("api/Groups/getall");
+      handleInsertGroup(response.data);
+      console.log("response.data", response.data);
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error get all Groups [AdminGroups]:", error);
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const getAllGroups = async () => {
-      try {
-        const response = await axiosInstance.get("api/Groups/getall");
-        setCurrentGroups(response.data);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error get all Groups [AdminGroups]:", error);
-        setIsLoading(false);
-      }
-    };
-
     const getListGroupLeaderName = async () => {
       try {
         const response = await axiosInstance.get(`/api/Users/getall`);
@@ -51,11 +51,10 @@ const AdminGroups = () => {
           The system allows you to manage the roles available in your
           organization, you can also view the permissions of those roles
         </p>
-        <TableGroup
+        <TableGroups
           data={currentGroups}
           setCurrentRoles={setCurrentGroups}
           listLeader={listGroupLeader}
-          listBusiness={listBusinessHour}
         />
         <div className="flex justify-end space-x-4 mt-8 xl:mt-[54px]">
           <button
@@ -79,7 +78,14 @@ const AdminGroups = () => {
             <span>Create new group</span>
           </button>
         </div>
-        <FormAddGroups open={open} setOpen={setOpen} data={currentGroups} />;
+        <FormAddGroups
+          open={open}
+          setOpen={setOpen}
+          data={currentGroups}
+          getAllGroups={getAllGroups}
+          setCurrentGroups={handleInsertGroup}
+        />
+        ;
       </div>
     </div>
   );

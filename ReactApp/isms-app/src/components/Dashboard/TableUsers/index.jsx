@@ -5,6 +5,7 @@ import styles from "./styles.module.scss";
 import DropdownRole from "./DropdownRole";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import FormAssignRole from "../FormAssignRole";
+import FormAddUserToGroup from "../FormAddUserToGroup";
 const IconDeactive = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -33,6 +34,20 @@ const IconActive = () => (
       clipRule="evenodd"
       d="M17.555 6.35205C16.8588 6.45327 16.1895 6.69122 15.5857 7.05219C14.9819 7.41316 14.4555 7.89002 14.0368 8.45531C13.618 9.0206 13.3152 9.66314 13.1459 10.3459C12.9765 11.0287 12.9439 11.7383 13.05 12.4337L13.1 12.7721C13.1666 13.1937 13.2766 13.6054 13.4316 14.0021L14.9566 17.9054C18.6055 17.6576 22.2676 17.6793 25.9133 17.9704L28.4066 18.1704C29.1905 18.2331 29.9307 18.5565 30.5092 19.0891C31.0877 19.6217 31.4712 20.3327 31.5983 21.1087C32.201 24.7898 32.201 28.5443 31.5983 32.2254C31.4715 33.0017 31.0882 33.7131 30.5097 34.246C29.9311 34.779 29.1907 35.1026 28.4066 35.1654L25.9133 35.3654C21.9762 35.6796 18.0204 35.6796 14.0833 35.3654L11.59 35.1654C10.8059 35.1026 10.0654 34.779 9.4869 34.246C8.90836 33.7131 8.52508 33.0017 8.39829 32.2254C7.79562 28.5443 7.79562 24.7898 8.39829 21.1087C8.52482 20.3319 8.90819 19.6199 9.48709 19.0866C10.066 18.5533 10.807 18.2295 11.5916 18.1671L12.3533 18.1071L11.1033 14.9104C10.8823 14.3428 10.7246 13.7526 10.6333 13.1504L10.5816 12.8104C10.2917 10.9048 10.7146 8.95919 11.7693 7.34584C12.824 5.73248 14.4366 4.56464 16.2984 4.06576C18.1603 3.56687 20.1407 3.77196 21.8608 4.6418C23.5809 5.51163 24.9199 6.98513 25.6216 8.78038L25.7466 9.10205C25.9683 9.66872 26.1266 10.2604 26.2183 10.8637L26.4533 12.4104C26.4699 12.5186 26.465 12.6291 26.4388 12.7354C26.4127 12.8417 26.3659 12.9419 26.301 13.0301C26.2362 13.1183 26.1545 13.1929 26.0609 13.2496C25.9672 13.3063 25.8632 13.3439 25.755 13.3604L24.9316 13.4854C24.8234 13.502 24.7129 13.497 24.6066 13.4709C24.5003 13.4448 24.4001 13.398 24.3119 13.3331C24.2237 13.2682 24.1491 13.1866 24.0924 13.0929C24.0358 12.9992 23.9981 12.8953 23.9816 12.7871L23.7483 11.2404C23.6841 10.8195 23.5734 10.4069 23.4183 10.0104L23.2933 9.69038C22.8547 8.56788 22.0489 7.62701 21.0072 7.0211C19.9654 6.41518 18.7492 6.17994 17.5566 6.35372L17.555 6.35205ZM20 24.1671C19.3369 24.1671 18.701 24.4304 18.2322 24.8993C17.7634 25.3681 17.5 26.004 17.5 26.6671C17.5 27.3301 17.7634 27.966 18.2322 28.4348C18.701 28.9037 19.3369 29.1671 20 29.1671C20.663 29.1671 21.2989 28.9037 21.7677 28.4348C22.2366 27.966 22.5 27.3301 22.5 26.6671C22.5 26.004 22.2366 25.3681 21.7677 24.8993C21.2989 24.4304 20.663 24.1671 20 24.1671Z"
       fill="#2C834E"
+    />
+  </svg>
+);
+const IconGroupAdd = () => (
+  <svg
+    width="40"
+    height="28"
+    viewBox="0 0 40 28"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M20.8333 13.9165C21.6389 13.0276 22.2572 12.0137 22.6883 10.8748C23.1194 9.73595 23.3344 8.55539 23.3333 7.33317C23.3333 6.11095 23.1178 4.93039 22.6867 3.7915C22.2556 2.65261 21.6378 1.63873 20.8333 0.749838C22.5 0.97206 23.8889 1.70817 25 2.95817C26.1111 4.20817 26.6667 5.6665 26.6667 7.33317C26.6667 8.99984 26.1111 10.4582 25 11.7082C23.8889 12.9582 22.5 13.6943 20.8333 13.9165ZM30 27.3332V22.3332C30 21.3332 29.7778 20.3815 29.3333 19.4782C28.8889 18.5748 28.3056 17.7765 27.5833 17.0832C29 17.5832 30.3128 18.2293 31.5217 19.0215C32.7306 19.8137 33.3344 20.9176 33.3333 22.3332V27.3332H30ZM33.3333 15.6665V12.3332H30V8.99984H33.3333V5.6665H36.6667V8.99984H40V12.3332H36.6667V15.6665H33.3333ZM13.3333 13.9998C11.5 13.9998 9.93056 13.3471 8.625 12.0415C7.31944 10.7359 6.66667 9.1665 6.66667 7.33317C6.66667 5.49984 7.31944 3.93039 8.625 2.62484C9.93056 1.31928 11.5 0.666504 13.3333 0.666504C15.1667 0.666504 16.7361 1.31928 18.0417 2.62484C19.3472 3.93039 20 5.49984 20 7.33317C20 9.1665 19.3472 10.7359 18.0417 12.0415C16.7361 13.3471 15.1667 13.9998 13.3333 13.9998ZM0 27.3332V22.6665C0 21.7221 0.243333 20.8537 0.73 20.0615C1.21667 19.2693 1.86222 18.6654 2.66667 18.2498C4.38889 17.3887 6.13889 16.7426 7.91667 16.3115C9.69444 15.8804 11.5 15.6654 13.3333 15.6665C15.1667 15.6665 16.9722 15.8821 18.75 16.3132C20.5278 16.7443 22.2778 17.3898 24 18.2498C24.8056 18.6665 25.4517 19.2709 25.9383 20.0632C26.425 20.8554 26.6678 21.7232 26.6667 22.6665V27.3332H0Z"
+      fill="#44497D"
     />
   </svg>
 );
@@ -86,77 +101,183 @@ const TableItem = ({
   setCurrentUsers,
   currentIndex,
   setOpen,
-  setOpenDeactive,
   setOpenAssign,
   setUserSelected,
+  setOpenAddGroup,
 }) => {
   const [user, setUser] = useState(item?.fullName);
   const [email, setEmail] = useState(item?.email);
   const [phoneNumber, setPhoneNumber] = useState(item?.phoneNumber);
   const [birthDate, setBirthDate] = useState(item?.birthDate);
-  const [role, setRole] = useState(item?.role);
   const axiosInstance = useAxiosPrivate();
-  const deleteRole = () => {
-    // Gọi API để xóa dữ liệu dưới cơ sở dữ liệu
-    axiosInstance
-      .delete(`api/Roles/delete/${item.roleId}`)
-      .then((response) => {
-        // Nếu xóa thành công, cập nhật lại state bằng cách loại bỏ phần tử đã xóa
-        setCurrentRoles((prevListService) => {
-          return prevListService.filter((e) => e.roleId !== item.roleId);
+  const [isActive, setIsActive] = useState(item?.isActive);
+  const [openDeactive, setOpenDeactive] = useState(false);
+
+  const handleDeActive = (e) => {
+    try {
+      axiosInstance
+        .post(`api/Users/deactive?userId=${item.userId}`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then(() => {
+          setIsActive(false);
+          setOpenDeactive(false);
         });
-        alert(response.data.message);
-      })
-      .catch((error) => {
-        alert("Lỗi khi xóa:", error);
-      });
+    } catch (error) {
+      alert("Có lỗi khi cập nhật: ", error);
+    }
+  };
+
+  const handleActive = (e) => {
+    try {
+      axiosInstance
+        .post(`api/Users/active?userId=${item.userId}`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then(() => {
+          setIsActive(true);
+          setOpenDeactive(false);
+        });
+    } catch (error) {
+      alert("Có lỗi khi cập nhật: ", error);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (isActive) {
+      handleDeActive();
+
+      return;
+    }
+
+    console.log("active");
+    // handleActive()
   };
 
   return (
     <tr>
       <td className="px-3 py-1.5 rounded-lg bg-transparent">{user}</td>
       <td className={clsx("px-3 py-1.5 rounded-lg bg-transparent")}>{email}</td>
-      <td className={clsx("px-3 py-1.5 rounded-lg bg-transparent")}>
+      {/* <td className={clsx("px-3 py-1.5 rounded-lg bg-transparent")}>
         {phoneNumber}
       </td>
       <td className={clsx("px-3 py-1.5 rounded-lg bg-transparent")}>
         {formatDate(birthDate)}
+      </td> */}
+      <td className={clsx("px-3 py-1.5 rounded-lg bg-transparent")}>
+        <div
+          onClick={setOpenDeactive}
+          className="cursor-pointer flex items-center justify-center"
+        >
+          {isActive ? <IconActive /> : <IconDeactive />}
+        </div>
       </td>
-      <td>
+      <td className="px-3 py-1.5 rounded-lg bg-transparent">
         <div
           onClick={() => {
             setOpenAssign(true);
             setUserSelected(item);
           }}
-          className="cursor-pointer"
+          className="cursor-pointer flex items-center justify-center"
         >
           <IconAssign />
+        </div>
+        <Dialog.Root open={openDeactive} onOpenChange={setOpenDeactive}>
+          <Dialog.Portal>
+            <Dialog.Overlay className="fixed inset-0 z-50 bg-[#D9D9D950]" />
+            <Dialog.Content className="fixed left-[50%] top-[50%] z-50 max-h-[85vh] w-[90vw] max-w-[638px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white focus:outline-none flex flex-col border-2 border-[#BFBFBF]">
+              <div className="p-10">
+                <h6 className="text-xl xl:text-3xl font-semibold">
+                  {isActive ? "Deactive User" : "Active User"}
+                </h6>
+
+                <div className="flex space-x-5 xl:space-x-8 items-center mt-3">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="80"
+                    height="80"
+                    viewBox="0 0 80 80"
+                    fill="none"
+                  >
+                    <path
+                      d="M3.33301 69.9998L39.9997 6.6665L76.6663 69.9998H3.33301ZM11.9997 64.9998H67.9997L39.9997 16.6665L11.9997 64.9998ZM40.3476 60.2498C41.0601 60.2498 41.6525 60.0089 42.1247 59.5269C42.5969 59.0449 42.833 58.4477 42.833 57.7353C42.833 57.0228 42.592 56.4304 42.1101 55.9582C41.6281 55.486 41.0309 55.2498 40.3184 55.2498C39.6059 55.2498 39.0136 55.4908 38.5413 55.9728C38.0691 56.4548 37.833 57.052 37.833 57.7644C37.833 58.4769 38.074 59.0693 38.5559 59.5415C39.0379 60.0137 39.6351 60.2498 40.3476 60.2498ZM37.833 50.9998H42.833V32.3332H37.833V50.9998Z"
+                      fill="#DE350B"
+                    />
+                  </svg>
+                  <p className="mt-2 text-lg xl:text-2xl">
+                    Are you sure to {isActive ? "deactive" : "active"} account
+                    with email {email}?
+                  </p>
+                </div>
+                <div className="flex space-x-5 justify-end w-full mt-6 xl:mt-10">
+                  <button
+                    className={clsx(
+                      "text-sm xl:text-lg w-[115px] py-1.5 text-white focus:outline-none border-0 font-semibold",
+                      isActive ? "bg-[#DE350B]" : "bg-green-500"
+                    )}
+                    onClick={handleSubmit}
+                  >
+                    {isActive ? "Deactive" : "Active"}
+                  </button>
+                  <button
+                    className="text-sm xl:text-lg w-[115px] py-1.5 text-black bg-[#D9D9D9] focus:outline-none border-0 font-semibold"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setOpenDeactive(false);
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </Dialog.Content>
+          </Dialog.Portal>
+        </Dialog.Root>
+      </td>
+      <td className={clsx("px-3 py-1.5 rounded-lg bg-transparent")}>
+        <div
+          onClick={() => {
+            setOpenAddGroup(true);
+            setUserSelected(item);
+          }}
+          className="cursor-pointer flex items-center justify-center"
+        >
+          <IconGroupAdd />
         </div>
       </td>
     </tr>
   );
 };
 
-const TableUsers = ({ data, setCurrentUsers, setCurrentRoles }) => {
+const TableUsers = ({
+  data,
+  setCurrentUsers,
+  setCurrentRoles,
+  setCurrentGroups,
+}) => {
   const [open, setOpen] = useState(false);
-  //const [selectedRole, setSelectedRole] = useState();
-  const [openDeactive, setOpenDeactive] = useState(false);
   const [openAssign, setOpenAssign] = useState(false);
+  const [openAddGroup, setOpenAddGroup] = useState(false);
   const [userSelected, setUserSelected] = useState([]);
-  const handleDelete = (e) => {
-    e.preventDefault();
-    setOpenDeactive(false);
-  };
 
+  console.log("data", data);
   return (
     <div className="mt-8 xl:mt-16 flex-1 border border-black rounded-lg bg-[#E5F3F3] px-10 py-8 overflow-auto">
       <table className={clsx(styles.table, "w-full text-left")}>
         <tr>
           <th>User</th>
           <th>Work Email</th>
-          <th>Phone Number</th>
-          <th>Birth Date</th>
+          {/* <th>Phone Number</th> */}
+          {/* <th>Group</th> */}
+          <th>Active</th>
           <th>Assign</th>
+          <th>Action</th>
         </tr>
         {data.map((item, index) => (
           <TableItem
@@ -165,63 +286,24 @@ const TableUsers = ({ data, setCurrentUsers, setCurrentRoles }) => {
             setCurrentUsers={setCurrentUsers}
             setCurrentRoles={setCurrentRoles}
             currentIndex={index}
-            setOpenDeactive={setOpenDeactive}
             setOpenAssign={setOpenAssign}
             setUserSelected={setUserSelected}
+            setOpenAddGroup={setOpenAddGroup}
           />
         ))}
       </table>
-      <Dialog.Root open={openDeactive} onOpenChange={setOpenDeactive}>
-        <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 z-50 bg-[#D9D9D950]" />
-          <Dialog.Content className="fixed left-[50%] top-[50%] z-50 max-h-[85vh] w-[90vw] max-w-[638px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white focus:outline-none flex flex-col border-2 border-[#BFBFBF]">
-            <div className="p-10">
-              <h6 className="text-xl xl:text-3xl font-semibold">
-                Deactive User
-              </h6>
 
-              <div className="flex space-x-5 xl:space-x-8 items-center mt-3">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="80"
-                  height="80"
-                  viewBox="0 0 80 80"
-                  fill="none"
-                >
-                  <path
-                    d="M3.33301 69.9998L39.9997 6.6665L76.6663 69.9998H3.33301ZM11.9997 64.9998H67.9997L39.9997 16.6665L11.9997 64.9998ZM40.3476 60.2498C41.0601 60.2498 41.6525 60.0089 42.1247 59.5269C42.5969 59.0449 42.833 58.4477 42.833 57.7353C42.833 57.0228 42.592 56.4304 42.1101 55.9582C41.6281 55.486 41.0309 55.2498 40.3184 55.2498C39.6059 55.2498 39.0136 55.4908 38.5413 55.9728C38.0691 56.4548 37.833 57.052 37.833 57.7644C37.833 58.4769 38.074 59.0693 38.5559 59.5415C39.0379 60.0137 39.6351 60.2498 40.3476 60.2498ZM37.833 50.9998H42.833V32.3332H37.833V50.9998Z"
-                    fill="#DE350B"
-                  />
-                </svg>
-                <p className="mt-2 text-lg xl:text-2xl">
-                  Are you sure to deactive this email@company.com?
-                </p>
-              </div>
-              <div className="flex space-x-5 justify-end w-full mt-6 xl:mt-10">
-                <button
-                  className="text-sm xl:text-lg w-[115px] py-1.5 bg-[#DE350B] text-white focus:outline-none border-0 font-semibold"
-                  onClick={handleDelete}
-                >
-                  Delete
-                </button>
-                <button
-                  className="text-sm xl:text-lg w-[115px] py-1.5 text-black bg-[#D9D9D9] focus:outline-none border-0 font-semibold"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setOpenDeactive(false);
-                  }}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </Dialog.Content>
-        </Dialog.Portal>
-      </Dialog.Root>
       <FormAssignRole
         open={openAssign}
         setOpen={setOpenAssign}
         roleData={setCurrentRoles}
+        selectedUser={userSelected}
+      />
+
+      <FormAddUserToGroup
+        open={openAddGroup}
+        setOpen={setOpenAddGroup}
+        groupData={setCurrentGroups}
         selectedUser={userSelected}
       />
     </div>

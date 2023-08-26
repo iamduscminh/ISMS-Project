@@ -28,7 +28,6 @@ const DropDownGroupLeader = ({
   const ref = useClickAway(() => {
     setOpen(false);
   });
-  // console.log("=================>data", data[index]);
   return (
     <div
       ref={ref}
@@ -49,7 +48,9 @@ const DropDownGroupLeader = ({
         <ul
           className={clsx(
             "z-10 absolute top-full border-[#C9C5C5] bg-white left-0 border right-0 transition-all",
-            open ? "block opacity-100" : "max-h-0 hidden opacity-0"
+            open
+              ? "block opacity-100 overflow-y-auto max-h-[300px]"
+              : "max-h-0 hidden opacity-0"
           )}
         >
           {listGroupLeader?.map((option) => {

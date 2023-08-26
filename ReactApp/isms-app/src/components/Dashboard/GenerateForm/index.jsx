@@ -7,7 +7,7 @@ import { columnsOptions, exportOptions, exportTableOptions } from "./InitState";
 import Message from "./Message";
 import SelectColumnsField from "./SelectColumnsField";
 import AdminReportPreview from "../../../pages/AdminReportPreview";
-const GenerateForm = ({ dataTicket, dataChange, dataProblem, setOpen }) => {
+const GenerateForm = ({ data, setOpen }) => {
   const id = useId();
   const [reportName, setReportName] = useState("Ticket Reports");
   const [exportToSelected, setExportToSelected] = useState(exportOptions?.[0]);
@@ -15,29 +15,35 @@ const GenerateForm = ({ dataTicket, dataChange, dataProblem, setOpen }) => {
   const [columns, setColumns] = useState(columnsOptions);
   const [dateRanges, setDateRanges] = useState(dateRangesOptions?.[2]);
   let handleOnClickExport = () => {
-    if (tableSelected.value === "request") {
-      AdminReportPreview.exportExcel(
-        dataTicket,
-        "List Request Ticket",
-        reportName,
-        exportToSelected.value
-      );
-    }
-    if (tableSelected.value === "change") {
-      AdminReportPreview.exportExcel(
-        dataChange,
-        "List Change Ticket",
-        reportName,
-        exportToSelected.value
-      );
-    } else {
-      AdminReportPreview.exportExcel(
-        dataProblem,
-        "List Problem Ticket",
-        reportName,
-        exportToSelected.value
-      );
-    }
+    // if (tableSelected.value === "request") {
+    //   AdminReportPreview.exportExcel(
+    //     dataTicket,
+    //     "List Request Ticket",
+    //     reportName,
+    //     exportToSelected.value
+    //   );
+    // }
+    // if (tableSelected.value === "change") {
+    //   AdminReportPreview.exportExcel(
+    //     dataChange,
+    //     "List Change Ticket",
+    //     reportName,
+    //     exportToSelected.value
+    //   );
+    // } else {
+    //   AdminReportPreview.exportExcel(
+    //     dataProblem,
+    //     "List Problem Ticket",
+    //     reportName,
+    //     exportToSelected.value
+    //   );
+    // }
+    AdminReportPreview.exportExcel(
+      data,
+      "List Problem Ticket",
+      reportName,
+      exportToSelected.value
+    );
   };
   return (
     <form
@@ -83,7 +89,7 @@ const GenerateForm = ({ dataTicket, dataChange, dataProblem, setOpen }) => {
               placeholder="Select file extension"
             />
           </div>
-          <div className="flex flex-col">
+          {/* <div className="flex flex-col">
             <label htmlFor={`file-extension-${id}`}> Select Tables</label>
             <ExportField
               selected={tableSelected}
@@ -94,16 +100,16 @@ const GenerateForm = ({ dataTicket, dataChange, dataProblem, setOpen }) => {
               options={exportTableOptions}
               placeholder="Select file extension"
             />
-          </div>
+          </div> */}
           <div className="flex flex-col">
-            <label htmlFor={`display-columns-${id}`}>Select Columns</label>
+            {/* <label htmlFor={`display-columns-${id}`}>Select Columns</label> */}
             {/* <input
               id={`display-columns-${id}`}
               placeholder="Input file name..."
               type="email"
               className="py-2 px-5 border border-black focus:outline-none mt-1"
             /> */}
-            <SelectColumnsField
+            {/* <SelectColumnsField
               selectedValues={columns}
               setSelectedValues={setColumns}
               onChange={(e) => {
@@ -111,7 +117,7 @@ const GenerateForm = ({ dataTicket, dataChange, dataProblem, setOpen }) => {
               }}
               options={columnsOptions}
               placeholder="Select display columns"
-            />
+            /> */}
           </div>
 
           <div className="flex flex-col">

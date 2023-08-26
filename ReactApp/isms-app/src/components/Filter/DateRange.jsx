@@ -71,7 +71,6 @@ const FilterDateRange = ({
         >
           {options?.map((option) => {
             const isSelected = selected?.value === option.value;
-            console.log(selected);
             return (
               <li
                 key={option.value}
@@ -81,6 +80,7 @@ const FilterDateRange = ({
                   className="pl-5 pr-2 w-full border-none focus:outline-none flex justify-between space-x-2  items-center"
                   onClick={() => {
                     setSelected(option);
+                    // setArrayCreate([option.number]);
                   }}
                 >
                   <span

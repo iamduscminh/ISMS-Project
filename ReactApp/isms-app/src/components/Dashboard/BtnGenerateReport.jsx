@@ -2,13 +2,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import React from "react";
 import GenerateForm from "./GenerateForm";
 
-const BtnGenerateReport = ({
-  dataTicket,
-  dataChange,
-  dataProblem,
-  open,
-  setOpen,
-}) => {
+const BtnGenerateReport = ({ data, open, setOpen }) => {
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger className="focus:outline-none">
@@ -33,12 +27,7 @@ const BtnGenerateReport = ({
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-[#D9D9D950]" />
         <Dialog.Content className="fixed left-[50%] top-[50%] z-50 max-h-[85vh] w-[90vw] max-w-[1000px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white focus:outline-none flex flex-col">
-          <GenerateForm
-            dataTicket={dataTicket}
-            dataChange={dataChange}
-            dataProblem={dataProblem}
-            setOpen={setOpen}
-          />
+          <GenerateForm data={data} setOpen={setOpen} />
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
