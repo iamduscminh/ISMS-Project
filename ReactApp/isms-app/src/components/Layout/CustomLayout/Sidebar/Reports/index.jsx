@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import IconTag from "../../../../Elements/IconTag";
 import { useNavigate, useLocation } from "react-router-dom";
+import { ROUTES_PATHS } from "../../../../../../constants";
 
 const Reports = ({ changeSidebar }) => {
   const [activeService, setActiveService] = useState(null);
@@ -11,11 +12,12 @@ const Reports = ({ changeSidebar }) => {
   const handleActive = (index) => {
     setActiveService(index);
     if (index === 0)
-      navigate("/", { state: { from: location } });
+      navigate(ROUTES_PATHS.ADMIN_STATISTICS, { state: { from: location } });
     else if (index === 1)
-      navigate("/", { state: { from: location } });
-    else if (index === 2)
-      navigate("/", { state: { from: location } });
+      navigate(ROUTES_PATHS.ADMIN_SERVICE_REQUEST_REPORT, {
+        state: { from: location },
+      });
+    else if (index === 2) navigate("/", { state: { from: location } });
   };
 
   //Hàm này để chuyển về side bar trước đó

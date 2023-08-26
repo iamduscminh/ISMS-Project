@@ -189,14 +189,14 @@ function Sidebar() {
       </div>
       {sideBar[currentSidebar]}
       <div className="grow-0 shrink-0 h-[30%] border-t-2 border-[#C5C0C0] bg-[#fff] pt-[0.5rem] pl-[1.25rem] flex flex-col justify-end">
-        
+      <Link to={`/admin/manage`}>
         <div
           className="flex mb-[1rem] cursor-pointer"
         >
           <RxDashboard className="text-[1.5rem] text-[#000]" />
           <h3 className="ml-[1rem] text-[#8D8888]">Dashboard</h3>
         </div>
-
+      </Link>
         <div
           onClick={() => changeSidebar(4)}
           className="flex mb-[1rem] cursor-pointer"
