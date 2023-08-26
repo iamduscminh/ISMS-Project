@@ -79,8 +79,8 @@ const ListWorkflow = () => {
       editable: true,
     },
     {
-      field: "isActive",
-      headerName: "IsActive",
+      field: "status",
+      headerName: "Status",
       width: 100,
       editable: true,
     },

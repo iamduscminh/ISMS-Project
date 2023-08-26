@@ -75,7 +75,8 @@ const TextInfo = ({
   handleEditActivity,
   handleAddStatusTransition,
   handleDeleteStatusTransition,
-  getTaskNameById
+  getTaskNameById,
+  checkEdit
 }) => {
 
   const activityNameInputRef = useRef();
@@ -196,10 +197,11 @@ const TextInfo = ({
             handleDeleteStatusTransition={handleDeleteStatusTransition}
             canDelete={!hasDestination}
             getTaskNameById={getTaskNameById}
+            checkEdit={checkEdit}
           />
         );
       })}
-      <div className="mt-[2rem]">
+      {checkEdit && <div className="mt-[2rem]">
         <h1 className="text-[1.5rem] text-[#42526E] font-medium">
           Add new Activity
         </h1>
@@ -274,7 +276,7 @@ const TextInfo = ({
             </button>
           </div>
         </div>
-      </div>
+      </div>}
     </div>
   );
 };
