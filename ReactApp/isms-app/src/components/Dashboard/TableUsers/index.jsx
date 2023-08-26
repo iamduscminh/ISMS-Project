@@ -268,7 +268,7 @@ const TableUsers = ({
 
   console.log("data", data);
   return (
-    <div className="mt-8 xl:mt-16 flex-1 border border-black rounded-lg bg-[#E5F3F3] px-10 py-8 overflow-auto">
+    <div className="mt-8 xl:mt-16 flex-1 border border-black rounded-lg bg-[#E5F3F3] px-10 py-8 max-h-[70vh] overflow-y-scroll">
       <table className={clsx(styles.table, "w-full text-left")}>
         <tr>
           <th>User</th>

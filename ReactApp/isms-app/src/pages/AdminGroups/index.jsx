@@ -51,11 +51,6 @@ const AdminGroups = () => {
           The system allows you to manage the roles available in your
           organization, you can also view the permissions of those roles
         </p>
-        <TableGroups
-          data={currentGroups}
-          setCurrentRoles={setCurrentGroups}
-          listLeader={listGroupLeader}
-        />
         <div className="flex justify-end space-x-4 mt-8 xl:mt-[54px]">
           <button
             className="flex items-center text-white gap-4 px-4 py-2 bg-[#4AA976] rounded-lg"
@@ -78,6 +73,11 @@ const AdminGroups = () => {
             <span>Create new group</span>
           </button>
         </div>
+        <TableGroups
+          data={currentGroups}
+          setCurrentRoles={setCurrentGroups}
+          listLeader={listGroupLeader}
+        />
         <FormAddGroups
           open={open}
           setOpen={setOpen}
@@ -85,7 +85,6 @@ const AdminGroups = () => {
           getAllGroups={getAllGroups}
           setCurrentGroups={handleInsertGroup}
         />
-        ;
       </div>
     </div>
   );

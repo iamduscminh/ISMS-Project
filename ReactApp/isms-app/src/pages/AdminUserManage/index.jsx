@@ -62,13 +62,6 @@ const AdminUserManage = () => {
             organization, you can also view the permissions of those roles
           </p>
         </div>
-
-        <TableUsers
-          data={currentUsers}
-          setCurrentUsers={setCurrentUsers}
-          setCurrentRoles={currentRoles}
-          setCurrentGroups={currentGroups}
-        />
         <div className="flex justify-end space-x-4 mt-8 xl:mt-[54px]">
           <button
             className="flex items-center text-white gap-4 px-4 py-2 bg-[#4AA976] rounded-lg"
@@ -98,6 +91,12 @@ const AdminUserManage = () => {
             setCurrentUsers={setCurrentUsers}
           />
         </div>
+        <TableUsers
+          data={currentUsers}
+          setCurrentUsers={setCurrentUsers}
+          setCurrentRoles={currentRoles}
+          setCurrentGroups={currentGroups}
+        />
       </div>
     </div>
   );

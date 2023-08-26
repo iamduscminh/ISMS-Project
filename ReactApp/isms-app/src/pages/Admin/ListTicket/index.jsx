@@ -181,13 +181,12 @@ const ListTicket = () => {
     withCredentials: true,
   };
   useEffect(() => {
-    const apiGetRequestTicketsUrl = `api/RequestTickets/getticketsadmin/${
-      typeTicket ?? "all"
-    }/${queryId}`;
+    const QueryStatement = JSON.stringify({ service: [queryId] });
     const apiQueryTicketUrl = `${URL.REQUEST_TICKET_URL}/querytickets`;
     const queryDto = {
       QueryId: queryId,
       QueryType: typeTicket ?? "all",
+      QueryStatement: typeTicket == "service" ? QueryStatement : "",
     };
     console.log(queryDto);
     const fetchData = async () => {
@@ -274,15 +273,12 @@ const ListTicket = () => {
       <div>
         <div className="w-[98%] pl-[4.5rem] relative translate-y-[-56px] z-10">
           <div className={cx("action-wrapper")}>
-            <FaRegClone className={cx("action-icon")} />
             <MdDeleteForever
               onClick={handleDeleteQuery}
               className={cx("action-icon")}
             />
             <FaEdit onClick={handleEditQuery} className={cx("action-icon")} />
-            <MdFavorite className={cx("action-icon")} />
           </div>
-
           <Search data={ticketData} />
 
           <div className="w-[100%] ">

@@ -38,7 +38,6 @@ const AdminRole = () => {
           The system allows you to manage the roles available in your
           organization, you can also view the permissions of those roles
         </p>
-        <TableRoles data={currentRoles} setCurrentRoles={handleSetRole} />
         <div className="flex justify-end space-x-4 mt-8 xl:mt-[54px] font-poppins">
           <button
             className="flex items-center text-white gap-4 px-4 py-2 bg-[#4AA976] rounded-lg font-poppins font-bold"
@@ -61,6 +60,7 @@ const AdminRole = () => {
             <span>Create new role</span>
           </button>
         </div>
+        <TableRoles data={currentRoles} setCurrentRoles={handleSetRole} />
         <FormAddRole
           open={open}
           setOpen={setOpen}

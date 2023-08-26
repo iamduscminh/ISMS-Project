@@ -169,7 +169,7 @@ const TableRoles = ({ data, setCurrentRoles }) => {
   const axiosInstance = useAxiosPrivate();
 
   return (
-    <div className="mt-10 overflow-auto bg-[#E5F3F3] border border-black px-8 xl:px-[54px]">
+    <div className="mt-10 max-h-[70vh] overflow-y-scroll bg-[#E5F3F3] border border-black px-8 xl:px-[54px]">
       <table className={clsx(styles.table, "w-full text-left mt-8 xl:mt-16")}>
         <tr>
           <th>Group Name</th>
