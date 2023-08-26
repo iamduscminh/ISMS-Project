@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import React, { useState } from "react";
 import { useClickAway } from "@uidotdev/usehooks";
+
 const IconArrowDown = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -16,16 +17,19 @@ const IconArrowDown = () => (
   </svg>
 );
 
-const DropDownBusinessHour = ({
+const DropDownGroup = ({
   selected,
   setSelected,
   className,
-  listBusinessHour,
+  setCurrentGroups,
+  style,
+  inputClassName,
 }) => {
   const [open, setOpen] = useState(false);
   const ref = useClickAway(() => {
     setOpen(false);
   });
+
   return (
     <div
       ref={ref}
@@ -37,23 +41,25 @@ const DropDownBusinessHour = ({
         e.preventDefault();
         setOpen(true);
       }}
+      style={style}
     >
       <div>
         <div className="border-0 hover:border-0 flex justify-between rounded-none items-center w-full text-start focus:outline-none">
-          <span>{selected.businessHourName}</span>
+          <span>{selected?.groupName || "Select group"}</span>
           <IconArrowDown />
         </div>
         <ul
           className={clsx(
             "z-10 absolute top-full border-[#C9C5C5] bg-white left-0 border right-0 transition-all",
-            open ? "block opacity-100" : "max-h-0 hidden opacity-0"
+            open
+              ? "block opacity-100 overflow-y-auto max-h-[300px]"
+              : "max-h-0 hidden opacity-0"
           )}
         >
-          {listBusinessHour?.map((option) => {
-            const isSelected =
-              selected?.businessHourId === option.businessHourId;
+          {setCurrentGroups?.map((option) => {
+            const isSelected = selected?.groupName === option.groupName;
             return (
-              <li key={option.businessHourId} className="flex">
+              <li key={option.groupName} className="flex">
                 <button
                   className={clsx(
                     "rounded-none pl-5 py-3 xl:py-4 pr-2 w-full border-none focus:outline-none flex justify-between space-x-2  items-center",
@@ -64,8 +70,8 @@ const DropDownBusinessHour = ({
                   onClick={(e) => {
                     e.preventDefault();
                     setSelected(
-                      listBusinessHour.find(
-                        (item) => item?.businessHourId === option.businessHourId
+                      setCurrentGroups.find(
+                        (item) => item?.groupName === option.groupName
                       )
                     );
                   }}
@@ -75,7 +81,7 @@ const DropDownBusinessHour = ({
                       "text-lg xl:text-2xl text-left hover:text-[#48B8F6]"
                     )}
                   >
-                    {option.businessHourName}
+                    {option.groupName}
                   </span>
                 </button>
               </li>
@@ -87,4 +93,4 @@ const DropDownBusinessHour = ({
   );
 };
 
-export default DropDownBusinessHour;
+export default DropDownGroup;

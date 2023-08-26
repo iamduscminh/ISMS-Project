@@ -2,12 +2,15 @@ import React, { useState, useEffect } from "react";
 import TableUsers from "../../components/Dashboard/TableUsers";
 import FormAddUser from "../../components/Dashboard/FormAddUser";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { Link } from "react-router-dom";
+import { ROUTES_PATHS } from "../../../constants";
 
 const AdminUserManage = () => {
   const axiosInstance = useAxiosPrivate();
   const [isLoading, setIsLoading] = useState(true);
   const [currentUsers, setCurrentUsers] = useState([]);
   const [currentRoles, setCurrentRoles] = useState([]);
+  const [currentGroups, setCurrentGroups] = useState([]);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -17,7 +20,7 @@ const AdminUserManage = () => {
         setCurrentUsers(response.data);
         setIsLoading(false);
       } catch (error) {
-        console.error("Error fetching service categories:", error);
+        console.error("getAllUsers [AdminUserManage]:", error);
         setIsLoading(false);
       }
     };
@@ -28,12 +31,22 @@ const AdminUserManage = () => {
         setCurrentRoles(response.data);
         setIsLoading(false);
       } catch (error) {
-        console.error("Error fetching service categories:", error);
+        console.error("getAllRoles [AdminUserManage]:", error);
         setIsLoading(false);
       }
     };
-
+    const getAllGroups = async () => {
+      try {
+        const response = await axiosInstance.get("api/Groups/getall");
+        setCurrentGroups(response.data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("getAllGroups [AdminUserManage]:", error);
+        setIsLoading(false);
+      }
+    };
     getAllRoles();
+    getAllGroups();
     getAllUsers();
   }, [axiosInstance]);
 
@@ -54,6 +67,7 @@ const AdminUserManage = () => {
           data={currentUsers}
           setCurrentUsers={setCurrentUsers}
           setCurrentRoles={currentRoles}
+          setCurrentGroups={currentGroups}
         />
         <div className="flex justify-end space-x-4 mt-8 xl:mt-[54px]">
           <button
