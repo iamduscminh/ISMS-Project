@@ -26,6 +26,8 @@ export { default as AdminChange } from "./AdminChange";
 export { default as AdminProblem } from "./AdminProblem";
 export { default as AdminReport } from "./AdminReport";
 export { default as AdminReportPreview } from "./AdminReportPreview";
+export { default as AdminStatistics } from "./AdminStatistics";
+export { default as AdminServiceRequestReport } from "./AdminServiceRequestReport";
 export { default as AdminGroups } from "./AdminGroups";
 export { default as AdminGroupEdit } from "./AdminGroupEdit";
 export { default as AdminRoleEdit } from "./AdminRoleEdit";

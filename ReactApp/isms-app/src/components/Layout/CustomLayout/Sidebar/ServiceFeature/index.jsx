@@ -20,9 +20,11 @@ const ServiceFeature = ({ changeSidebar }) => {
       navigate("/admin/manage/users", { state: { from: location } });
     else if (index === 4)
       navigate("/admin/manage/role", { state: { from: location } });
-    else if (index === 5) 
+    else if (index === 5)
+      navigate("/admin/manage/groups", { state: { from: location } });
+    else if (index === 6) 
       navigate("/admin/sla", { state: { from: location } });
-    else if (index === 6)
+    else if (index === 7)
       navigate("/viewCustomFields", { state: { from: location } });
   };
 
@@ -91,12 +93,20 @@ const ServiceFeature = ({ changeSidebar }) => {
             activeService === 5 ? "bg-[#ebecf0]" : ""
           }`}
         >
-          <span>SLAs</span>
+          <span>Groups management</span>
         </div>
         <div
           onClick={() => handleActive(6)}
           className={`py-[0.5rem] px-[1rem] hover:bg-[#ebecf0] cursor-pointer ${
-            activeService === 5 ? "bg-[#ebecf0]" : ""
+            activeService === 6 ? "bg-[#ebecf0]" : ""
+          }`}
+        >
+          <span>SLAs</span>
+        </div>
+        <div
+          onClick={() => handleActive(7)}
+          className={`py-[0.5rem] px-[1rem] hover:bg-[#ebecf0] cursor-pointer ${
+            activeService === 7 ? "bg-[#ebecf0]" : ""
           }`}
         >
           <span>Custom Fields</span>
