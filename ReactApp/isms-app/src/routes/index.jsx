@@ -192,6 +192,77 @@ const PERM000016Routes = [];
 
 //Route có Permission là PERM000017 Manage business hours
 const PERM000017Routes = [];
+<<<<<<< Updated upstream
+=======
+
+//Route có Permission là PERM000018 Only Need Login
+const PERM000018Routes = [
+  {
+    path: "/admin/ticket/:ticketId",
+    component: Page.TicketDetail,
+    layout: Layout.CustomLayout,
+  },
+  {
+    path: "/admin/:typeTicket?/:queryId?",
+    component: Page.ListTicket,
+    layout: Layout.CustomLayout,
+  },
+  {
+    path: "/viewRequestTypes",
+    component: Page.ViewRequestTypes,
+    layout: Layout.CustomLayout,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN,
+    component: Page.Dashboard,
+    layout: Layout.AdminLayout,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN_TICKET,
+    component: Page.AdminTicket,
+    layout: Layout.AdminLayout,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN_REPORT,
+    component: Page.AdminReport,
+    layout: Layout.AdminLayout,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN_REPORT_PREVIEW,
+    component: Page.AdminReportPreview,
+    layout: Layout.AdminLayout,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN_CHANGE,
+    component: Page.AdminChange,
+    layout: Layout.AdminLayout,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN_PROBLEM,
+    component: Page.AdminProblem,
+    layout: Layout.AdminLayout,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN_STATISTICS,
+    component: Page.AdminStatistics,
+    layout: Layout.AdminLayout,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN_SERVICE_REQUEST_REPORT,
+    component: Page.AdminServiceRequestReport,
+    layout: Layout.AdminLayout,
+  },
+];
+
+//Route có Permission là PERM000019 Manage dashboard
+const PERM000019Routes = [];
+
+//Route có Permission là PERM000021 Manage changes
+const PERM000020Routes = [];
+
+//Route có Permission là PERM000022 Manage problems
+const PERM000021Routes = [];
+>>>>>>> Stashed changes
 //
 const loginRoutes = [
   { path: "/", component: Page.Home },
@@ -232,4 +303,12 @@ export {
   PERM000015Routes,
   PERM000016Routes,
   PERM000017Routes,
+<<<<<<< Updated upstream
 };
+=======
+  PERM000018Routes,
+  PERM000019Routes,
+  PERM000020Routes,
+  PERM000021Routes
+};
+>>>>>>> Stashed changes
