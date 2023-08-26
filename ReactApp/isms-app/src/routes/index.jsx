@@ -211,6 +211,16 @@ const PERM000018Routes = [
     component: Page.AdminProblem,
     layout: Layout.AdminLayout,
   },
+  {
+    path: ROUTES_PATHS.ADMIN_STATISTICS,
+    component: Page.AdminStatistics,
+    layout: Layout.AdminLayout,
+  },
+  {
+    path: ROUTES_PATHS.ADMIN_SERVICE_REQUEST_REPORT,
+    component: Page.AdminServiceRequestReport,
+    layout: Layout.AdminLayout,
+  },
 ];
 
 //Route có Permission là PERM000019 Manage dashboard
