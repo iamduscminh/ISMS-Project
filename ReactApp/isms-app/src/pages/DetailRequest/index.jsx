@@ -204,37 +204,92 @@ function CreateRequest() {
   const reasonCancelRef = useRef(null);
   const cancelRequestDetail = () => {
     const apiCancelTicketUrl = `${ticketUrl}/cancel/${id}`;
-    //console.log(reasonCancelRef.current.value);
-    try {
-      Swal.fire({
-        title: "Loading...",
-        allowOutsideClick: false,
-        onBeforeOpen: () => {
-          Swal.showLoading();
-        },
-      });
-      axiosInstance.put(apiCancelTicketUrl, headers).then((response) => {
-        console.log(response.data);
-        setRequestTicket((prevItem) => ({ ...prevItem, status: "Canceled" }));
-        Swal.fire({
-          icon: "success",
-          title: "Success!",
-          text: "Request Ticket was canceled successfully.",
-          confirmButtonText: "OK",
-        });
-      });
-      Swal.close();
-    } catch (error) {
-      // Handle errors if needed
-      Swal.close();
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: error,
-      });
-    }
+    const result = Swal.fire({
+      title: "Are you sure to Cancel this Ticket?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        try {
+          Swal.fire({
+            title: "Loading...",
+            allowOutsideClick: false,
+            onBeforeOpen: () => {
+              Swal.showLoading();
+            },
+          });
+          axiosInstance.put(apiCancelTicketUrl, headers).then((response) => {
+            //console.log(response.data);
+            setRequestTicket((prevItem) => ({
+              ...prevItem,
+              status: "Canceled",
+            }));
+            Swal.fire({
+              icon: "success",
+              title: "Success!",
+              text: "Request Ticket was Canceled successfully.",
+              confirmButtonText: "OK",
+            });
+          });
+          Swal.close();
+        } catch (error) {
+          // Handle errors if needed
+          Swal.close();
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: error,
+          });
+        }
+      }
+    });
   };
-
+  const closedRequestDetail = () => {
+    const apiClosedTicketUrl = `${ticketUrl}/confirm/${id}`;
+    const result = Swal.fire({
+      title: "Are you sure to Close this Ticket?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        try {
+          Swal.fire({
+            title: "Loading...",
+            allowOutsideClick: false,
+            onBeforeOpen: () => {
+              Swal.showLoading();
+            },
+          });
+          axiosInstance.put(apiClosedTicketUrl, headers).then((response) => {
+            //console.log(response.data);
+            setRequestTicket((prevItem) => ({
+              ...prevItem,
+              status: "Closed",
+            }));
+            Swal.fire({
+              icon: "success",
+              title: "Success!",
+              text: "Request Ticket was Closed successfully.",
+              confirmButtonText: "OK",
+            });
+          });
+          Swal.close();
+        } catch (error) {
+          // Handle errors if needed
+          Swal.close();
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: error,
+          });
+        }
+      }
+    });
+  };
   const showCommentTab = (queryCondition) => {
     setCommentTab(queryCondition);
   };
@@ -532,37 +587,33 @@ function CreateRequest() {
               <h3 className="text-3xl font-extrabold uppercase">
                 {requestTicket?.status}
               </h3>
-              {requestTicket?.status && requestTicket?.status != "Canceled" && (
-                <ModalDialog
-                  title={"Cancel Request"}
-                  actionText={"Cancel Request"}
-                  actionHandler={cancelRequestDetail}
-                  triggerComponent={
-                    <div className="inline-block cursor-pointer">
-                      <div className="flex items-center hover:underline">
-                        <IconTag name={"FaExchangeAlt"} />
-                        <p className="text-lg font-bold ml-3">Cancel Request</p>
-                      </div>
+              {requestTicket?.status &&
+                requestTicket?.status != "Canceled" &&
+                requestTicket?.status != "Closed" &&
+                requestTicket?.status != "Resolved" && (
+                  <div
+                    className="inline-block cursor-pointer"
+                    onClick={cancelRequestDetail}
+                  >
+                    <div className="flex items-center hover:underline">
+                      <IconTag name={"GiCancel"} />
+                      <p className="text-lg font-bold ml-3">Cancel Ticket</p>
                     </div>
-                  }
-                >
-                  <div className="mb-1">
-                    <label
-                      htmlFor="reason_cancel"
-                      className="block mb-2 text-sm font-medium text-gray-500 "
-                    >
-                      Reason Cancel
-                    </label>
-                    <textarea
-                      id="reason_cancel"
-                      ref={reasonCancelRef}
-                      rows="5"
-                      className="block p-2.5 w-full text-sm text-gray-900 bg-gray-40 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 "
-                      placeholder="Write the reason you want cancel this request"
-                    ></textarea>
                   </div>
-                </ModalDialog>
-              )}
+                )}
+              {requestTicket?.status &&
+                requestTicket?.status == "Resolved" &&
+                requestTicket?.status != "Closed" && (
+                  <div
+                    className="inline-block cursor-pointer"
+                    onClick={closedRequestDetail}
+                  >
+                    <div className="flex items-center hover:underline">
+                      <IconTag name={"GiCancel"} />
+                      <p className="text-lg font-bold ml-3">Closed Ticket</p>
+                    </div>
+                  </div>
+                )}
             </div>
           </div>
         </div>
