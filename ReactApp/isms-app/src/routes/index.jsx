@@ -184,7 +184,7 @@ const PERM000018Routes = [
   {
     path: ROUTES_PATHS.ADMIN,
     component: Page.Dashboard,
-    layout: Layout.AdminLayout,
+    layout: Layout.CustomLayout,
   },
   {
     path: ROUTES_PATHS.ADMIN_TICKET,
@@ -214,12 +214,12 @@ const PERM000018Routes = [
   {
     path: ROUTES_PATHS.ADMIN_STATISTICS,
     component: Page.AdminStatistics,
-    layout: Layout.AdminLayout,
+    layout: Layout.CustomLayout,
   },
   {
     path: ROUTES_PATHS.ADMIN_SERVICE_REQUEST_REPORT,
     component: Page.AdminServiceRequestReport,
-    layout: Layout.AdminLayout,
+    layout: Layout.CustomLayout,
   },
 ];
 

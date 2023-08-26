@@ -120,21 +120,21 @@ const GenerateForm = ({ data, setOpen }) => {
             /> */}
           </div>
 
-          <div className="flex flex-col">
-            <label htmlFor={`date-range-${id}`}>Date range</label>
-            {/* <input
+          {/* <div className="flex flex-col">
+            <label htmlFor={`date-range-${id}`}>Date range</label> */}
+          {/* <input
               id={`email-to-${id}`}
               placeholder="Input file name..."
               type="email"
               className="py-2 px-5 border border-black focus:outline-none mt-1"
             /> */}
-            <DateRangeField
+          {/* <DateRangeField
               selected={dateRanges}
               setSelected={setDateRanges}
               options={dateRangesOptions}
               placeholder="Select range"
             />
-          </div>
+          </div> */}
 
           {/* <div className="flex flex-col">
             <label htmlFor={`email-to-${id}`}>Send report to</label>
