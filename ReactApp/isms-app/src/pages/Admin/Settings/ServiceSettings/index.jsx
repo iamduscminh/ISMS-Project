@@ -139,10 +139,10 @@ const ServiceSettings = () => {
     <div>
       <div className="relative w-full bg-[#42526E] pl-[5rem] flex justify-start flex-col py-[0.75rem]">
         <h4 className="mb-[0.75rem] text-[#fff] ">
-          Project/Settings/ServiceGroups
+          Project/Settings/ServiceCategory
         </h4>
         <h1 className="text-[1.5rem] text-[#fff] font-medium ">
-          Service Groups Setting
+          Service Category Setting
         </h1>
       </div>
       <div className="w-full mt-[1rem] flex items-center justify-center">

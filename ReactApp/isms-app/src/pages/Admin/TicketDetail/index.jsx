@@ -222,20 +222,20 @@ const TicketDetail = () => {
     },
   ]);
 
-  const handleServiceTypeSelect = (selectedItem) => {
-    console.log("Selected Service Type:", selectedItem);
-    setTicketService(selectedItem);
-  };
+  // const handleServiceTypeSelect = (selectedItem) => {
+  //   console.log("Selected Service Type:", selectedItem);
+  //   setTicketService(selectedItem);
+  // };
 
-  const handlePrioritySelect = (selectedItem) => {
-    console.log("Selected:", selectedItem);
-    setPriority(selectedItem);
-  };
+  // const handlePrioritySelect = (selectedItem) => {
+  //   console.log("Selected:", selectedItem);
+  //   setPriority(selectedItem);
+  // };
 
-  const handleStatusSelect = (selectedItem) => {
-    console.log("Selected:", selectedItem);
-    setPriority(selectedItem);
-  };
+  // const handleStatusSelect = (selectedItem) => {
+  //   console.log("Selected:", selectedItem);
+  //   setPriority(selectedItem);
+  // };
 
   const [selectedFiles, setSelectedFiles] = useState([]);
 
@@ -686,7 +686,7 @@ const TicketDetail = () => {
                   isServiceRequest={true}
                   component={PriorityItem}
                   data={priorityDataUrgency}
-                  onSelect={handlePrioritySelect}
+                  // onSelect={handlePrioritySelect}
                   value={getPriorityUrgencyObject(ticketDetail?.priority)}
                   overlay={2}
                   showProp1="icon"

@@ -11,6 +11,7 @@ const ViewWorkflow = () => {
   const [activeTextDiagram, setActiveTextDiagram] = useState(true);
   const axiosInstance = useAxiosPrivate();
   const [listActivity, setListActivity] = useState([]);
+  const [checkEdit, setCheckEdit] = useState(true);
 
   const handleClickText = () => {
     if (activeTextDiagram) return;
@@ -27,12 +28,11 @@ const ViewWorkflow = () => {
   useEffect(() => {
     const fetchWorkFlowTask = async () => {
       try {
-        const response = await axiosInstance.get(
-          `${URL.WORKFLOW_TASK_URL}/get/${flowId}`
-        );
-        console.log(3);
-        console.log(response.data);
-        listInitialActivity = response.data.map((item) => ({
+        const response = await Promise.all([
+          axiosInstance.get(`${URL.WORKFLOW_TASK_URL}/get/${flowId}`),
+          axiosInstance.get(`${URL.WORKFLOW_URL}/checkedit?workflowId=${flowId}`)
+        ]);
+        listInitialActivity = response[0].data.map((item) => ({
           id: item.workflowTaskId,
           activityName: item.workflowTaskName,
           linkStatus: item.status,
@@ -47,8 +47,9 @@ const ViewWorkflow = () => {
             })
           ),
         }));
-        console.log(listInitialActivity);
         setListActivity(listInitialActivity);
+        console.log('condition ' + response[1].data.condition);
+        setCheckEdit(response[1].data.condition);
       } catch (err) {
         alert("System error, sorry, please contact administrator: ", err);
       }
@@ -279,7 +280,7 @@ const ViewWorkflow = () => {
   }
   return (
     <div className="h-full overflow-y-scroll">
-      <GeneralInfo flowId={flowId} />
+      <GeneralInfo flowId={flowId} checkEdit={checkEdit}/>
       <div className="ml-[3rem] mt-[2rem]">
         <div>
           {activeTextDiagram ? (
@@ -322,6 +323,7 @@ const ViewWorkflow = () => {
             handleAddStatusTransition={addStatusTransition}
             handleDeleteStatusTransition={deleteStatusTrans}
             getTaskNameById={getTaskNameById}
+            checkEdit={checkEdit}
           />
         ) : (
           <DiagramInfo data={listActivity} />

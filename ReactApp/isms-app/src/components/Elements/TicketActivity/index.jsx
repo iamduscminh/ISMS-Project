@@ -19,7 +19,8 @@ const TicketActivity = ({
   handleAddStatusTransition,
   handleDeleteStatusTransition,
   handleEditStatusTransition,
-  getTaskNameById
+  getTaskNameById,
+  checkEdit
 }) => {
   console.log(activity);
 
@@ -96,11 +97,11 @@ const TicketActivity = ({
       {/* Phần Header của activity */}
       <div className="w-full bg-slate-200 px-[1.5rem] py-[0.75rem] rounded-sm flex justify-between items-center">
         <div className="text-[1.25rem] text-[#42526E] ">
-          <span className="font-medium mr-[2rem]">Activity:</span>
+          <span className="font-medium mr-[2rem]">Task:</span>
           {activity.activityName}
         </div>
         <div className="flex items-center">
-          {activity.linkStatus !== "Resolved" && (
+          {(activity.linkStatus !== "Resolved" && checkEdit)&& (
             <ModalDialog
               title={"Edit New Workflow"}
               actionText={"Edit"}
@@ -115,7 +116,7 @@ const TicketActivity = ({
               <div className="w-[80%] ml-auto">
                 <div>
                   <label className="text-[#42526E] font-medium w-[5rem]">
-                    Activity
+                    Task
                   </label>
                   <input
                     type="text"
@@ -201,7 +202,7 @@ const TicketActivity = ({
               </div>
             </ModalDialog>
           )}
-          {canDelete && activity.linkStatus !== "Resolved" && (
+          {canDelete && activity.linkStatus !== "Resolved" && checkEdit && (
             <TiDocumentDelete
               onClick={() => handleDeleteActivity(activity.id)}
               className="cursor-pointer"
@@ -279,9 +280,9 @@ const TicketActivity = ({
           <div className="w-full flex mt-[2rem] ">
             <div className="mr-[1rem] flex min-w-[7rem]">
               <h2 className="text-[#42526E] font-medium mr-[0.5rem]">
-                Status Trans
+                Transition
               </h2>
-              <ModalDialog
+              {checkEdit && <ModalDialog
                 title={"Add New Status Trans"}
                 actionText={"Add"}
                 actionHandler={() =>
@@ -300,7 +301,7 @@ const TicketActivity = ({
                 <div className="w-[70%] m-auto flex flex-col">
                   <div>
                     <label className="w-[40%] text-[#42526E] font-medium">
-                      Status Name
+                      Transition Name
                     </label>
                     <input
                       value={statusTranInput}
@@ -336,7 +337,7 @@ const TicketActivity = ({
                       </option> */}
                     </select>
                   </div>
-                  <div className="mt-[0.5rem]">
+                  {/* <div className="mt-[0.5rem]">
                     <label className="w-[40%] text-[#42526E] font-medium">
                       Condition
                     </label>
@@ -347,9 +348,9 @@ const TicketActivity = ({
                       }}
                       type="checkbox"
                     />
-                  </div>
+                  </div> */}
                 </div>
-              </ModalDialog>
+              </ModalDialog>}
             </div>
             <div>
               {activity.listStatusTrans.map((item) => (
@@ -363,19 +364,19 @@ const TicketActivity = ({
                       {!item.destination ? "None" : getTaskNameById(item.destination)}
                     </span>
                   </div>
-                  <div className="ml-[3rem] flex items-center">
+                  {/* <div className="ml-[3rem] flex items-center">
                     <span className="mr-[1rem]">Condition</span>
                     {item.checkCondition ? (
                       <input type="checkbox" checked disabled />
                     ) : (
                       <input type="checkbox" disabled />
                     )}
-                  </div>
+                  </div> */}
                   <div className="ml-[3rem] text-[#043AC5] flex items-center">
                     {/* <span className="mr-[0.5rem] cursor-pointer">
                       Edit
                     </span> */}
-                    <ModalDialog
+                    {checkEdit && <ModalDialog
                       title={"Delete Status Trans"}
                       actionText={"Delete"}
                       actionHandler={() =>
@@ -389,7 +390,7 @@ const TicketActivity = ({
                       <div className="m-auto text-[1.25rem] w-[80%]">
                         Are you sure to delete this Transition?
                       </div>
-                    </ModalDialog>
+                    </ModalDialog>}
                   </div>
                 </div>
               ))}
