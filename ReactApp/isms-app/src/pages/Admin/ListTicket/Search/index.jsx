@@ -99,7 +99,7 @@ const fakeApi = [
   },
 ];
 const Search = ({ data }) => {
-  console.log(data);
+  //console.log(data);
   const [searchValue, setSearchValue] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   useEffect(() => {

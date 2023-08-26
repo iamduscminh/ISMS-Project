@@ -78,7 +78,7 @@ function Header() {
       //setNotifications((prevNotifications) => [...prevNotifications, message]);
     });
     const apiGetNotificationsUrl = `api/Notifications/noti/${
-      "USER000001" //auth?.userId
+      auth?.userId
     }/${false}`;
     const fetchData = async () => {
       try {
@@ -144,7 +144,16 @@ function Header() {
       }
     };
     fetchData();
+    const handleScroll = () => {
+      const scrollPosition = window.pageYOffset;
+      if (scrollPosition > 0) {
+        setHeaderScroll(false);
+      } else {
+        setHeaderScroll(true);
+      }
+    };
 
+    window.addEventListener("scroll", handleScroll);
     const handleClickOutside = (event) => {
       if (
         tippyWrapperRefNoti.current &&
@@ -159,6 +168,7 @@ function Header() {
     return () => {
       connection.stop();
       document.removeEventListener("click", handleClickOutside);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -187,22 +197,7 @@ function Header() {
     setToggleUser((prev) => !prev);
   };
   const [isHeaderScroll, setHeaderScroll] = useState(true);
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.pageYOffset;
-      if (scrollPosition > 0) {
-        setHeaderScroll(false);
-      } else {
-        setHeaderScroll(true);
-      }
-    };
 
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
   //Dropdown variable
   const [openDrNoti, setOpenDrNoti] = useState(false);
   const [openDrProf, setOpenDrProf] = useState(false);
@@ -258,28 +253,32 @@ function Header() {
                   Notification
                 </h1>
                 <div className="my-[0.75rem]">
-                  {notifications
-                    .filter((x) => x.isRead == false)
-                    .slice(0, 7)
-                    .map((item, i) => {
-                      return (
-                        <NotificationItem
-                          key={item.id}
-                          title={item.body}
-                          sender={item.sender}
-                          displayContent={false}
-                          time={item.time}
-                        />
-                      );
-                    })}
+                  {notifications.length > 0 &&
+                    notifications
+                      .filter((x) => x.isRead == false)
+                      .slice(0, 7)
+                      .map((item, i) => {
+                        return (
+                          <NotificationItem
+                            key={item.id}
+                            title={item.body}
+                            sender={item.sender}
+                            displayContent={false}
+                            time={item.time}
+                          />
+                        );
+                      })}
+                  {notifications.length == 0 && "Empty"}
                 </div>
                 <div>
                   <hr />
-                  <Link to={"/notification"}>
-                    <h2 className="flex justify-center my-2 text-[0.85rem] text-blue-500 hover:underline hover:text-blue-800">
-                      View All Notification
-                    </h2>
-                  </Link>
+                  {notifications.length > 0 && (
+                    <Link to={"/notification"}>
+                      <h2 className="flex justify-center my-2 text-[0.85rem] text-blue-500 hover:underline hover:text-blue-800">
+                        View All Notification
+                      </h2>
+                    </Link>
+                  )}
                 </div>
               </div>
             )}
