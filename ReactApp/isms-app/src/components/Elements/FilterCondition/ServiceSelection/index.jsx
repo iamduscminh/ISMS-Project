@@ -27,12 +27,12 @@ const ServiceSelection = ({ data, onSelect }) => {
     const isChecked = e.target.checked;
 
     if (isChecked) {
-      const newValue = [...serviceRequestValue, checkItem.serviceCategoryName];
+      const newValue = [...serviceRequestValue, checkItem];
       setServiceRequestValue(newValue);
       onSelect(newValue);
     } else {
       const newValue = serviceRequestValue.filter(
-        (i) => i !== checkItem.serviceCategoryName
+        (i) => i.serviceCategoryId !== checkItem.serviceCategoryId
       );
       setServiceRequestValue(newValue);
       onSelect(newValue);
@@ -53,14 +53,22 @@ const ServiceSelection = ({ data, onSelect }) => {
         className="w-full text-[#42526E] overflow-hidden"
         onClick={() => setOpenCombobox((prev) => !prev)}
       >
-        {": " + shortenText(serviceRequestValue.join(", "), 40)}
+        {": " +
+          shortenText(
+            serviceRequestValue
+              .map((obj) => obj["serviceCategoryName"])
+              .join(", "),
+            40
+          )}
       </div>
       {openCombobox && (
         <div className="w-full absolute top-[120%] border z-[10] bg-[#fff] left-[0] rounded-sm px-[1rem] py-[0.5rem]">
           <div className="h-[25vh] overflow-y-scroll">
             {serviceItemData.map((item) => (
               <div key={item.serviceCategoryId} className="flex mt-[0.75rem]">
-                {serviceRequestValue.includes(item.serviceCategoryId) ? (
+                {serviceRequestValue
+                  .map((obj) => obj["serviceCategoryId"])
+                  .includes(item.serviceCategoryId) ? (
                   <input
                     checked
                     onChange={(e) => handleUpdate(item, e)}

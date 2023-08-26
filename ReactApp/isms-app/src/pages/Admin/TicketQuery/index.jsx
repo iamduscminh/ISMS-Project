@@ -78,8 +78,8 @@ const TicketQuery = () => {
   };
   const handleTestQuery = () => {
     const apiQueryTicketUrl = `${URL.REQUEST_TICKET_URL}/querytickets`;
-    console.log(JSON.stringify(queryCondition));
-    console.log(type);
+    console.log(queryCondition);
+    // console.log(type);
     const queryDto = {
       QueryStatement: JSON.stringify(queryCondition),
       QueryType: type,
@@ -257,7 +257,7 @@ const TicketQuery = () => {
               onChange={handleTitleQueryChange}
             />
           </div>
-          <div className="mt-[0.75rem]">
+          {/* <div className="mt-[0.75rem]">
             <input
               type="checkbox"
               className="w-[1rem] aspect-square"
@@ -267,7 +267,7 @@ const TicketQuery = () => {
             <span className="text-[1rem] text-[#fff] ml-[1rem]">
               Add this queue to Team Important Query
             </span>
-          </div>
+          </div> */}
         </div>
       </div>
       <div>

@@ -143,7 +143,7 @@ function Sidebar() {
     fetchUserById();
   }, [axiosInstance]);
   const queryData = (type, id) => {
-    console.log(`query${type} - ${id}`);
+    //console.log(`query${type} - ${id}`);
     navigate(`/admin/${type}/${id}`);
   };
   const sideBar = [
