@@ -249,9 +249,11 @@ const ListTicket = () => {
     fetchData();
   }, [typeTicket, queryId]);
   const handleRowClick = (params) => {
+    console.log(typeTicket);
     const { id } = params.row;
-
-    navigate("/admin/ticket/" + id);
+    if (typeTicket == "change") navigate("/admin/change/" + id);
+    else if (typeTicket == "problem") navigate("/admin/problem/" + id);
+    else navigate("/admin/ticket/" + id);
   };
 
   const handleDeleteQuery = () => {
@@ -306,7 +308,6 @@ const ListTicket = () => {
               getRowClassName={getColorClassName}
               rowHeight={48}
               pageSizeOptions={[20]}
-              checkboxSelection
               disableRowSelectionOnClick
               onRowClick={handleRowClick}
             />
