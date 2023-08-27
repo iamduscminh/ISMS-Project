@@ -83,6 +83,8 @@ function Sidebar() {
         const response = await axiosInstance.post(
           `${URL.USER_URL}/get/${auth.userId}`
         );
+        console.log(3);
+        console.log(response.data)
         setUserInformation({
           avatar: response.data.avatar,
           userName: response.data.fullName,
@@ -241,6 +243,7 @@ function Sidebar() {
             </div>
             <div>
               <span className="text-[0.7rem] text-[#686868]">
+                {console.log(userInformation)}
                 {userInformation.roleName || "Administrator"}
               </span>
             </div>

@@ -37,7 +37,8 @@ const QueryCategory = ({ changeSidebar, setQueryType }) => {
         const response = await axiosInstance.get(
           `${URL.SERVICE_CATEGORY_URL}/getall`
         );
-        //console.log(response.data);
+        console.log(1);
+        console.log(response.data);
         setServiceCategories({
           title: "Service Ticket",
           path: "",
@@ -46,7 +47,7 @@ const QueryCategory = ({ changeSidebar, setQueryType }) => {
           openedIcon: <IoMdArrowDropup />,
           subNav: response.data.map((category, index) => ({
             title: category.serviceCategoryName,
-            path: `/admin/service/${category.serviceCategoryId}`,
+            path: ``,
             icon: <MdElectricalServices />,
             cateId: category.serviceCategoryId,
           })),
@@ -64,17 +65,16 @@ const QueryCategory = ({ changeSidebar, setQueryType }) => {
   useEffect(() => {
     // Gọi API để lấy Thông tin Users từ DB
     const fetchUserById = async () => {
-      if (auth.roletype == "Admin") {
         try {
           const response = await axiosInstance.get(
             `${URL.DASHBOARD_URL}/countRequestTicket`
           );
-          //console.log(response.data);
+          console.log(2);
+          console.log(response.data);
           setListNumberOfTicket(response.data);
         } catch (error) {
           console.error("Error Get Data", error);
         }
-      }
     };
 
     fetchUserById();
