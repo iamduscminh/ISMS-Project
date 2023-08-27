@@ -10,6 +10,7 @@ import jwtDecode from "jwt-decode";
 import { TypeAnimation } from "react-type-animation";
 import request from "../../utils/axiosConfig";
 import { PERMISSIONS } from "../../routes/Permissions";
+import Swal from "sweetalert2";
 
 const cx = classNames.bind(styles);
 
@@ -46,11 +47,11 @@ const Login = () => {
   }, []);
 
   const handleChange = (event) => {
-    setEmail(event.target.value);
+    setEmail(event.target.value.trim());
   };
 
   const handleChangePass = (event) => {
-    setPassword(event.target.value);
+    setPassword(event.target.value.trim());
   };
 
   const validateEmail = (email) => {
@@ -84,6 +85,8 @@ const Login = () => {
       if (passRef.current && !passRef.current.contains(event.target)) {
         if (!password) {
           setErrorPass((prev) => "⚠ Password is required");
+        }else if(password.length < 8){
+          setErrorPass((prev) => "⚠ Password must be more than 8 characters");
         } else {
           setErrorPass("");
         }
@@ -106,7 +109,7 @@ const Login = () => {
       //Comment lại đợi API này
       const response = await request.post(
         LOGIN_URL,
-        JSON.stringify({ email: email, password: password }),
+        JSON.stringify({ email: email.trim(), password: password.trim() }),
         {
           headers: { "Content-Type": "application/json" },
           withCredentials: true,
@@ -137,11 +140,26 @@ const Login = () => {
     } catch (err) {
       console.log(err.response?.data);
       if (!err?.response) {
-        alert("No server response");
+        Swal.fire({
+          icon: "Error",
+          title: "Error!",
+          text: "Login Failed, No Server response",
+          confirmButtonText: "OK",
+        });
       } else if (err.response?.status === 400) {
-        alert(err.response?.data.message);
+        Swal.fire({
+          icon: "Error",
+          title: "Error!",
+          text: err.response?.data.message,
+          confirmButtonText: "OK",
+        });
       } else {
-        alert("Login failed");
+        Swal.fire({
+          icon: "Error",
+          title: "Error!",
+          text: "Login failed",
+          confirmButtonText: "OK",
+        });
       }
     }
   };
@@ -259,10 +277,10 @@ const Login = () => {
                 )}
               </div>
 
-              <div className={cx("input-checkbox")}>
+              {/* <div className={cx("input-checkbox")}>
                 <input type="checkbox" className={cx("checkbox-remember")} />
                 <span>Remember Account</span>
-              </div>
+              </div> */}
 
               <div className={cx("h-[15%] w-[100%] mt-2 flex  items-center")}>
                 {/* <ChangeBgButton type="submit">Continue</ChangeBgButton> */}

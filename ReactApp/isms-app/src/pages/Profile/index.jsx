@@ -18,6 +18,7 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { URL } from "../../utils/Url";
 import useAuth from "../../hooks/useAuth";
 import { format } from "date-fns";
+import Swal from "sweetalert2";
 
 const cx = classNames.bind(styles);
 const getUserURL = `${URL.USER_URL}`;
@@ -72,7 +73,12 @@ function Profile() {
           department: response.data.department,
         });
       } catch (error) {
-        console.error("Error Get User Information:", error);
+        Swal.fire({
+          icon: "Error",
+          title: "Error!",
+          text: "Error Get User Information:",
+          confirmButtonText: "OK",
+        });
       }
     };
 
@@ -143,7 +149,12 @@ function Profile() {
           setIsEditing((prev) => !prev);
         })
         .catch((error) => {
-          alert("Có lỗi khi cập nhật: ", error);
+          Swal.fire({
+            icon: "Error",
+            title: "Error!",
+            text: "Error Update User",
+            confirmButtonText: "OK",
+          });
         });
     }
   };
@@ -204,7 +215,6 @@ function Profile() {
       const isValidPhone = /^\d{10}$/.test(value);
       if (!isValidPhone) {
         error = "Invalid Phone Number";
-        console.log(1);
       }
     }
 

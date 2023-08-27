@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import ServiceGroup from "../../../../components/Elements/ServiceGroup";
 import { AiFillPlusCircle } from "react-icons/ai";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
-
+import Swal from "sweetalert2";
 const ServiceSettings = () => {
   const axiosInstance = useAxiosPrivate();
   //Data cho List Service được lấy từ DB lên
@@ -38,7 +38,14 @@ const ServiceSettings = () => {
     //Lấy giá trị từ Input
     const serviceName = serviceNameRef.current.value;
     const serviceDes = serviceDesRef.current.value;
-    if (serviceName === "") alert("Service Categories is Require");
+    if (serviceName === "") {
+      Swal.fire({
+        icon: "Error",
+        title: "Error!",
+        text: "Service Categories is Require",
+        confirmButtonText: "OK",
+      });
+    }
 
     // Create the object to be sent to the backend API
     const newServiceGroup = {
@@ -76,9 +83,19 @@ const ServiceSettings = () => {
       } catch (err) {
         // Optionally, show an error message to the user
         if (err.status === 403) {
-          alert("You are not allowed to add Service Category");
+          Swal.fire({
+            icon: "Error",
+            title: "Error!",
+            text: "You are not allowed to add Service Category",
+            confirmButtonText: "OK",
+          });
         } else {
-          alert(err.message);
+          Swal.fire({
+            icon: "Error",
+            title: "Error!",
+            text: "System error, sorry, please contact administrator:",
+            confirmButtonText: "OK",
+          });
         }
       }
     };
@@ -103,7 +120,12 @@ const ServiceSettings = () => {
         alert(response.data.message);
       })
       .catch((error) => {
-        alert("Lỗi khi xóa:", error);
+        Swal.fire({
+          icon: "Error",
+          title: "Error!",
+          text: "System error, sorry, please contact administrator:",
+          confirmButtonText: "OK",
+        });
       });
   };
 
@@ -132,7 +154,12 @@ const ServiceSettings = () => {
         setListService(updatedData);
       })
       .catch((error) => {
-        alert("Có lỗi khi cập nhật: ", error);
+        Swal.fire({
+          icon: "Error",
+          title: "Error!",
+          text: "System error, sorry, please contact administrator: ",
+          confirmButtonText: "OK",
+        });
       });
   };
   return (

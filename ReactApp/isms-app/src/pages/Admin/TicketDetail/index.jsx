@@ -46,6 +46,7 @@ import CustomField from "../../../components/Elements/CustomField";
 import { useForm } from "react-hook-form";
 import SearchAgent from "../Settings/WorkflowSettings/ViewWorkflow/SearchAgent";
 import LinkTicketForm from "./LinkTicketForm";
+import Swal from "sweetalert2";
 
 const TicketDetail = () => {
   const {
@@ -86,7 +87,12 @@ const TicketDetail = () => {
           filePath: response.data.attachmentEntity?.filePath,
         });
       } catch (err) {
-        alert("System error, sorry, please contact administrator: ", err);
+        Swal.fire({
+          icon: "Error",
+          title: "Error!",
+          text: "System error, sorry, please contact administrator: ",
+          confirmButtonText: "OK",
+        });
       }
     };
     fetchTicketDetail();
@@ -133,7 +139,12 @@ const TicketDetail = () => {
         console.log(response[2].data)
         setActivity(response[2].data);
       } catch (err) {
-        alert("System error, sorry, please contact administrator: ", err);
+        Swal.fire({
+          icon: "Error",
+          title: "Error!",
+          text: "System error, sorry, please contact administrator: ",
+          confirmButtonText: "OK",
+        });
       }
     };
     fetchTicketDetail();
@@ -145,7 +156,12 @@ const TicketDetail = () => {
         const response = await axiosInstance.get(`${URL.USER_URL}/getall`);
         setDataAgentIncident(response.data.filter(e=>e.role !==null));
       }catch(err){
-        alert("System error, sorry, please contact administrator: ", err);
+        Swal.fire({
+          icon: "Error",
+          title: "Error!",
+          text: "System error, sorry, please contact administrator: ",
+          confirmButtonText: "OK",
+        });
       }
     }
     fetchDataAgentIncident();
@@ -183,7 +199,12 @@ const TicketDetail = () => {
         }));
       } catch (err) {
         if (err.response.status === 400) {
-          alert(err.response.data.message)
+          Swal.fire({
+            icon: "Error",
+            title: "Error!",
+            text: err.response.data.message,
+            confirmButtonText: "OK",
+          });
         } else {
           alert("System error, sorry, please contact administrator: ", err);
         }
@@ -310,11 +331,21 @@ const TicketDetail = () => {
 
   const handleCompleteTask = () => {
     if (transitionMessageRef.current.value === "") {
-      alert('Need to confirm task completed');
+      Swal.fire({
+        icon: "Error",
+        title: "Error!",
+        text: "Need to confirm task completed",
+        confirmButtonText: "OK",
+      });
       return;
     }
     if (task.assignee === null) {
-      alert('The current task has not been assigned');
+      Swal.fire({
+        icon: "Error",
+        title: "Error!",
+        text: "The current task has not been assigned",
+        confirmButtonText: "OK",
+      });
       return;
     }
     const formData = new FormData();
@@ -335,10 +366,20 @@ const TicketDetail = () => {
             },
           }
         );
-        alert("Task has been sent successfully");
+        Swal.fire({
+          icon: "Error",
+          title: "Error!",
+          text: "Task has been sent successfully",
+          confirmButtonText: "OK",
+        });
         navigate("/admin/all/null");
       } catch (err) {
-        alert("System error, sorry, please contact administrator: ", err);
+        Swal.fire({
+          icon: "Error",
+          title: "Error!",
+          text: "System error, sorry, please contact administrator:",
+          confirmButtonText: "OK",
+        });
       }
     };
     completeTask();
@@ -385,7 +426,12 @@ const TicketDetail = () => {
         if (err.response.status === 400) {
           alert(err.response.data.message)
         } else {
-          alert("System error, sorry, please contact administrator: ", err);
+          Swal.fire({
+            icon: "Error",
+            title: "Error!",
+            text: "System error, sorry, please contact administrator: ",
+            confirmButtonText: "OK",
+          });
         }
       }
     }
@@ -404,11 +450,21 @@ const TicketDetail = () => {
   // Đoạn Code dưới đây dành riêng cho phần Incidents
   const handleChangeStatusIncident = (selectedStatus) => {
     if (!ticketDetail.assignedTo) {
-      alert("The current task has not been assigned")
+      Swal.fire({
+        icon: "Error",
+        title: "Error!",
+        text: "The current task has not been assigned",
+        confirmButtonText: "OK",
+      });
       return;
     }
     if (ticketDetail.assignedTo !== auth.userId) {
-      alert("The current task has not been assigned to you")
+      Swal.fire({
+        icon: "Error",
+        title: "Error!",
+        text: "The current task has not been assigned to you",
+        confirmButtonText: "OK",
+      });
       return;
     }
     const callAPIUpdateStatus = async () => {
@@ -428,7 +484,12 @@ const TicketDetail = () => {
         if (err.response.status === 400) {
           alert(err.response.data.message)
         } else {
-          alert("System error, sorry, please contact administrator: ", err);
+          Swal.fire({
+            icon: "Error",
+            title: "Error!",
+            text: "System error, sorry, please contact administrator: ",
+            confirmButtonText: "OK",
+          });
         }
       }
     }
@@ -437,11 +498,21 @@ const TicketDetail = () => {
 
   const handleChangeImpactIncident = (selectedImpact) => {
     if (!ticketDetail.assignedTo) {
-      alert("The current task has not been assigned")
+      Swal.fire({
+        icon: "Error",
+        title: "Error!",
+        text: "The current task has not been assigned",
+        confirmButtonText: "OK",
+      });
       return;
     }
     if (ticketDetail.assignedTo !== auth.userId) {
-      alert("The current task has not been assigned to you")
+      Swal.fire({
+        icon: "Error",
+        title: "Error!",
+        text: "The current task has not been assigned to you",
+        confirmButtonText: "OK",
+      });
       return;
     }
     const callAPIUpdateImpact = async () => {
@@ -461,9 +532,19 @@ const TicketDetail = () => {
         }));
       } catch (err) {
         if (err.response.status === 400) {
-          alert(err.response.data.message)
+          Swal.fire({
+            icon: "Error",
+            title: "Error!",
+            text: err.response.data.message,
+            confirmButtonText: "OK",
+          });
         } else {
-          alert("System error, sorry, please contact administrator: ", err);
+          Swal.fire({
+            icon: "Error",
+            title: "Error!",
+            text: "System error, sorry, please contact administrator: ",
+            confirmButtonText: "OK",
+          });
         }
       }
     }
@@ -472,11 +553,21 @@ const TicketDetail = () => {
 
   const handleChangeUrgencyIncident = (selectedUrgency) => {
     if (!ticketDetail.assignedTo) {
-      alert("The current task has not been assigned")
+      Swal.fire({
+        icon: "Error",
+        title: "Error!",
+        text: "The current task has not been assigned",
+        confirmButtonText: "OK",
+      });
       return;
     }
     if (ticketDetail.assignedTo !== auth.userId) {
-      alert("The current task has not been assigned to you")
+      Swal.fire({
+        icon: "Error",
+        title: "Error!",
+        text: "the current task has not been assigned to you",
+        confirmButtonText: "OK",
+      });
       return;
     }
     const callAPIUpdateUrgency = async () => {
@@ -495,9 +586,19 @@ const TicketDetail = () => {
         }));
       } catch (err) {
         if (err.response.status === 400) {
-          alert(err.response.data.message)
+          Swal.fire({
+            icon: "Error",
+            title: "Error!",
+            text: err.response.data.message,
+            confirmButtonText: "OK",
+          });
         } else {
-          alert("System error, sorry, please contact administrator: ", err);
+          Swal.fire({
+            icon: "Error",
+            title: "Error!",
+            text: "System error, sorry, please contact administrator: ",
+            confirmButtonText: "OK",
+          });
         }
       }
     }
@@ -521,9 +622,19 @@ const TicketDetail = () => {
         }));
       } catch (err) {
         if (err.response.status === 400) {
-          alert(err.response.data.message)
+          Swal.fire({
+            icon: "Error",
+            title: "Error!",
+            text: err.response.data.message,
+            confirmButtonText: "OK",
+          });
         } else {
-          alert("System error, sorry, please contact administrator: ", err);
+          Swal.fire({
+            icon: "Error",
+            title: "Error!",
+            text: "System error, sorry, please contact administrator: ",
+            confirmButtonText: "OK",
+          });
         }
       }
     }

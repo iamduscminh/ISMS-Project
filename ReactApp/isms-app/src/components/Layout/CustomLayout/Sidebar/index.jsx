@@ -89,7 +89,11 @@ function Sidebar() {
           roleName: auth.roleName,
         });
       } catch (error) {
-        console.error("Error get user information:", error);
+        Swal.fire({
+          title: "Error!",
+          text: "There are some thing wrong",
+          confirmButtonText: "OK",
+        });
       }
     };
     const requester = { requester: auth?.email, requestTicketId: "" };

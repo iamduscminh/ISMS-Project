@@ -6,6 +6,7 @@ import useAxiosPrivate from "../../../../../../hooks/useAxiosPrivate";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import useAuth from "../../../../../../hooks/useAuth";
+import Swal from "sweetalert2";
 
 const GeneralInfo = ({ flowId, checkEdit }) => {
   const { auth } = useAuth();
@@ -25,7 +26,12 @@ const GeneralInfo = ({ flowId, checkEdit }) => {
         setWorkflowNameInput(response.data.workflowName);
         setWorkflowDesInput(response.data.description);
       } catch (err) {
-        alert("System error, sorry, please contact administrator: ", err);
+        Swal.fire({
+          icon: "Error",
+          title: "Error!",
+          text: "System error, sorry, please contact administrator: ",
+          confirmButtonText: "OK",
+        });
       }
     };
     fetchWorkflow();
@@ -47,7 +53,12 @@ const GeneralInfo = ({ flowId, checkEdit }) => {
   //Handle Click Thay đổi Name và Des
   const handleChangeNameDes = () => {
     if (workflowNameInput.trim() === "" || workflowDesInput.trim() === "") {
-      alert("Workflow name and description are required");
+      Swal.fire({
+        icon: "Error",
+        title: "Error!",
+        text: "Workflow name and description are required",
+        confirmButtonText: "OK",
+      });
       return;
     }
     const updateWorkflow = async () => {
@@ -67,7 +78,12 @@ const GeneralInfo = ({ flowId, checkEdit }) => {
         }));
         return response.status;
       } catch (err) {
-        alert("System error, sorry, please contact administrator: ", err);
+        Swal.fire({
+          icon: "Error",
+          title: "Error!",
+          text: "System error, sorry, please contact administrator: ",
+          confirmButtonText: "OK",
+        })
       }
     };
     updateWorkflow();
