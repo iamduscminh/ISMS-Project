@@ -272,13 +272,15 @@ const ListTicket = () => {
       </div>
       <div>
         <div className="w-[98%] pl-[4.5rem] relative translate-y-[-56px] z-10">
-          <div className={cx("action-wrapper")}>
-            <MdDeleteForever
-              onClick={handleDeleteQuery}
-              className={cx("action-icon")}
-            />
-            <FaEdit onClick={handleEditQuery} className={cx("action-icon")} />
-          </div>
+          {queryId && typeTicket != "service" && (
+            <div className={cx("action-wrapper")}>
+              <MdDeleteForever
+                onClick={handleDeleteQuery}
+                className={cx("action-icon")}
+              />
+              <FaEdit onClick={handleEditQuery} className={cx("action-icon")} />
+            </div>
+          )}
           <Search data={ticketData} />
 
           <div className="w-[100%] ">

@@ -104,7 +104,7 @@ function ViewRequests() {
   };
 
   return (
-    <div className="view-requests-container w-full h-full py-5 bg-[#294a8d] mt-3">
+    <div className="view-requests-container w-full h-full py-5 bg-[#294a8d] mt-3 overflow-y-scroll">
       <div className="view-requests-section mt-4 mx-auto max-w-7xl bg-white rounded shadow">
         {/* HEADER SECTION*/}
         <div className="view-requests-header w-full bg-[#0e3275] text-white">
@@ -180,13 +180,20 @@ function ViewRequests() {
                 </form>
               </div>
             </div>
-
-            <DataGrid
-              rows={filteredRows}
-              columns={columns}
-              pageSize={50}
-              onRowClick={handleRowClick}
-            />
+            <div className="">
+              <DataGrid
+                rows={filteredRows}
+                columns={columns}
+                onRowClick={handleRowClick}
+                initialState={{
+                  pagination: {
+                    paginationModel: {
+                      pageSize: 20,
+                    },
+                  },
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>

@@ -16,9 +16,9 @@ const ManageQuery = ({ changeSidebar, type, queries, queryFnc }) => {
     changeSidebar(0);
   };
 
-  const handleQueryData = (id) => {
-    //console.log(id);
-    queryFnc(type, id);
+  const handleQueryData = (e) => {
+    console.log(e.target?.value);
+    //queryFnc(type, id);
   };
   const handleCreateQuery = () => {
     navigate(`/admin/query/${type}/create`);
@@ -28,7 +28,7 @@ const ManageQuery = ({ changeSidebar, type, queries, queryFnc }) => {
       //console.log(queries);
       const dataQueries = queries.filter((q) => q.queryType == type);
       setQueriesData(dataQueries);
-      console.log(queriesData);
+      //console.log(queriesData);
     };
     fetchData();
   }, []);
@@ -48,30 +48,32 @@ const ManageQuery = ({ changeSidebar, type, queries, queryFnc }) => {
       <div className="w-full h-[2px] bg-[#ebecf0] mt-[0.5rem]"></div>
       <div className="px-[0.75rem] py-[0.5rem] ">
         <h1 className="font-medium text-[#42526E] ">{type}</h1>
-        <Link to={`/admin/${type}`}>
-          <div
-            //onClick={handleQueryData}
-            className="w-[full] flex justify-start items-center cursor-pointer hover:bg-[#ebecf0] px-[0.75rem] py-[0.5rem] rounded-sm"
-          >
-            <span className="text-[#42526E] text-[0.8rem]">Query All</span>
-          </div>
-        </Link>
+        {/* <Link to={`/admin/${type}`}> */}
+        <div
+          onClick={handleQueryData}
+          className="w-[full] flex justify-start items-center cursor-pointer hover:bg-[#ebecf0] px-[0.75rem] py-[0.5rem] rounded-sm"
+        >
+          <span className="text-[#42526E] text-[0.8rem]">Query All</span>
+        </div>
+        {/* </Link> */}
         <h1 className="font-medium text-[#42526E] mt-[1rem]">Your Query</h1>
         <div>
           {queriesData &&
             queriesData.map((item) => {
               return (
-                <Link key={item.queryId} to={`/admin/${type}/${item.queryId}`}>
-                  <div
-                    //onClick={handleQueryData}
-                    id={item.queryId}
-                    className="w-[full] flex justify-start items-center cursor-pointer hover:bg-[#ebecf0] px-[0.75rem] py-[0.5rem] rounded-sm"
-                  >
-                    <span className="text-[#42526E] text-[0.8rem]">
-                      {item.queryName}
-                    </span>
-                  </div>
-                </Link>
+                // <Link key={item.queryId} to={`/admin/${type}/${item.queryId}`}>
+                <div
+                  key={item.queryId}
+                  value={item.queryI}
+                  onClick={handleQueryData}
+                  id={item.queryId}
+                  className="w-[full] flex justify-start items-center cursor-pointer hover:bg-[#ebecf0] px-[0.75rem] py-[0.5rem] rounded-sm"
+                >
+                  <span className="text-[#42526E] text-[0.8rem]">
+                    {item.queryName}
+                  </span>
+                </div>
+                // </Link>
               );
             })}
         </div>
