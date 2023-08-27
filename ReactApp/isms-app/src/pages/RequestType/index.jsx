@@ -62,6 +62,10 @@ function RequestType() {
       label: "Workflows",
       tabIndex: 2,
     },
+    {
+      label: "SLAs",
+      tabIndex: 3,
+    },
   ];
 
   const [isUpdateView, setIsUpdateView] = useState(false);
@@ -75,6 +79,7 @@ function RequestType() {
   const [selectedRequestType, setSelectedRequestType] = useState();
   const [selectedService, setSelectedService] = useState(listOfService[0]);
   const [selectedWorkflow, setSelectedWorkflow] = useState();
+  const [selectedSla, setSelectedSla] = useState();
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [listFieldsAll, setListFieldAll] = useState([]);
   const [listFieldConfig, setListFieldConfig] = useState([]);
@@ -94,7 +99,7 @@ function RequestType() {
     // console.log(data);
     // console.log(iconRequestType);
     // console.log(selectedService);
-    console.log(listFieldConfig);
+    //console.log(listFieldConfig);
     // console.log(isUpdateView);
     const apiRequestTypeUrl = isUpdateView
       ? `${URL.SERVICE_ITEM_URL}/update/${id}`
@@ -109,10 +114,24 @@ function RequestType() {
       Description: data.rqtDescription,
       EstimatedDelivery: 0,
       Status: true,
-      ServiceCategoryId: selectedService.id,
+      ServiceCategoryId: selectedService?.id,
       IconDisplay: iconRequestType,
-      WorkflowId: selectedWorkflow.id,
+      WorkflowId: selectedWorkflow?.id,
+      SlaId: selectedSla?.id,
     };
+    if (
+      !requestTypeDto.SlaId ||
+      !requestTypeDto.WorkflowId ||
+      !requestTypeDto.ServiceCategoryId
+    ) {
+      Swal.fire({
+        title: "Can not submmit!",
+        text: `You must choose Service, Workflow and Sla for Request Type, Please check the information`,
+        icon: "warning",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
     try {
       Swal.fire({
         title: "Loading...",
@@ -121,6 +140,7 @@ function RequestType() {
           Swal.showLoading();
         },
       });
+
       if (!isUpdateView)
         axiosInstance
           .post(apiRequestTypeUrl, requestTypeDto, headers)
@@ -148,7 +168,7 @@ function RequestType() {
             Swal.fire({
               icon: "success",
               title: "Success!",
-              text: "Request Ticket was created successfully.",
+              text: "Request Type was created successfully.",
               confirmButtonText: "OK",
             }).then(() => {
               navigate("/admin/");
@@ -188,7 +208,7 @@ function RequestType() {
             Swal.fire({
               icon: "success",
               title: "Success!",
-              text: "Request Ticket was created successfully.",
+              text: "Request Ticket was updated successfully.",
               confirmButtonText: "OK",
             }).then(() => {
               navigate("/admin/");
@@ -279,6 +299,7 @@ function RequestType() {
     second: "numeric",
     hour12: true,
   };
+  //Workflow
   const columnWfls = [
     { field: "stt", headerName: "STT", width: 50 },
     { field: "id", headerName: "ID", width: 150 },
@@ -305,6 +326,35 @@ function RequestType() {
     const workflowSelect = workflowData.find((obj) => obj.id === id);
     if (workflowSelect) setSelectedWorkflow(workflowSelect);
   };
+  //SLA
+  const columnSlas = [
+    { field: "stt", headerName: "STT", width: 50 },
+    { field: "id", headerName: "ID", width: 150 },
+    { field: "slaName", headerName: "Workflow Name", width: 200 },
+    { field: "description", headerName: "Description", width: 200 },
+    { field: "isDefault", headerName: "Is Default", width: 200 },
+  ];
+  const [slaData, setSlaData] = useState([]);
+  const [filteredSlaRows, setFilteredSlaRows] = useState([]);
+  const handleSlaFilterChange = (e) => {
+    const keyword = e.target.value.toLowerCase();
+    const filteredData = slaData.filter((row) =>
+      Object.values(row).some(
+        (value) =>
+          (typeof value === "string" &&
+            value.toLowerCase().includes(keyword)) ||
+          (typeof value === "number" && value.toString().includes(keyword))
+      )
+    );
+    setFilteredSlaRows(filteredData);
+  };
+
+  const handleRowSlaClick = (params) => {
+    const { id } = params.row;
+    const slaSelect = slaData.find((obj) => obj.id === id);
+    if (slaSelect) setSelectedSla(slaSelect);
+  };
+
   useEffect(() => {
     let isUpdateView = id != 0;
     setIsUpdateView(isUpdateView);
@@ -376,6 +426,32 @@ function RequestType() {
         }));
         setworkflowData(datawfl);
         setFilteredWflRows(datawfl);
+
+        //--------------Get all SLAs
+        await axiosInstance
+          .get(`${URL.SLA_URL}/getall`)
+          .then((response) => {
+            console.log(response.data);
+            const data = response.data.map((item, i) => ({
+              stt: i,
+              id: item.slaid,
+              slaName: item.slaname,
+              description: item.description,
+              isActive: item.isActive,
+              isDefault: item.isDefault,
+            }));
+            setSlaData(data);
+            setFilteredSlaRows(data);
+          })
+          .catch((error) => {
+            const result = Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error}`,
+              showCancelButton: true,
+              cancelButtonText: "Cancel",
+            });
+          });
 
         //Get Detail if id not null
         if (isUpdateView) {
@@ -914,6 +990,95 @@ function RequestType() {
                           columns={columnWfls}
                           pageSize={20}
                           onRowClick={handleRowWorkflowClick}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="">
+                    <button
+                      type="submit"
+                      className="text-white mr-2 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-4 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                      onClick={onBackTab}
+                    >
+                      Back
+                    </button>
+                    <button
+                      type="button"
+                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-4 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                      onClick={onNextTab}
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+                {/* SLA Tag */}
+                <div
+                  className={activeTabIndex === 3 ? "block" : "hidden"}
+                  id="tabRqForm"
+                >
+                  <div className="workflow-ctn flex justify-between">
+                    <div className="request-tickets-ctn w-[60%]">
+                      <div className="top-menu flex items-center">
+                        <div className="search-section mt-3 w-[100%]">
+                          <form className="mb-3 w-[100%]">
+                            <label
+                              htmlFor="default-search"
+                              className="mb-2 text-sm font-medium text-gray-900 sr-only "
+                            >
+                              Search
+                            </label>
+                            <div className="relative">
+                              <div className="absolute inset-y-0 left-0 flex items-center pl-1 pointer-events-none">
+                                <svg
+                                  aria-hidden="true"
+                                  className="w-5 h-5 text-gray-500"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                  ></path>
+                                </svg>
+                              </div>
+                              <input
+                                type="search"
+                                onChange={handleSlaFilterChange}
+                                id="default-search"
+                                className="block w-full px-4 py-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
+                                placeholder="Search..."
+                              />
+                            </div>
+                          </form>
+                        </div>
+                        <div className="wfl-selected mt-3 ml-7 w-[100%]">
+                          <div className="mb-6">
+                            <div className="flex items-center">
+                              <label
+                                htmlFor="rqtService"
+                                className="block text-sm mr-3 font-medium text-gray-500"
+                              >
+                                SLA Selected:
+                              </label>
+                              <div className="inline-block cursor-pointer">
+                                <span className="font-bold text-[#42526E] text-xl hover:underline">
+                                  {selectedSla?.slaName}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mb-3">
+                        <DataGrid
+                          rows={filteredSlaRows}
+                          columns={columnSlas}
+                          pageSize={20}
+                          onRowClick={handleRowSlaClick}
                         />
                       </div>
                     </div>
