@@ -341,7 +341,7 @@ const TicketDetail = () => {
     }
     if (task.assignee === null) {
       Swal.fire({
-        icon: "Error",
+        icon: "error",
         title: "Error!",
         text: "The current task has not been assigned",
         confirmButtonText: "OK",
@@ -367,19 +367,29 @@ const TicketDetail = () => {
           }
         );
         Swal.fire({
-          icon: "Error",
-          title: "Error!",
+          icon: "success",
+          title: "Success",
           text: "Task has been sent successfully",
           confirmButtonText: "OK",
         });
         navigate("/admin/all/null");
       } catch (err) {
-        Swal.fire({
-          icon: "Error",
-          title: "Error!",
-          text: "System error, sorry, please contact administrator:",
-          confirmButtonText: "OK",
-        });
+        console.log(err);
+        if(err.response.status === 400){
+          Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: err.response.data.message,
+            confirmButtonText: "OK",
+          });
+        }else{
+          Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: "System error, sorry, please contact administrator:",
+            confirmButtonText: "OK",
+          });
+        }   
       }
     };
     completeTask();
