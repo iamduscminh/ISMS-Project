@@ -57,11 +57,12 @@ const AdminHeader = () => {
         await axiosInstance
           .get(apiGetNotificationsUrl)
           .then((response) => {
+            console.log(response.data);
             const data = response.data.map((item, i) => ({
               id: item.notificationId,
               title: item.notificationHeader,
               sender: item.status,
-              time: new Date(item.createdAt).toLocaleString("en-US", options),
+              time: new Date(item.createdDate).toLocaleString("en-US", options),
               isRead: item.isRead,
               body: item.notificationBody,
             }));
