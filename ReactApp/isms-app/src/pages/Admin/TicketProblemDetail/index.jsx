@@ -50,7 +50,7 @@ import CustomField from "../../../components/Elements/CustomField";
 import { useForm } from "react-hook-form";
 import SearchAgent from "../Settings/WorkflowSettings/ViewWorkflow/SearchAgent";
 
-const TicketChangeDetail = () => {
+const TicketProblemDetail = () => {
   const {
     register,
     handleSubmit,
@@ -61,7 +61,7 @@ const TicketChangeDetail = () => {
   });
   const navigate = useNavigate();
   const { auth } = useAuth();
-  const { changId } = useParams();
+  const { problemId } = useParams();
   const axiosInstance = useAxiosPrivate();
   const [ticketDetail, setTicketDetail] = useState();
   const [attachment, setAttachment] = useState();
@@ -84,7 +84,7 @@ const TicketChangeDetail = () => {
     const fetchTicketDetail = async () => {
       try {
         const response = await axiosInstance.get(
-          `${URL.CHANGE_URL}/${changId}`
+          `${URL.PROBLEM_URL}/${problemId}`
         );
         console.log(response.data);
         setTicketDetail(response.data);
@@ -103,9 +103,8 @@ const TicketChangeDetail = () => {
     const fetchTicketDetail = async () => {
       try {
         const response = await Promise.all([
-          axiosInstance.get(`${URL.REQUEST_TICKET_HIS_URL}/change/${changId}`),
+          axiosInstance.get(`${URL.REQUEST_TICKET_HIS_URL}/problem/${problemId}`),
         ]);
-        console.log(response[0].data)
         setActivity(response[0].data);
       } catch (err) {
         alert("System error, sorry, please contact administrator: ", err);
@@ -147,17 +146,17 @@ const TicketChangeDetail = () => {
     const callAPIUpdateAssignee = async () => {
       try {
         const formData = new FormData();
-        formData.append("ChangeId", ticketDetail.changeId);
+        formData.append("ProblemId", ticketDetail.problemId);
         formData.append("Status", ticketDetail.status);
         formData.append("Priority", ticketDetail.priority);
         formData.append("AttachmentFile", selectedFiles[0]);
         formData.append("Impact", ticketDetail.impact);
-        formData.append("ReasonForChange", ticketDetail.reasonForChange);
+        formData.append("RootCause", ticketDetail.rootCause);
         formData.append("AssigneeId", userId);
         formData.append("Title", ticketDetail.title);
         formData.append("Description", ticketDetail.description);
         const response = await axiosInstance.put(
-          `${URL.CHANGE_URL}/update`,
+          `${URL.PROBLEM_URL}/update`,
           formData,
           {
             headers: {
@@ -167,7 +166,7 @@ const TicketChangeDetail = () => {
         );
         setTicketDetail((item) => ({
           ...item,
-          assignee: response.data.changeDTO.assignee
+          assignee: response.data.problemDTO.assignee
         }));
       } catch (err) {
         if (err.response.status === 400) {
@@ -262,12 +261,12 @@ const TicketChangeDetail = () => {
       return;
     }
     const formData = new FormData();
-    formData.append("ChangeId", ticketDetail.changeId);
+    formData.append("ProblemId", ticketDetail.problemId);
     formData.append("Status", selectedStatus);
     formData.append("Priority", ticketDetail.priority);
     formData.append("AttachmentFile", selectedFiles[0]);
     formData.append("Impact", ticketDetail.impact);
-    formData.append("ReasonForChange", ticketDetail.reasonForChange);
+    formData.append("RootCause", ticketDetail.rootCause);
     formData.append("AssigneeId", auth.userId);
     formData.append("Title", ticketDetail.title);
     formData.append("Description", ticketDetail.description);
@@ -275,7 +274,7 @@ const TicketChangeDetail = () => {
     const callAPIUpdateStatus = async () => {
       try {
         const response = await axiosInstance.put(
-          `${URL.CHANGE_URL}/update`,
+          `${URL.PROBLEM_URL}/update`,
           formData,
           {
             headers: {
@@ -287,7 +286,7 @@ const TicketChangeDetail = () => {
         setTicketDetail((item) => ({
           ...item,
           status: selectedStatus,
-          attachment: response.data.changeDTO.attachment
+          attachment: response.data.problemDTO.attachment
         }));
       } catch (err) {
         console.log(err);
@@ -307,19 +306,19 @@ const TicketChangeDetail = () => {
       return;
     }
     const formData = new FormData();
-    formData.append("ChangeId", ticketDetail.changeId);
+    formData.append("ProblemId", ticketDetail.problemId);
     formData.append("Status", ticketDetail.status);
     formData.append("Priority", ticketDetail.priority);
     formData.append("AttachmentFile", selectedFiles[0]);
     formData.append("Impact", selectedImpact);
-    formData.append("ReasonForChange", ticketDetail.reasonForChange);
+    formData.append("RootCause", ticketDetail.rootCause);
     formData.append("AssigneeId", auth.userId);
     formData.append("Title", ticketDetail.title);
     formData.append("Description", ticketDetail.description);
     const callAPIUpdateImpact = async () => {
       try {
         const response = await axiosInstance.put(
-          `${URL.CHANGE_URL}/update`,
+          `${URL.PROBLEM_URL}/update`,
           formData,
           {
             headers: {
@@ -330,7 +329,7 @@ const TicketChangeDetail = () => {
         setTicketDetail((item) => ({
           ...item,
           impact: selectedImpact,
-          priority: response.data.changeDTO.priority,
+          priority: response.data.problemDTO.priority,
         }));
       } catch (err) {
         if (err.response.status === 400) {
@@ -349,7 +348,7 @@ const TicketChangeDetail = () => {
         const response = await axiosInstance.put(
           `${URL.REQUEST_TICKET_URL}/update`,
           {
-            RequestTicketId: changId,
+            RequestTicketId: problemId,
             Status: ticketDetail.status,
             Impact: ticketDetail.impact,
             Urgency: ticketDetail.urgency,
@@ -396,7 +395,7 @@ const TicketChangeDetail = () => {
           </div>
         </Link>
         <div>
-          <span className="mr-[0.5rem]">{ticketDetail?.changeId}:</span>
+          <span className="mr-[0.5rem]">{ticketDetail?.problemId}:</span>
           <span>{ticketDetail?.title}</span>
         </div>
         {ticketDetail?.isIncident && (
@@ -425,7 +424,7 @@ const TicketChangeDetail = () => {
               <a className="text-[1.15rem] mr-[0.5rem] cursor-pointer text-[#043ac5]">
                 {ticketDetail?.requester?.fullname}
               </a>
-              <h3 className="text-[1.15rem]">create this Change</h3>
+              <h3 className="text-[1.15rem]">create this Problem</h3>
             </div>
 
             <div className="mt-[1.75rem]">
@@ -717,7 +716,7 @@ const TicketChangeDetail = () => {
               <TabSelect />
             </div>
             {commentTab ? (
-              <CommentTab requestTicketId={changId} />
+              <CommentTab requestTicketId={problemId} />
             ) : (
               <div className="px-[1rem] my-[2rem] max-h-[500px] overflow-y-scroll">
                 {activity.map((item) => (
@@ -731,4 +730,4 @@ const TicketChangeDetail = () => {
     </div>
   );
 };
-export default TicketChangeDetail;
+export default TicketProblemDetail;

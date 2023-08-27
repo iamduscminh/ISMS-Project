@@ -14,6 +14,7 @@ export { default as ListWorkflow } from "./Admin/Settings/WorkflowSettings/ListW
 export { default as ViewWorkflow } from "./Admin/Settings/WorkflowSettings/ViewWorkflow";
 export { default as TicketDetail } from "./Admin/TicketDetail";
 export { default as ChangeDetail } from "./Admin/TicketChangeDetail";
+export { default as ProblemDetail } from "./Admin/TicketProblemDetail";
 export { default as ViewRequests } from "./ViewRequests";
 export { default as ViewRequestTypes } from "./ViewRequestTypes";
 export { default as CreateRequestType } from "./CreateRequestType";

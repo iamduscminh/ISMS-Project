@@ -95,10 +95,9 @@ const TextInfo = ({
           axiosInstance.get(`${URL.GROUP_URL}/getall`),
           axiosInstance.get(`${URL.USER_URL}/getall`)
         ])
-        console.log(response[1].data);
 
         setGroupData(response[0].data);
-        setAgentData(response[1].data);
+        setAgentData(response[1].data.filter(e=>e.role !==null));
       } catch (err) {
         alert("System error, sorry, please contact administrator: ", err);
       }

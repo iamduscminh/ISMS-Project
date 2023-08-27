@@ -143,7 +143,7 @@ const TicketDetail = () => {
     const fetchDataAgentIncident = async () =>{
       try{
         const response = await axiosInstance.get(`${URL.USER_URL}/getall`);
-        setDataAgentIncident(response.data);
+        setDataAgentIncident(response.data.filter(e=>e.role !==null));
       }catch(err){
         alert("System error, sorry, please contact administrator: ", err);
       }
