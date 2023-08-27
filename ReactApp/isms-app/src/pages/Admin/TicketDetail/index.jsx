@@ -939,7 +939,7 @@ const TicketDetail = () => {
             <div>
               <div className="flex items-center mt-[1rem]">
                 <h3 className="text-[#42526E] min-w-[40%] font-medium">
-                  Assignee 1
+                  Assignee
                 </h3>
                 {
                   oldTask ? (
@@ -999,6 +999,15 @@ const TicketDetail = () => {
                     </div>
                   )
                 }
+              </div>
+              <div className="flex items-center mt-[1rem]">
+                <h3 className="text-[#42526E] min-w-[40%] font-medium">
+                  Group
+                </h3>
+                    <div>
+                      {console.log(task)}
+                      {task?.currentTask?.groupEntity?.groupName}
+                    </div>
               </div>
 
               {/* <div className="flex items-center mt-[1rem]">
@@ -1155,9 +1164,9 @@ const TicketDetail = () => {
             {task?.currentTask?.status !== "Resolved" && task?.currentTask?.workflowTransitionDTOFroms.length !== 0 ? (
               <div className="mt-[1rem] flex">
                 <select
-                  value={
+                  value={!transition ?
                     task?.currentTask?.workflowTransitionDTOFroms[0]
-                      .toWorkflowTask
+                      .toWorkflowTask : transition
                   }
                   onChange={(e) => setTransition(e.target.value)}
                   className="border-2 border-[#42526E] rounded-md px-[0.75rem] mr-[1rem]"
