@@ -261,6 +261,10 @@ const TicketChangeDetail = () => {
       alert("The current task has not been assigned");
       return;
     }
+    if (ticketDetail.assignee.userId !== auth.userId) {
+      alert("The current task has not been assigned to you")
+      return;
+    }
     const formData = new FormData();
     formData.append("ChangeId", ticketDetail.changeId);
     formData.append("Status", selectedStatus);
@@ -304,6 +308,10 @@ const TicketChangeDetail = () => {
   const handleChangeImpactIncident = (selectedImpact) => {
     if (!ticketDetail.assignee) {
       alert("The current task has not been assigned");
+      return;
+    }
+    if (ticketDetail.assignee.userId !== auth.userId) {
+      alert("The current task has not been assigned to you")
       return;
     }
     const formData = new FormData();

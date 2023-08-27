@@ -211,10 +211,10 @@ function Sidebar() {
           <h3 className="ml-[1rem] text-[#8D8888]">Service Setting</h3>
         </div>
 
-        <span className={cx("switch")}>
+        {/* <span className={cx("switch")}>
           <input type="checkbox" id="switcher" />
           <label htmlFor="switcher"></label>
-        </span>
+        </span> */}
 
         <div
           onClick={(e) => setProfile(!profile)}
