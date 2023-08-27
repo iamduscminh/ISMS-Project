@@ -9,15 +9,91 @@ import Tippy from "@tippyjs/react/headless";
 import TippyItem from "../../../Elements/TippyItem";
 import { HiOutlineDesktopComputer } from "react-icons/hi";
 import { ROUTES_PATHS } from "../../../../../constants";
-
+import Swal from "sweetalert2";
+import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
+import useAuth from "../../../../hooks/useAuth";
+import NotificationBell from "../../../Elements/Notification/NotificationBell";
+import NotificationItem from "../../../Elements/Notification/NotificationItem";
 const cx = classNames.bind(styles);
-
 const AdminHeader = () => {
+  const [toggleNoti, setToggleNoti] = useState(false);
+  const tippyWrapperRefNoti = useRef(null);
+  const settingRefNoti = useRef(null);
+  const axiosInstance = useAxiosPrivate();
+  const { auth, setAuth } = useAuth();
   const [toggle, setToggle] = useState(false);
   const tippyWrapperRef = useRef(null);
   const settingRef = useRef(null);
-
+  const [notifications, setNotifications] = useState([]);
+  const [notificationUnread, setNotificationsUnread] = useState(0);
+  const headers = {
+    Authorization: `Bearer ${auth?.accessToken}`,
+    "Content-Type": "application/json",
+    withCredentials: true,
+  };
+  const options = {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    hour12: true,
+  };
   useEffect(() => {
+    const apiGetNotificationsUrl = `api/Notifications/noti/${
+      auth?.userId
+    }/${false}`;
+    const fetchData = async () => {
+      try {
+        Swal.fire({
+          title: "Loading...",
+          allowOutsideClick: false,
+          onBeforeOpen: () => {
+            Swal.showLoading();
+          },
+        });
+        //--------------Get request tickets
+        await axiosInstance
+          .get(apiGetNotificationsUrl)
+          .then((response) => {
+            console.log(response.data);
+            const data = response.data.map((item, i) => ({
+              id: item.notificationId,
+              title: item.notificationHeader,
+              sender: item.status,
+              time: new Date(item.createdDate).toLocaleString("en-US", options),
+              isRead: item.isRead,
+              body: item.notificationBody,
+            }));
+            setNotifications(data);
+            setNotificationsUnread(
+              data.filter((x) => x.isRead == false).length
+            );
+            //console.log(response.data);
+          })
+          .catch((error) => {
+            const result = Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error}`,
+              showCancelButton: true,
+              cancelButtonText: "Cancel",
+            });
+          });
+        Swal.close();
+      } catch (error) {
+        // Handle errors if needed
+        console.log(error);
+        Swal.close();
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: error,
+        });
+      }
+    };
+    fetchData();
     const handleClickOutside = (event) => {
       if (
         tippyWrapperRef.current &&
@@ -35,10 +111,9 @@ const AdminHeader = () => {
     };
   }, []);
 
-  const handleToggle = () => {
-    setToggle((prev) => !prev);
+  const handleToggleNoti = () => {
+    setToggleNoti((prev) => !prev);
   };
-
   return (
     <div className={cx("h-[7%] w-full bg-[#294a8d] flex")}>
       <div className={cx("w-[8%] h-full flex justify-center items-center")}>
@@ -54,121 +129,63 @@ const AdminHeader = () => {
         className={cx(
           "w-[40%] flex justify-center items-center bg-[#294a8d] ml-[3rem]"
         )}
-      >
-        {/* <div className={cx("selection")}>
-          <div className={cx("item")}>
-            <Link to={ROUTES_PATHS.ADMIN}>
-              <span className={cx("item-top")}>Analysis</span>
-              <span className={cx("item-bot")}>Data and Analysis</span>
-            </Link>
-          </div>
-          <div className={cx("item-border")}>
-            <Link to={ROUTES_PATHS.ADMIN_ROLE}>
-              <span className={cx("item-top")}>Roles</span>
-              <span className={cx("item-bot")}>Users and Roles </span>
-            </Link>
-          </div>
-          <div className={cx("item-border")}>
-            <Link to={ROUTES_PATHS.ADMIN_GROUPS}>
-              <span className={cx("item-top")}>Groups</span>
-              <span className={cx("item-bot")}>Users and Roles </span>
-            </Link>
-          </div>
-          <div className={cx("item-border")}>
-            <Link to={ROUTES_PATHS.ADMIN_USERS}>
-              <span className={cx("item-top")}>Users</span>
-              <span className={cx("item-bot")}>Users and Roles </span>
-            </Link>
-          </div>
-          <div className={cx("item-border")}>
-            <Link to={ROUTES_PATHS.ADMIN_REPORT}>
-              <span className={cx("item-top")}>Report</span>
-              <span className={cx("item-bot")}>Base and Report</span>
-            </Link>
-          </div>
-        </div> */}
-      </div>
+      ></div>
       <div className={cx("ml-auto flex justify-center items-center mr-4")}>
-        {/* <Tippy
-          interactive
-          visible={toggle}
-          placement="bottom-end"
-          render={(attrs) => (
-            <div
-              className={cx("tippy-wrapper")}
-              tabIndex="-1"
-              ref={tippyWrapperRef}
-              {...attrs}
-            >
-              <h1 className="w-full h-[10%] text-[1.25rem] text-[#172b4d] font-medium ">
-                Settings
-              </h1>
-              <div className="my-[0.75rem]">
-                <h2 className="text-[0.85rem] text-[#172b4d]">
-                  QuickService Settings
-                </h2>
-                <TippyItem
-                  name="Setting Name"
-                  description="This is Description for setting"
-                  icon="HiOutlineDesktopComputer"
-                  color="default"
-                />
-                <TippyItem
-                  name="Setting Name"
-                  description="This is Description for setting"
-                  icon="HiOutlineDesktopComputer"
-                  color="default"
-                />
-                <TippyItem
-                  name="Setting Name"
-                  description="This is Description for setting"
-                  icon="HiOutlineDesktopComputer"
-                  color="default"
-                />
-                <TippyItem
-                  name="Setting Name"
-                  description="This is Description for setting"
-                  icon="HiOutlineDesktopComputer"
-                  color="default"
-                />
+        <div className="header-noti">
+          <Tippy
+            interactive
+            visible={toggleNoti}
+            placement="bottom-end"
+            render={(attrs) => (
+              <div
+                className="tippy-wrapper bg-white w-[20vw] p-3 rounded shadow"
+                tabIndex="-1"
+                ref={tippyWrapperRefNoti}
+                {...attrs}
+              >
+                <h1 className="w-full h-[10%] text-[1.25rem] text-[#172b4d] font-medium ">
+                  Notification
+                </h1>
+                <div className="my-[0.75rem]">
+                  {notifications.length > 0 &&
+                    notifications
+                      .filter((x) => x.isRead == false)
+                      .slice(0, 7)
+                      .map((item, i) => {
+                        return (
+                          <NotificationItem
+                            key={item.id}
+                            title={item.body}
+                            sender={item.sender}
+                            displayContent={false}
+                            time={item.time}
+                          />
+                        );
+                      })}
+                  {notifications.length == 0 && "Empty"}
+                </div>
+                <div>
+                  <hr />
+                  {notifications.length > 0 && (
+                    <Link to={"/notification"}>
+                      <h2 className="flex justify-center my-2 text-[0.85rem] text-blue-500 hover:underline hover:text-blue-800">
+                        View All Notification
+                      </h2>
+                    </Link>
+                  )}
+                </div>
               </div>
-              <div>
-                <h2 className="text-[0.85rem] text-[#172b4d] ">
-                  Personal Settings
-                </h2>
-                <TippyItem
-                  name="Setting Name"
-                  description="This is Description for setting"
-                  icon="HiOutlineDesktopComputer"
-                  color="personal"
-                />
-                <TippyItem
-                  name="Setting Name"
-                  description="This is Description for setting"
-                  icon="HiOutlineDesktopComputer"
-                  color="personal"
-                />
-              </div>
-            </div>
-          )}
-        >
-          <div
-            className="h-[50%] aspect-square m-[0.5rem] cursor-pointer"
-            ref={settingRef}
+            )}
           >
-            <AiFillSetting
-              className="w-full h-full text-[#fff]"
-              onClick={handleToggle}
-            />
-          </div>
-        </Tippy> */}
-        <div className="h-[50%] aspect-square m-[0.5rem] cursor-pointer">
-          <Link to={ROUTES_PATHS.ADMIN}>
-            <HiOutlineDocumentReport className="w-full h-full text-[#fff]" />
-          </Link>
-        </div>
-        <div className="h-[50%] aspect-square m-[0.5rem] cursor-pointer">
-          <IoMdNotifications className="w-full h-full text-[#fff]" />
+            <div
+              className=" mr-4 cursor-pointer flex items-center"
+              ref={settingRefNoti}
+            >
+              <button className="header-noti-button" onClick={handleToggleNoti}>
+                <NotificationBell notificationCount={notificationUnread} />
+              </button>
+            </div>
+          </Tippy>
         </div>
       </div>
     </div>

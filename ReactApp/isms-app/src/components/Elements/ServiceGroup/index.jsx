@@ -181,17 +181,17 @@ const ServiceGroup = ({ service, onDeleteService, updateServiceGroup }) => {
               >
                 <IconTag name={item.iconDisplay} />
                 <h3 className="ml-[1rem]">{item.serviceItemName}</h3>
-                <IconTag
+                {/* <IconTag
                   onClickHandle={() => handleDeleteRequestType(item)}
                   className="ml-auto cursor-pointer"
                   name="AiOutlineClose"
-                />
+                /> */}
               </div>
             ))}
           </div>
 
           {/* Div này để thêm Request Type */}
-          {!isAddRequestType ? (
+          {/* {!isAddRequestType ? (
             <h3
               onClick={(e) => setIsAddRequestType(true)}
               className="ml-[2rem] mt-[1rem] cursor-pointer text-[#054ca3]"
@@ -231,7 +231,7 @@ const ServiceGroup = ({ service, onDeleteService, updateServiceGroup }) => {
                 />
               </div>
             </Tippy>
-          )}
+          )} */}
         </div>
       )}
     </div>

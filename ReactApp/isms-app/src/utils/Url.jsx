@@ -17,4 +17,7 @@ export const URL = {
   WORKFLOW_TRANSITION_URL: "api/WorkflowTransitions",
   WORKFLOW_ASSIGNMENT_URL: "api/WorkflowAssignments",
   CUSTOM_FIELD_URL: "api/CustomFields",
+  REQUEST_TICKET_HIS_URL: "api/RequestTicketHistories",
+  CHANGE_URL: "api/Changes",
+  PROBLEM_URL: "api/Problems"
 };

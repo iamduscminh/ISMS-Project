@@ -2,13 +2,15 @@ import React, { useState, useRef, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { CiEdit } from "react-icons/ci";
 import { TiDelete } from "react-icons/ti";
-import { AiFillEye } from "react-icons/ai";
+import { FaExchangeAlt, FaClone } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import ModalDialog from "../../../../../components/Elements/PopupModal";
 import useAxiosPrivate from "../../../../../hooks/useAxiosPrivate";
 import { URL } from "../../../../../utils/Url";
 import useAuth from "../../../../../hooks/useAuth";
+import { GiConsoleController } from "react-icons/gi";
+import Swal from "sweetalert2";
 
 const ListWorkflow = () => {
   const navigate = useNavigate();
@@ -25,10 +27,18 @@ const ListWorkflow = () => {
     const fetchWorkflow = async () => {
       try {
         const response = await axiosInstance.get(`${URL.WORKFLOW_URL}/getall`);
-        console.log(response.data);
         setListWorkflow(response.data);
       } catch (err) {
-        alert("System error, sorry, please contact administrator: ", err);
+        if (err.status === 403) {
+          navigate("/unauthorized");
+        } else {
+          Swal.fire({
+            icon: "Error",
+            title: "Error!",
+            text: "System error, sorry, please contact administrator: ",
+            confirmButtonText: "OK",
+          });
+        }
       }
     };
     fetchWorkflow();
@@ -39,18 +49,71 @@ const ListWorkflow = () => {
   };
 
   const handleDeleteWorkflow = (flowId) => {
+    const toggleStatus = listWorkflow.find(i=>i.workflowId === flowId).status === "Drafted" ? "Published" : "Drafted"
     const deleteWorkflow = async () => {
       try {
         const response = await axiosInstance.delete(
-          `${URL.WORKFLOW_URL}/delete?workflowId=${flowId}`
+          `${URL.WORKFLOW_URL}/toggle/${flowId}`
         );
-        const updateListWorkflow = listWorkflow.filter(i=>i.workflowId !== flowId);
-        setListWorkflow(updateListWorkflow);
+        const updatedWorkflowList = listWorkflow.map((workflow) =>
+          workflow.workflowId === flowId
+            ? { ...workflow, status: toggleStatus }
+            : workflow
+        );
+        setListWorkflow(updatedWorkflowList);
       } catch (err) {
-        alert("System error, sorry, please contact administrator: ", err);
+        if (err.status === 403) {
+          navigate("/unauthorized");
+        }
+        else if (err.response.status === 400) {
+          Swal.fire({
+            icon: "Error",
+            title: "Error!",
+            text: err.response.data.message,
+            confirmButtonText: "OK",
+          });
+        } else {
+          Swal.fire({
+            icon: "Error",
+            title: "Error!",
+            text: "System error, sorry, please contact administrator: ",
+            confirmButtonText: "OK",
+          });
+        }
       }
     };
     deleteWorkflow();
+  };
+
+  const handleCloneWorkflow = (flowId) => {
+    const cloneWorkflow = async () => {
+      try {
+        const response = await axiosInstance.post(
+          `${URL.WORKFLOW_URL}/clone/${flowId}`
+        );
+        setListWorkflow(prev=>[
+          ...prev,
+          response.data.workflowDTO
+        ]);
+      } catch (err) {
+        if (err.response.status === 400) {
+          Swal.fire({
+            icon: "Error",
+            title: "Error!",
+            text: err.response.data.message,
+            confirmButtonText: "OK",
+          });
+        } else {
+          Swal.fire({
+            icon: "Error",
+            title: "Error!",
+            text: "System error, sorry, please contact administrator: ",
+            confirmButtonText: "OK",
+          });
+        }
+      }
+    };
+    cloneWorkflow();
   };
 
   const columns = [
@@ -75,8 +138,8 @@ const ListWorkflow = () => {
       editable: true,
     },
     {
-      field: "isActive",
-      headerName: "IsActive",
+      field: "status",
+      headerName: "Status",
       width: 100,
       editable: true,
     },
@@ -101,12 +164,20 @@ const ListWorkflow = () => {
             onClick={() => handleEditWorkflow(params.value)}
           />
           <ModalDialog
-            title={"Create New Workflow"}
-            actionText={"Create"}
-            actionHandler={()=>handleDeleteWorkflow(params.value)}
-            triggerComponent={<TiDelete className="cursor-pointer" />}
+            title={"Change Status Workflow"}
+            actionText={"Confirm"}
+            actionHandler={() => handleDeleteWorkflow(params.value)}
+            triggerComponent={<FaExchangeAlt className="cursor-pointer mr-[0.5rem]" />}
           >
-            <div>Are you sure to delete this Workflow</div>
+            <div>Are you sure to Change Status this Workflow</div>
+          </ModalDialog>
+          <ModalDialog
+            title={"Clone Workflow"}
+            actionText={"Confirm"}
+            actionHandler={() => handleCloneWorkflow(params.value)}
+            triggerComponent={<FaClone className="cursor-pointer" />}
+          >
+            <div>Are you sure to Clone this Workflow</div>
           </ModalDialog>
         </div>
       ),
@@ -131,9 +202,9 @@ const ListWorkflow = () => {
         const response = await axiosInstance.post(
           `${URL.WORKFLOW_URL}/create`,
           JSON.stringify({
-            WorkflowName: workflowNameRef.current.value,
+            WorkflowName: workflowNameRef.current.value.trim(),
             CreatedBy: auth.userId,
-            Description: descriptionRef.current.value,
+            Description: descriptionRef.current.value.trim(),
           }),
           {
             headers: {
@@ -151,7 +222,12 @@ const ListWorkflow = () => {
       } catch (err) {
         // Optionally, show an error message to the user
         if (err.status === 403) {
-          alert("You are not allowed to add Workflow Category");
+          Swal.fire({
+            icon: "Error",
+            title: "Error!",
+            text: "You are not allowed to add Workflow",
+            confirmButtonText: "OK",
+          });
         } else {
           alert(err.message);
         }

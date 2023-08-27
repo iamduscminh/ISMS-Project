@@ -46,7 +46,7 @@ const QueryCategory = ({ changeSidebar, setQueryType }) => {
           openedIcon: <IoMdArrowDropup />,
           subNav: response.data.map((category, index) => ({
             title: category.serviceCategoryName,
-            path: "",
+            path: `/admin/service/${category.serviceCategoryId}`,
             icon: <MdElectricalServices />,
             cateId: category.serviceCategoryId,
           })),

@@ -86,7 +86,7 @@ const SLA = () => {
       return sla;
     });
     setSLAs(updatedSLAs);
-    //console.log(updatedSLAs);
+
     try {
       Swal.fire({
         title: "Loading...",
@@ -96,7 +96,7 @@ const SLA = () => {
         },
       });
       const apiUpdateSlaUrl = `${URL.SLA_URL}/update`;
-
+      console.log(newData);
       const slaDto = {
         SlaId: newData.SLAID,
         Slaname: newData.SLAName,
@@ -109,11 +109,16 @@ const SLA = () => {
           SlaId: newData.SLAID,
         })),
       };
-      //console.log(slaDto);
+
       axiosInstance
         .put(apiUpdateSlaUrl, JSON.stringify(slaDto), { headers })
         .then((response) => {
-          console.log(response.data);
+          Swal.fire({
+            icon: "success",
+            title: "Success!",
+            text: "SLA was updated successfully.",
+            confirmButtonText: "OK",
+          });
         })
         .catch((error) => {
           const result = Swal.fire({
@@ -148,10 +153,16 @@ const SLA = () => {
           .delete(`${URL.SLA_URL}/delete/${slaId}`, { headers })
           .then((response) => {
             const dataRp = response.data;
-            console.log(dataRp);
+            //console.log(dataRp);
             //Delete SLA in UI
             const updatedSlas = SLAs.filter((item) => item.SLAID != slaId);
             setSLAs(updatedSlas);
+            Swal.fire({
+              icon: "success",
+              title: "Success!",
+              text: "SLA was deleted successfully.",
+              confirmButtonText: "OK",
+            });
           })
           .catch((error) => {
             const result = Swal.fire({
@@ -175,7 +186,7 @@ const SLA = () => {
         Description: slaDesInput,
       })
       .then((response) => {
-        console.log(response.data);
+        console.log(response);
         const transformedMetrics = response.data.slametrics.map((metric) => ({
           SLAMetricID: metric.slametricId,
           ResponseTime: metric.responseTime.toString(),
@@ -185,7 +196,7 @@ const SLA = () => {
         setSLAs((prev) => [
           ...prev,
           {
-            SLAID: "slaid",
+            SLAID: response.data.slaid,
             SLAName: slaNameInput,
             Description: slaDesInput,
             SLAMetrics: transformedMetrics,
@@ -194,6 +205,12 @@ const SLA = () => {
         setSlaNameInput("");
         setSlaDesInput("");
         //alert(response.data.message);
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "SLA was created successfully.",
+          confirmButtonText: "OK",
+        });
       })
       .catch((error) => {
         alert("Lỗi khi xóa:", error.message);

@@ -6,8 +6,9 @@ import useAxiosPrivate from "../../../../../../hooks/useAxiosPrivate";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import useAuth from "../../../../../../hooks/useAuth";
+import Swal from "sweetalert2";
 
-const GeneralInfo = ({ flowId }) => {
+const GeneralInfo = ({ flowId, checkEdit }) => {
   const { auth } = useAuth();
   const axiosInstance = useAxiosPrivate();
   const [workflowInfo, setWorkflowInfo] = useState();
@@ -25,7 +26,12 @@ const GeneralInfo = ({ flowId }) => {
         setWorkflowNameInput(response.data.workflowName);
         setWorkflowDesInput(response.data.description);
       } catch (err) {
-        alert("System error, sorry, please contact administrator: ", err);
+        Swal.fire({
+          icon: "Error",
+          title: "Error!",
+          text: "System error, sorry, please contact administrator: ",
+          confirmButtonText: "OK",
+        });
       }
     };
     fetchWorkflow();
@@ -47,7 +53,12 @@ const GeneralInfo = ({ flowId }) => {
   //Handle Click Thay đổi Name và Des
   const handleChangeNameDes = () => {
     if (workflowNameInput.trim() === "" || workflowDesInput.trim() === "") {
-      alert("Workflow name and description are required");
+      Swal.fire({
+        icon: "Error",
+        title: "Error!",
+        text: "Workflow name and description are required",
+        confirmButtonText: "OK",
+      });
       return;
     }
     const updateWorkflow = async () => {
@@ -67,7 +78,12 @@ const GeneralInfo = ({ flowId }) => {
         }));
         return response.status;
       } catch (err) {
-        alert("System error, sorry, please contact administrator: ", err);
+        Swal.fire({
+          icon: "Error",
+          title: "Error!",
+          text: "System error, sorry, please contact administrator: ",
+          confirmButtonText: "OK",
+        })
       }
     };
     updateWorkflow();
@@ -78,7 +94,7 @@ const GeneralInfo = ({ flowId }) => {
         <span className="text-[2rem] font-medium">
           {workflowInfo?.workflowName}
         </span>
-        <ModalDialog
+        {checkEdit && <ModalDialog
           title={"Change workflow name"}
           actionText={"Change"}
           actionHandler={handleChangeNameDes}
@@ -105,20 +121,20 @@ const GeneralInfo = ({ flowId }) => {
               onChange={handleWorkflowDesChange}
             />
           </div>
-        </ModalDialog>
+        </ModalDialog>}
       </div>
       <div className="flex items-baseline">
         <p className="w-[90%] text-[#42526E]">{workflowInfo?.description}</p>
       </div>
 
       <div className="flex justify-start items-center mt-[1rem] text-[#42526E]">
-        {workflowInfo?.isActive ? (
+        {workflowInfo?.status === "Published" ? (
           <div className="mr-[1rem] px-[1rem] bg-green-500 text-[#fff] rounded-lg font-medium cursor-pointer">
-            Active
+            Published
           </div>
         ) : (
           <div className="mr-[1rem] px-[1rem] bg-red-500 text-[#fff] rounded-lg font-medium cursor-pointer">
-            Inactive
+            Drafted
           </div>
         )}
         <div>

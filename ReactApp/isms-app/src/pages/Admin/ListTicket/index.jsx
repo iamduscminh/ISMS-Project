@@ -16,7 +16,7 @@ import MenuItem from "@mui/material/MenuItem";
 import image from "../../../assets/images";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import useAuth from "../../../hooks/useAuth";
-
+import { URL } from "../../../utils/Url";
 const cx = classNames.bind(styles);
 
 const ListTicket = () => {
@@ -45,6 +45,13 @@ const ListTicket = () => {
   const columns = [
     { field: "id", headerName: "ID", width: 150, editable: false },
     {
+      field: "title",
+      headerName: "Title",
+      width: 250,
+      editable: true,
+      description: "This column described overview of ticket",
+    },
+    {
       field: "service",
       headerName: "Service",
       width: 180,
@@ -53,15 +60,10 @@ const ListTicket = () => {
     {
       field: "requestType",
       headerName: "RequestType",
-      width: 300,
+      width: 250,
       editable: true,
     },
-    {
-      field: "group",
-      headerName: "Group",
-      width: 100,
-      editable: true,
-    },
+
     {
       field: "reporter",
       headerName: "Reporter",
@@ -69,11 +71,13 @@ const ListTicket = () => {
       renderCell: (params) => (
         <div style={{ display: "flex", alignItems: "center" }}>
           <div className="w-[1.5rem] h-[1.5rem] rounded-full overflow-hidden">
-            <img
-              className="w-full h-full object-cover object-center"
-              src={image.avatar3}
-              alt=""
-            />
+            {params.row.requesterAvatar && (
+              <img
+                className="w-full h-full object-cover object-center"
+                src={params.row.requesterAvatar}
+                alt=""
+              />
+            )}
           </div>
           <div className="ml-[0.5rem]">
             <span>{params.value}</span>
@@ -84,21 +88,29 @@ const ListTicket = () => {
     {
       field: "assignee",
       headerName: "Assignee",
-      width: 105,
+      width: 150,
       renderCell: (params) => (
         <div style={{ display: "flex", alignItems: "center" }}>
           <div className="w-[1.5rem] h-[1.5rem] rounded-full overflow-hidden">
-            <img
-              className="w-full h-full object-cover object-center"
-              src={image.avatar2}
-              alt=""
-            />
+            {params.row.assigneeAvatar && (
+              <img
+                className="w-full h-full object-cover object-center"
+                src={params.row.assigneeAvatar}
+                alt=""
+              />
+            )}
           </div>
           <div className="ml-[0.5rem]">
             <span>{params.value}</span>
           </div>
         </div>
       ),
+    },
+    {
+      field: "group",
+      headerName: "Group",
+      width: 100,
+      editable: true,
     },
     {
       field: "status",
@@ -114,8 +126,8 @@ const ListTicket = () => {
       field: "createdDate",
       headerName: "Created Date",
       width: 200,
-      // valueFormatter: (params) =>
-      //   format(new Date(params.value), "yyyy/MM/dd HH:mm:ss"),
+      valueFormatter: (params) =>
+        format(new Date(params.value), "yyyy/MM/dd HH:mm:ss"),
     },
     {
       field: "priority",
@@ -162,10 +174,21 @@ const ListTicket = () => {
     second: "numeric",
     hour12: true,
   };
+  const token = auth?.accessToken;
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+    withCredentials: true,
+  };
   useEffect(() => {
-    const apiGetRequestTicketsUrl = `api/RequestTickets/getticketsadmin/${
-      typeTicket ?? "all"
-    }/${queryId}`;
+    const QueryStatement = JSON.stringify({ service: [queryId] });
+    const apiQueryTicketUrl = `${URL.REQUEST_TICKET_URL}/querytickets`;
+    const queryDto = {
+      QueryId: queryId,
+      QueryType: typeTicket ?? "all",
+      QueryStatement: typeTicket == "service" ? QueryStatement : "",
+    };
+    console.log(queryDto);
     const fetchData = async () => {
       try {
         Swal.fire({
@@ -177,16 +200,21 @@ const ListTicket = () => {
         });
         //--------------Get request tickets
         axiosInstance
-          .get(apiGetRequestTicketsUrl)
+          .post(apiQueryTicketUrl, queryDto, { headers })
           .then((response) => {
+            console.log(response.data);
             const data = response.data.map((item, i) => ({
               id: item.ticketId,
-              service: item.isIncident ? "None" : item.serviceCategoryName,
+              title: item.title,
+              service: item?.serviceCategoryName ?? "None",
               requestType: item.isIncident
                 ? "Issue Abnormal"
-                : item.serviceItemName,
+                : item?.serviceItemName ?? "None",
               group: item.groupName,
+              requesterAvatar: item.requesterAvatar,
+              assigneeAvatar: item.assigneeAvatar,
               reporter: item.requesterFullName,
+              assignee: item.assigneeFullName,
               status: item.status,
               createdDate: new Date(item.createdAt).toLocaleString(
                 "en-US",
@@ -219,11 +247,13 @@ const ListTicket = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [typeTicket, queryId]);
   const handleRowClick = (params) => {
+    console.log(typeTicket);
     const { id } = params.row;
-
-    navigate("/admin/ticket/" + id);
+    if (typeTicket == "change") navigate("/admin/change/" + id);
+    else if (typeTicket == "problem") navigate("/admin/problem/" + id);
+    else navigate("/admin/ticket/" + id);
   };
 
   const handleDeleteQuery = () => {
@@ -244,17 +274,16 @@ const ListTicket = () => {
       </div>
       <div>
         <div className="w-[98%] pl-[4.5rem] relative translate-y-[-56px] z-10">
-          <div className={cx("action-wrapper")}>
-            <FaRegClone className={cx("action-icon")} />
-            <MdDeleteForever
-              onClick={handleDeleteQuery}
-              className={cx("action-icon")}
-            />
-            <FaEdit onClick={handleEditQuery} className={cx("action-icon")} />
-            <MdFavorite className={cx("action-icon")} />
-          </div>
-
-          <Search />
+          {queryId && typeTicket != "service" && (
+            <div className={cx("action-wrapper")}>
+              <MdDeleteForever
+                onClick={handleDeleteQuery}
+                className={cx("action-icon")}
+              />
+              <FaEdit onClick={handleEditQuery} className={cx("action-icon")} />
+            </div>
+          )}
+          <Search data={ticketData} />
 
           <div className="w-[100%] ">
             <DataGrid
@@ -279,7 +308,6 @@ const ListTicket = () => {
               getRowClassName={getColorClassName}
               rowHeight={48}
               pageSizeOptions={[20]}
-              checkboxSelection
               disableRowSelectionOnClick
               onRowClick={handleRowClick}
             />

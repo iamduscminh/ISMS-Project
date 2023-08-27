@@ -3,12 +3,15 @@ import { Link } from "react-router-dom";
 import Tippy from "@tippyjs/react/headless";
 import { useNavigate } from "react-router-dom";
 import image from "../../../../assets/images";
-import Dropdown from "../../../Elements/Dropdown";
+import NotificationBell from "../../../Elements/Notification/NotificationBell";
+import NotificationItem from "../../../Elements/Notification/NotificationItem";
 import TippyItem from "../../../Elements/TippyItem";
 import IconTag from "../../../Elements/IconTag";
 import useAuth from "../../../../hooks/useAuth";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import { URL } from "../../../../utils/Url";
+import * as signalR from "@microsoft/signalr";
+import Swal from "sweetalert2";
 function Header() {
   const [toggleNoti, setToggleNoti] = useState(false);
   const tippyWrapperRefNoti = useRef(null);
@@ -19,26 +22,138 @@ function Header() {
   const { auth, setAuth } = useAuth();
   const [avatar, setAvatar] = useState(null);
   const [userName, setUserName] = useState("");
+  const [notifications, setNotifications] = useState([]);
+  const [notificationUnread, setNotificationsUnread] = useState(0);
   const navigate = useNavigate();
   const axiosInstance = useAxiosPrivate();
   const getUserURL = `${URL.USER_URL}`;
-
+  const options = {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    hour12: true,
+  };
+  const headers = {
+    Authorization: `Bearer ${auth?.accessToken}`,
+    "Content-Type": "application/json",
+    withCredentials: true,
+  };
   useEffect(() => {
-    // Gọi API để lấy Thông tin Users từ DB
-    const fetchUserById = async () => {
+    //Connect Signal R
+    const token = auth?.accessToken;
+    const connection = new signalR.HubConnectionBuilder()
+      .withUrl("https://localhost:7134/hub/notify", {
+        accessTokenFactory: async () => token,
+        skipNegotiation: true,
+        transport: signalR.HttpTransportType.WebSockets,
+      })
+      .withAutomaticReconnect()
+      .configureLogging((logging) => {
+        // Log to the Console
+        logging.AddConsole();
+        // This will set ALL logging to Debug level
+        //logging.SetMinimumLevel(LogLevel.Debug);
+      })
+      .build();
+
+    connection
+      .start()
+      .then(() => {
+        console.log("Connected to SignalR hub");
+      })
+      .catch((error) => {
+        console.error("Error connecting to SignalR hub:", error);
+      });
+
+    connection.on("ReceiveNotification", (message) => {
+      console.log(message.notificationHeader + " " + message.notificationBody);
+      //setNotifications((prevNotifications) => [...prevNotifications, message]);
+    });
+
+    connection.on("ReceiveNormalMessage", (message) => {
+      console.log(message);
+      //setNotifications((prevNotifications) => [...prevNotifications, message]);
+    });
+    const apiGetNotificationsUrl = `api/Notifications/noti/${
+      auth?.userId
+    }/${false}`;
+    const fetchData = async () => {
       try {
-        const response = await axiosInstance.post(
-          `${getUserURL}/get/${auth.userId}`
-        );
-        setAvatar(response.data.avatar);
-        setUserName(response.data.fullName);
+        Swal.fire({
+          title: "Loading...",
+          allowOutsideClick: false,
+          onBeforeOpen: () => {
+            Swal.showLoading();
+          },
+        });
+        //--------------Get request tickets
+        await axiosInstance
+          .get(apiGetNotificationsUrl)
+          .then((response) => {
+            const data = response.data.map((item, i) => ({
+              id: item.notificationId,
+              title: item.notificationHeader,
+              sender: item.status,
+              time: new Date(item.createdAt).toLocaleString("en-US", options),
+              isRead: item.isRead,
+              body: item.notificationBody,
+            }));
+            setNotifications(data);
+            setNotificationsUnread(
+              data.filter((x) => x.isRead == false).length
+            );
+            //console.log(response.data);
+          })
+          .catch((error) => {
+            const result = Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error}`,
+              showCancelButton: true,
+              cancelButtonText: "Cancel",
+            });
+          });
+
+        // Gọi API để lấy Thông tin Users từ DB
+        await axiosInstance
+          .post(`${getUserURL}/get/${auth.userId}`, { headers })
+          .then((response) => {
+            setAvatar(response.data.avatar);
+            setUserName(response.data.fullName);
+          })
+          .catch((error) => {
+            const result = Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error}`,
+            });
+          });
+        Swal.close();
       } catch (error) {
-        console.error("Error Get User Information:", error);
+        // Handle errors if needed
+        console.log(error);
+        Swal.close();
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: error,
+        });
+      }
+    };
+    fetchData();
+    const handleScroll = () => {
+      const scrollPosition = window.pageYOffset;
+      if (scrollPosition > 0) {
+        setHeaderScroll(false);
+      } else {
+        setHeaderScroll(true);
       }
     };
 
-    fetchUserById();
-
+    window.addEventListener("scroll", handleScroll);
     const handleClickOutside = (event) => {
       if (
         tippyWrapperRefNoti.current &&
@@ -51,7 +166,9 @@ function Header() {
     document.addEventListener("click", handleClickOutside);
 
     return () => {
+      connection.stop();
       document.removeEventListener("click", handleClickOutside);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -80,22 +197,7 @@ function Header() {
     setToggleUser((prev) => !prev);
   };
   const [isHeaderScroll, setHeaderScroll] = useState(true);
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.pageYOffset;
-      if (scrollPosition > 0) {
-        setHeaderScroll(false);
-      } else {
-        setHeaderScroll(true);
-      }
-    };
 
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
   //Dropdown variable
   const [openDrNoti, setOpenDrNoti] = useState(false);
   const [openDrProf, setOpenDrProf] = useState(false);
@@ -134,80 +236,63 @@ function Header() {
           </div>
         </Link>
       </div>
-      <div className="header-right-side flex mr-8 ">
-        <Tippy
-          interactive
-          visible={toggleNoti}
-          placement="bottom-end"
-          render={(attrs) => (
-            <div
-              className="tippy-wrapper bg-white w-[20vw] p-3 rounded shadow"
-              tabIndex="-1"
-              ref={tippyWrapperRefNoti}
-              {...attrs}
-            >
-              <h1 className="w-full h-[10%] text-[1.25rem] text-[#172b4d] font-medium ">
-                Notification
-              </h1>
-              <div className="my-[0.75rem]">
-                <h2 className="text-[0.85rem] text-[#172b4d]">
-                  Request Ticket
-                </h2>
-                <TippyItem
-                  name="Setting Name"
-                  description="This is Description for setting"
-                  icon="HiOutlineDesktopComputer"
-                  color="default"
-                />
-                <TippyItem
-                  name="Setting Name"
-                  description="This is Description for setting"
-                  icon="HiOutlineDesktopComputer"
-                  color="default"
-                />
-                <TippyItem
-                  name="Setting Name"
-                  description="This is Description for setting"
-                  icon="HiOutlineDesktopComputer"
-                  color="default"
-                />
-                <TippyItem
-                  name="Setting Name"
-                  description="This is Description for setting"
-                  icon="HiOutlineDesktopComputer"
-                  color="default"
-                />
+      <div className="header-right-side flex mr-8 items-center">
+        <div className="header-noti">
+          <Tippy
+            interactive
+            visible={toggleNoti}
+            placement="bottom-end"
+            render={(attrs) => (
+              <div
+                className="tippy-wrapper bg-white w-[20vw] p-3 rounded shadow"
+                tabIndex="-1"
+                ref={tippyWrapperRefNoti}
+                {...attrs}
+              >
+                <h1 className="w-full h-[10%] text-[1.25rem] text-[#172b4d] font-medium ">
+                  Notification
+                </h1>
+                <div className="my-[0.75rem]">
+                  {notifications.length > 0 &&
+                    notifications
+                      .filter((x) => x.isRead == false)
+                      .slice(0, 7)
+                      .map((item, i) => {
+                        return (
+                          <NotificationItem
+                            key={item.id}
+                            title={item.body}
+                            sender={item.sender}
+                            displayContent={false}
+                            time={item.time}
+                          />
+                        );
+                      })}
+                  {notifications.length == 0 && "Empty"}
+                </div>
+                <div>
+                  <hr />
+                  {notifications.length > 0 && (
+                    <Link to={"/notification"}>
+                      <h2 className="flex justify-center my-2 text-[0.85rem] text-blue-500 hover:underline hover:text-blue-800">
+                        View All Notification
+                      </h2>
+                    </Link>
+                  )}
+                </div>
               </div>
-              <div>
-                <h2 className="text-[0.85rem] text-[#172b4d] ">From Admin</h2>
-                <TippyItem
-                  name="Setting Name"
-                  description="This is Description for setting"
-                  icon="HiOutlineDesktopComputer"
-                  color="personal"
-                />
-                <TippyItem
-                  name="Setting Name"
-                  description="This is Description for setting"
-                  icon="HiOutlineDesktopComputer"
-                  color="personal"
-                />
-              </div>
-            </div>
-          )}
-        >
-          <div
-            className="aspect-square mr-2 cursor-pointer"
-            ref={settingRefNoti}
+            )}
           >
-            <button className="header-noti-button" onClick={handleToggleNoti}>
-              <IconTag
-                name={"IoMdNotifications"}
-                className={"text-white text-2xl"}
-              />
-            </button>
-          </div>
-        </Tippy>
+            <div
+              className=" mr-4 cursor-pointer flex items-center"
+              ref={settingRefNoti}
+            >
+              <button className="header-noti-button" onClick={handleToggleNoti}>
+                <NotificationBell notificationCount={notificationUnread} />
+              </button>
+            </div>
+          </Tippy>
+        </div>
         <div className="header-profile">
           <Tippy
             interactive
@@ -251,7 +336,10 @@ function Header() {
               className="aspect-square mr-2 cursor-pointer"
               ref={settingRefUser}
             >
-              <button className="header-User-button" onClick={handleToggleUser}>
+              <button
+                className="header-User-button flex items-center"
+                onClick={handleToggleUser}
+              >
                 <IconTag
                   name={"BiUserCircle"}
                   className={"text-white text-2xl"}

@@ -1,0 +1,27 @@
+.table {
+    color: #727272;
+
+    & tr:first-child {
+        border-bottom: 1px solid #CFCACA;
+        font-size: 14px;
+        font-weight: 600;
+
+        & th {
+            padding-bottom: 15px;
+            text-align: center;
+        }
+    }
+
+    & td {
+        font-size: 14px;
+        padding-right: 20px;
+        padding-bottom: 7px;
+        padding-top: 7px;
+        vertical-align: top;
+        text-align: center;
+    }
+
+    & tr:nth-child(2) td {
+        padding-top: 10px;
+    }
+}

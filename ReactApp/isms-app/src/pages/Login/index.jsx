@@ -10,6 +10,7 @@ import jwtDecode from "jwt-decode";
 import { TypeAnimation } from "react-type-animation";
 import request from "../../utils/axiosConfig";
 import { PERMISSIONS } from "../../routes/Permissions";
+import Swal from "sweetalert2";
 
 const cx = classNames.bind(styles);
 
@@ -46,11 +47,11 @@ const Login = () => {
   }, []);
 
   const handleChange = (event) => {
-    setEmail(event.target.value);
+    setEmail(event.target.value.trim());
   };
 
   const handleChangePass = (event) => {
-    setPassword(event.target.value);
+    setPassword(event.target.value.trim());
   };
 
   const validateEmail = (email) => {
@@ -84,6 +85,8 @@ const Login = () => {
       if (passRef.current && !passRef.current.contains(event.target)) {
         if (!password) {
           setErrorPass((prev) => "⚠ Password is required");
+        }else if(password.length < 8){
+          setErrorPass((prev) => "⚠ Password must be more than 8 characters");
         } else {
           setErrorPass("");
         }
@@ -106,7 +109,7 @@ const Login = () => {
       //Comment lại đợi API này
       const response = await request.post(
         LOGIN_URL,
-        JSON.stringify({ email: email, password: password }),
+        JSON.stringify({ email: email.trim(), password: password.trim() }),
         {
           headers: { "Content-Type": "application/json" },
           withCredentials: true,
@@ -118,11 +121,11 @@ const Login = () => {
       console.log(decodedToken);
       const from =
         location.state?.from?.pathname ||
-        (decodedToken.roletype === "Admin" ? "/admin" : "/");
+        (decodedToken.roletype === "Admin" || decodedToken.roletype === "Agent"  ? "/admin" : "/");
 
       const permissions = decodedToken.permissions
         ? decodedToken.permissions
-        : Object.keys(PERMISSIONS);
+        : decodedToken.roletype ? Object.keys(PERMISSIONS) : []
 
       setAuth({
         email,
@@ -137,11 +140,26 @@ const Login = () => {
     } catch (err) {
       console.log(err.response?.data);
       if (!err?.response) {
-        alert("No server response");
+        Swal.fire({
+          icon: "Error",
+          title: "Error!",
+          text: "Login Failed, No Server response",
+          confirmButtonText: "OK",
+        });
       } else if (err.response?.status === 400) {
-        alert(err.response?.data.message);
+        Swal.fire({
+          icon: "Error",
+          title: "Error!",
+          text: err.response?.data.message,
+          confirmButtonText: "OK",
+        });
       } else {
-        alert("Login failed");
+        Swal.fire({
+          icon: "Error",
+          title: "Error!",
+          text: "Login failed",
+          confirmButtonText: "OK",
+        });
       }
     }
   };
@@ -185,12 +203,12 @@ const Login = () => {
             <h2 className="text-3xl font-bold">
               Log in QuickService with your account
             </h2>
-            <p>
+            {/* <p>
               Don’t have account yet?{" "}
               <UnderlineAnimation>
                 <a href="#">Create your account</a>
               </UnderlineAnimation>
-            </p>
+            </p> */}
             <img src={image.IllusForm} alt="" className={cx("illusForm")} />
           </div>
           <form className={cx("h-[63%]")} onSubmit={handleSubmit}>
@@ -259,16 +277,16 @@ const Login = () => {
                 )}
               </div>
 
-              <div className={cx("input-checkbox")}>
+              {/* <div className={cx("input-checkbox")}>
                 <input type="checkbox" className={cx("checkbox-remember")} />
                 <span>Remember Account</span>
-              </div>
+              </div> */}
 
               <div className={cx("h-[15%] w-[100%] mt-2 flex  items-center")}>
                 {/* <ChangeBgButton type="submit">Continue</ChangeBgButton> */}
                 <button
                   type="submit"
-                  className="w-[30%] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2 mb-2  focus:outline-none "
+                  className="mt-[0.75rem] ml-auto w-[25%] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2 mb-2  focus:outline-none "
                 >
                   Login
                 </button>

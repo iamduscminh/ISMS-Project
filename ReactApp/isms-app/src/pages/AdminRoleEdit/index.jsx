@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams, useLocation, Route } from "react-router-dom";
+import {
+  Link,
+  useParams,
+  useLocation,
+  Route,
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
 import { ROUTES_PATHS } from "../../../constants";
 import MessageError from "../../components/Dashboard/MessageError";
 import TogglePermission from "../../components/Dashboard/TogglePermission";
@@ -13,7 +20,7 @@ const AdminRoleEdit = ({ setCurrentRoles }) => {
   const [getRole, setRole] = useState([]);
   const { id } = useParams();
   const axiosInstance = useAxiosPrivate();
-  console.log("===============>setCurrentRoles AdminRoleEdit", setCurrentRoles);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getRoleById = async () => {
@@ -48,68 +55,76 @@ const AdminRoleEdit = ({ setCurrentRoles }) => {
     getRoleById();
   }, [axiosInstance]);
 
-  const handleEditRole = (e) => {
-    try {
-      const updatedRole = {
-        roleId: id,
-        roleName: roleName,
-        description: desc,
-        roleType: roleType,
-      };
+  const handleEditRole = () => {
+    const updatedRole = {
+      roleId: id,
+      roleName: roleName,
+      description: desc,
+      roleType: roleType,
+    };
 
-      axiosInstance
-        .put(`/api/Roles/update`, updatedRole, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          const newData = updatedRole;
-          const updatedDataRole = getRole.map((item) =>
-            item.roleId === newData.roleId ? newData : item
-          );
-          setCurrentRoles(updatedDataRole);
-        });
-    } catch (error) {
-      alert("Có lỗi khi cập nhật: ", error);
-    }
+    return axiosInstance
+      .put(`/api/Roles/update`, updatedRole, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then(() => {
+        return true;
+      })
+      .catch((error) => {
+        console.log("Có lỗi khi cập nhật1: ", error);
+        return false;
+      });
   };
-  const handleEditPermission = (e) => {
-    try {
-      const updatedPermission = {
-        roleId: id,
-        permissions: permissions,
-      };
 
-      axiosInstance
-        .put(`/api/Permissions/update`, updatedPermission, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          const newData = updatedPermission;
-          const updatedDataPermission = getRole.map((item) =>
-            item.roleId === newData.roleId ? newData : item
-          );
-          setCurrentRoles(updatedDataPermission);
-        });
-    } catch (error) {
-      alert("Có lỗi khi cập nhật: ", error);
-    }
+  const handleEditPermission = () => {
+    const updatedPermission = {
+      roleId: id,
+      permissions: permissions,
+    };
+
+    return axiosInstance
+      .put(`/api/Permissions/update`, updatedPermission, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then(() => {
+        return true;
+      })
+      .catch((error) => {
+        console.log("Có lỗi khi cập nhật2: ", error);
+        return false;
+      });
+  };
+
+  const handleSave = () => {
+    Promise.all([handleEditPermission(), handleEditRole()])
+      .then((res) => {
+        if (res?.findIndex((item) => item === false) >= 0) {
+          alert("Có lỗi khi cập nhật");
+          return;
+        }
+
+        navigate(ROUTES_PATHS.ADMIN_ROLE);
+      })
+      .catch((err) => {
+        console.log("err: ", err);
+      });
   };
 
   return (
-    <div className="bg-[#F7F7F7] text-[#727272]">
-      <div className="mx-auto max-w-7xl px-5 py-[60px]">
-        <h6 className="font-semibold text-2xl xl:text-4xl">
+    <div className="bg-[#F7F7F7] text-[#102c57]">
+      <div className="mx-auto max-w-7xl px-5 py-[70px]">
+        <h6 className="font-bold text-2xl xl:text-3xl font-poppins">
           System Role Management
         </h6>
-        <p className="mt-4 text-lg xl:text-2xl">
+        <p className="font-light mt-4 text-lg xl:text-xl font-poppins fl">
           The system allows you to manage the roles available in your
           organization, you can also view the permissions of those roles
         </p>
-        <h5 className="text-xl xl:text-3xl font-semibold uppercase text-center">
+        <h5 className="text-xl xl:text-3xl font-bold uppercase text-center pt-5">
           Edit role
         </h5>
 
@@ -194,17 +209,14 @@ const AdminRoleEdit = ({ setCurrentRoles }) => {
         </div>
 
         <div className="mt-8 xl:mt-[54px] flex space-x-3 justify-end">
-          <Link to={ROUTES_PATHS.ADMIN_ROLE} className="flex justify-end">
+          <div className="flex justify-end">
             <button
-              onClick={(e) => {
-                handleEditPermission(e);
-                handleEditRole(e);
-              }}
+              onClick={handleSave}
               className="text-white gap-4 px-4 py-2 bg-[#4AA976] rounded-lg font-semibold w-[150px] text-center"
             >
               Save
             </button>
-          </Link>
+          </div>
           <Link to={ROUTES_PATHS.ADMIN_ROLE} className="flex justify-end">
             <button className="text-black gap-4 px-4 py-2 border border-black rounded-lg w-[150px] text-center font-bold">
               Cancel

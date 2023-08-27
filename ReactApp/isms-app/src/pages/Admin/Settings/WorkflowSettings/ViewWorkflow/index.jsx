@@ -5,12 +5,14 @@ import TextInfo from "./TextInfo";
 import DiagramInfo from "./DiagramInfo";
 import useAxiosPrivate from "../../../../../hooks/useAxiosPrivate";
 import { URL } from "../../../../../utils/Url";
+import Swal from "sweetalert2";
 
 const ViewWorkflow = () => {
   const { flowId } = useParams();
   const [activeTextDiagram, setActiveTextDiagram] = useState(true);
   const axiosInstance = useAxiosPrivate();
   const [listActivity, setListActivity] = useState([]);
+  const [checkEdit, setCheckEdit] = useState(true);
 
   const handleClickText = () => {
     if (activeTextDiagram) return;
@@ -27,12 +29,11 @@ const ViewWorkflow = () => {
   useEffect(() => {
     const fetchWorkFlowTask = async () => {
       try {
-        const response = await axiosInstance.get(
-          `${URL.WORKFLOW_TASK_URL}/get/${flowId}`
-        );
-        console.log(3);
-        console.log(response.data);
-        listInitialActivity = response.data.map((item) => ({
+        const response = await Promise.all([
+          axiosInstance.get(`${URL.WORKFLOW_TASK_URL}/get/${flowId}`),
+          axiosInstance.get(`${URL.WORKFLOW_URL}/checkedit/${flowId}`)
+        ]);
+        listInitialActivity = response[0].data.map((item) => ({
           id: item.workflowTaskId,
           activityName: item.workflowTaskName,
           linkStatus: item.status,
@@ -47,10 +48,15 @@ const ViewWorkflow = () => {
             })
           ),
         }));
-        console.log(listInitialActivity);
         setListActivity(listInitialActivity);
+        setCheckEdit(response[1].data.condition);
       } catch (err) {
-        alert("System error, sorry, please contact administrator: ", err);
+        Swal.fire({
+          icon: "Error",
+          title: "Error!",
+          text: "System error, sorry, please contact administrator: ",
+          confirmButtonText: "OK",
+        });
       }
     };
     fetchWorkFlowTask();
@@ -112,13 +118,12 @@ const ViewWorkflow = () => {
   // }
 
   const addNewActivity = (name, status, role, agent, roleDTO, agentDTO) => {
-    console.log(roleDTO);
     const addActivity = async () => {
       try {
         const response = await axiosInstance.post(
           `${URL.WORKFLOW_TASK_URL}/create`,
           {
-            WorkflowTaskName: name,
+            WorkflowTaskName: name.trim(),
             Status: status,
             Description: `Description for task ${name}`,
             WorkflowId: flowId,
@@ -139,7 +144,12 @@ const ViewWorkflow = () => {
           },
         ]);
       } catch (err) {
-        alert("System error, sorry, please contact administrator: ", err);
+        Swal.fire({
+          icon: "Error",
+          title: "Error!",
+          text: "System error, sorry, please contact administrator: ",
+          confirmButtonText: "OK",
+        });
       }
     };
     addActivity();
@@ -153,7 +163,12 @@ const ViewWorkflow = () => {
         );
         setListActivity(listActivity.filter((item) => item.id !== id));
       } catch (err) {
-        alert("System error, sorry, please contact administrator: ", err);
+        Swal.fire({
+          icon: "Error",
+          title: "Error!",
+          text: "System error, sorry, please contact administrator: ",
+          confirmButtonText: "OK",
+        });
       }
     };
     deleteWorkflowTask();
@@ -179,7 +194,12 @@ const ViewWorkflow = () => {
 
     // Kiểm tra nếu không tìm thấy activity với id tương ứng, thì kết thúc hàm
     if (index === -1) {
-      alert("Không tìm thấy activity với id tương ứng.");
+      Swal.fire({
+        icon: "Error",
+        title: "Error!",
+        text: "The activity with the corresponding id could not be found.",
+        confirmButtonText: "OK",
+      });
       return;
     }
     const updateTask = async () => {
@@ -206,7 +226,12 @@ const ViewWorkflow = () => {
         console.log(updatedActivities);
         setListActivity(updatedActivities);
       } catch (err) {
-        alert("System error, sorry, please contact administrator: ", err);
+        Swal.fire({
+          icon: "Error",
+          title: "Error!",
+          text: "System error, sorry, please contact administrator: ",
+          confirmButtonText: "OK",
+        });
       }
     };
     updateTask();
@@ -218,6 +243,7 @@ const ViewWorkflow = () => {
     destinationInput,
     checkCondition
   ) => {
+    console.log(id);
     // Tạo một bản sao của mảng listActivity để không thay đổi trực tiếp state
     const updatedListActivity = [...listActivity];
     // Tìm index của activity có id tương ứng trong mảng listActivity
@@ -226,7 +252,12 @@ const ViewWorkflow = () => {
     );
     // Kiểm tra nếu không tìm thấy activity với id tương ứng, thì kết thúc hàm
     if (index === -1) {
-      alert("Không tìm thấy activity với id tương ứng.");
+      Swal.fire({
+        icon: "Error",
+        title: "Error!",
+        text: "The activity with the corresponding id could not be found.",
+        confirmButtonText: "OK",
+      });
       return;
     }
     const createTransition = async () => {
@@ -250,7 +281,12 @@ const ViewWorkflow = () => {
         updatedListActivity[index].listStatusTrans.push(newStatusTrans);
         setListActivity(updatedListActivity);
       } catch (err) {
-        alert("System error, sorry, please contact administrator: ", err);
+        Swal.fire({
+          icon: "Error",
+          title: "Error!",
+          text: "System error, sorry, please contact administrator: ",
+          confirmButtonText: "OK",
+        });
       }
     };
     createTransition();
@@ -279,7 +315,7 @@ const ViewWorkflow = () => {
   }
   return (
     <div className="h-full overflow-y-scroll">
-      <GeneralInfo flowId={flowId} />
+      <GeneralInfo flowId={flowId} checkEdit={checkEdit}/>
       <div className="ml-[3rem] mt-[2rem]">
         <div>
           {activeTextDiagram ? (
@@ -322,6 +358,7 @@ const ViewWorkflow = () => {
             handleAddStatusTransition={addStatusTransition}
             handleDeleteStatusTransition={deleteStatusTrans}
             getTaskNameById={getTaskNameById}
+            checkEdit={checkEdit}
           />
         ) : (
           <DiagramInfo data={listActivity} />

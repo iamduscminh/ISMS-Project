@@ -62,6 +62,10 @@ function RequestType() {
       label: "Workflows",
       tabIndex: 2,
     },
+    {
+      label: "SLAs",
+      tabIndex: 3,
+    },
   ];
 
   const [isUpdateView, setIsUpdateView] = useState(false);
@@ -75,10 +79,12 @@ function RequestType() {
   const [selectedRequestType, setSelectedRequestType] = useState();
   const [selectedService, setSelectedService] = useState(listOfService[0]);
   const [selectedWorkflow, setSelectedWorkflow] = useState();
+  const [selectedSla, setSelectedSla] = useState();
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [listFieldsAll, setListFieldAll] = useState([]);
   const [listFieldConfig, setListFieldConfig] = useState([]);
   const [isCreateNewService, setCreateNewService] = useState(false);
+  const [isAllowUpdate, setIsAllowUpdate] = useState(false);
   const [errorService, setErrorService] = useState("");
 
   //định nghĩa form
@@ -87,6 +93,7 @@ function RequestType() {
     handleSubmit,
     formState: { errors },
     getValues,
+    setValue,
   } = useForm({
     criteriaMode: "all",
   });
@@ -94,7 +101,7 @@ function RequestType() {
     // console.log(data);
     // console.log(iconRequestType);
     // console.log(selectedService);
-    console.log(listFieldConfig);
+    //console.log(listFieldConfig);
     // console.log(isUpdateView);
     const apiRequestTypeUrl = isUpdateView
       ? `${URL.SERVICE_ITEM_URL}/update/${id}`
@@ -109,10 +116,24 @@ function RequestType() {
       Description: data.rqtDescription,
       EstimatedDelivery: 0,
       Status: true,
-      ServiceCategoryId: selectedService.id,
+      ServiceCategoryId: selectedService?.id,
       IconDisplay: iconRequestType,
-      WorkflowId: selectedWorkflow.id,
+      WorkflowId: selectedWorkflow?.id,
+      Slaid: selectedSla?.id,
     };
+    if (
+      !requestTypeDto.Slaid ||
+      !requestTypeDto.WorkflowId ||
+      !requestTypeDto.ServiceCategoryId
+    ) {
+      Swal.fire({
+        title: "Can not submmit!",
+        text: `You must choose Service, Workflow and Sla for Request Type, Please check the information`,
+        icon: "warning",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
     try {
       Swal.fire({
         title: "Loading...",
@@ -121,6 +142,7 @@ function RequestType() {
           Swal.showLoading();
         },
       });
+
       if (!isUpdateView)
         axiosInstance
           .post(apiRequestTypeUrl, requestTypeDto, headers)
@@ -148,10 +170,10 @@ function RequestType() {
             Swal.fire({
               icon: "success",
               title: "Success!",
-              text: "Request Ticket was created successfully.",
+              text: "Request Type was created successfully.",
               confirmButtonText: "OK",
             }).then(() => {
-              navigate("/admin/");
+              navigate("/viewRequestTypes/");
             });
           })
           .catch((error) => {
@@ -165,7 +187,7 @@ function RequestType() {
         axiosInstance
           .put(apiRequestTypeUrl, requestTypeDto, headers)
           .then((response) => {
-            //console.log(response.data);
+            console.log(response);
             //CREATE REQUEST TICKET EXT
             if (listFieldConfig.some((item) => typeof item === "object")) {
               const customFieldsDataArray = listFieldConfig.map((item) => {
@@ -183,15 +205,15 @@ function RequestType() {
               );
             }
           })
-          .then((response) => {
+          .then(() => {
             //console.log(response.data);
             Swal.fire({
               icon: "success",
               title: "Success!",
-              text: "Request Ticket was created successfully.",
+              text: "Request Type was updated successfully.",
               confirmButtonText: "OK",
             }).then(() => {
-              navigate("/admin/");
+              navigate("/viewRequestTypes/");
             });
           })
           .catch((error) => {
@@ -279,6 +301,7 @@ function RequestType() {
     second: "numeric",
     hour12: true,
   };
+  //Workflow
   const columnWfls = [
     { field: "stt", headerName: "STT", width: 50 },
     { field: "id", headerName: "ID", width: 150 },
@@ -305,8 +328,90 @@ function RequestType() {
     const workflowSelect = workflowData.find((obj) => obj.id === id);
     if (workflowSelect) setSelectedWorkflow(workflowSelect);
   };
+  //SLA
+  const columnSlas = [
+    { field: "stt", headerName: "STT", width: 50 },
+    { field: "id", headerName: "ID", width: 150 },
+    { field: "slaName", headerName: "Workflow Name", width: 200 },
+    { field: "description", headerName: "Description", width: 200 },
+    { field: "isDefault", headerName: "Is Default", width: 200 },
+  ];
+  const [slaData, setSlaData] = useState([]);
+  const [filteredSlaRows, setFilteredSlaRows] = useState([]);
+  const handleSlaFilterChange = (e) => {
+    const keyword = e.target.value.toLowerCase();
+    const filteredData = slaData.filter((row) =>
+      Object.values(row).some(
+        (value) =>
+          (typeof value === "string" &&
+            value.toLowerCase().includes(keyword)) ||
+          (typeof value === "number" && value.toString().includes(keyword))
+      )
+    );
+    setFilteredSlaRows(filteredData);
+  };
+
+  const handleRowSlaClick = (params) => {
+    const { id } = params.row;
+    const slaSelect = slaData.find((obj) => obj.id === id);
+    if (slaSelect) setSelectedSla(slaSelect);
+  };
+  const handleDraftRequestType = () => {
+    if (isUpdateView && isAllowUpdate) {
+      const apiDraftRequestTypeUrl = `${URL.SERVICE_ITEM_URL}/toggle/${id}`;
+      try {
+        Swal.fire({
+          title: "Loading...",
+          allowOutsideClick: false,
+          onBeforeOpen: () => {
+            Swal.showLoading();
+          },
+        });
+        axiosInstance
+          .put(apiDraftRequestTypeUrl, headers)
+          .then((response) => {
+            console.log(response);
+            //CREATE REQUEST TICKET EXT
+          })
+          .then(() => {
+            Swal.fire({
+              icon: "success",
+              title: "Success!",
+              text: "Request Type was drafted successfully.",
+              confirmButtonText: "OK",
+            }).then(() => {
+              navigate("/viewRequestTypes/");
+            });
+          })
+          .catch((error) => {
+            const result = Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error}`,
+            });
+          });
+        Swal.close();
+      } catch (error) {
+        // Handle errors if needed
+        Swal.close();
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: error,
+        });
+      }
+    } else
+      Swal.fire({
+        title: "Can not draft!",
+        text: `You can't draft request type that related to working Request Tickets`,
+        icon: "warning",
+        confirmButtonText: "OK",
+      });
+    return;
+  };
   useEffect(() => {
     let isUpdateView = id != 0;
+    let isCanUpdate = true;
     setIsUpdateView(isUpdateView);
     const customFieldsGetUrl = `${URL.CUSTOM_FIELD_URL}/getall`;
     const apiGetSvcCategoryUrl = `${URL.SERVICE_CATEGORY_URL}/getall`;
@@ -314,6 +419,7 @@ function RequestType() {
       try {
         Swal.fire({
           title: "Loading...",
+          text: `Please wait for loading Request Type`,
           allowOutsideClick: false,
           onBeforeOpen: () => {
             Swal.showLoading();
@@ -377,16 +483,46 @@ function RequestType() {
         setworkflowData(datawfl);
         setFilteredWflRows(datawfl);
 
+        //--------------Get all SLAs
+        await axiosInstance
+          .get(`${URL.SLA_URL}/getall`)
+          .then((response) => {
+            //console.log(response.data);
+            const data = response.data.map((item, i) => ({
+              stt: i,
+              id: item.slaid,
+              slaName: item.slaname,
+              description: item.description,
+              isActive: item.isActive,
+              isDefault: item.isDefault,
+            }));
+            setSlaData(data);
+            setFilteredSlaRows(data);
+          })
+          .catch((error) => {
+            const result = Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error}`,
+              showCancelButton: true,
+              cancelButtonText: "Cancel",
+            });
+          });
+
         //Get Detail if id not null
         if (isUpdateView) {
           const customFieldsGetByRequestTypeUrl = `${URL.SERVICE_ITEM_EXT_URL}/getbyserviceitem/${id}`;
           const requestTypeDetailUrl = `${URL.SERVICE_ITEM_URL}/${id}`;
+          const requestTypeUpdateCheckUrl = `${URL.SERVICE_ITEM_URL}/checkedit/${id}`;
           //--------------Get detail request type
           await axiosInstance
             .get(requestTypeDetailUrl, { headers })
             .then((response) => {
               const data = response.data;
-              //console.log(data);
+              console.log(data);
+              setValue("rqtName", data.serviceItemName);
+              setValue("rqtDescription", data.description);
+
               setSelectedRequestType(data);
               setIconRequestType(data.iconDisplay);
               setSelectedService({
@@ -394,8 +530,12 @@ function RequestType() {
                 serviceName: data.serviceCategoryEntity.serviceCategoryName,
               });
               setSelectedWorkflow({
-                id: data.workflowEntity.workflowId,
-                workflowName: data.workflowEntity.workflowName,
+                id: data?.workflowEntity?.workflowId,
+                workflowName: data?.workflowEntity?.workflowName,
+              });
+              setSelectedSla({
+                id: data?.slaEntity?.slaid,
+                slaName: data?.slaEntity?.slaname,
               });
             })
             .catch((error) => {
@@ -433,6 +573,20 @@ function RequestType() {
                 console.log(error + "User canceled!");
               }
             });
+          await axiosInstance
+            .get(requestTypeUpdateCheckUrl, { headers })
+            .then((response) => {
+              const data = response.data;
+              // console.log(data.condition);
+              setIsAllowUpdate(data.condition);
+            })
+            .catch((error) => {
+              const result = Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: `${error}`,
+              });
+            });
         }
 
         Swal.close();
@@ -453,54 +607,74 @@ function RequestType() {
     <div className="request-types-container pb-4 w-full h-full bg-[#fff] bg-blend-lighten">
       <div className="request-types-section">
         {/* HEADER SECTION*/}
-        <div className="request-types-header w-full text-white bg-[#42526E] ">
-          <nav className="request-types-header-nav pt-3 pb-1 ">
-            <ul className="header-nav-content flex items-center text-[0.75rem] pl-[1.25rem]">
-              <li className="header-nav-item ml-1">
-                <Link
-                  className="header-nav-url hover:underline hover:text-white"
-                  to="/admin"
-                >
-                  Home
-                </Link>
-              </li>
-              <li className="header-nav-item ml-1">
-                <div className="header-nav-arrow">
-                  <Icon.AiOutlineRight />
-                </div>
-              </li>
-              <li className="header-nav-item ml-1">
-                <Link
-                  to={"/viewRequestTypes"}
-                  className="header-nav-url hover:underline hover:text-white"
-                >
-                  Request Types
-                </Link>
-              </li>
-              <li className="header-nav-item ml-1">
-                <div className="header-nav-arrow">
-                  <Icon.AiOutlineRight />
-                </div>
-              </li>
-              <li className="header-nav-item ml-1">
-                <Link className="header-nav-url hover:underline hover:text-white">
-                  Create Request Type
-                </Link>
-              </li>
-            </ul>
-          </nav>
-          <div className="request-types-header-content pb-2 flex items-center pl-[1.25rem]">
-            <div className="request-types-header-icon">
-              <Icon.BsFillInfoSquareFill className="h-[50px] w-[50px]" />
+        <div className="request-types-header w-full text-white bg-[#42526E] flex justify-between">
+          <div className="left-info">
+            <nav className="request-types-header-nav pt-3 pb-1 ">
+              <ul className="header-nav-content flex items-center text-[0.75rem] pl-[1.25rem]">
+                <li className="header-nav-item ml-1">
+                  <Link
+                    className="header-nav-url hover:underline hover:text-white"
+                    to="/admin"
+                  >
+                    Home
+                  </Link>
+                </li>
+                <li className="header-nav-item ml-1">
+                  <div className="header-nav-arrow">
+                    <Icon.AiOutlineRight />
+                  </div>
+                </li>
+                <li className="header-nav-item ml-1">
+                  <Link
+                    to={"/viewRequestTypes"}
+                    className="header-nav-url hover:underline hover:text-white"
+                  >
+                    Request Types
+                  </Link>
+                </li>
+                <li className="header-nav-item ml-1">
+                  <div className="header-nav-arrow">
+                    <Icon.AiOutlineRight />
+                  </div>
+                </li>
+                {!isUpdateView && (
+                  <li className="header-nav-item ml-1">
+                    <Link className="header-nav-url hover:underline hover:text-white">
+                      Create Request Type
+                    </Link>
+                  </li>
+                )}
+                {isUpdateView && (
+                  <li className="header-nav-item ml-1">
+                    <Link className="header-nav-url hover:underline hover:text-white">
+                      {id}
+                    </Link>
+                  </li>
+                )}
+              </ul>
+            </nav>
+            <div className="request-types-header-content pb-2 flex items-center pl-[1.25rem]">
+              <div className="request-types-header-icon">
+                <Icon.BsFillInfoSquareFill className="h-[50px] w-[50px]" />
+              </div>
+              <div className="request-types-header-description ml-5 w-1/2">
+                <h4 className="text-2xl font-bold">Request Types</h4>
+                <span className="">
+                  Customize the types of service requests in the system. Make
+                  these request types available in your system portal by editing
+                  your request type group.
+                </span>
+              </div>
             </div>
-            <div className="request-types-header-description ml-5 w-1/2">
-              <h4 className="text-2xl font-bold">Request Types</h4>
-              <span className="">
-                Customize the types of service requests in the system. Make
-                these request types available in your system portal by editing
-                your request type group.
-              </span>
-            </div>
+          </div>
+          <div className="request-type-add w-1/6 self-center">
+            <button
+              onClick={handleDraftRequestType}
+              type="button"
+              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-[1rem] py-[0.5rem] mr-2 mb-2"
+            >
+              Draft Request Type
+            </button>
           </div>
         </div>
         {/*CREATE REQUEST TYPE SECTION*/}
@@ -927,12 +1101,112 @@ function RequestType() {
                       Back
                     </button>
                     <button
+                      type="button"
+                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-4 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                      onClick={onNextTab}
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+                {/* SLA Tag */}
+                <div
+                  className={activeTabIndex === 3 ? "block" : "hidden"}
+                  id="tabRqForm"
+                >
+                  <div className="workflow-ctn flex justify-between">
+                    <div className="request-tickets-ctn w-[60%]">
+                      <div className="top-menu flex items-center">
+                        <div className="search-section mt-3 w-[100%]">
+                          <form className="mb-3 w-[100%]">
+                            <label
+                              htmlFor="default-search"
+                              className="mb-2 text-sm font-medium text-gray-900 sr-only "
+                            >
+                              Search
+                            </label>
+                            <div className="relative">
+                              <div className="absolute inset-y-0 left-0 flex items-center pl-1 pointer-events-none">
+                                <svg
+                                  aria-hidden="true"
+                                  className="w-5 h-5 text-gray-500"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                  ></path>
+                                </svg>
+                              </div>
+                              <input
+                                type="search"
+                                onChange={handleSlaFilterChange}
+                                id="default-search"
+                                className="block w-full px-4 py-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
+                                placeholder="Search..."
+                              />
+                            </div>
+                          </form>
+                        </div>
+                        <div className="wfl-selected mt-3 ml-7 w-[100%]">
+                          <div className="mb-6">
+                            <div className="flex items-center">
+                              <label
+                                htmlFor="rqtService"
+                                className="block text-sm mr-3 font-medium text-gray-500"
+                              >
+                                SLA Selected:
+                              </label>
+                              <div className="inline-block cursor-pointer">
+                                <span className="font-bold text-[#42526E] text-xl hover:underline">
+                                  {selectedSla?.slaName}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mb-3">
+                        <DataGrid
+                          rows={filteredSlaRows}
+                          columns={columnSlas}
+                          pageSize={20}
+                          onRowClick={handleRowSlaClick}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="">
+                    <button
                       type="submit"
                       className="text-white mr-2 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-4 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                      onClick={handleCreateRequestType}
+                      onClick={onBackTab}
                     >
-                      {isUpdateView ? "Update" : "Create" ?? ""}
+                      Back
                     </button>
+                    {isAllowUpdate && isUpdateView && (
+                      <button
+                        type="submit"
+                        className="text-white mr-2 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-4 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        onClick={handleCreateRequestType}
+                      >
+                        Update
+                      </button>
+                    )}
+                    {!isUpdateView && (
+                      <button
+                        type="submit"
+                        className="text-white mr-2 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-4 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        onClick={handleCreateRequestType}
+                      >
+                        Create
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

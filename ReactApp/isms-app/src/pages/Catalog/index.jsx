@@ -23,7 +23,7 @@ function Catalog() {
   //CALL API GET ALL SERVICE
   useEffect(() => {
     const apiGetSvcCategoryUrl = "api/ServiceCategories/getall";
-    const apiGetRequestTypesUrl = "api/ServiceItems/getall";
+    const apiGetRequestTypesUrl = "api/ServiceItems/getallfromrequester";
     const fetchData = async () => {
       try {
         Swal.fire({

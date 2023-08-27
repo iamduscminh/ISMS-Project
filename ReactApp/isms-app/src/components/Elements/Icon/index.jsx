@@ -3,7 +3,9 @@ import {
   BsThreeDotsVertical,
   BsSearch,
   BsFillArrowLeftCircleFill,
-  BsMicrosoft,BsSlack
+  BsMicrosoft,
+  BsSlack,
+  BsDot,
 } from "react-icons/bs";
 import {
   AiFillFile,
@@ -33,7 +35,7 @@ import { RiComputerLine, RiCustomerService2Fill } from "react-icons/ri";
 import { MdPassword, MdPublishedWithChanges } from "react-icons/md";
 import { CgSoftwareDownload } from "react-icons/cg";
 import { SlEarphonesAlt } from "react-icons/sl";
-import { GiAutoRepair } from "react-icons/gi";
+import { GiAutoRepair, GiCancel } from "react-icons/gi";
 import { IoMdNotifications } from "react-icons/io";
 import { CiViewList } from "react-icons/ci";
 import { GoReport } from "react-icons/go";
@@ -63,7 +65,9 @@ export {
   BsFillInfoSquareFill,
   BsSearch,
   BsMicrosoft,
-  BsFillArrowLeftCircleFill,BsSlack
+  BsFillArrowLeftCircleFill,
+  BsSlack,
+  BsDot,
 };
 export { CiViewList };
 export { GrNotification };
@@ -74,7 +78,7 @@ export { RiComputerLine, RiCustomerService2Fill };
 export { MdPassword, MdPublishedWithChanges };
 export { CgSoftwareDownload };
 export { SlEarphonesAlt };
-export { GiAutoRepair };
+export { GiAutoRepair, GiCancel };
 export { GoReport };
 export { IoMdNotifications };
 export { FaUserCircle };

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const SidebarLink = styled.div`
@@ -22,7 +22,7 @@ const SidebarLabel = styled.span`
   margin-left: 16px;
 `;
 
-const DropdownLink = styled(Link)`
+const DropdownLink = styled.div`
   background: #f4f7ff;
   height: 45px;
   padding-left: 3rem;
@@ -45,6 +45,7 @@ const DropdownLink = styled(Link)`
 `;
 
 const SubMenu = ({ item, listNumberTicket, changeSidebar, setQueryType }) => {
+  const navigate = useNavigate();
   let numberTicket;
   if (item.title === "All Tickets") {
     numberTicket =
@@ -72,9 +73,9 @@ const SubMenu = ({ item, listNumberTicket, changeSidebar, setQueryType }) => {
     }
   };
 
-  const handleChangeTabSubMenu = (data) => {
-    setQueryType(data);
-    changeSidebar(2);
+  const handleChangeTabSubMenu = (cateId) => {
+    console.log(cateId);
+    navigate(`/admin/service/${cateId}`);
   };
   return (
     <>
@@ -99,17 +100,18 @@ const SubMenu = ({ item, listNumberTicket, changeSidebar, setQueryType }) => {
         <div className="overflow-y-auto max-h-52">
           {item.subNav.map((item, index) => {
             return (
-              <DropdownLink
-                to={item.path}
-                key={index}
-                onClick={() => handleChangeTabSubMenu(item.type)}
-              >
-                {item.icon}
-                <SidebarLabel>{item.title}</SidebarLabel>
-                <div className="rounded-full bg-[#42526E] w-[1.25rem] aspect-square] text-[#fff] text-center text-[0.75rem]">
-                  {listNumberTicket.serviceRequests[item.cateId]}
-                </div>
-              </DropdownLink>
+              <Link to={`/admin/service/${item.cateId}`}>
+                <DropdownLink
+                  key={index}
+                  onClick={() => handleChangeTabSubMenu(item.cateId)}
+                >
+                  {item.icon}
+                  <SidebarLabel>{item.title}</SidebarLabel>
+                  <div className="rounded-full bg-[#42526E] w-[1.25rem] aspect-square] text-[#fff] text-center text-[0.75rem]">
+                    {listNumberTicket.serviceRequests[item.cateId]}
+                  </div>
+                </DropdownLink>
+              </Link>
             );
           })}
         </div>

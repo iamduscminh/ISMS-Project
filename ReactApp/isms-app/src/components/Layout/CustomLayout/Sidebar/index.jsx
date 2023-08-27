@@ -7,6 +7,8 @@ import classNames from "classnames/bind";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { MdQueryStats, MdOutlineLabelImportant } from "react-icons/md";
+import { RxDashboard } from "react-icons/rx";
+import { HiOutlineDocumentReport } from "react-icons/hi";
 import QueryCategory from "./QueryCategory";
 import ServiceFeature from "./ServiceFeature";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
@@ -15,6 +17,7 @@ import useAuth from "../../../../hooks/useAuth";
 import ManageQuery from "./ManageQuery";
 import TeamQuery from "./TeamQuery";
 import Swal from "sweetalert2";
+import Reports from "./Reports";
 const Nav = styled.div`
   background: #15171c;
   height: 80px;
@@ -86,7 +89,11 @@ function Sidebar() {
           roleName: auth.roleName,
         });
       } catch (error) {
-        console.error("Error get user information:", error);
+        Swal.fire({
+          title: "Error!",
+          text: "There are some thing wrong",
+          confirmButtonText: "OK",
+        });
       }
     };
     const requester = { requester: auth?.email, requestTicketId: "" };
@@ -140,8 +147,8 @@ function Sidebar() {
     fetchUserById();
   }, [axiosInstance]);
   const queryData = (type, id) => {
-    console.log(`query${type} - ${id}`);
-    navigate(`/admin/${type}/${id}`);
+    //console.log(`query${type} - ${id}`);
+    //navigate(`/admin/${type}/${id}`);
   };
   const sideBar = [
     <QueryCategory changeSidebar={changeSidebar} setQueryType={setQueryType} />,
@@ -153,6 +160,7 @@ function Sidebar() {
       queryFnc={queryData}
     />,
     <TeamQuery />,
+    <Reports changeSidebar={changeSidebar} />,
   ];
 
   const handleLogout = () => {
@@ -184,7 +192,21 @@ function Sidebar() {
         <TabSelect queryTab={queryTab} />
       </div>
       {sideBar[currentSidebar]}
-      <div className="grow-0 shrink-0 h-[21%] border-t-2 border-[#C5C0C0] bg-[#fff] pt-[0.5rem] pl-[1.25rem] flex flex-col justify-end">
+      <div className="grow-0 shrink-0 h-[30%] border-t-2 border-[#C5C0C0] bg-[#fff] pt-[0.5rem] pl-[1.25rem] flex flex-col justify-end">
+        <Link to={`/admin/manage`}>
+          <div className="flex mb-[1rem] cursor-pointer">
+            <RxDashboard className="text-[1.5rem] text-[#000]" />
+            <h3 className="ml-[1rem] text-[#8D8888]">Dashboard</h3>
+          </div>
+        </Link>
+        <div
+          onClick={() => changeSidebar(4)}
+          className="flex mb-[1rem] cursor-pointer"
+        >
+          <HiOutlineDocumentReport className="text-[1.5rem] text-[#000]" />
+          <h3 className="ml-[1rem] text-[#8D8888]">Report</h3>
+        </div>
+
         <div
           onClick={() => changeSidebar(1)}
           className="flex mb-[1rem] cursor-pointer"
@@ -192,10 +214,11 @@ function Sidebar() {
           <GrServices className="text-[1.5rem] text-[#42526E]" />
           <h3 className="ml-[1rem] text-[#8D8888]">Service Setting</h3>
         </div>
-        <span className={cx("switch")}>
+
+        {/* <span className={cx("switch")}>
           <input type="checkbox" id="switcher" />
           <label htmlFor="switcher"></label>
-        </span>
+        </span> */}
 
         <div
           onClick={(e) => setProfile(!profile)}

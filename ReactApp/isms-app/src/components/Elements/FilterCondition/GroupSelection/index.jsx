@@ -12,7 +12,7 @@ const GroupSelection = ({ data, onSelect }) => {
     const fetchServiceItem = async () => {
       try {
         const response = await axiosInstance.get(`${URL.GROUP_URL}/getall`);
-        //console.log(response.data);
+        console.log(response.data);
         setGroupData(response.data);
       } catch (error) {
         console.error("Error Get Data", error);
@@ -25,11 +25,13 @@ const GroupSelection = ({ data, onSelect }) => {
     const isChecked = e.target.checked;
 
     if (isChecked) {
-      const newValue = [...groupValue, checkItem.groupName];
+      const newValue = [...groupValue, checkItem];
       setGroupValue(newValue);
       onSelect(newValue);
     } else {
-      const newValue = groupValue.filter((i) => i !== checkItem.groupName);
+      const newValue = groupValue.filter(
+        (i) => i.groupId !== checkItem.groupId
+      );
       setGroupValue(newValue);
       onSelect(newValue);
     }
@@ -49,14 +51,17 @@ const GroupSelection = ({ data, onSelect }) => {
         className="w-full text-[#42526E] overflow-hidden"
         onClick={() => setOpenCombobox((prev) => !prev)}
       >
-        {": " + shortenText(groupValue.join(", "), 40)}
+        {": " +
+          shortenText(groupValue.map((obj) => obj["groupName"]).join(", "), 40)}
       </div>
       {openCombobox && (
         <div className="w-full absolute top-[120%] border z-[10] bg-[#fff] left-[0] rounded-sm px-[1rem] py-[0.5rem]">
           <div className="h-[25vh] overflow-y-scroll">
             {groupData.map((item) => (
               <div key={item.groupId} className="flex mt-[0.75rem]">
-                {groupValue.includes(item.groupName) ? (
+                {groupValue
+                  .map((obj) => obj["groupId"])
+                  .includes(item.groupId) ? (
                   <input
                     checked
                     onChange={(e) => handleUpdate(item, e)}

@@ -3,6 +3,7 @@ import TicketActivity from "../../../../../../components/Elements/TicketActivity
 import SearchAgent from "../SearchAgent";
 import useAxiosPrivate from "../../../../../../hooks/useAxiosPrivate";
 import { URL } from "../../../../../../utils/Url";
+import Swal from "sweetalert2";
 
 const statusData = [
   {
@@ -75,7 +76,8 @@ const TextInfo = ({
   handleEditActivity,
   handleAddStatusTransition,
   handleDeleteStatusTransition,
-  getTaskNameById
+  getTaskNameById,
+  checkEdit
 }) => {
 
   const activityNameInputRef = useRef();
@@ -94,12 +96,16 @@ const TextInfo = ({
           axiosInstance.get(`${URL.GROUP_URL}/getall`),
           axiosInstance.get(`${URL.USER_URL}/getall`)
         ])
-        console.log(response[1].data);
 
         setGroupData(response[0].data);
-        setAgentData(response[1].data);
+        setAgentData(response[1].data.filter(e=>e.role !==null));
       } catch (err) {
-        alert("System error, sorry, please contact administrator: ", err);
+        Swal.fire({
+          icon: "Error",
+          title: "Error!",
+          text: "System error, sorry, please contact administrator: ",
+          confirmButtonText: "OK",
+        });
       }
     }
     fetchGroupData();
@@ -109,16 +115,31 @@ const TextInfo = ({
 
   const handleAddClick = () => {
     if (activityNameInputRef.current.value.trim() === "") {
-      alert("Activity Name cannot be empty.");
+      Swal.fire({
+        icon: "Error",
+        title: "Error!",
+        text: "Activity Name cannot be empty.",
+        confirmButtonText: "OK",
+      });
     } else if (
       listActivity.find(
         (item) =>
           item.activityName === activityNameInputRef.current.value.trim()
       )
     ) {
-      alert("Activity Name is specified");
+      Swal.fire({
+        icon: "Error",
+        title: "Error!",
+        text: "Activity Name is specified",
+        confirmButtonText: "OK",
+      });
     }else if(agentValue===null && roleInputValue === -1){
-      alert("You must choose Group or Agent to handle this activity");
+      Swal.fire({
+        icon: "Error",
+        title: "Error!",
+        text: "You must choose Group or Agent to handle this activity",
+        confirmButtonText: "OK",
+      });
     } else {
 
       const roleDTO = groupData.find(i=>i.groupId === roleInputValue);
@@ -196,10 +217,11 @@ const TextInfo = ({
             handleDeleteStatusTransition={handleDeleteStatusTransition}
             canDelete={!hasDestination}
             getTaskNameById={getTaskNameById}
+            checkEdit={checkEdit}
           />
         );
       })}
-      <div className="mt-[2rem]">
+      {checkEdit && <div className="mt-[2rem]">
         <h1 className="text-[1.5rem] text-[#42526E] font-medium">
           Add new Activity
         </h1>
@@ -274,7 +296,7 @@ const TextInfo = ({
             </button>
           </div>
         </div>
-      </div>
+      </div>}
     </div>
   );
 };

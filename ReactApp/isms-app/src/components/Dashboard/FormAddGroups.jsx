@@ -5,27 +5,21 @@ import DropdownRoleType from "./TableRoles/DropDownRoleType";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import MessageError from "../../components/Dashboard/MessageError";
 import TableRoles from "../../components/Dashboard/TableRoles";
-import DropDownGroupLeader from "../../components/Dashboard/TableGroups/DropDownGroupLeader";
+import DropDownGroupLeader from "../../components/Dashboard/TableGroup/DropDownGroupLeader";
 
-const FormAddGroups = ({ open, setOpen, data }) => {
-  const [role, setRole] = useState(roleTypes[0]);
+const FormAddGroups = ({
+  open,
+  setOpen,
+  data,
+  setCurrentGroups,
+  getAllGroups,
+}) => {
   const axiosInstance = useAxiosPrivate();
-  const [currentGroups, setCurrentGroups] = useState(data);
   const [newGroup, setNewGroup] = useState(" ");
   const [desc, setDesc] = useState(" ");
-  const [listBusinessHour, setListBusinessHour] = useState([]);
   const [listGroupLeader, setlistGroupLeader] = useState([]);
 
   useEffect(() => {
-    const getAllGroups = async () => {
-      try {
-        const response = await axiosInstance.get("api/Groups/getall");
-        setCurrentGroups(response.data);
-      } catch (error) {
-        console.error("Error get all Groups [FormAddGroup]:", error);
-      }
-    };
-
     const getListGroupLeaderName = async () => {
       try {
         const response = await axiosInstance.get(`/api/Users/getall`);
@@ -35,7 +29,6 @@ const FormAddGroups = ({ open, setOpen, data }) => {
       }
     };
     getListGroupLeaderName();
-    getAllGroups();
   }, [axiosInstance]);
 
   const [groupLeaderSelected, setGroupLeaderSelected] =
@@ -53,7 +46,6 @@ const FormAddGroups = ({ open, setOpen, data }) => {
       description: groupDes,
       groupLeader: groupLeaderSelected.userId,
     };
-
     const controller = new AbortController();
 
     const createGroup = async () => {
@@ -70,13 +62,13 @@ const FormAddGroups = ({ open, setOpen, data }) => {
         );
         if (response.status === 200) {
           const createdGroup = response.data;
-          console.log("createGroup data:  " + response.data);
-          setCurrentGroups((prev) => [...prev, createdGroup]);
+          console.log("createGroup data:  ", createdGroup);
+          // setCurrentGroups((prev) => [...prev, createdGroup]);
           // Clear Input
-          console.log(currentGroups);
           setDesc(" ");
           setNewGroup(" ");
           setOpen(false);
+          getAllGroups();
         } else {
           throw response;
         }

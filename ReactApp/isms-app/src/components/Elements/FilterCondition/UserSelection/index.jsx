@@ -12,7 +12,7 @@ const UserSelection = ({ data, onSelect }) => {
     const fetchAllUser = async () => {
       try {
         const response = await axiosInstance.get(`${URL.USER_URL}/getall`);
-        //console.log(response.data);
+        console.log(response.data);
         setUserData(response.data);
       } catch (error) {
         console.error("Error Get Data", error);
@@ -25,11 +25,11 @@ const UserSelection = ({ data, onSelect }) => {
     const isChecked = e.target.checked;
 
     if (isChecked) {
-      const newValue = [...userValue, checkItem.fullName];
+      const newValue = [...userValue, checkItem];
       setUserValue(newValue);
       onSelect(newValue);
     } else {
-      const newValue = userValue.filter((i) => i !== checkItem.fullName);
+      const newValue = userValue.filter((i) => i.userId !== checkItem.userId);
       setUserValue(newValue);
       onSelect(newValue);
     }
@@ -49,14 +49,15 @@ const UserSelection = ({ data, onSelect }) => {
         className="w-full text-[#42526E] overflow-hidden"
         onClick={() => setOpenCombobox((prev) => !prev)}
       >
-        {": " + shortenText(userValue.join(", "), 40)}
+        {": " +
+          shortenText(userValue.map((obj) => obj["fullName"]).join(", "), 40)}
       </div>
       {openCombobox && (
         <div className="w-full absolute top-[120%] border z-[10] bg-[#fff] left-[0] rounded-sm px-[1rem] py-[0.5rem]">
           <div className="h-[25vh] overflow-y-scroll">
             {userData.map((item) => (
-              <div key={item.email} className="flex mt-[0.75rem]">
-                {userValue.includes(item.fullName) ? (
+              <div key={item.userId} className="flex mt-[0.75rem]">
+                {userValue.map((obj) => obj["userId"]).includes(item.userId) ? (
                   <input
                     checked
                     onChange={(e) => handleUpdate(item, e)}

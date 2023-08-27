@@ -24,30 +24,7 @@ function CreateRequest() {
   const [isValidComment, setIsValidComment] = useState(true);
   const [errorComment, setErrorComment] = useState();
   const [commentData, setCommentData] = useState([]);
-  const [activityData, setActivityData] = useState([
-    {
-      id: 1,
-      type: "UserChange",
-      //image:image.avatar3,
-      sender: "Calyrex",
-      action: "Change assigned user",
-      time: "06:06 PM July 13, 2023",
-      previous: "",
-      update: {
-        updateUser: "Gardevoir",
-        //image: image.avatar
-      },
-    },
-    {
-      id: 2,
-      type: "a",
-      sender: "Calyrex",
-      action: "Changed status",
-      time: "05:06 PM July 13, 2023",
-      previous: "Open",
-      update: "Work in progress",
-    },
-  ]);
+  const [activityData, setActivityData] = useState([]);
 
   const [commentTab, setCommentTab] = useState(true);
 
@@ -63,6 +40,7 @@ function CreateRequest() {
   const commentUrl = `${URL.COMMENT_URL}`;
   const ticketUrl = `${URL.REQUEST_TICKET_URL}`;
   const ticketExtUrl = `${URL.REQUEST_TICKET_EXT_URL}`;
+  const ticketHistoryUrl = `${URL.REQUEST_TICKET_HIS_URL}/${id}`;
   const [requestTicket, setRequestTicket] = useState();
   const [requestTicketExts, setRequestTicketExts] = useState([]);
   const [userName, setUserName] = useState("");
@@ -182,6 +160,27 @@ function CreateRequest() {
             });
           });
 
+        //get data activity
+        await axiosInstance
+          .get(ticketHistoryUrl, { headers })
+          .then((response) => {
+            const dataRp = response.data;
+            console.log(dataRp);
+            const dataActs = response.data.map((item, i) => ({
+              user: item.userEntity.fullName,
+              content: item.content,
+              time: new Date(item.lastUpdate).toLocaleString("en-US", options),
+            }));
+            setActivityData(dataActs);
+            //console.log(dataCmts);
+          })
+          .catch((error) => {
+            const result = Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error}`,
+            });
+          });
         //get data user
         const responseUser = await axiosInstance.post(
           `${getUserURL}/get/${auth?.userId}`
@@ -205,37 +204,92 @@ function CreateRequest() {
   const reasonCancelRef = useRef(null);
   const cancelRequestDetail = () => {
     const apiCancelTicketUrl = `${ticketUrl}/cancel/${id}`;
-    //console.log(reasonCancelRef.current.value);
-    try {
-      Swal.fire({
-        title: "Loading...",
-        allowOutsideClick: false,
-        onBeforeOpen: () => {
-          Swal.showLoading();
-        },
-      });
-      axiosInstance.put(apiCancelTicketUrl, headers).then((response) => {
-        console.log(response.data);
-        setRequestTicket((prevItem) => ({ ...prevItem, status: "Canceled" }));
-        Swal.fire({
-          icon: "success",
-          title: "Success!",
-          text: "Request Ticket was canceled successfully.",
-          confirmButtonText: "OK",
-        });
-      });
-      Swal.close();
-    } catch (error) {
-      // Handle errors if needed
-      Swal.close();
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: error,
-      });
-    }
+    const result = Swal.fire({
+      title: "Are you sure to Cancel this Ticket?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        try {
+          Swal.fire({
+            title: "Loading...",
+            allowOutsideClick: false,
+            onBeforeOpen: () => {
+              Swal.showLoading();
+            },
+          });
+          axiosInstance.put(apiCancelTicketUrl, headers).then((response) => {
+            //console.log(response.data);
+            setRequestTicket((prevItem) => ({
+              ...prevItem,
+              status: "Canceled",
+            }));
+            Swal.fire({
+              icon: "success",
+              title: "Success!",
+              text: "Request Ticket was Canceled successfully.",
+              confirmButtonText: "OK",
+            });
+          });
+          Swal.close();
+        } catch (error) {
+          // Handle errors if needed
+          Swal.close();
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: error,
+          });
+        }
+      }
+    });
   };
-
+  const closedRequestDetail = () => {
+    const apiClosedTicketUrl = `${ticketUrl}/confirm/${id}`;
+    const result = Swal.fire({
+      title: "Are you sure to Close this Ticket?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        try {
+          Swal.fire({
+            title: "Loading...",
+            allowOutsideClick: false,
+            onBeforeOpen: () => {
+              Swal.showLoading();
+            },
+          });
+          axiosInstance.put(apiClosedTicketUrl, headers).then((response) => {
+            //console.log(response.data);
+            setRequestTicket((prevItem) => ({
+              ...prevItem,
+              status: "Closed",
+            }));
+            Swal.fire({
+              icon: "success",
+              title: "Success!",
+              text: "Request Ticket was Closed successfully.",
+              confirmButtonText: "OK",
+            });
+          });
+          Swal.close();
+        } catch (error) {
+          // Handle errors if needed
+          Swal.close();
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: error,
+          });
+        }
+      }
+    });
+  };
   const showCommentTab = (queryCondition) => {
     setCommentTab(queryCondition);
   };
@@ -455,20 +509,20 @@ function CreateRequest() {
                   <div className="w-full flex justify-center items-center">
                     <div
                       onClick={() => showCommentTab(true)}
-                      className=" cursor-pointer w-[50%] h-full flex justify-center items-center text-[#42526E] text-[1.25rem] font-medium"
+                      className=" cursor-pointer w-[50%] h-full flex justify-start items-center text-[#42526E] text-[1.25rem] font-medium"
                     >
                       <span>Comment</span>
                     </div>
-                    <div
+                    {/* <div
                       onClick={() => showCommentTab(false)}
                       className=" cursor-pointer w-[50%] h-full flex justify-center items-center text-[#42526E] text-[1.25rem] font-medium"
                     >
                       <span>Activity</span>
-                    </div>
+                    </div> */}
                   </div>
                   <TabSelect />
                 </div>
-                {commentTab ? (
+                {
                   <div>
                     <div className="w-[full] px-[1rem] py-[0.75rem] flex ">
                       <div className="text-3xl">
@@ -511,21 +565,7 @@ function CreateRequest() {
                       ))}
                     </div>
                   </div>
-                ) : (
-                  <div className="px-[2rem] my-[2rem]">
-                    {activityData.map((item, i) => (
-                      <RequestComment
-                        key={i}
-                        isAutoCmt={true}
-                        name={"Duc Minh"}
-                        comment={
-                          "Your request status has changed to In Progress."
-                        }
-                        time={"at 26/May/23 12:34 PM"}
-                      />
-                    ))}
-                  </div>
-                )}
+                }
               </div>
             </div>
           </div>
@@ -536,37 +576,33 @@ function CreateRequest() {
               <h3 className="text-3xl font-extrabold uppercase">
                 {requestTicket?.status}
               </h3>
-              {requestTicket?.status && requestTicket?.status != "Canceled" && (
-                <ModalDialog
-                  title={"Cancel Request"}
-                  actionText={"Cancel Request"}
-                  actionHandler={cancelRequestDetail}
-                  triggerComponent={
-                    <div className="inline-block cursor-pointer">
-                      <div className="flex items-center hover:underline">
-                        <IconTag name={"FaExchangeAlt"} />
-                        <p className="text-lg font-bold ml-3">Cancel Request</p>
-                      </div>
+              {requestTicket?.status &&
+                requestTicket?.status != "Canceled" &&
+                requestTicket?.status != "Closed" &&
+                requestTicket?.status != "Resolved" && (
+                  <div
+                    className="inline-block cursor-pointer"
+                    onClick={cancelRequestDetail}
+                  >
+                    <div className="flex items-center hover:underline">
+                      <IconTag name={"GiCancel"} />
+                      <p className="text-lg font-bold ml-3">Cancel Ticket</p>
                     </div>
-                  }
-                >
-                  <div className="mb-1">
-                    <label
-                      htmlFor="reason_cancel"
-                      className="block mb-2 text-sm font-medium text-gray-500 "
-                    >
-                      Reason Cancel
-                    </label>
-                    <textarea
-                      id="reason_cancel"
-                      ref={reasonCancelRef}
-                      rows="5"
-                      className="block p-2.5 w-full text-sm text-gray-900 bg-gray-40 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 "
-                      placeholder="Write the reason you want cancel this request"
-                    ></textarea>
                   </div>
-                </ModalDialog>
-              )}
+                )}
+              {requestTicket?.status &&
+                requestTicket?.status == "Resolved" &&
+                requestTicket?.status != "Closed" && (
+                  <div
+                    className="inline-block cursor-pointer"
+                    onClick={closedRequestDetail}
+                  >
+                    <div className="flex items-center hover:underline">
+                      <IconTag name={"GiCancel"} />
+                      <p className="text-lg font-bold ml-3">Closed Ticket</p>
+                    </div>
+                  </div>
+                )}
             </div>
           </div>
         </div>

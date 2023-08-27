@@ -148,23 +148,38 @@ const FilterCondition = ({ queryCondition, setQueryCondition }) => {
   };
 
   const handleRequestTypeSelect = (selectedItem) => {
-    setQueryCondition((prev) => ({ ...prev, requestType: selectedItem }));
+    setQueryCondition((prev) => ({
+      ...prev,
+      requestType: selectedItem.map((obj) => obj["serviceItemId"]),
+    }));
   };
 
   const handleServiceSelect = (selectedItem) => {
-    setQueryCondition((prev) => ({ ...prev, service: selectedItem }));
+    setQueryCondition((prev) => ({
+      ...prev,
+      service: selectedItem.map((obj) => obj["serviceCategoryId"]),
+    }));
   };
 
   const handleAssigneeSelect = (selectedItem) => {
-    setQueryCondition((prev) => ({ ...prev, assignee: selectedItem }));
+    setQueryCondition((prev) => ({
+      ...prev,
+      assignee: selectedItem.map((obj) => obj["userId"]),
+    }));
   };
 
   const handleReporterSelect = (selectedItem) => {
-    setQueryCondition((prev) => ({ ...prev, reporter: selectedItem }));
+    setQueryCondition((prev) => ({
+      ...prev,
+      reporter: selectedItem.map((obj) => obj["userId"]),
+    }));
   };
 
   const handleGroupSelect = (selectedItem) => {
-    setQueryCondition((prev) => ({ ...prev, group: selectedItem }));
+    setQueryCondition((prev) => ({
+      ...prev,
+      group: selectedItem.map((obj) => obj["groupId"]),
+    }));
   };
 
   const handleChangeSummary = (e) => {

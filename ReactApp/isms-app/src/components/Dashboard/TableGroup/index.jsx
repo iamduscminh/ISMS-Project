@@ -55,51 +55,17 @@ const IconView = () => (
     />
   </svg>
 );
-const TableItem = ({
-  item,
-  setCurrentRoles,
-  currentIndex,
-  onDeleteRole,
-  onUpdateRole,
-}) => {
+const TableItem = ({ item, setCurrentRoles, currentIndex }) => {
   const [isEdit, setIsEdit] = useState(false);
   const [groupName, setGroupName] = useState(item?.groupName);
   const [desc, setDesc] = useState(item?.description);
   const [groupLeader, setGroupLeader] = useState(item?.groupLeader);
-  const [groupLeaderName, setGroupLeaderName] = useState("");
+  const [groupLeaderName, setGroupLeaderName] = useState(
+    item?.userEntity?.fullName
+  );
   const [roleType, setRoleType] = useState(roleTypes);
   const [open, setOpen] = useState(false);
   const axiosInstance = useAxiosPrivate();
-
-  useEffect(() => {
-    const getGroupLeaderName = async () => {
-      try {
-        const response = await axiosInstance.post(
-          `api/Users/get/${groupLeader}`
-        );
-        setGroupLeaderName(response.data.fullName);
-      } catch (error) {
-        console.error("Error getGroupLeaderName [TableGroup]:", error);
-      }
-    };
-    getGroupLeaderName();
-  }, [axiosInstance]);
-
-  const deleteRole = () => {
-    // Gọi API để xóa dữ liệu dưới cơ sở dữ liệu
-    axiosInstance
-      .delete(`api/Roles/delete/${item.roleId}`)
-      .then((response) => {
-        // Nếu xóa thành công, cập nhật lại state bằng cách loại bỏ phần tử đã xóa
-        setCurrentRoles((prevListService) => {
-          return prevListService.filter((e) => e.roleId !== item.roleId);
-        });
-        alert(response.data.message);
-      })
-      .catch((error) => {
-        alert("Lỗi khi xóa:", error);
-      });
-  };
 
   return (
     <tr>
@@ -109,7 +75,7 @@ const TableItem = ({
         {groupLeaderName}
       </td>
 
-      <td className="space-x-10 flex items-center">
+      <td className="space-x-10">
         <div className="space-x-5 py-2">
           {/* <Link to={ROUTES_PATHS.ADMIN_ROLE_EDIT + `${item.roleId}`}>
             <button
@@ -123,12 +89,12 @@ const TableItem = ({
           </Link> */}
           <Link to={`/admin/manage/groups/edit/${item.groupId}`}>
             <button
-              className="text-[#3A7DFF] w-14 focus:outline-none border-0"
+              className="text-[#3A7DFF] w-14 focus:outline-none border-0 flex items-center"
               onClick={() => {
                 setIsEdit((prev) => !prev);
               }}
             >
-              {!isEdit ? <IconEdit /> : "Save"}
+              <IconEdit />
             </button>
           </Link>
           <Routes>
@@ -140,15 +106,12 @@ const TableItem = ({
             </Route>
           </Routes>
           <button
-            className="text-[#3A7DFF] focus:outline-none border-0"
+            className="text-[#3A7DFF] focus:outline-none border-0 flex items-center"
             onClick={() => {
               setOpen(true);
             }}
           ></button>
         </div>
-        {/* <button className="text-[#3A7DFF] focus:outline-none border-0">
-          <IconView />
-        </button> */}
       </td>
       <Dialog.Root open={open} onOpenChange={setOpen}>
         <Dialog.Portal>
@@ -177,7 +140,6 @@ const TableItem = ({
                   <button
                     className="text-lg xl:text-2xl w-[100px] py-1.5 bg-[#DE350B] text-white font-normal focus:outline-none border-0"
                     onClick={(e) => {
-                      deleteRole();
                       e.preventDefault();
                       setOpen(false);
                     }}
@@ -204,38 +166,10 @@ const TableItem = ({
 };
 
 const TableRoles = ({ data, setCurrentRoles }) => {
-  // const [open, setOpen] = useState(false);
-  // const [selectedRole, setSelectedRole] = useState();
   const axiosInstance = useAxiosPrivate();
 
-  // const updateRole = (roleId, roleName, roleDescription, roleType) => {
-  //   const updatedRole = {
-  //     roleId: roleId,
-  //     roleName: roleName,
-  //     description: roleDescription,
-  //     roleType: roleType.id,
-  //   };
-
-  //   axiosInstance
-  //     .put(`/api/Roles/update`, updatedRole, {
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     })
-  //     .then((response) => {
-  //       const newData = response.data;
-  //       const updatedData = data.map((item) =>
-  //         item.roleId === newData.roleId ? newData : item
-  //       );
-
-  //       setCurrentRoles(updatedData);
-  //     })
-  //     .catch((error) => {
-  //       alert("Có lỗi khi cập nhật: ", error);
-  //     });
-  // };
   return (
-    <div className="mt-10 overflow-auto bg-[#E5F3F3] border border-black px-8 xl:px-[54px]">
+    <div className="mt-10 max-h-[70vh] overflow-y-scroll bg-[#E5F3F3] border border-black px-8 xl:px-[54px]">
       <table className={clsx(styles.table, "w-full text-left mt-8 xl:mt-16")}>
         <tr>
           <th>Group Name</th>

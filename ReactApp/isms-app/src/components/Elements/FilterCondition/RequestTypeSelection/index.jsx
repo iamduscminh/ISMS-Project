@@ -11,7 +11,7 @@ const RequestTypeSelection = ({ data, onSelect }) => {
   );
 
   useEffect(() => {
-    console.log(`checkkkk ${serviceRequestValue}`);
+    //console.log(`checkkkk ${serviceRequestValue}`);
     const fetchServiceItem = async () => {
       try {
         const response = await axiosInstance.get(
@@ -28,14 +28,14 @@ const RequestTypeSelection = ({ data, onSelect }) => {
 
   const handleUpdate = (checkItem, e) => {
     const isChecked = e.target.checked;
-
+    console.log(serviceRequestValue);
     if (isChecked) {
-      const newValue = [...serviceRequestValue, checkItem.serviceItemName];
+      const newValue = [...serviceRequestValue, checkItem];
       setServiceRequestValue(newValue);
       onSelect(newValue);
     } else {
       const newValue = serviceRequestValue.filter(
-        (i) => i !== checkItem.serviceItemName
+        (i) => i.serviceItemId !== checkItem.serviceItemId
       );
       setServiceRequestValue(newValue);
       onSelect(newValue);
@@ -56,14 +56,20 @@ const RequestTypeSelection = ({ data, onSelect }) => {
         className="w-full text-[#42526E] overflow-hidden"
         onClick={() => setOpenCombobox((prev) => !prev)}
       >
-        {": " + shortenText(serviceRequestValue.join(", "), 40)}
+        {": " +
+          shortenText(
+            serviceRequestValue.map((obj) => obj["serviceItemName"]).join(", "),
+            40
+          )}
       </div>
       {openCombobox && (
         <div className="w-full absolute top-[120%] border z-[10] bg-[#fff] left-[0] rounded-sm px-[1rem] py-[0.5rem]">
           <div className="h-[25vh] overflow-y-scroll">
             {serviceItemData.map((item) => (
               <div key={item.serviceItemId} className="flex mt-[0.75rem]">
-                {serviceRequestValue.includes(item.serviceItemId) ? (
+                {serviceRequestValue
+                  .map((obj) => obj["serviceItemId"])
+                  .includes(item.serviceItemId) ? (
                   <input
                     checked
                     onChange={(e) => handleUpdate(item, e)}

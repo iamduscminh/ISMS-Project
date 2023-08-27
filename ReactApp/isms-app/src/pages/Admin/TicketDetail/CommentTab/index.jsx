@@ -84,7 +84,7 @@ const CommentTab = ({ requestTicketId }) => {
           ref={commentRef}
           rows={4}
           className="w-full h-full resize-none px-[0.75rem] py-[0.5rem] border-2 border-[#747272] rounded-md"
-          placeholder="@ to tag someone"
+          placeholder="Comment your ideas here"
         ></textarea>
       </div>
 
