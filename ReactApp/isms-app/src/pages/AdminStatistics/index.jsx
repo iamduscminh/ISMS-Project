@@ -74,11 +74,7 @@ const AdminStatistics = () => {
   useEffect(() => {
     var arrayResolved = new Array(dateRanges.number).fill(0);
     var arrayCreated = new Array(dateRanges.number).fill(0);
-    var arrayDataToExport = new Array(dateRanges.number).fill({
-      Created: 0,
-      Resolved: 0,
-    });
-    var emptyObj = {};
+
     const getAllTickets = async () => {
       try {
         const response = await axiosInstance.get(
@@ -125,15 +121,8 @@ const AdminStatistics = () => {
           ) {
             arrayCreated[dateRanges.number - i - 1] = item.totalCreated;
             arrayResolved[dateRanges.number - i - 1] = item.totalResolved;
-            eachData = {
-              Date: formatDate(getPreviousDay(today, -i, 0)),
-              Created: item.totalCreated,
-              Resolved: item.totalResolved,
-            };
-            arrayDataToExport[dateRanges.number - i - 1] = eachData;
           }
         }
-        setDataToExport(arrayDataToExport);
         setArrayResolve(arrayResolved);
         setArrayCreate(arrayCreated);
       });
@@ -150,8 +139,8 @@ const AdminStatistics = () => {
 
     return {
       Date: item?.x,
-      "Total Created": item?.y,
-      "Total Resolved": totalResolved,
+      "Created": item?.y,
+      "Resolved": totalResolved,
     };
   });
 

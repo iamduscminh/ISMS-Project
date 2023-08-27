@@ -115,16 +115,16 @@ const AdminRoleEdit = ({ setCurrentRoles }) => {
   };
 
   return (
-    <div className="bg-[#F7F7F7] text-[#727272]">
-      <div className="mx-auto max-w-7xl px-5 py-[60px]">
-        <h6 className="font-semibold text-2xl xl:text-4xl">
+    <div className="bg-[#F7F7F7] text-[#102c57]">
+      <div className="mx-auto max-w-7xl px-5 py-[70px]">
+        <h6 className="font-bold text-2xl xl:text-3xl font-poppins">
           System Role Management
         </h6>
-        <p className="mt-4 text-lg xl:text-2xl">
+        <p className="font-light mt-4 text-lg xl:text-xl font-poppins fl">
           The system allows you to manage the roles available in your
           organization, you can also view the permissions of those roles
         </p>
-        <h5 className="text-xl xl:text-3xl font-semibold uppercase text-center">
+        <h5 className="text-xl xl:text-3xl font-bold uppercase text-center pt-5">
           Edit role
         </h5>
 

@@ -51,20 +51,20 @@ const AdminUserManage = () => {
   }, [axiosInstance]);
 
   return (
-    <div className="bg-[#F7F7F7] text-[#727272] overflow-y-scroll">
-      <div className="mx-auto max-w-7xl px-[3rem] py-[2rem]">
+    <div className="bg-[#F7F7F7] text-[#102c57] overflow-y-scroll">
+      <div className="mx-auto max-w-7xl px-5 py-[70px]">
         <div>
-          <h6 className="font-semibold text-2xl xl:text-4xl text-[#42526E]">
+          <h6 className="font-bold text-2xl xl:text-3xl font-poppins">
             System User Management
           </h6>
-          <p className="mt-4 text-lg xl:text-2xl">
-            The system allows you to manage the roles available in your
-            organization, you can also view the permissions of those roles
+          <p className="font-light mt-4 text-lg xl:text-xl font-poppins fl">
+            The system allows you to manage the users available in your
+            organization
           </p>
         </div>
-        <div className="flex justify-end space-x-4 mt-8 xl:mt-[54px]">
+        <div className="flex justify-end space-x-4 mt-8 xl:mt-[54px] font-poppins">
           <button
-            className="flex items-center text-white gap-4 px-4 py-2 bg-[#4AA976] rounded-lg"
+            className="flex items-center text-white gap-4 px-4 py-2 bg-[#4AA976] rounded-lg font-poppins font-bold"
             onClick={() => {
               setOpen(true);
             }}

@@ -204,8 +204,6 @@ const Dashboard = () => {
               value={ticketByPriority[3]}
             />
           )}
-          <CardStatistic title="RESOLUTION DURATION DAYS" value={124.84} />
-          <CardStatistic title="OPEN TICKET DURATION DAYS" value={124.84} />
         </div>
       </div>
     </>

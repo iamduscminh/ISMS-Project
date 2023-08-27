@@ -44,12 +44,12 @@ const PERM000001Routes = [
   {
     path: ROUTES_PATHS.ADMIN_ROLE_PERMISSION_ADD,
     component: Page.AdminRolePermissionAdd,
-    layout: Layout.AdminLayout,
+    layout: Layout.CustomLayout,
   },
   {
     path: ROUTES_PATHS.ADMIN_ROLE_EDIT,
     component: Page.AdminRoleEdit,
-    layout: Layout.AdminLayout,
+    layout: Layout.CustomLayout,
   },
 ];
 
@@ -199,27 +199,27 @@ const PERM000018Routes = [
   {
     path: ROUTES_PATHS.ADMIN_TICKET,
     component: Page.AdminTicket,
-    layout: Layout.AdminLayout,
+    layout: Layout.CustomLayout,
   },
   {
     path: ROUTES_PATHS.ADMIN_REPORT,
     component: Page.AdminReport,
-    layout: Layout.AdminLayout,
+    layout: Layout.CustomLayout,
   },
   {
     path: ROUTES_PATHS.ADMIN_REPORT_PREVIEW,
     component: Page.AdminReportPreview,
-    layout: Layout.AdminLayout,
+    layout: Layout.CustomLayout,
   },
   {
     path: ROUTES_PATHS.ADMIN_CHANGE,
     component: Page.AdminChange,
-    layout: Layout.AdminLayout,
+    layout: Layout.CustomLayout,
   },
   {
     path: ROUTES_PATHS.ADMIN_PROBLEM,
     component: Page.AdminProblem,
-    layout: Layout.AdminLayout,
+    layout: Layout.CustomLayout,
   },
   {
     path: ROUTES_PATHS.ADMIN_STATISTICS,
