@@ -30,7 +30,7 @@ const ViewWorkflow = () => {
       try {
         const response = await Promise.all([
           axiosInstance.get(`${URL.WORKFLOW_TASK_URL}/get/${flowId}`),
-          axiosInstance.get(`${URL.WORKFLOW_URL}/checkedit?workflowId=${flowId}`)
+          axiosInstance.get(`${URL.WORKFLOW_URL}/checkedit/${flowId}`)
         ]);
         listInitialActivity = response[0].data.map((item) => ({
           id: item.workflowTaskId,
