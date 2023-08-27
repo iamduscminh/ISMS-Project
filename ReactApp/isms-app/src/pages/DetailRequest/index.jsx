@@ -509,20 +509,20 @@ function CreateRequest() {
                   <div className="w-full flex justify-center items-center">
                     <div
                       onClick={() => showCommentTab(true)}
-                      className=" cursor-pointer w-[50%] h-full flex justify-center items-center text-[#42526E] text-[1.25rem] font-medium"
+                      className=" cursor-pointer w-[50%] h-full flex justify-start items-center text-[#42526E] text-[1.25rem] font-medium"
                     >
                       <span>Comment</span>
                     </div>
-                    <div
+                    {/* <div
                       onClick={() => showCommentTab(false)}
                       className=" cursor-pointer w-[50%] h-full flex justify-center items-center text-[#42526E] text-[1.25rem] font-medium"
                     >
                       <span>Activity</span>
-                    </div>
+                    </div> */}
                   </div>
                   <TabSelect />
                 </div>
-                {commentTab ? (
+                {
                   <div>
                     <div className="w-[full] px-[1rem] py-[0.75rem] flex ">
                       <div className="text-3xl">
@@ -565,18 +565,7 @@ function CreateRequest() {
                       ))}
                     </div>
                   </div>
-                ) : (
-                  <div className="px-[2rem] my-[2rem]">
-                    {activityData.map((item, i) => (
-                      <RequestComment
-                        key={i}
-                        isAutoCmt={true}
-                        comment={item.content}
-                        time={item.time}
-                      />
-                    ))}
-                  </div>
-                )}
+                }
               </div>
             </div>
           </div>

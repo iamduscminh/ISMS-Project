@@ -60,10 +60,10 @@ function FilterRequest() {
     setValue("rqtType", "");
     setValue("rqtCreateFr", "");
     setValue("rqtCreateTo", "");
-    setValue("rqtIsIncident", false);
+    setValue("rqtIsInciden `  t", false);
   };
   useEffect(() => {
-    const requestTypeUrl = `${URL.SERVICE_ITEM_URL}/getall`;
+    const requestTypeUrl = `${URL.SERVICE_ITEM_URL}/getallfromrequester`;
     const serviceUrl = `${URL.SERVICE_CATEGORY_URL}/getall`;
 
     const fetchData = async () => {

@@ -14,13 +14,11 @@ const publicRoutes = [
     layout: Layout.FooterOnly,
   },
 
-
   {
     path: "/admin/:typeTicket?/:queryId?",
     component: Page.ListTicket,
     layout: Layout.CustomLayout,
   },
-
 ];
 
 //private route: dành cho những route cần đăng nhập
@@ -255,6 +253,11 @@ const loginRoutes = [
   },
   { path: "/filterTicket", component: Page.FilterTicket },
   { path: "/notification", component: Page.Notification },
+  {
+    path: "/notificationAdmin",
+    component: Page.Notification,
+    layout: Layout.CustomLayout,
+  },
 ];
 
 export {
@@ -281,5 +284,5 @@ export {
   PERM000018Routes,
   PERM000019Routes,
   PERM000020Routes,
-  PERM000021Routes
+  PERM000021Routes,
 };
