@@ -207,13 +207,23 @@ const AdminServiceRequestReport = () => {
         <div className="py-[45px] px-10 space-y-8 xl:space-y-[75px]">
           <div className="flex gap-4 xl:gap-9 flex-wrap">
             <CardStatistic
-              title="Created"
-              value={created}
+              title="Request new hardware"
+              value={38}
               className="xl:!h-auto"
             />
             <CardStatistic
-              title="Resolved"
-              value={resolved}
+              title="Set up VPN"
+              value={21}
+              className="xl:!h-auto"
+            />
+            <CardStatistic
+              title="Request for software installation"
+              value={8}
+              className="xl:!h-auto"
+            />
+            <CardStatistic
+              title="Wifi account"
+              value={10}
               className="xl:!h-auto"
             />
           </div>

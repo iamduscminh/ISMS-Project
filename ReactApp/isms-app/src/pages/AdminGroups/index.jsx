@@ -42,14 +42,14 @@ const AdminGroups = () => {
   }, [axiosInstance]);
 
   return (
-    <div className="bg-[#F7F7F7] text-[#727272]">
-      <div className="mx-auto max-w-7xl px-5 py-[60px]">
-        <h6 className="font-semibold text-2xl xl:text-4xl">
+    <div className="bg-[#F7F7F7] text-[#102c57] overflow-y-scroll">
+      <div className="mx-auto max-w-7xl px-5 py-[70px]">
+        <h6 className="font-bold text-2xl xl:text-3xl font-poppins">
           System Group Management
         </h6>
-        <p className="mt-4 text-lg xl:text-2xl">
-          The system allows you to manage the roles available in your
-          organization, you can also view the permissions of those roles
+        <p className="font-light mt-4 text-lg xl:text-xl font-poppins fl">
+          The system allows you to manage the groups available in your
+          organization.
         </p>
         <div className="flex justify-end space-x-4 mt-8 xl:mt-[54px]">
           <button
