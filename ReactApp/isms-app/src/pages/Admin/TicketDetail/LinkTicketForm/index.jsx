@@ -158,7 +158,7 @@ const LinkTicketForm = ({ currentIncident }) => {
   return (
     <div>
       <div className="mb-4">
-        <label for="selectChoice" class="block text-gray-700 font-bold mb-2">
+        <label htmlFor="selectChoice" className="block text-gray-700 font-bold mb-2">
           Select Choice
         </label>
         <select
@@ -172,7 +172,7 @@ const LinkTicketForm = ({ currentIncident }) => {
         </select>
       </div>
       <div className="mb-4">
-        <label for="title" class="block text-gray-700 font-bold mb-2">
+        <label htmlFor="title" className="block text-gray-700 font-bold mb-2">
           Title
         </label>
         <input
@@ -184,7 +184,7 @@ const LinkTicketForm = ({ currentIncident }) => {
         />
       </div>
       <div className="mb-4">
-        <label for="description" className="block text-gray-700 font-bold mb-2">
+        <label htmlFor="description" className="block text-gray-700 font-bold mb-2">
           Description
         </label>
         <textarea
@@ -195,7 +195,7 @@ const LinkTicketForm = ({ currentIncident }) => {
         ></textarea>
       </div>
       <div className="mb-4">
-        <label for="incidents" className="block text-gray-700 font-bold mb-2">
+        <label htmlFor="incidents" className="block text-gray-700 font-bold mb-2">
           Incidents
         </label>
         <select
@@ -241,7 +241,7 @@ const LinkTicketForm = ({ currentIncident }) => {
         </select>
       </div>
       <div className="mb-4">
-        <label for="assignee" className="block text-gray-700 font-bold mb-2">
+        <label htmlFor="assignee" className="block text-gray-700 font-bold mb-2">
           Assignee
         </label>
         <select
@@ -258,7 +258,7 @@ const LinkTicketForm = ({ currentIncident }) => {
         </select>
       </div>
       <div className="mb-4">
-        <label for="sla" className="block text-gray-700 font-bold mb-2">
+        <label htmlFor="sla" className="block text-gray-700 font-bold mb-2">
           SLA
         </label>
         <select
