@@ -4,6 +4,7 @@ import { ROUTES_PATHS } from "../../../constants";
 import MessageError from "../../components/Dashboard/MessageError";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import DropDownGroupLeader from "../../components/Dashboard/TableGroup/DropDownGroupLeader";
+import Swal from "sweetalert2";
 
 const AdminGroupEdit = () => {
   const [groupSelected, setGroupSelected] = useState([]);
@@ -17,6 +18,7 @@ const AdminGroupEdit = () => {
   const { id } = useParams();
   const axiosInstance = useAxiosPrivate();
   const navigate = useNavigate();
+  const [errors, setErrors] = useState();
 
   useEffect(() => {
     const getGroupById = async () => {
@@ -47,6 +49,14 @@ const AdminGroupEdit = () => {
   }, [axiosInstance]);
 
   const handleEditGroup = (e) => {
+    if (!groupName?.trim()) {
+      setErrors({ name: "Group name is required" });
+      return;
+    }
+    if (!desc?.trim()) {
+      setErrors({ desc: "Description is required" });
+      return;
+    }
     const updatedGroup = {
       groupName: groupName,
       description: desc,
@@ -59,12 +69,22 @@ const AdminGroupEdit = () => {
         },
       })
       .then((response) => {
-        console.log("response ===>", response, currentGroups);
+        Swal.fire({
+          icon: "success",
+          text: `Update groups successfully!`,
+          showConfirmButton: false,
+          timer: 1500,
+        });
         navigate(ROUTES_PATHS.ADMIN_GROUPS);
       })
       .catch((error) => {
-        console.log("eror:", error);
-        alert("Có lỗi khi cập nhật: ", error);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: `${error}`,
+          showCancelButton: true,
+          cancelButtonText: "Cancel",
+        });
       });
   };
 
@@ -98,7 +118,9 @@ const AdminGroupEdit = () => {
                   className="w-full rounded-lg py-1.5 px-5 border-2 border-[#CCC9C9] focus:outline-none text-black max-w-[275px]"
                 />
               </td>
-              {!groupName && <MessageError error={"Group name is required"} />}
+              {errors?.name && (
+                <MessageError type="small" error={errors?.name} />
+              )}
             </div>
           </div>
           <div className="flex items-start">
@@ -114,7 +136,9 @@ const AdminGroupEdit = () => {
                   setDesc(e.target.value);
                 }}
               />
-              {!desc && <MessageError error={"Description is required"} />}
+              {errors?.desc && (
+                <MessageError type="small" error={errors?.desc} />
+              )}
             </div>
           </div>
           <div className="flex items-start">

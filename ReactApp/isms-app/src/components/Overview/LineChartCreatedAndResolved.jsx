@@ -8,7 +8,7 @@ import {
   Title,
   Tooltip,
 } from "chart.js";
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import ChartCritical from "./ChartCritical";
 
 import { Line } from "react-chartjs-2";
@@ -40,9 +40,9 @@ const options = {
     },
   },
 };
-const labels = [];
 
 const LineChartCreatedAndResolved = ({ data }) => {
+  const labels = [];
   const dataConfig = {
     labels,
     datasets: [
@@ -61,7 +61,10 @@ const LineChartCreatedAndResolved = ({ data }) => {
         borderWidth: 2,
       },
     ],
-  };
+  }
+ 
+
+  if(!dataConfig) return null
 
   return (
     <section>

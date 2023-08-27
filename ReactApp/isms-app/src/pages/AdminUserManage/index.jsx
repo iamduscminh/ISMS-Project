@@ -4,6 +4,7 @@ import FormAddUser from "../../components/Dashboard/FormAddUser";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { Link } from "react-router-dom";
 import { ROUTES_PATHS } from "../../../constants";
+import Swal from "sweetalert2";
 
 const AdminUserManage = () => {
   const axiosInstance = useAxiosPrivate();
@@ -13,18 +14,18 @@ const AdminUserManage = () => {
   const [currentGroups, setCurrentGroups] = useState([]);
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    const getAllUsers = async () => {
-      try {
-        const response = await axiosInstance.get("/api/Users/getall");
-        setCurrentUsers(response.data);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("getAllUsers [AdminUserManage]:", error);
-        setIsLoading(false);
-      }
-    };
+  const getAllUsers = async () => {
+    try {
+      const response = await axiosInstance.get("/api/Users/getall");
+      setCurrentUsers(response.data);
+      setIsLoading(false);
+    } catch (error) {
+      console.error("getAllUsers [AdminUserManage]:", error);
+      setIsLoading(false);
+    }
+  };
 
+  useEffect(() => {
     const getAllRoles = async () => {
       try {
         const response = await axiosInstance.get("api/Roles/getall");
@@ -41,13 +42,19 @@ const AdminUserManage = () => {
         setCurrentGroups(response.data);
         setIsLoading(false);
       } catch (error) {
-        console.error("getAllGroups [AdminUserManage]:", error);
-        setIsLoading(false);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: `${error}`,
+          showCancelButton: true,
+          cancelButtonText: "Cancel",
+        });
       }
     };
     getAllRoles();
     getAllGroups();
     getAllUsers();
+    Swal.close();
   }, [axiosInstance]);
 
   return (
@@ -88,6 +95,7 @@ const AdminUserManage = () => {
             open={open}
             setOpen={setOpen}
             data={currentUsers}
+            getAllUsers={getAllUsers}
             setCurrentUsers={setCurrentUsers}
           />
         </div>
@@ -96,6 +104,7 @@ const AdminUserManage = () => {
           setCurrentUsers={setCurrentUsers}
           setCurrentRoles={currentRoles}
           setCurrentGroups={currentGroups}
+          getAllUsers={getAllUsers}
         />
       </div>
     </div>

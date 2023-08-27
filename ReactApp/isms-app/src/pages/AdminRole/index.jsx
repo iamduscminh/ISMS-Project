@@ -5,6 +5,7 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import FormAddRole from "../../components/Dashboard/FormAddRole";
 import { ROUTES_PATHS } from "../../../constants";
 import { Link, useParams, Routes, Route } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const AdminRole = () => {
   const axiosInstance = useAxiosPrivate();
@@ -13,18 +14,26 @@ const AdminRole = () => {
   const [open, setOpen] = useState(false);
   const handleSetRole = (item) => setCurrentRoles(item);
 
-  useEffect(() => {
-    const getAllRoles = async () => {
-      try {
-        const response = await axiosInstance.get("api/Roles/getall");
-        handleSetRole(response.data);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error getAllRoles [AdminRole]:", error);
-        setIsLoading(false);
-      }
-    };
+  const getAllRoles = async () => {
+    try {
+      const response = await axiosInstance.get("api/Roles/getall");
+      handleSetRole(response.data);
+      setIsLoading(false);
+      Swal.close();
+    } catch (error) {
+      console.error("Error getAllRoles [AdminRole]:", error);
+      const result = Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: `${error}`,
+        showCancelButton: true,
+        cancelButtonText: "Cancel",
+      });
+      setIsLoading(false);
+    }
+  };
 
+  useEffect(() => {
     getAllRoles();
   }, [axiosInstance]);
 
@@ -65,6 +74,7 @@ const AdminRole = () => {
           open={open}
           setOpen={setOpen}
           data={currentRoles}
+          getAllRoles={getAllRoles}
           setCurrentRoles={handleSetRole}
         />
         ;

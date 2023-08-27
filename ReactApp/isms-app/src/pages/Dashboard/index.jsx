@@ -158,7 +158,7 @@ const Dashboard = () => {
           ) && (
             <CardStatistic title="Resolve Ticket" value={ticketByStatus[5]} />
           )}
-          <CardStatistic title="USERS" value={100} />
+          {/* <CardStatistic title="USERS" value={100} /> */}
           <CardStatistic title="Create Ticket" value={createTicket} />
           {ticketTypesSelectedNormalized?.includes(ticketTypes?.[0]?.value) && (
             <CardStatistic title="INCIDENT" value={ticketByType[0]} />

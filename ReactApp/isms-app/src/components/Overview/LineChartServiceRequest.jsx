@@ -43,6 +43,7 @@ const options = {
 const labels = [];
 
 const LineChartServiecRequest = ({ data }) => {
+  const labels = [];
   const dataConfig = {
     labels,
     datasets: [

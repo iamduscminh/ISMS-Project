@@ -2,8 +2,15 @@ import React, { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import DropdownRole from "./TableUsers/DropdownRole";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import Swal from "sweetalert2";
 
-const FormAssignRole = ({ open, setOpen, roleData, selectedUser }) => {
+const FormAssignRole = ({
+  open,
+  setOpen,
+  roleData,
+  selectedUser,
+  getAllUsers,
+}) => {
   const [role, setRole] = useState(roleData);
   const axiosInstance = useAxiosPrivate();
 
@@ -27,19 +34,29 @@ const FormAssignRole = ({ open, setOpen, roleData, selectedUser }) => {
           }
         );
         if (response.status === 200) {
-          const createdUser = response.data;
+          // const createdUser = response.data;
           //setCurrentUsers((prev) => [...prev, createdUser]);
           // Clear Input
+          getAllUsers();
+          console.log("================>getAllUsers", getAllUsers());
           setOpen(false);
+          Swal.fire({
+            icon: "success",
+            text: "Assign role successfully!",
+            showConfirmButton: false,
+            timer: 1500,
+          });
         } else {
           throw response;
         }
       } catch (err) {
-        if (err.status === 403) {
-          alert("You are not allowed to add User");
-        } else {
-          alert(err.message);
-        }
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: `${err}`,
+          showCancelButton: true,
+          cancelButtonText: "Cancel",
+        });
       }
     };
     assignRole();
