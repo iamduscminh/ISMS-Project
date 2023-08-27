@@ -81,9 +81,9 @@ function Notification() {
     navigate("/detailRequest/" + id);
   };
   useEffect(() => {
-    console.log(location.pathname);
+    console.log(auth);
     const apiGetNotificationsUrl = `api/Notifications/noti/${
-      "USER000001" //auth?.userId
+      auth?.userId
     }/${false}`;
     const fetchData = async () => {
       try {
@@ -137,7 +137,7 @@ function Notification() {
     fetchData();
   }, []);
   return (
-    <div className="detail-request-container w-full h-full py-5 bg-[#294a8d] mt-3">
+    <div className="detail-request-container w-full h-full py-5 bg-[#294a8d]">
       <div className="detail-request-section mt-4 mx-auto max-w-7xl min-h-screen bg-white rounded shadow">
         {/* HEADER SECTION*/}
         <div className="detail-request-header w-full bg-[#0e3275] text-white">
@@ -146,7 +146,7 @@ function Notification() {
               <li className="header-nav-item ml-1">
                 <Link
                   className="header-nav-url hover:underline hover:text-white"
-                  to="/"
+                  to={auth?.roletype == "Admin" ? "/admin/" : "/"}
                   title="Home"
                   aria-label="Home"
                 >

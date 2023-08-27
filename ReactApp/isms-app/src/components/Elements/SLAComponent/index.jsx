@@ -168,9 +168,9 @@ const SLAComponent = ({ slaData, onSave, onDeleteSla, isDefault }) => {
                   <thead>
                     <tr>
                       <th />
-                      <th>Response Time</th>
-                      <th>Resolution Time</th>
-                      <th>Condition</th>
+                      <th>Response Time (mins)</th>
+                      <th>Resolution Time (mins)</th>
+                      <th>Condition (mins)</th>
                       <th></th>
                     </tr>
                   </thead>
