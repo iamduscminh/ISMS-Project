@@ -47,7 +47,7 @@ const ListTicket = () => {
     {
       field: "title",
       headerName: "Title",
-      width: 300,
+      width: 250,
       editable: true,
       description: "This column described overview of ticket",
     },
@@ -60,7 +60,7 @@ const ListTicket = () => {
     {
       field: "requestType",
       headerName: "RequestType",
-      width: 300,
+      width: 250,
       editable: true,
     },
 
@@ -206,10 +206,10 @@ const ListTicket = () => {
             const data = response.data.map((item, i) => ({
               id: item.ticketId,
               title: item.title,
-              service: item.isIncident ? "None" : item.serviceCategoryName,
+              service: item?.serviceCategoryName ?? "None",
               requestType: item.isIncident
                 ? "Issue Abnormal"
-                : item.serviceItemName,
+                : item?.serviceItemName ?? "None",
               group: item.groupName,
               requesterAvatar: item.requesterAvatar,
               assigneeAvatar: item.assigneeAvatar,
