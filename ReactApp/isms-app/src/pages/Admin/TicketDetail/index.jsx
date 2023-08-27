@@ -407,7 +407,7 @@ const TicketDetail = () => {
       alert("The current task has not been assigned")
       return;
     }
-    if (!ticketDetail.assignedTo !== auth.userId) {
+    if (ticketDetail.assignedTo !== auth.userId) {
       alert("The current task has not been assigned to you")
       return;
     }
@@ -440,7 +440,7 @@ const TicketDetail = () => {
       alert("The current task has not been assigned")
       return;
     }
-    if (!ticketDetail.assignedTo !== auth.userId) {
+    if (ticketDetail.assignedTo !== auth.userId) {
       alert("The current task has not been assigned to you")
       return;
     }
@@ -475,7 +475,7 @@ const TicketDetail = () => {
       alert("The current task has not been assigned")
       return;
     }
-    if (!ticketDetail.assignedTo !== auth.userId) {
+    if (ticketDetail.assignedTo !== auth.userId) {
       alert("The current task has not been assigned to you")
       return;
     }
