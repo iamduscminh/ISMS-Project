@@ -100,7 +100,7 @@ function ViewRequestTypes() {
         axiosInstance
           .get(apiGetRequestTypesUrl, { headers })
           .then((response) => {
-            console.log(response.data);
+            //console.log(response.data);
             const data = response.data.map((item, i) => ({
               id: item.serviceItemId,
               requestType: item.serviceItemName,

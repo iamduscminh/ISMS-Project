@@ -84,6 +84,7 @@ function RequestType() {
   const [listFieldsAll, setListFieldAll] = useState([]);
   const [listFieldConfig, setListFieldConfig] = useState([]);
   const [isCreateNewService, setCreateNewService] = useState(false);
+  const [isAllowUpdate, setIsAllowUpdate] = useState(false);
   const [errorService, setErrorService] = useState("");
 
   //định nghĩa form
@@ -92,6 +93,7 @@ function RequestType() {
     handleSubmit,
     formState: { errors },
     getValues,
+    setValue,
   } = useForm({
     criteriaMode: "all",
   });
@@ -117,10 +119,10 @@ function RequestType() {
       ServiceCategoryId: selectedService?.id,
       IconDisplay: iconRequestType,
       WorkflowId: selectedWorkflow?.id,
-      SlaId: selectedSla?.id,
+      Slaid: selectedSla?.id,
     };
     if (
-      !requestTypeDto.SlaId ||
+      !requestTypeDto.Slaid ||
       !requestTypeDto.WorkflowId ||
       !requestTypeDto.ServiceCategoryId
     ) {
@@ -171,7 +173,7 @@ function RequestType() {
               text: "Request Type was created successfully.",
               confirmButtonText: "OK",
             }).then(() => {
-              navigate("/admin/");
+              navigate("/viewRequestTypes/");
             });
           })
           .catch((error) => {
@@ -185,7 +187,7 @@ function RequestType() {
         axiosInstance
           .put(apiRequestTypeUrl, requestTypeDto, headers)
           .then((response) => {
-            //console.log(response.data);
+            console.log(response);
             //CREATE REQUEST TICKET EXT
             if (listFieldConfig.some((item) => typeof item === "object")) {
               const customFieldsDataArray = listFieldConfig.map((item) => {
@@ -203,15 +205,15 @@ function RequestType() {
               );
             }
           })
-          .then((response) => {
+          .then(() => {
             //console.log(response.data);
             Swal.fire({
               icon: "success",
               title: "Success!",
-              text: "Request Ticket was updated successfully.",
+              text: "Request Type was updated successfully.",
               confirmButtonText: "OK",
             }).then(() => {
-              navigate("/admin/");
+              navigate("/viewRequestTypes/");
             });
           })
           .catch((error) => {
@@ -354,9 +356,62 @@ function RequestType() {
     const slaSelect = slaData.find((obj) => obj.id === id);
     if (slaSelect) setSelectedSla(slaSelect);
   };
-
+  const handleDraftRequestType = () => {
+    if (isUpdateView && isAllowUpdate) {
+      const apiDraftRequestTypeUrl = `${URL.SERVICE_ITEM_URL}/toggle/${id}`;
+      try {
+        Swal.fire({
+          title: "Loading...",
+          allowOutsideClick: false,
+          onBeforeOpen: () => {
+            Swal.showLoading();
+          },
+        });
+        axiosInstance
+          .put(apiDraftRequestTypeUrl, headers)
+          .then((response) => {
+            console.log(response);
+            //CREATE REQUEST TICKET EXT
+          })
+          .then(() => {
+            Swal.fire({
+              icon: "success",
+              title: "Success!",
+              text: "Request Type was drafted successfully.",
+              confirmButtonText: "OK",
+            }).then(() => {
+              navigate("/viewRequestTypes/");
+            });
+          })
+          .catch((error) => {
+            const result = Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error}`,
+            });
+          });
+        Swal.close();
+      } catch (error) {
+        // Handle errors if needed
+        Swal.close();
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: error,
+        });
+      }
+    } else
+      Swal.fire({
+        title: "Can not draft!",
+        text: `You can't draft request type that related to working Request Tickets`,
+        icon: "warning",
+        confirmButtonText: "OK",
+      });
+    return;
+  };
   useEffect(() => {
     let isUpdateView = id != 0;
+    let isCanUpdate = true;
     setIsUpdateView(isUpdateView);
     const customFieldsGetUrl = `${URL.CUSTOM_FIELD_URL}/getall`;
     const apiGetSvcCategoryUrl = `${URL.SERVICE_CATEGORY_URL}/getall`;
@@ -364,6 +419,7 @@ function RequestType() {
       try {
         Swal.fire({
           title: "Loading...",
+          text: `Please wait for loading Request Type`,
           allowOutsideClick: false,
           onBeforeOpen: () => {
             Swal.showLoading();
@@ -431,7 +487,7 @@ function RequestType() {
         await axiosInstance
           .get(`${URL.SLA_URL}/getall`)
           .then((response) => {
-            console.log(response.data);
+            //console.log(response.data);
             const data = response.data.map((item, i) => ({
               stt: i,
               id: item.slaid,
@@ -457,12 +513,16 @@ function RequestType() {
         if (isUpdateView) {
           const customFieldsGetByRequestTypeUrl = `${URL.SERVICE_ITEM_EXT_URL}/getbyserviceitem/${id}`;
           const requestTypeDetailUrl = `${URL.SERVICE_ITEM_URL}/${id}`;
+          const requestTypeUpdateCheckUrl = `${URL.SERVICE_ITEM_URL}/checkedit/${id}`;
           //--------------Get detail request type
           await axiosInstance
             .get(requestTypeDetailUrl, { headers })
             .then((response) => {
               const data = response.data;
-              //console.log(data);
+              console.log(data);
+              setValue("rqtName", data.serviceItemName);
+              setValue("rqtDescription", data.description);
+
               setSelectedRequestType(data);
               setIconRequestType(data.iconDisplay);
               setSelectedService({
@@ -470,8 +530,12 @@ function RequestType() {
                 serviceName: data.serviceCategoryEntity.serviceCategoryName,
               });
               setSelectedWorkflow({
-                id: data.workflowEntity.workflowId,
-                workflowName: data.workflowEntity.workflowName,
+                id: data?.workflowEntity?.workflowId,
+                workflowName: data?.workflowEntity?.workflowName,
+              });
+              setSelectedSla({
+                id: data?.slaEntity?.slaid,
+                slaName: data?.slaEntity?.slaname,
               });
             })
             .catch((error) => {
@@ -509,6 +573,20 @@ function RequestType() {
                 console.log(error + "User canceled!");
               }
             });
+          await axiosInstance
+            .get(requestTypeUpdateCheckUrl, { headers })
+            .then((response) => {
+              const data = response.data;
+              // console.log(data.condition);
+              setIsAllowUpdate(data.condition);
+            })
+            .catch((error) => {
+              const result = Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: `${error}`,
+              });
+            });
         }
 
         Swal.close();
@@ -529,54 +607,74 @@ function RequestType() {
     <div className="request-types-container pb-4 w-full h-full bg-[#fff] bg-blend-lighten">
       <div className="request-types-section">
         {/* HEADER SECTION*/}
-        <div className="request-types-header w-full text-white bg-[#42526E] ">
-          <nav className="request-types-header-nav pt-3 pb-1 ">
-            <ul className="header-nav-content flex items-center text-[0.75rem] pl-[1.25rem]">
-              <li className="header-nav-item ml-1">
-                <Link
-                  className="header-nav-url hover:underline hover:text-white"
-                  to="/admin"
-                >
-                  Home
-                </Link>
-              </li>
-              <li className="header-nav-item ml-1">
-                <div className="header-nav-arrow">
-                  <Icon.AiOutlineRight />
-                </div>
-              </li>
-              <li className="header-nav-item ml-1">
-                <Link
-                  to={"/viewRequestTypes"}
-                  className="header-nav-url hover:underline hover:text-white"
-                >
-                  Request Types
-                </Link>
-              </li>
-              <li className="header-nav-item ml-1">
-                <div className="header-nav-arrow">
-                  <Icon.AiOutlineRight />
-                </div>
-              </li>
-              <li className="header-nav-item ml-1">
-                <Link className="header-nav-url hover:underline hover:text-white">
-                  Create Request Type
-                </Link>
-              </li>
-            </ul>
-          </nav>
-          <div className="request-types-header-content pb-2 flex items-center pl-[1.25rem]">
-            <div className="request-types-header-icon">
-              <Icon.BsFillInfoSquareFill className="h-[50px] w-[50px]" />
+        <div className="request-types-header w-full text-white bg-[#42526E] flex justify-between">
+          <div className="left-info">
+            <nav className="request-types-header-nav pt-3 pb-1 ">
+              <ul className="header-nav-content flex items-center text-[0.75rem] pl-[1.25rem]">
+                <li className="header-nav-item ml-1">
+                  <Link
+                    className="header-nav-url hover:underline hover:text-white"
+                    to="/admin"
+                  >
+                    Home
+                  </Link>
+                </li>
+                <li className="header-nav-item ml-1">
+                  <div className="header-nav-arrow">
+                    <Icon.AiOutlineRight />
+                  </div>
+                </li>
+                <li className="header-nav-item ml-1">
+                  <Link
+                    to={"/viewRequestTypes"}
+                    className="header-nav-url hover:underline hover:text-white"
+                  >
+                    Request Types
+                  </Link>
+                </li>
+                <li className="header-nav-item ml-1">
+                  <div className="header-nav-arrow">
+                    <Icon.AiOutlineRight />
+                  </div>
+                </li>
+                {!isUpdateView && (
+                  <li className="header-nav-item ml-1">
+                    <Link className="header-nav-url hover:underline hover:text-white">
+                      Create Request Type
+                    </Link>
+                  </li>
+                )}
+                {isUpdateView && (
+                  <li className="header-nav-item ml-1">
+                    <Link className="header-nav-url hover:underline hover:text-white">
+                      {id}
+                    </Link>
+                  </li>
+                )}
+              </ul>
+            </nav>
+            <div className="request-types-header-content pb-2 flex items-center pl-[1.25rem]">
+              <div className="request-types-header-icon">
+                <Icon.BsFillInfoSquareFill className="h-[50px] w-[50px]" />
+              </div>
+              <div className="request-types-header-description ml-5 w-1/2">
+                <h4 className="text-2xl font-bold">Request Types</h4>
+                <span className="">
+                  Customize the types of service requests in the system. Make
+                  these request types available in your system portal by editing
+                  your request type group.
+                </span>
+              </div>
             </div>
-            <div className="request-types-header-description ml-5 w-1/2">
-              <h4 className="text-2xl font-bold">Request Types</h4>
-              <span className="">
-                Customize the types of service requests in the system. Make
-                these request types available in your system portal by editing
-                your request type group.
-              </span>
-            </div>
+          </div>
+          <div className="request-type-add w-1/6 self-center">
+            <button
+              onClick={handleDraftRequestType}
+              type="button"
+              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-[1rem] py-[0.5rem] mr-2 mb-2"
+            >
+              Draft Request Type
+            </button>
           </div>
         </div>
         {/*CREATE REQUEST TYPE SECTION*/}
@@ -1091,13 +1189,24 @@ function RequestType() {
                     >
                       Back
                     </button>
-                    <button
-                      type="submit"
-                      className="text-white mr-2 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-4 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                      onClick={handleCreateRequestType}
-                    >
-                      {isUpdateView ? "Update" : "Create" ?? ""}
-                    </button>
+                    {isAllowUpdate && isUpdateView && (
+                      <button
+                        type="submit"
+                        className="text-white mr-2 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-4 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        onClick={handleCreateRequestType}
+                      >
+                        Update
+                      </button>
+                    )}
+                    {!isUpdateView && (
+                      <button
+                        type="submit"
+                        className="text-white mr-2 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-4 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        onClick={handleCreateRequestType}
+                      >
+                        Create
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
