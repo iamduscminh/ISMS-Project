@@ -172,6 +172,11 @@ const PERM000018Routes = [
     layout: Layout.CustomLayout,
   },
   {
+    path: "/admin/change/:changId",
+    component: Page.ChangeDetail,
+    layout: Layout.CustomLayout,
+  },
+  {
     path: "/admin/:typeTicket?/:queryId?",
     component: Page.ListTicket,
     layout: Layout.CustomLayout,

@@ -13,8 +13,9 @@ const CommentTab = ({ requestTicketId }) => {
   useEffect(() => {
     const fetchComment = async () => {
       try {
+        let currentURL = `${URL.COMMENT_URL}/getall/change/${requestTicketId}`
         const response = await axiosInstance.get(
-          `${URL.COMMENT_URL}/getall/${requestTicketId}`
+          currentURL
         );
         console.log("comment");
         console.log(response.data);
@@ -36,10 +37,11 @@ const CommentTab = ({ requestTicketId }) => {
     if (commentRef.current.value === "") return;
     const createComment = async () => {
       try {
-        const response = await axiosInstance.post(`${URL.COMMENT_URL}/create`,{
+        let currentURL = `${URL.COMMENT_URL}/createCommentChange`
+        const response = await axiosInstance.post(currentURL,{
             CommentText: commentRef.current.value,
             CommentBy: auth.userId,
-            RequestTicketId: requestTicketId,
+            ChangeId: requestTicketId,
             IsInternal: checkPersonal,
         })
         console.log('comment');
@@ -53,7 +55,6 @@ const CommentTab = ({ requestTicketId }) => {
         alert("System error, sorry, please contact administrator: ", err);
       }
     };
-
     createComment()
   };
 

@@ -112,13 +112,13 @@ const GeneralInfo = ({ flowId, checkEdit }) => {
       </div>
 
       <div className="flex justify-start items-center mt-[1rem] text-[#42526E]">
-        {workflowInfo?.status ? (
+        {workflowInfo?.status === "Published" ? (
           <div className="mr-[1rem] px-[1rem] bg-green-500 text-[#fff] rounded-lg font-medium cursor-pointer">
-            Active
+            Published
           </div>
         ) : (
           <div className="mr-[1rem] px-[1rem] bg-red-500 text-[#fff] rounded-lg font-medium cursor-pointer">
-            Inactive
+            Drafted
           </div>
         )}
         <div>

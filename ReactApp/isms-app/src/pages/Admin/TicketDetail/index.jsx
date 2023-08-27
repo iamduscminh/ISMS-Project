@@ -44,6 +44,8 @@ import useAuth from "../../../hooks/useAuth";
 import CommentTab from "./CommentTab";
 import CustomField from "../../../components/Elements/CustomField";
 import { useForm } from "react-hook-form";
+import SearchAgent from "../Settings/WorkflowSettings/ViewWorkflow/SearchAgent";
+import LinkTicketForm from "./LinkTicketForm";
 
 const TicketDetail = () => {
   const {
@@ -66,6 +68,8 @@ const TicketDetail = () => {
   const [attachment, setAttachment] = useState();
   const [activity, setActivity] = useState();
   const [oldTask, setOldTask] = useState(null);
+  const [dataAgentIncident, setDataAgentIncident] = useState(null);
+  const [dataAgentGroup, setDataAgentGroup] = useState([]);
 
   const transitionMessageRef = useRef();
 
@@ -134,6 +138,60 @@ const TicketDetail = () => {
     };
     fetchTicketDetail();
   }, [axiosInstance]);
+
+  useEffect(()=>{
+    const fetchDataAgentIncident = async () =>{
+      try{
+        const response = await axiosInstance.get(`${URL.USER_URL}/getall`);
+        setDataAgentIncident(response.data);
+      }catch(err){
+        alert("System error, sorry, please contact administrator: ", err);
+      }
+    }
+    fetchDataAgentIncident();
+  }, [axiosInstance]);
+
+  // useEffect(()=>{
+  //   const fetchDataAgentGroup = async () =>{
+  //     if(!ticketDetail.assignToGroup){
+  //       return;
+  //     }
+  //     try{
+  //       const response = await axiosInstance.get(`${URL.USER_URL}/getall`);
+  //       setDataAgentIncident(response.data);
+  //     }catch(err){
+  //       alert("System error, sorry, please contact administrator: ", err);
+  //     }
+  //   }
+  //   fetchDataAgentGroup();
+  // }, [axiosInstance]);
+
+  const handleReAssign = (userId) => {
+    const callAPIUpdateAssignee = async () => {
+      try {
+        const response = await axiosInstance.put(`${URL.REQUEST_TICKET_URL}/update`, {
+          RequestTicketId: ticketId,
+          Status: ticketDetail.status,
+          Impact: ticketDetail.impact,
+          Urgency: ticketDetail.urgency,
+          AssignedTo: userId
+        });
+        setTicketDetail(item => ({
+          ...item,
+          assignedTo: response.data.updateRequestTicketDTO.assignedTo,
+          assignedToUserEntity: response.data.updateRequestTicketDTO.assignedToUserEntity
+        }));
+      } catch (err) {
+        if (err.response.status === 400) {
+          alert(err.response.data.message)
+        } else {
+          alert("System error, sorry, please contact administrator: ", err);
+        }
+      }
+    }
+    callAPIUpdateAssignee();
+  }
+
   const [commentTab, setCommentTab] = useState(true);
   const showCommentTab = (queryCondition) => {
     setCommentTab(queryCondition);
@@ -311,6 +369,7 @@ const TicketDetail = () => {
   };
 
   const handleAssignToMe = () => {
+    if(ticketDetail.status ==="Canceled" || ticketDetail.status ==="Closed") return;
     const assign = async () => {
       try {
         const response = await axiosInstance.post(`${URL.WORKFLOW_ASSIGNMENT_URL}/assign`, {
@@ -348,6 +407,10 @@ const TicketDetail = () => {
       alert("The current task has not been assigned")
       return;
     }
+    if (!ticketDetail.assignedTo !== auth.userId) {
+      alert("The current task has not been assigned to you")
+      return;
+    }
     const callAPIUpdateStatus = async () => {
       try {
         const response = await axiosInstance.put(`${URL.REQUEST_TICKET_URL}/update`, {
@@ -375,6 +438,10 @@ const TicketDetail = () => {
   const handleChangeImpactIncident = (selectedImpact) => {
     if (!ticketDetail.assignedTo) {
       alert("The current task has not been assigned")
+      return;
+    }
+    if (!ticketDetail.assignedTo !== auth.userId) {
+      alert("The current task has not been assigned to you")
       return;
     }
     const callAPIUpdateImpact = async () => {
@@ -406,6 +473,10 @@ const TicketDetail = () => {
   const handleChangeUrgencyIncident = (selectedUrgency) => {
     if (!ticketDetail.assignedTo) {
       alert("The current task has not been assigned")
+      return;
+    }
+    if (!ticketDetail.assignedTo !== auth.userId) {
+      alert("The current task has not been assigned to you")
       return;
     }
     const callAPIUpdateUrgency = async () => {
@@ -459,7 +530,6 @@ const TicketDetail = () => {
     callAPIUpdateAssignee();
   }
 
-
   const maxLength = 20; // Độ dài tối đa của tên file
 
   const TabSelect = styled.div`
@@ -489,47 +559,12 @@ const TicketDetail = () => {
         {ticketDetail?.isIncident &&
           <ModalDialog
             title={"Create Problem/Change"}
-            actionText={"Create"}
             triggerComponent={
               <button className="px-[1rem] ml-[1rem] bg-[#043ac5]">Link Issues</button>
             }
             customSize="md"
           >
-            <div>
-              <div class="mb-4">
-                <label for="selectChoice" class="block text-gray-700 font-bold mb-2">Select Choice</label>
-                <select id="selectChoice" name="selectChoice" class="w-full px-4 py-2 border rounded-md">
-                  <option value="problem">Problem</option>
-                  <option value="change">Change</option>
-                </select>
-              </div>
-              <div class="mb-4">
-                <label for="title" class="block text-gray-700 font-bold mb-2">Title</label>
-                <input type="text" id="title" name="title" class="w-full px-4 py-2 border rounded-md"/>
-              </div>
-              <div class="mb-4">
-                <label for="description" class="block text-gray-700 font-bold mb-2">Description</label>
-                <textarea id="description" name="description" class="w-full px-4 py-2 border rounded-md"></textarea>
-              </div>
-              <div class="mb-4">
-                <label for="incidents" class="block text-gray-700 font-bold mb-2">Incidents</label>
-                <select id="incidents" name="incidents" class="w-full px-4 py-2 border rounded-md" multiple>
-                  <option value="incident1">Incident 1</option>
-                  <option value="incident2">Incident 2</option>
-                  <option value="incident1">Incident 3</option>
-                  <option value="incident2">Incident 4</option>
-                  <option value="incident1">Incident 5</option>
-                  <option value="incident2">Incident 6</option>
-                </select>
-              </div>
-              <div class="mb-4">
-                <label for="assignee" class="block text-gray-700 font-bold mb-2">Assignee</label>
-                <select id="assignee" name="assignee" class="w-full px-4 py-2 border rounded-md">
-                  <option value="assignee1">Assignee 1</option>
-                  <option value="assignee2">Assignee 2</option>
-                </select>
-              </div>
-            </div>
+            <LinkTicketForm currentIncident={ticketId} />
           </ModalDialog>
         }
       </div>
@@ -793,7 +828,7 @@ const TicketDetail = () => {
             <div>
               <div className="flex items-center mt-[1rem]">
                 <h3 className="text-[#42526E] min-w-[40%] font-medium">
-                  Assignee
+                  Assignee 1
                 </h3>
                 {
                   oldTask ? (
@@ -841,6 +876,7 @@ const TicketDetail = () => {
                           </Link>
                         </span>
                       </div>
+                      {/* {ticketDetail?.assignedTo && dataAgentIncident && <div className="w-full ml-[40%] mt-[1rem]"><SearchAgent agentData={dataAgentIncident} handleAddAgent={handleReAssign}/></div>} */}
                     </div>
                   ) : task?.currentTask?.status === "Resolved" ? (
                     <></>
@@ -927,7 +963,7 @@ const TicketDetail = () => {
                         ref={transitionMessageRef}
                         rows={2}
                         className="w-full h-full resize-none px-[0.75rem] py-[0.5rem] border-2 border-[#747272] rounded-md"
-                        placeholder="@ to tag someone"
+                        placeholder=""
                       ></textarea>
                     </div>
                     <div className="mt-[0.25rem]">
@@ -1005,7 +1041,7 @@ const TicketDetail = () => {
               })}
             </div>
 
-            {task?.currentTask?.status !== "Resolved" ? (
+            {task?.currentTask?.status !== "Resolved" && task?.currentTask?.workflowTransitionDTOFroms.length !== 0 ? (
               <div className="mt-[1rem] flex">
                 <select
                   value={
@@ -1087,6 +1123,7 @@ const TicketDetail = () => {
                       </div>
                   }
                 </div>
+                {ticketDetail?.assignedTo && dataAgentIncident && <div className="w-full ml-[40%] mt-[1rem]"><SearchAgent agentData={dataAgentIncident} handleAddAgent={handleReAssign}/></div>}
                 {oldTask && <div>
                   <h3 className="text-[#42526E] min-w-[40%] font-medium">
                     Complete confirmation
@@ -1197,10 +1234,10 @@ const TicketDetail = () => {
               <div className="mt-[1rem]">
                 <div className="text-[#42526E] font-medium">Related Ticket</div>
                 <div className="h-[20vh] overflow-y-scroll cursor-default mt-[1rem]">
-                  <div onClick={() => handleSetOldTask()} className="flex items-center text-[#42526E] px-[1rem] py-[0.5rem] cursor-pointer">
+                  {/* <div onClick={() => handleSetOldTask()} className="flex items-center text-[#42526E] px-[1rem] py-[0.5rem] cursor-pointer">
                     <BiTask className="mr-[0.5rem]" />
                     <h3>RETK000120: Mất điện thoại rồi</h3>
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
