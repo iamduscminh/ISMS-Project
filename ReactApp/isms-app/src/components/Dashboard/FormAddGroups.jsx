@@ -6,6 +6,7 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import MessageError from "../../components/Dashboard/MessageError";
 import TableRoles from "../../components/Dashboard/TableRoles";
 import DropDownGroupLeader from "../../components/Dashboard/TableGroup/DropDownGroupLeader";
+import Swal from "sweetalert2";
 
 const FormAddGroups = ({
   open,
@@ -15,9 +16,10 @@ const FormAddGroups = ({
   getAllGroups,
 }) => {
   const axiosInstance = useAxiosPrivate();
-  const [newGroup, setNewGroup] = useState(" ");
-  const [desc, setDesc] = useState(" ");
+  const [groupName, setNewGroup] = useState("");
+  const [desc, setDesc] = useState("");
   const [listGroupLeader, setlistGroupLeader] = useState([]);
+  const [errors, setErrors] = useState();
 
   useEffect(() => {
     const getListGroupLeaderName = async () => {
@@ -34,16 +36,19 @@ const FormAddGroups = ({
   const [groupLeaderSelected, setGroupLeaderSelected] =
     useState(listGroupLeader);
 
-  const groupNameDef = useRef(null);
-  const groupDesRef = useRef(null);
-
   const handleInsertGroup = (e) => {
-    const groupName = groupNameDef.current.value;
-    const groupDes = groupDesRef.current.value;
+    if (!groupName?.trim()) {
+      setErrors({ name: "Group name is required" });
+      return;
+    }
+    if (!desc?.trim()) {
+      setErrors({ desc: "Description is required" });
+      return;
+    }
 
     const newGroup = {
-      groupName: groupName,
-      description: groupDes,
+      groupName: groupName.trim(),
+      description: desc.trim(),
       groupLeader: groupLeaderSelected.userId,
     };
     const controller = new AbortController();
@@ -61,10 +66,12 @@ const FormAddGroups = ({
           }
         );
         if (response.status === 200) {
-          const createdGroup = response.data;
-          console.log("createGroup data:  ", createdGroup);
-          // setCurrentGroups((prev) => [...prev, createdGroup]);
-          // Clear Input
+          Swal.fire({
+            icon: "success",
+            text: `Create groups successfully!`,
+            showConfirmButton: false,
+            timer: 1500,
+          });
           setDesc(" ");
           setNewGroup(" ");
           setOpen(false);
@@ -73,11 +80,13 @@ const FormAddGroups = ({
           throw response;
         }
       } catch (err) {
-        if (err.status === 403) {
-          alert("You are not allowed to add Role");
-        } else {
-          alert(err.message);
-        }
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: `${err}`,
+          showCancelButton: true,
+          cancelButtonText: "Cancel",
+        });
       }
     };
     createGroup();
@@ -93,7 +102,7 @@ const FormAddGroups = ({
             </h6>
 
             <div className="mt-10 space-y-8">
-              <div className="flex items-center">
+              <div className="flex-1 items-center">
                 <label className="text-[#647186] text-base font-semibold xl:text-lg w-[160px]">
                   Group Name
                 </label>
@@ -103,25 +112,31 @@ const FormAddGroups = ({
                   onChange={(e) => {
                     setNewGroup(e.target.value);
                   }}
-                  ref={groupNameDef}
+                  value={groupName}
                 />
-                {!newGroup && <MessageError error={"Role name is required"} />}
+                <td>
+                  {errors?.name && (
+                    <MessageError type="small" error={errors?.name} />
+                  )}
+                </td>
               </div>
-              <div className="flex items-center">
+              <div className="flex-1 items-center">
                 <label className="text-[#647186] text-base font-semibold xl:text-lg w-[160px]">
                   Description
                 </label>
                 <textarea
                   className="min-h-[105px] w-full rounded-lg py-1.5 px-5 border-2 border-[#CCC9C9] focus:outline-none text-black flex-1"
                   style={{ boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)" }}
-                  ref={groupDesRef}
+                  value={desc}
                   onChange={(e) => {
                     setDesc(e.target.value);
                   }}
                 />
-                {!desc && <MessageError error={"Decription is required"} />}
+                {errors?.desc && (
+                  <MessageError type="small" error={errors?.desc} />
+                )}
               </div>
-              <div className="flex items-center">
+              <div className="flex-1 items-center">
                 <label className="text-[#647186] text-base font-semibold xl:text-lg w-[160px]">
                   Group Leader
                 </label>

@@ -6,6 +6,8 @@ import * as Dialog from "@radix-ui/react-dialog";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { Link, Routes, Route } from "react-router-dom";
 import AdminRoleEdit from "../../../pages/AdminRoleEdit";
+import Swal from "sweetalert2";
+
 const IconEdit = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -74,10 +76,20 @@ const TableItem = ({
         setCurrentRoles((prevListService) => {
           return prevListService.filter((e) => e.roleId !== item.roleId);
         });
-        alert(response.data.message);
+        Swal.fire({
+          icon: "success",
+          text: `Delete successfully!`,
+          showCancelButton: true,
+        });
       })
       .catch((error) => {
-        alert("Lỗi khi xóa:", error);
+        const result = Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: `${error}`,
+          showCancelButton: true,
+          cancelButtonText: "Cancel",
+        });
       });
   };
 
@@ -86,21 +98,17 @@ const TableItem = ({
       <td className="px-3 py-1.5 rounded-lg bg-transparent font-poppins">
         {roleName}
       </td>
-      <td className="px-3 py-1.5 rounded-lg bg-transparent font-poppins">
+      <td className="px-3 py-1.5 rounded-lg bg-transparent font-poppins w-3/5">
         {desc}
       </td>
 
-      <td className="space-x-10 flex items-center">
+      <td className="space-x-10 flex items-center h-auto">
         <div className="space-x-5 py-2">
           <Link to={`/admin/manage/role/edit/${item.roleId}`}>
             <button
               className="text-[#3A7DFF] w-14 focus:outline-none border-0"
               onClick={() => {
                 setIsEdit((prev) => !prev);
-                console.log(
-                  "==========>setCurrentRoles onclick",
-                  setCurrentRoles
-                );
                 <AdminRoleEdit setCurrentRoles={setCurrentRoles} />;
               }}
             >
@@ -115,7 +123,6 @@ const TableItem = ({
               />
             </Route>
           </Routes> */}
-
           <button
             className="text-[#3A7DFF] focus:outline-none border-0"
             onClick={() => {

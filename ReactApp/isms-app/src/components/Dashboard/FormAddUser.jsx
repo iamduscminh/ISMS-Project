@@ -2,34 +2,47 @@ import React, { useState, useRef } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import MessageError from "./MessageError";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import Swal from "sweetalert2";
 
-const FormAddUser = ({ open, setOpen, data, setCurrentUsers }) => {
+const FormAddUser = ({ open, setOpen, data, setCurrentUsers, getAllUsers }) => {
   const axiosInstance = useAxiosPrivate();
   const [role, setRole] = useState();
-  const [userEmail, setUserEmail] = useState(" ");
-  const [userPassWord, setUserPassWord] = useState(" ");
-  const [userFirstName, setUserFirstName] = useState(" ");
-  const [userMidName, setUserMidName] = useState(" ");
-  const [userLastName, setUserLastName] = useState(" ");
+  const [userEmail, setUserEmail] = useState("");
+  const [userPassWord, setUserPassWord] = useState("");
+  const [userFirstName, setUserFirstName] = useState("");
+  const [userMidName, setUserMidName] = useState("");
+  const [userLastName, setUserLastName] = useState("");
+  const [errors, setErrors] = useState();
 
-  const handleAdd = (e) => {
-    e.preventDefault();
-    setOpen(false);
-  };
-  const emailRef = useRef(null);
-  const passWordRef = useRef(null);
-  const firstNameRef = useRef(null);
   const middleNameRef = useRef(null);
-  const lastNameRef = useRef(null);
 
-  const handleInsertUser = (e) => {
+  const handleInsertUser = () => {
+    if (!userEmail?.trim()) {
+      setErrors({ email: "Email is required" });
+      return;
+    }
+    if (userPassWord?.trim()?.length <= 8) {
+      setErrors({ password: "Password must be at least 8 characters" });
+      return;
+    }
+
+    if (!userFirstName?.trim()) {
+      setErrors({ firstName: "First Name is required" });
+      return;
+    }
+
+    if (!userLastName?.trim()) {
+      setErrors({ lastName: "Last Name is required" });
+      return;
+    }
+
     const newUser = {
-      email: userEmail,
-      password: userPassWord,
-      firstName: userFirstName,
-      middleName: userMidName,
-      lastName: userLastName,
-      fullName: userFirstName + " " + userLastName,
+      email: userEmail.trim(),
+      password: userPassWord.trim(),
+      firstName: userFirstName.trim(),
+      middleName: userMidName.trim(),
+      lastName: userLastName.trim(),
+      fullName: userFirstName.trim() + " " + userLastName.trim(),
       isActive: true,
     };
     const controller = new AbortController();
@@ -48,30 +61,37 @@ const FormAddUser = ({ open, setOpen, data, setCurrentUsers }) => {
         );
         if (response.status === 200) {
           const createdUser = newUser;
-          setCurrentUsers((prev) => [...prev, createdUser]);
+          // setCurrentUsers((prev) => [...prev, createdUser]);
           // Clear Input
+          getAllUsers();
           setUserEmail(" ");
           setUserPassWord(" ");
           setUserFirstName(" ");
           setUserMidName(" ");
           setUserLastName(" ");
           setOpen(false);
+          Swal.fire({
+            icon: "success",
+            text: `Create successfully!`,
+            showConfirmButton: false,
+            timer: 1500,
+          });
         } else {
           throw response;
         }
       } catch (err) {
-        if (err.status === 403) {
-          alert("You are not allowed to add User");
-        }
-        if (err.status === 400) {
-          alert(`Email ${userEmail} is already taken`);
-        } else {
-          alert(err.message);
-        }
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: `${err}`,
+          showCancelButton: true,
+          cancelButtonText: "Cancel",
+        });
       }
     };
     createUser();
   };
+
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Portal>
@@ -105,86 +125,87 @@ const FormAddUser = ({ open, setOpen, data, setCurrentUsers }) => {
                     onChange={(e) => {
                       setUserEmail(e.target.value);
                     }}
-                    ref={emailRef}
+                    value={userEmail}
+                    required
                   />
-                  {!userEmail && (
-                    <MessageError error={"Role name is required"} />
+                  {errors?.email && (
+                    <MessageError type="small" error={errors?.email} />
                   )}
                 </div>
               </div>
-            </div>
-            <div className="flex items-start">
-              <label className="text-[#647186] text-base font-semibold xl:text-lg w-[150px]">
-                Password
-              </label>
-              <div className="flex-1">
-                <input
-                  type="password"
-                  className="w-full rounded-lg py-1.5 px-5 border-2 border-[#CCC9C9] focus:outline-none text-black"
-                  style={{ boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)" }}
-                  onChange={(e) => {
-                    setUserPassWord(e.target.value);
-                  }}
-                  ref={passWordRef}
-                />
-                {!passWordRef && (
-                  <MessageError
-                    type="small"
-                    error={"Consists of 10 number and does not include letters"}
+              <div className="flex items-start">
+                <label className="text-[#647186] text-base font-semibold xl:text-lg w-[150px]">
+                  Password
+                </label>
+                <div className="flex-1">
+                  <input
+                    type="password"
+                    className="w-full rounded-lg py-1.5 px-5 border-2 border-[#CCC9C9] focus:outline-none text-black"
+                    style={{ boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)" }}
+                    onChange={(e) => {
+                      setUserPassWord(e.target.value);
+                    }}
+                    required
+                    value={userPassWord}
                   />
-                )}
+                  {errors?.password && (
+                    <MessageError type="small" error={errors?.password} />
+                  )}
+                </div>
               </div>
-            </div>
-            <div className="flex items-start">
-              <label className="text-[#647186] text-base font-semibold xl:text-lg w-[150px]">
-                First Name
-              </label>
-              <div className="flex-1">
-                <input
-                  className="w-full rounded-lg py-1.5 px-5 border-2 border-[#CCC9C9] focus:outline-none text-black"
-                  style={{ boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)" }}
-                  onChange={(e) => {
-                    setUserFirstName(e.target.value);
-                  }}
-                  ref={firstNameRef}
-                />
-                {!userFirstName && (
-                  <MessageError type="small" error={"First Name is required"} />
-                )}
+              <div className="flex items-start">
+                <label className="text-[#647186] text-base font-semibold xl:text-lg w-[150px]">
+                  First Name
+                </label>
+                <div className="flex-1">
+                  <input
+                    className="w-full rounded-lg py-1.5 px-5 border-2 border-[#CCC9C9] focus:outline-none text-black"
+                    style={{ boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)" }}
+                    onChange={(e) => {
+                      setUserFirstName(e.target.value);
+                    }}
+                    value={userFirstName}
+                    required
+                  />
+                  {errors?.firstName && (
+                    <MessageError type="small" error={errors?.firstName} />
+                  )}
+                </div>
               </div>
-            </div>
-            <div className="flex items-start">
-              <label className="text-[#647186] text-base font-semibold xl:text-lg w-[150px]">
-                Middle Name
-              </label>
-              <div className="flex-1">
-                <input
-                  className="w-full rounded-lg py-1.5 px-5 border-2 border-[#CCC9C9] focus:outline-none text-black"
-                  style={{ boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)" }}
-                  onChange={(e) => {
-                    setUserMidName(e.target.value);
-                  }}
-                  ref={middleNameRef}
-                />
-                {/* <MessageError type="small" error={"Middle Name is required"} /> */}
+              <div className="flex items-start">
+                <label className="text-[#647186] text-base font-semibold xl:text-lg w-[150px]">
+                  Middle Name
+                </label>
+                <div className="flex-1">
+                  <input
+                    className="w-full rounded-lg py-1.5 px-5 border-2 border-[#CCC9C9] focus:outline-none text-black"
+                    style={{ boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)" }}
+                    onChange={(e) => {
+                      setUserMidName(e.target.value);
+                    }}
+                    ref={middleNameRef}
+                  />
+                  {/* <MessageError type="small" error={"Middle Name is required"} /> */}
+                </div>
               </div>
-            </div>
-            <div className="flex items-start">
-              <label className="text-[#647186] text-base font-semibold xl:text-lg w-[150px]">
-                Last Name
-              </label>
-              <div className="flex-1">
-                <input
-                  className="w-full rounded-lg py-1.5 px-5 border-2 border-[#CCC9C9] focus:outline-none text-black"
-                  style={{ boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)" }}
-                  onChange={(e) => {
-                    setUserLastName(e.target.value);
-                  }}
-                  ref={lastNameRef}
-                />
-                {!userLastName && (
-                  <MessageError type="small" error={"Last Name is required"} />
-                )}
+              <div className="flex items-start">
+                <label className="text-[#647186] text-base font-semibold xl:text-lg w-[150px]">
+                  Last Name
+                </label>
+                <div className="flex-1">
+                  <input
+                    className="w-full rounded-lg py-1.5 px-5 border-2 border-[#CCC9C9] focus:outline-none text-black"
+                    style={{ boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)" }}
+                    onChange={(e) => {
+                      setUserLastName(e.target.value);
+                    }}
+                    value={userLastName}
+                    required
+                  />
+                  {errors?.lastName && (
+                    <MessageError type="small" error={errors?.lastName} />
+                  )}
+                </div>
               </div>
             </div>
 

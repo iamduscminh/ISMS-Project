@@ -6,6 +6,8 @@ import DropdownRole from "./DropdownRole";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import FormAssignRole from "../FormAssignRole";
 import FormAddUserToGroup from "../FormAddUserToGroup";
+import Swal from "sweetalert2";
+
 const IconDeactive = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -108,11 +110,12 @@ const TableItem = ({
   const [user, setUser] = useState(item?.fullName);
   const [email, setEmail] = useState(item?.email);
   const [phoneNumber, setPhoneNumber] = useState(item?.phoneNumber);
-  const [birthDate, setBirthDate] = useState(item?.birthDate);
+  const [role, setRole] = useState(item?.role?.roleName);
+  const [groups, setGroups] = useState(item?.groupDTOs);
   const axiosInstance = useAxiosPrivate();
   const [isActive, setIsActive] = useState(item?.isActive);
   const [openDeactive, setOpenDeactive] = useState(false);
-
+  console.log("===========>role", role);
   const handleDeActive = (e) => {
     try {
       axiosInstance
@@ -122,48 +125,51 @@ const TableItem = ({
           },
         })
         .then(() => {
-          setIsActive(false);
+          setIsActive(!isActive);
           setOpenDeactive(false);
+          Swal.fire({
+            icon: "success",
+            text: isActive ? "Deactive successfully!" : "Active successfully!",
+            showConfirmButton: false,
+            timer: 1500,
+          });
         });
     } catch (error) {
-      alert("Có lỗi khi cập nhật: ", error);
-    }
-  };
-
-  const handleActive = (e) => {
-    try {
-      axiosInstance
-        .post(`api/Users/active?userId=${item.userId}`, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then(() => {
-          setIsActive(true);
-          setOpenDeactive(false);
-        });
-    } catch (error) {
-      alert("Có lỗi khi cập nhật: ", error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: `${error}`,
+        showCancelButton: true,
+        cancelButtonText: "Cancel",
+      });
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (isActive) {
-      handleDeActive();
-
-      return;
-    }
-
-    console.log("active");
-    // handleActive()
+    handleDeActive();
   };
 
   return (
     <tr>
-      <td className="px-3 py-1.5 rounded-lg bg-transparent">{user}</td>
-      <td className={clsx("px-3 py-1.5 rounded-lg bg-transparent")}>{email}</td>
+      <td className="px-3 py-1.5 rounded-lg bg-transparent font-poppins items-center">
+        {user}
+      </td>
+      <td
+        className={clsx("px-3 py-1.5 rounded-lg bg-transparent font-poppins")}
+      >
+        {email}
+      </td>
+      <td
+        className={clsx("px-3 py-1.5 rounded-lg bg-transparent font-poppins")}
+      >
+        {role}
+      </td>
+      <td className=" text-left px-3 py-1.5 rounded-lg bg-transparent font-poppins">
+        {groups.map((item, index) => (
+          <div key={index}>+ {item.groupName}</div>
+        ))}
+      </td>
       {/* <td className={clsx("px-3 py-1.5 rounded-lg bg-transparent")}>
         {phoneNumber}
       </td>
@@ -260,21 +266,21 @@ const TableUsers = ({
   setCurrentUsers,
   setCurrentRoles,
   setCurrentGroups,
+  getAllUsers,
 }) => {
   const [open, setOpen] = useState(false);
   const [openAssign, setOpenAssign] = useState(false);
   const [openAddGroup, setOpenAddGroup] = useState(false);
   const [userSelected, setUserSelected] = useState([]);
-
-  console.log("data", data);
+  console.log("===>data in Table User", data);
   return (
     <div className="mt-8 xl:mt-16 flex-1 border border-black rounded-lg bg-[#E5F3F3] px-10 py-8 max-h-[70vh] overflow-y-scroll">
       <table className={clsx(styles.table, "w-full text-left")}>
         <tr>
           <th>User</th>
           <th>Work Email</th>
-          {/* <th>Phone Number</th> */}
-          {/* <th>Group</th> */}
+          <th>Role</th>
+          <th>Group</th>
           <th>Active</th>
           <th>Assign</th>
           <th>Action</th>
@@ -298,6 +304,7 @@ const TableUsers = ({
         setOpen={setOpenAssign}
         roleData={setCurrentRoles}
         selectedUser={userSelected}
+        getAllUsers={getAllUsers}
       />
 
       <FormAddUserToGroup
@@ -305,6 +312,7 @@ const TableUsers = ({
         setOpen={setOpenAddGroup}
         groupData={setCurrentGroups}
         selectedUser={userSelected}
+        getAllUsers={getAllUsers}
       />
     </div>
   );

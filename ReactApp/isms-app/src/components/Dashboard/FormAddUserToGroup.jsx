@@ -3,8 +3,15 @@ import * as Dialog from "@radix-ui/react-dialog";
 import DropdownRole from "./TableUsers/DropdownRole";
 import DropDownGroup from "./TableGroup/DropDownGroup";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import Swal from "sweetalert2";
 
-const FormAddUserToGroup = ({ open, setOpen, groupData, selectedUser }) => {
+const FormAddUserToGroup = ({
+  open,
+  setOpen,
+  groupData,
+  selectedUser,
+  getAllUsers,
+}) => {
   const [group, setGroups] = useState(groupData);
   const axiosInstance = useAxiosPrivate();
 
@@ -27,21 +34,25 @@ const FormAddUserToGroup = ({ open, setOpen, groupData, selectedUser }) => {
           }
         );
         if (response.status === 200) {
-          const createdUser = response.data;
-          console.log("response.status", response.status);
-          //setCurrentUsers((prev) => [...prev, createdUser]);
-          // Clear Input
-          alert("Add group sucessfully");
+          Swal.fire({
+            icon: "success",
+            text: "Add user to groups successfully!",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          getAllUsers();
           setOpen(false);
         } else {
           throw response;
         }
       } catch (err) {
-        if (err.status === 403) {
-          alert("You are not allowed to add User");
-        } else {
-          alert(err.message);
-        }
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: `${err}`,
+          showCancelButton: true,
+          cancelButtonText: "Cancel",
+        });
       }
     };
     assignRole();

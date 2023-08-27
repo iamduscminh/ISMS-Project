@@ -112,10 +112,12 @@ const AdminStatistics = () => {
         }
       );
       setDataTickets(response.data);
-
+      if (response.data.length <= 0) {
+        setArrayResolve(arrayResolved);
+        setArrayCreate(arrayCreated);
+      }
       response.data.map((item) => {
         for (let i = 0; i < dateRanges.number; i++) {
-          let eachData;
           if (
             formatDate(item.date) === formatDate(getPreviousDay(today, -i, 0))
           ) {
@@ -139,11 +141,10 @@ const AdminStatistics = () => {
 
     return {
       Date: item?.x,
-      "Created": item?.y,
-      "Resolved": totalResolved,
+      Created: item?.y,
+      Resolved: totalResolved,
     };
   });
-
   return (
     <>
       <div className="bg-[#42526E] py-4 px-8 xl:pl-[58px] xl:pr-[70px] xl:py-9 flex flex-col md:flex-row items-start gap-4 md:items-center justify-between">

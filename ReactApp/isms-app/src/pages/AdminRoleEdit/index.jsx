@@ -11,6 +11,7 @@ import { ROUTES_PATHS } from "../../../constants";
 import MessageError from "../../components/Dashboard/MessageError";
 import TogglePermission from "../../components/Dashboard/TogglePermission";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import Swal from "sweetalert2";
 
 const AdminRoleEdit = ({ setCurrentRoles }) => {
   const [roleName, setRoleName] = useState(" ");
@@ -23,6 +24,13 @@ const AdminRoleEdit = ({ setCurrentRoles }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    Swal.fire({
+      title: "Loading...",
+      allowOutsideClick: false,
+      onBeforeOpen: () => {
+        Swal.showLoading();
+      },
+    });
     const getRoleById = async () => {
       try {
         const response = await axiosInstance.get(`api/Roles/get/${id}`);
@@ -53,6 +61,7 @@ const AdminRoleEdit = ({ setCurrentRoles }) => {
     getAllRoles();
     getPermissionByRoleId();
     getRoleById();
+    Swal.close();
   }, [axiosInstance]);
 
   const handleEditRole = () => {
@@ -103,14 +112,24 @@ const AdminRoleEdit = ({ setCurrentRoles }) => {
     Promise.all([handleEditPermission(), handleEditRole()])
       .then((res) => {
         if (res?.findIndex((item) => item === false) >= 0) {
-          alert("Có lỗi khi cập nhật");
+          Swal.fire({
+            icon: "success",
+            text: `Update successfully!`,
+            showCancelButton: true,
+          });
           return;
         }
 
         navigate(ROUTES_PATHS.ADMIN_ROLE);
       })
       .catch((err) => {
-        console.log("err: ", err);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: `${err}`,
+          showCancelButton: true,
+          cancelButtonText: "Cancel",
+        });
       });
   };
 

@@ -20,7 +20,6 @@ const AdminGroups = () => {
     try {
       const response = await axiosInstance.get("api/Groups/getall");
       handleInsertGroup(response.data);
-      console.log("response.data", response.data);
       setIsLoading(false);
     } catch (error) {
       console.error("Error get all Groups [AdminGroups]:", error);

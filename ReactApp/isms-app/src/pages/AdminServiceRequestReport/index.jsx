@@ -139,7 +139,12 @@ const AdminServiceRequestReport = () => {
         "Request for software installation",
         "Get a guest wifi account",
       ];
-
+      if (response.data.length <= 0) {
+        setArrayCreate(arrayNewHardware);
+        setArrayResolve(arrayVPN);
+        setInstall(arrayWifi);
+        setWifi(arrayInstall);
+      }
       response.data
         .filter((item) => serviceNames.includes(item.serviceItemName))
         .map((item) => {
@@ -208,22 +213,22 @@ const AdminServiceRequestReport = () => {
           <div className="flex gap-4 xl:gap-9 flex-wrap">
             <CardStatistic
               title="Request new hardware"
-              value={38}
+              value={0}
               className="xl:!h-auto"
             />
             <CardStatistic
               title="Set up VPN"
-              value={21}
+              value={1}
               className="xl:!h-auto"
             />
             <CardStatistic
               title="Request for software installation"
-              value={8}
+              value={1}
               className="xl:!h-auto"
             />
             <CardStatistic
               title="Wifi account"
-              value={10}
+              value={1}
               className="xl:!h-auto"
             />
           </div>

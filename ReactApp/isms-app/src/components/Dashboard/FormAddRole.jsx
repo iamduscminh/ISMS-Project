@@ -5,8 +5,9 @@ import DropdownRoleType from "./TableRoles/DropDownRoleType";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import MessageError from "../../components/Dashboard/MessageError";
 import TableRoles from "../../components/Dashboard/TableRoles";
+import Swal from "sweetalert2";
 
-const FormAddRole = ({ open, setOpen, data, setCurrentRoles }) => {
+const FormAddRole = ({ open, setOpen, data, setCurrentRoles, getAllRoles }) => {
   const [role, setRole] = useState(roleTypes[0]);
   const axiosInstance = useAxiosPrivate();
   const [newRole, setNewRole] = useState(" ");
@@ -25,6 +26,13 @@ const FormAddRole = ({ open, setOpen, data, setCurrentRoles }) => {
 
     const createRole = async () => {
       try {
+        Swal.fire({
+          title: "Loading...",
+          allowOutsideClick: false,
+          onBeforeOpen: () => {
+            Swal.showLoading();
+          },
+        });
         const response = await axiosInstance.post(
           "api/Roles/create",
           JSON.stringify(newRoleGroup),
@@ -37,20 +45,30 @@ const FormAddRole = ({ open, setOpen, data, setCurrentRoles }) => {
         );
         if (response.status === 200) {
           const createdRoleGroup = newRoleGroup;
-          setCurrentRoles((prev) => [...prev, createdRoleGroup]);
+          // setCurrentRoles((prev) => [...prev, createdRoleGroup]);
+          getAllRoles();
           // Clear Input
           setDesc(" ");
           setNewRole(" ");
           setOpen(false);
+          Swal.fire({
+            icon: "success",
+            text: `Create successfully!`,
+            showConfirmButton: false,
+            timer: 1500,
+          });
         } else {
           throw response;
         }
+        Swal.close();
       } catch (err) {
-        if (err.status === 403) {
-          alert("You are not allowed to add Role");
-        } else {
-          alert(err.message);
-        }
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: `${err}`,
+          showCancelButton: true,
+          cancelButtonText: "Cancel",
+        });
       }
     };
     createRole();
@@ -78,7 +96,9 @@ const FormAddRole = ({ open, setOpen, data, setCurrentRoles }) => {
                   }}
                   ref={roleNameRef}
                 />
-                {!newRole && <MessageError error={"Role name is required"} />}
+                {!newRole && (
+                  <MessageError type="small" error={"Role name is required"} />
+                )}
               </div>
               <div className="flex items-center">
                 <label className="text-[#647186] text-base font-semibold xl:text-lg w-[160px]">
@@ -92,7 +112,9 @@ const FormAddRole = ({ open, setOpen, data, setCurrentRoles }) => {
                     setDesc(e.target.value);
                   }}
                 />
-                {!desc && <MessageError error={"Decription is required"} />}
+                {!desc && (
+                  <MessageError type="small" error={"Decription is required"} />
+                )}
               </div>
               <div className="flex items-center">
                 <label className="text-[#647186] text-base font-semibold xl:text-lg w-[160px]">
