@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import { URL } from "../../../../utils/Url";
 import useAuth from "../../../../hooks/useAuth";
+import Swal from "sweetalert2";
 const LinkTicketForm = ({ currentIncident }) => {
   const axiosInstance = useAxiosPrivate();
 
@@ -25,7 +26,12 @@ const LinkTicketForm = ({ currentIncident }) => {
     if (choice === "Change") {
       const createTicket = async () => {
         if (ticketData.Title === "" || ticketData.Description === "") {
-          alert("Title and description is require");
+          Swal.fire({
+            icon: "Error",
+            title: "Error!",
+            text: "Title and description is require",
+            confirmButtonText: "OK",
+          });
           return;
         }
         try {
@@ -42,10 +48,26 @@ const LinkTicketForm = ({ currentIncident }) => {
         } catch (err) {
           if (err.response.status === 400) {
             err.response.data.message
-              ? alert(err.response.data.message)
-              : alert("There is an error in the data sent");
+              ? 
+              Swal.fire({
+                icon: "Error",
+                title: "Error!",
+                text: err.response.data.message,
+                confirmButtonText: "OK"})
+              : 
+              Swal.fire({
+                icon: "Error",
+                title: "Error!",
+                text: "There is an error in the data sent",
+                confirmButtonText: "OK",
+              });
           } else {
-            alert("System error, sorry, please contact administrator: ", err);
+            Swal.fire({
+              icon: "Error",
+              title: "Error!",
+              text: "System error, sorry, please contact administrator:",
+              confirmButtonText: "OK",
+            });
           }
         }
       };
@@ -53,7 +75,12 @@ const LinkTicketForm = ({ currentIncident }) => {
     } else {
       const createTicket = async () => {
         if (ticketData.Title === "" || ticketData.Description === "") {
-          alert("Title and description is require");
+          Swal.fire({
+            icon: "Error",
+            title: "Error!",
+            text: "Title and description is require",
+            confirmButtonText: "OK",
+          });
           return;
         }
         try {
@@ -68,10 +95,26 @@ const LinkTicketForm = ({ currentIncident }) => {
         } catch (err) {
           if (err.response.status === 400) {
             err.response.data.message
-              ? alert(err.response.data.message)
-              : alert("There is an error in the data sent");
+              ? 
+              Swal.fire({
+                icon: "Error",
+                title: "Error!",
+                text: err.response.data.message,
+                confirmButtonText: "OK"})
+              : 
+              Swal.fire({
+                icon: "Error",
+                title: "Error!",
+                text: "There is an error in the data sent",
+                confirmButtonText: "OK",
+              });
           } else {
-            alert("System error, sorry, please contact administrator: ", err);
+            Swal.fire({
+              icon: "Error",
+              title: "Error!",
+              text: "System error, sorry, please contact administrator:",
+              confirmButtonText: "OK",
+            });
           }
         }
       };
@@ -146,9 +189,19 @@ const LinkTicketForm = ({ currentIncident }) => {
         });
       } catch (err) {
         if (err.response.status === 400) {
-          alert(err.response.data.message);
+          Swal.fire({
+            icon: "Error",
+            title: "Error!",
+            text: err.response.data.message,
+            confirmButtonText: "OK",
+          });
         } else {
-          alert("System error, sorry, please contact administrator: ", err);
+          Swal.fire({
+            icon: "Error",
+            title: "Error!",
+            text: "System error, sorry, please contact administrator:",
+            confirmButtonText: "OK",
+          });
         }
       }
     };

@@ -10,6 +10,7 @@ import useAxiosPrivate from "../../../../../hooks/useAxiosPrivate";
 import { URL } from "../../../../../utils/Url";
 import useAuth from "../../../../../hooks/useAuth";
 import { GiConsoleController } from "react-icons/gi";
+import Swal from "sweetalert2";
 
 const ListWorkflow = () => {
   const navigate = useNavigate();
@@ -28,11 +29,15 @@ const ListWorkflow = () => {
         const response = await axiosInstance.get(`${URL.WORKFLOW_URL}/getall`);
         setListWorkflow(response.data);
       } catch (err) {
-        console.log(err);
         if (err.status === 403) {
           navigate("/unauthorized");
         } else {
-          alert("System error, sorry, please contact administrator: " + err);
+          Swal.fire({
+            icon: "Error",
+            title: "Error!",
+            text: "System error, sorry, please contact administrator: ",
+            confirmButtonText: "OK",
+          });
         }
       }
     };
@@ -57,10 +62,23 @@ const ListWorkflow = () => {
         );
         setListWorkflow(updatedWorkflowList);
       } catch (err) {
-        if (err.response.status === 400) {
-          alert(err.response.data.message);
+        if (err.status === 403) {
+          navigate("/unauthorized");
+        }
+        else if (err.response.status === 400) {
+          Swal.fire({
+            icon: "Error",
+            title: "Error!",
+            text: err.response.data.message,
+            confirmButtonText: "OK",
+          });
         } else {
-          alert("System error, sorry, please contact administrator: ", err);
+          Swal.fire({
+            icon: "Error",
+            title: "Error!",
+            text: "System error, sorry, please contact administrator: ",
+            confirmButtonText: "OK",
+          });
         }
       }
     };
@@ -79,9 +97,19 @@ const ListWorkflow = () => {
         ]);
       } catch (err) {
         if (err.response.status === 400) {
-          alert(err.response.data.message);
+          Swal.fire({
+            icon: "Error",
+            title: "Error!",
+            text: err.response.data.message,
+            confirmButtonText: "OK",
+          });
         } else {
-          alert("System error, sorry, please contact administrator: ", err);
+          Swal.fire({
+            icon: "Error",
+            title: "Error!",
+            text: "System error, sorry, please contact administrator: ",
+            confirmButtonText: "OK",
+          });
         }
       }
     };
@@ -174,9 +202,9 @@ const ListWorkflow = () => {
         const response = await axiosInstance.post(
           `${URL.WORKFLOW_URL}/create`,
           JSON.stringify({
-            WorkflowName: workflowNameRef.current.value,
+            WorkflowName: workflowNameRef.current.value.trim(),
             CreatedBy: auth.userId,
-            Description: descriptionRef.current.value,
+            Description: descriptionRef.current.value.trim(),
           }),
           {
             headers: {
@@ -194,7 +222,12 @@ const ListWorkflow = () => {
       } catch (err) {
         // Optionally, show an error message to the user
         if (err.status === 403) {
-          alert("You are not allowed to add Workflow");
+          Swal.fire({
+            icon: "Error",
+            title: "Error!",
+            text: "You are not allowed to add Workflow",
+            confirmButtonText: "OK",
+          });
         } else {
           alert(err.message);
         }
