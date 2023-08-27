@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 function UpdateCustomField() {
   const { id } = useParams();
   const { auth } = useAuth();
-
+  const navigate = useNavigate();
   const token = auth?.accessToken;
   const headers = {
     Authorization: `Bearer ${token}`,
@@ -121,7 +121,14 @@ function UpdateCustomField() {
           headers,
         })
         .then((response) => {
-          console.log(response);
+          Swal.fire({
+            icon: "success",
+            title: "Success!",
+            text: "Customfield was created successfully.",
+            confirmButtonText: "OK",
+          }).then(() => {
+            navigate("/viewCustomFields/");
+          });
         })
         .catch((error) => {
           console.error("API Error:", error);
@@ -133,7 +140,14 @@ function UpdateCustomField() {
           headers,
         })
         .then((response) => {
-          console.log(response);
+          Swal.fire({
+            icon: "success",
+            title: "Success!",
+            text: "Customfield was updated successfully.",
+            confirmButtonText: "OK",
+          }).then(() => {
+            navigate("/viewCustomFields/");
+          });
         })
         .catch((error) => {
           console.error("API Error:", error);
@@ -309,7 +323,7 @@ function UpdateCustomField() {
                       <option value="LOV">Combobox</option>
                       <option value="C">Checkbox</option>
                       <option value="CL">Checklist</option>
-                      <option value="F">File</option>
+                      {/* <option value="F">File</option> */}
                       <option value="RD">Radio</option>
                       <option value="D">Date</option>
                     </select>
