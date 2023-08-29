@@ -936,6 +936,16 @@ const TicketDetail = () => {
               <p className="text-[#747272]">
                 {oldTask?.currentTask?.description}
               </p>
+              <h3 className="text-[#42526E] mt-[0.5rem] font-medium">
+                  Due Date : <span className="text-[#747272] ml-[1rem]">{oldTask ? format(
+                        parseISO(oldTask?.dueDate),
+                        "MMM-dd-yyyy HH:mm"
+                      ) : ""}
+                      </span>
+                </h3>
+                {oldTask?.status !== ''  && <div className="text-[#fff] h-fit w-fit rounded-md mt-[0.5rem] bg-[#5746c2] px-[0.5rem]">
+                          {oldTask?.status}
+                        </div>}
             </div> : <div>
               <h1 className="text-[1.25rem] font-semibold text-[#42526E]">
                 {task ? task?.currentTask?.workflowTaskName : " "}
@@ -943,6 +953,16 @@ const TicketDetail = () => {
               <p className="text-[#747272]">
                 {task ? task?.currentTask?.description : " "}
               </p>
+              <h3 className="text-[#42526E] mt-[0.5rem] font-medium">
+                  Due Date : <span className="text-[#747272] ml-[1rem]">{task? format(
+                        parseISO(task?.dueDate),
+                        "MMM-dd-yyyy HH:mm"
+                      ) : ""}
+                      </span>
+                </h3>
+                {task?.status !== ''  && <div className="text-[#fff] h-fit w-fit rounded-md mt-[0.5rem] bg-[#5746c2] px-[0.5rem]">
+                          {task?.status}
+                        </div>}
             </div>
             }
 
@@ -1015,11 +1035,9 @@ const TicketDetail = () => {
                   Group
                 </h3>
                     <div>
-                      {console.log(task)}
                       {task?.currentTask?.groupEntity?.groupName}
                     </div>
               </div>
-
               {/* <div className="flex items-center mt-[1rem]">
                 <h3 className="text-[#42526E] min-w-[40%] font-medium">
                   Reporter
@@ -1050,9 +1068,20 @@ const TicketDetail = () => {
                   Complete confirmation
                 </h3>
                 <div className="w-[full] mx-[0.25rem]">
+                <h3
+                    className="text-[#42526E] mt-[0.5rem] font-medium"
+                  >Completed message : </h3>
                   <p
-                    className="w-full h-full resize-none py-[0.5rem] italic"
+                    className="w-full h-full resize-none italic"
                   >{oldTask?.message}</p>
+                </div>
+                <div className="w-[full] mx-[0.25rem]">
+                  <h3
+                    className="text-[#42526E] mt-[0.5rem] font-medium"
+                  >Completed time : <span className="text-[#747272] ml-[1rem]">{oldTask ? format(
+                    parseISO(oldTask?.completedTime),
+                    "MMM-dd-yyyy HH:mm"
+                  ) : ""}</span> </h3>
                 </div>
               </div>}
               <div className="flex mt-[1rem]">
